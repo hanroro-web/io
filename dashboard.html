@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한로로 관리자 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, query, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+        // Firebase 설정 (index.html과 동일해야 함)
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web-app';
+
+        // 익명 인증 실행
+        const initAuth = async () => {
+            try { await signInAnonymously(auth); } catch (e) { console.error("Auth Error", e); }
+        };
+        initAuth();
+
+        // 인증 완료 후 기존 공지사항 목록 불러오기
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+                // 실시간 리스너 설정
+                onSnapshot(noticeCol, (snapshot) => {
+                    const listElement = document.getElementById('notice-history');
+                    let html = '';
+                    let notices = [];
+                    snapshot.forEach(doc => notices.push({ id: doc.id, ...doc.data() }));
+                    
+                    // 최신순 정렬
+                    notices.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+                    notices.forEach(notice => {
+                        const date = notice.createdAt ? new Date(notice.createdAt.seconds * 1000).toLocaleString() : '방금 전';
+                        html += `
+                            <div class="p-4 bg-white/5 border border-white/10 rounded-xl mb-3 flex justify-between items-center">
+                                <div>
+                                    <p class="text-white text-sm font-medium">${notice.text}</p>
+                                    <p class="text-gray-500 text-[10px] mt-1">${date}</p>
+                                </div>
+                                <span class="text-[10px] text-purple-400 font-bold uppercase">Active</span>
+                            </div>
+                        `;
+                    });
+                    listElement.innerHTML = html || '<p class="text-gray-500 text-center py-10">등록된 공지사항이 없습니다.</p>';
+                });
+            }
+        });
+
+        // 공지사항 전송 함수
+        window.sendNotice = async () => {
+            const input = document.getElementById('notice-input');
+            const text = input.value;
+            const btn = document.getElementById('submit-btn');
+
+            if (!text.trim()) {
+                showToast("내용을 입력해주세요.");
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerText = "전송 중...";
+                
+                const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+                await addDoc(noticeCol, {
+                    text: text,
+                    createdAt: serverTimestamp(),
+                    uid: auth.currentUser.uid
+                });
+                
+                input.value = "";
+                showToast("공지사항이 index.html에 즉시 반영되었습니다.");
+            } catch (e) {
+                console.error("Write Error", e);
+                showToast("전송 실패: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "공지 등록하기";
+            }
+        };
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;900&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background: #05020a; color: white; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .purple-glow { box-shadow: 0 0 30px rgba(138, 79, 255, 0.2); }
+        input:focus, textarea:focus { border-color: #8a4fff !important; outline: none; }
+    </style>
+</head>
+<body class="min-h-screen p-6 sm:p-12">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <h1 class="text-2xl font-black tracking-tighter text-purple-400 uppercase">Admin Dashboard</h1>
+                <p class="text-gray-500 text-sm mt-1">한로로 공식 홈페이지 실시간 관리</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Server Live</span>
+            </div>
+        </header>
+
+        <div class="grid md:grid-cols-5 gap-8">
+            <!-- Form Section -->
+            <div class="md:col-span-3 space-y-6">
+                <div class="glass-card rounded-3xl p-8 purple-glow">
+                    <h2 class="text-lg font-bold mb-6 flex items-center">
+                        <i class="fas fa-bullhorn mr-2 text-purple-400"></i> 새 공지사항 작성
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] text-gray-500 font-bold uppercase ml-1">Announcement Content</label>
+                            <textarea id="notice-input" rows="5" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-sm mt-1 transition-all" placeholder="메인 페이지 하단 배너에 노출될 내용을 입력하세요."></textarea>
+                        </div>
+                        <button id="submit-btn" onclick="sendNotice()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-purple-900/20">
+                            공지 등록하기
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8">
+                    <h2 class="text-lg font-bold mb-4 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-blue-400"></i> 안내사항
+                    </h2>
+                    <ul class="text-xs text-gray-500 space-y-3 leading-relaxed">
+                        <li>• 여기서 등록한 내용은 <b>index.html</b> 하단 바에 실시간으로 반영됩니다.</li>
+                        <li>• 가장 최근에 등록된 공지 1개만 메인 페이지에 노출됩니다.</li>
+                        <li>• HTML 태그는 사용할 수 없으며 텍스트만 전송됩니다.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="md:col-span-2">
+                <div class="glass-card rounded-3xl p-8 h-full">
+                    <h2 class="text-lg font-bold mb-6 flex items-center">
+                        <i class="fas fa-history mr-2 text-gray-400"></i> 최근 기록
+                    </h2>
+                    <div id="notice-history" class="overflow-y-auto max-h-[500px] pr-2">
+                        <!-- History items injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full font-bold text-xs opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+            성공적으로 전송되었습니다.
+        </div>
+    </div>
+</body>
+</html>
