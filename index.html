@@ -79,6 +79,29 @@
 
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
+        /* Hero Visual Box */
+        .hero-visual-box {
+            background: #0c051a;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .pattern-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(138, 79, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+
         .custom-modal {
             display: none; position: fixed; inset: 0; z-index: 2000;
             background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px);
@@ -95,6 +118,21 @@
             width: 100%; height: 70vh; border-radius: 12px; overflow: hidden; background: white;
         }
 
+        /* Hover Effect for Project Cards (Restored) */
+        .project-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--vibe-primary);
+            box-shadow: 0 10px 30px rgba(138, 79, 255, 0.15);
+        }
+
+        /* Case Cards Hover */
         .case-card {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.05);
@@ -173,15 +211,24 @@
                     <button onclick="document.getElementById('case-studies').scrollIntoView()" class="border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-sm">제작 사례</button>
                 </div>
             </div>
-            <div class="hidden md:flex justify-center">
-                <div class="float-animation">
-                    <i class="fas fa-magic text-[12rem] text-purple-500/20 drop-shadow-[0_0_50px_rgba(138,79,255,0.3)]"></i>
+            <div class="hidden md:block relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                <div class="hero-visual-box h-[500px] w-full max-w-[450px] mx-auto">
+                    <div class="pattern-overlay"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="float-animation">
+                            <i class="fas fa-magic text-8xl lg:text-9xl text-purple-400 mb-10 drop-shadow-[0_0_30px_rgba(167,139,250,0.5)]"></i>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-gray-500 font-mono text-[10px] uppercase tracking-[0.3em]">Design By HANRORO</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- (위치 변경됨) 1. 진행 중인 프로젝트 Section -->
+    <!-- 1. 진행 중인 프로젝트 Section -->
     <section id="live-status" class="py-24 border-t border-white/5 bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center"><span class="status-dot"></span> LIVE STATUS</h2>
@@ -190,7 +237,7 @@
         </div>
     </section>
 
-    <!-- (위치 변경됨) 2. 제작 사례 현황 Section -->
+    <!-- 2. 제작 사례 현황 Section -->
     <section id="case-studies" class="py-24 bg-black/30 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="mb-16">
@@ -257,7 +304,7 @@
         </div>
     </section>
 
-    <!-- Case Detail Preview Modal (Iframe) -->
+    <!-- Case Detail Preview Modal -->
     <div id="preview-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('preview-modal', false)">
         <div class="modal-content !max-w-5xl !p-0 overflow-hidden">
             <div class="bg-[#1a0b35] p-4 flex items-center justify-between border-b border-white/10">
@@ -305,7 +352,7 @@
         </div>
     </div>
 
-    <!-- Footer (이메일 수정됨) -->
+    <!-- Footer -->
     <footer class="py-20 bg-black border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6 text-center md:text-left">
             <div class="flex flex-col md:flex-row justify-between gap-10">
@@ -342,8 +389,9 @@
             const mainList = document.getElementById('main-project-list');
             const modalList = document.getElementById('modal-project-list');
             
+            // Apply .project-card class for hover effect
             const html = projectData.map(p => `
-                <div class="bg-white/[0.03] p-6 rounded-2xl border border-white/5">
+                <div class="project-card">
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-[8px] font-bold bg-purple-600/30 text-purple-300 px-2 py-1 rounded uppercase">${p.phase}</span>
                         <span class="text-purple-400 font-bold text-xs">${p.progress}%</span>
