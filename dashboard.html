@@ -10,6 +10,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
         .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .loading-shimmer { background: linear-gradient(90deg, transparent, rgba(138, 79, 255, 0.1), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
@@ -19,31 +21,33 @@
                 <h1 class="text-2xl font-black text-purple-400 tracking-tighter uppercase">Admin Panel</h1>
                 <p class="text-gray-400 text-xs mt-1">실시간 전유저 공지사항 관리</p>
             </div>
-            <div id="auth-status" class="bg-white/5 text-gray-500 px-4 py-2 rounded-lg text-[10px] font-black border border-white/10 uppercase">
-                서버 연결 확인 중...
+            <div id="auth-status" class="bg-white/5 text-gray-400 px-4 py-2 rounded-lg text-[10px] font-black border border-white/10 uppercase">
+                시스템 초기화 중...
             </div>
         </header>
 
-        <div class="space-y-12">
+        <div id="main-ui" class="space-y-12 opacity-40 pointer-events-none transition-opacity duration-1000">
+            <!-- 공지사항 작성 -->
             <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl">
                 <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
                     <i class="fas fa-paper-plane text-purple-400"></i> 공지사항 즉시 업데이트
                 </h2>
                 <div class="space-y-4">
-                    <textarea id="notice-input" rows="3" placeholder="모든 접속자에게 보여질 문구를 입력하세요." 
-                              class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all text-white"></textarea>
-                    <button id="post-btn" disabled class="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-800 text-white py-4 rounded-2xl font-bold transition-all shadow-lg">
-                        연결 대기 중...
+                    <textarea id="notice-input" rows="3" placeholder="모든 접속자에게 실시간으로 보여질 문구를 입력하세요." 
+                              class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all text-white placeholder:text-gray-700"></textarea>
+                    <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg">
+                        게시하기
                     </button>
                 </div>
             </div>
 
+            <!-- 기록 리스트 -->
             <div>
                 <h2 class="text-md font-bold mb-6 text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-stream"></i> 실시간 게시 기록 (전체 유저 공유)
+                    <i class="fas fa-stream"></i> 실시간 게시 기록
                 </h2>
                 <div id="notice-history" class="space-y-3">
-                    <div class="py-10 text-center text-gray-600 text-xs">서버 연결 중입니다...</div>
+                    <div class="py-10 text-center text-gray-600 text-xs">연결을 시도하고 있습니다...</div>
                 </div>
             </div>
         </div>
@@ -51,28 +55,39 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc, query, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const statusEl = document.getElementById('auth-status');
+        const mainUi = document.getElementById('main-ui');
         const historyEl = document.getElementById('notice-history');
         const postBtn = document.getElementById('post-btn');
+        const input = document.getElementById('notice-input');
 
-        async function startSystem() {
-            try {
-                // 시스템 주입 변수 대기 로직
-                if (typeof __firebase_config === 'undefined') {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    if (typeof __firebase_config === 'undefined') throw new Error("서버 설정 로드 실패");
+        // [핵심] 설정값이 나타날 때까지 반복 확인하는 로직 (최대 10초)
+        async function getFirebaseConfig() {
+            let attempts = 0;
+            while (attempts < 50) {
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    return JSON.parse(__firebase_config);
                 }
+                attempts++;
+                await new Promise(r => setTimeout(r, 200));
+            }
+            throw new Error("환경 설정 로드 실패 (TIMEOUT)");
+        }
 
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
+        async function init() {
+            try {
+                const config = await getFirebaseConfig();
+                const app = initializeApp(config);
                 const db = getFirestore(app);
                 const auth = getAuth(app);
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-global';
 
-                // 인증 시도
+                statusEl.innerText = "AUTHENTICATING...";
+
+                // 인증 (RULE 3 준수)
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -81,66 +96,70 @@
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        statusEl.innerText = "ONLINE: " + user.uid.substring(0,6);
-                        statusEl.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20";
-                        postBtn.disabled = false;
-                        postBtn.innerText = "전체 접속자에게 게시";
-                        initDatabase(db, appId, user.uid);
+                        statusEl.innerText = "ONLINE: " + user.uid.substring(0, 8);
+                        statusEl.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20 uppercase";
+                        mainUi.classList.remove('opacity-40', 'pointer-events-none');
+                        startSync(db, appId, user.uid);
                     }
                 });
+
             } catch (err) {
-                statusEl.innerText = "연결 오류: 관리자 설정을 확인하세요.";
-                statusEl.className = "bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-black border border-red-500/20";
+                console.error(err);
+                statusEl.innerText = "OFFLINE: CONFIG ERROR";
+                statusEl.className = "bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-black border border-red-500/20 uppercase";
+                historyEl.innerHTML = `<div class='p-6 text-center text-gray-500 text-xs border border-white/5 rounded-2xl'>${err.message}<br><br><button onclick="location.reload()" class="bg-white/10 px-4 py-2 rounded-lg">다시 시도</button></div>`;
             }
         }
 
-        function initDatabase(db, appId, uid) {
+        function startSync(db, appId, uid) {
             const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-            
-            // 실시간 리스너 (전체 공유 데이터)
+
             onSnapshot(noticeCol, (snapshot) => {
                 let items = [];
                 snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
                 items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
                 if (items.length === 0) {
-                    historyEl.innerHTML = '<div class="py-10 text-center text-gray-600 text-xs">저장된 공지사항이 없습니다.</div>';
+                    historyEl.innerHTML = '<div class="py-10 text-center text-gray-600 text-[10px] uppercase font-bold tracking-widest opacity-30">No Records</div>';
                     return;
                 }
 
                 historyEl.innerHTML = items.map(item => `
-                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center group">
+                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center group animate-in fade-in duration-500">
                         <div class="min-w-0 pr-4">
-                            <p class="text-sm text-gray-200">${item.text}</p>
-                            <span class="text-[9px] text-gray-600 mt-2 block">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : '저장 중...'}</span>
+                            <p class="text-sm text-gray-200 leading-relaxed">${item.text}</p>
+                            <span class="text-[9px] text-gray-600 mt-2 block font-mono">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : 'Saving...'}</span>
                         </div>
-                        <button onclick="window.confirmDel('${item.id}')" class="text-gray-700 hover:text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
+                        <button onclick="window.handleDelete('${item.id}')" class="text-gray-700 hover:text-red-500 p-2 transition-colors">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
                     </div>
                 `).join('');
             });
 
             postBtn.onclick = async () => {
-                const input = document.getElementById('notice-input');
                 const text = input.value.trim();
-                if(!text) return;
-                
+                if (!text) return;
                 postBtn.disabled = true;
+                postBtn.innerText = "게시 중...";
+
                 try {
                     await addDoc(noticeCol, { text, createdAt: serverTimestamp(), author: uid });
                     input.value = '';
                 } finally {
                     postBtn.disabled = false;
+                    postBtn.innerText = "게시하기";
                 }
             };
 
-            window.confirmDel = async (id) => {
-                if(confirm("이 글을 모든 유저의 화면에서 삭제할까요?")) {
+            window.handleDelete = async (id) => {
+                if (confirm("정말 삭제하시겠습니까? 메인 페이지에서도 즉시 제거됩니다.")) {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
                 }
             };
         }
 
-        startSystem();
+        window.onload = init;
     </script>
 </body>
 </html>
