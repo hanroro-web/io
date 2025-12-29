@@ -8,86 +8,87 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
-        .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
-        .admin-card:focus-within { border-color: #8a4fff; background: rgba(138, 79, 255, 0.05); }
-        input, textarea { outline: none; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #fff; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem; }
+        .input-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; width: 100%; color: white; outline: none; }
+        .input-dark:focus { border-color: #8a4fff; }
+        .btn-primary { background: #8a4fff; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: bold; transition: all 0.2s; }
+        .btn-primary:hover { background: #763ee6; transform: translateY(-2px); }
+        .btn-danger { background: #ef4444; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: bold; }
     </style>
 </head>
-<body class="min-h-screen p-4 sm:p-8">
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
+<body class="p-4 sm:p-10">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 flex justify-between items-end">
             <div>
-                <h1 class="text-2xl font-black text-purple-400 tracking-tighter uppercase">Admin Panel</h1>
-                <p class="text-gray-400 text-[10px] mt-1 uppercase tracking-widest">Project: hanroro-web</p>
+                <h1 class="text-3xl font-black mb-2 uppercase tracking-tighter text-purple-400">Dashboard</h1>
+                <p class="text-gray-500 text-sm font-medium italic">Hanroro Official Control Center</p>
             </div>
-            <div id="status-badge" class="bg-amber-500/10 text-amber-500 px-4 py-2 rounded-lg text-[10px] font-black border border-amber-500/20 uppercase">연결 중...</div>
+            <div id="auth-status" class="text-[10px] text-gray-600 font-mono">연결 대기 중...</div>
         </header>
 
-        <div id="main-ui" class="space-y-8 opacity-40 pointer-events-none transition-all duration-700">
-            
-            <!-- 상단 & 하단 바 설정 통합 섹션 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 상단 알림바 설정 -->
-                <div class="admin-card rounded-3xl p-6 shadow-2xl">
-                    <h2 class="text-md font-bold mb-6 flex items-center gap-2 text-purple-300">
-                        <i class="fas fa-arrow-up"></i> 상단 알림바 설정
-                    </h2>
+        <div class="grid md:grid-cols-2 gap-10">
+            <!-- 배너 및 바 설정 -->
+            <section class="space-y-8">
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-bullhorn text-purple-400"></i> 상단 배너 설정</h2>
                     <div class="space-y-4">
-                        <div>
-                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">강조 문구</label>
-                            <input id="banner-highlight" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 60% 캐시백!">
-                        </div>
-                        <div>
-                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">상세 설명</label>
-                            <input id="banner-desc" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 한정 수량 할인 중">
-                        </div>
-                        <button id="save-banner-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-[10px] transition-all">업데이트</button>
+                        <input type="text" id="top-highlight" placeholder="강조 텍스트 (예: 60% 캐시백!)" class="input-dark">
+                        <input type="text" id="top-desc" placeholder="보조 설명 (예: 지금 확인하세요)" class="input-dark">
+                        <button onclick="updateSettings('topBanner')" class="btn-primary w-full">배너 업데이트</button>
                     </div>
                 </div>
 
-                <!-- 하단 플로팅 바 설정 (신규) -->
-                <div class="admin-card rounded-3xl p-6 shadow-2xl">
-                    <h2 class="text-md font-bold mb-6 flex items-center gap-2 text-purple-300">
-                        <i class="fas fa-arrow-down"></i> 하단 플로팅 바 설정
-                    </h2>
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-window-maximize text-purple-400"></i> 하단 바 설정</h2>
                     <div class="space-y-4">
-                        <div>
-                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">메인 문구</label>
-                            <input id="bottom-text" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 지금! 홈페이지 저렴한 가격 원해?">
-                        </div>
-                        <div>
-                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">버튼 문구</label>
-                            <input id="bottom-btn-text" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 즉시 신청">
-                        </div>
-                        <button id="save-bottom-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-[10px] transition-all">업데이트</button>
+                        <input type="text" id="bottom-text" placeholder="하단 안내 문구" class="input-dark">
+                        <input type="text" id="bottom-btn" placeholder="버튼 텍스트" class="input-dark">
+                        <button onclick="updateSettings('bottomBar')" class="btn-primary w-full">하단 바 업데이트</button>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- 공지사항 섹션 -->
-            <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl">
-                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-purple-300">
-                    <i class="fas fa-bullhorn"></i> 실시간 공지사항 (하단 티커)
-                </h2>
-                <div class="space-y-4">
-                    <textarea id="notice-input" rows="3" placeholder="메인 페이지 하단에 흐를 메시지를 입력하세요." class="w-full bg-black/60 border border-white/10 rounded-2xl p-5 text-sm text-white"></textarea>
-                    <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg">지금 게시하기</button>
+            <!-- 공지사항 및 프로젝트 -->
+            <section class="space-y-8">
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-comment-alt text-purple-400"></i> 신규 공지사항</h2>
+                    <div class="space-y-4">
+                        <textarea id="notice-input" placeholder="공지 내용을 입력하세요" class="input-dark h-24"></textarea>
+                        <button onclick="addNotice()" class="btn-primary w-full">공지 배포</button>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <h2 class="text-md font-bold mb-6 text-gray-500 flex items-center gap-2 uppercase tracking-tighter">
-                    <i class="fas fa-history"></i> 최근 공지 기록
-                </h2>
-                <div id="notice-history" class="space-y-3"></div>
-            </div>
+                <div class="card">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-plus text-purple-400"></i> 새 프로젝트 추가</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="proj-name" placeholder="고객명" class="input-dark">
+                        <input type="number" id="proj-progress" placeholder="진척률(%)" class="input-dark">
+                        <input type="text" id="proj-phase" placeholder="단계(예: 디자인)" class="input-dark">
+                        <input type="text" id="proj-status" placeholder="상세 상태" class="input-dark">
+                    </div>
+                    <button onclick="addProject()" class="btn-primary w-full mt-4">프로젝트 추가</button>
+                </div>
+            </section>
         </div>
+
+        <!-- 데이터 목록 관리 -->
+        <section class="mt-12 space-y-8">
+            <div class="card">
+                <h2 class="text-lg font-bold mb-6">진행 중인 프로젝트 목록 (관리)</h2>
+                <div id="project-list" class="space-y-3"></div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-lg font-bold mb-6">최신 상담 신청 목록 (DB)</h2>
+                <div id="lead-list" class="space-y-3"></div>
+            </div>
+        </section>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -100,103 +101,103 @@
           measurementId: "G-8L3EFM6PY8"
         };
 
-        const badge = document.getElementById('status-badge');
-        const mainUi = document.getElementById('main-ui');
-        const historyEl = document.getElementById('notice-history');
-        const postBtn = document.getElementById('post-btn');
-        const noticeInput = document.getElementById('notice-input');
-        
-        const bannerHighlightInput = document.getElementById('banner-highlight');
-        const bannerDescInput = document.getElementById('banner-desc');
-        const saveBannerBtn = document.getElementById('save-banner-btn');
+        const appId = "hanroro-official-service";
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        const bottomTextInput = document.getElementById('bottom-text');
-        const bottomBtnTextInput = document.getElementById('bottom-btn-text');
-        const saveBottomBtn = document.getElementById('save-bottom-btn');
-
-        async function init() {
-            try {
-                const app = initializeApp(firebaseConfig);
-                const db = getFirestore(app);
-                const auth = getAuth(app);
-                const appId = "hanroro-official-service";
-
-                await signInAnonymously(auth);
-
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        badge.innerText = "ONLINE";
-                        badge.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20 uppercase";
-                        mainUi.classList.remove('opacity-40', 'pointer-events-none');
-                        
-                        setupSync(db, appId, user.uid);
-                    }
-                });
-            } catch (err) {
-                badge.innerText = "ERROR";
+        signInAnonymously(auth);
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                document.getElementById('auth-status').innerText = `CONNECTED: ${user.uid.substring(0,8)}...`;
+                loadData();
             }
-        }
+        });
 
-        async function setupSync(db, appId, uid) {
-            // 1. 공지사항 연동
-            const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-            onSnapshot(noticeCol, (snapshot) => {
-                let items = [];
-                snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-                items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                historyEl.innerHTML = items.map(item => `
-                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center">
-                        <div>
-                            <p class="text-sm text-gray-200">${item.text}</p>
-                            <span class="text-[9px] text-gray-600 mt-2 block">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : '전송 중...'}</span>
+        // 설정 업데이트
+        window.updateSettings = async (type) => {
+            const data = type === 'topBanner' ? {
+                highlight: document.getElementById('top-highlight').value,
+                desc: document.getElementById('top-desc').value
+            } : {
+                text: document.getElementById('bottom-text').value,
+                btnText: document.getElementById('bottom-btn').value
+            };
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', type), data);
+            alert('업데이트 완료!');
+        };
+
+        // 공지 추가
+        window.addNotice = async () => {
+            const text = document.getElementById('notice-input').value;
+            if(!text) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), {
+                text, createdAt: serverTimestamp()
+            });
+            document.getElementById('notice-input').value = '';
+            alert('공지 배포 완료!');
+        };
+
+        // 프로젝트 추가
+        window.addProject = async () => {
+            const data = {
+                name: document.getElementById('proj-name').value,
+                progress: parseInt(document.getElementById('proj-progress').value),
+                phase: document.getElementById('proj-phase').value,
+                status: document.getElementById('proj-status').value,
+                createdAt: serverTimestamp()
+            };
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), data);
+            alert('프로젝트 추가 완료!');
+        };
+
+        // 삭제 기능
+        window.deleteData = async (col, id) => {
+            if(confirm('정말 삭제하시겠습니까?')) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+            }
+        };
+
+        function loadData() {
+            // 프로젝트 목록 로드
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (s) => {
+                const list = document.getElementById('project-list');
+                let html = '';
+                s.forEach(d => {
+                    const p = d.data();
+                    html += `
+                        <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl">
+                            <div>
+                                <span class="text-xs font-bold text-purple-400">[${p.phase}]</span>
+                                <span class="font-bold ml-2">${p.name}</span>
+                                <span class="text-xs text-gray-500 ml-2">${p.progress}%</span>
+                            </div>
+                            <button onclick="deleteData('projects', '${d.id}')" class="text-red-500 text-xs hover:underline">삭제</button>
                         </div>
-                        <button onclick="deleteNotice('${item.id}')" class="text-gray-700 hover:text-red-500 p-2"><i class="fas fa-trash-alt text-xs"></i></button>
-                    </div>
-                `).join('');
+                    `;
+                });
+                list.innerHTML = html || '<p class="text-gray-600 text-xs">데이터가 없습니다.</p>';
             });
 
-            postBtn.onclick = async () => {
-                if (!noticeInput.value.trim()) return;
-                await addDoc(noticeCol, { text: noticeInput.value, createdAt: serverTimestamp(), author: uid });
-                noticeInput.value = '';
-            };
-
-            window.deleteNotice = async (id) => {
-                if (confirm("공지사항을 삭제하시겠습니까?")) {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
-                }
-            };
-
-            // 2. 상단 알림바 연동
-            const bannerDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'topBanner');
-            const bannerSnap = await getDoc(bannerDocRef);
-            if (bannerSnap.exists()) {
-                const data = bannerSnap.data();
-                bannerHighlightInput.value = data.highlight || "";
-                bannerDescInput.value = data.desc || "";
-            }
-
-            saveBannerBtn.onclick = async () => {
-                await setDoc(bannerDocRef, { highlight: bannerHighlightInput.value, desc: bannerDescInput.value, updatedAt: serverTimestamp() }, { merge: true });
-                alert("상단 바 업데이트 완료");
-            };
-
-            // 3. 하단 플로팅 바 연동 (신규)
-            const bottomDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bottomBar');
-            const bottomSnap = await getDoc(bottomDocRef);
-            if (bottomSnap.exists()) {
-                const data = bottomSnap.data();
-                bottomTextInput.value = data.text || "";
-                bottomBtnTextInput.value = data.btnText || "";
-            }
-
-            saveBottomBtn.onclick = async () => {
-                await setDoc(bottomDocRef, { text: bottomTextInput.value, btnText: bottomBtnTextInput.value, updatedAt: serverTimestamp() }, { merge: true });
-                alert("하단 바 업데이트 완료");
-            };
+            // 상담 목록 로드
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), (s) => {
+                const list = document.getElementById('lead-list');
+                let html = '';
+                s.forEach(d => {
+                    const l = d.data();
+                    html += `
+                        <div class="bg-white/5 p-4 rounded-xl border-l-4 border-purple-500">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-black text-sm">${l.name} (${l.phone})</span>
+                                <button onclick="deleteData('leads', '${d.id}')" class="text-red-500 text-[10px]">삭제</button>
+                            </div>
+                            <p class="text-xs text-gray-400">${l.memo || '내용 없음'}</p>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html || '<p class="text-gray-600 text-xs">신청 내역이 없습니다.</p>';
+            });
         }
-
-        init();
     </script>
 </body>
 </html>
