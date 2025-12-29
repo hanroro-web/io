@@ -52,9 +52,9 @@
             <div class="hidden md:flex neon-notification-bar">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-infinity text-purple-400 text-sm"></i>
-                    <span id="banner-text-highlight" class="text-[10px] font-black text-white">데이터 동기화 중...</span>
+                    <span id="banner-text-highlight" class="text-[10px] font-black text-white">동기화 완료</span>
                 </div>
-                <span id="banner-text-desc" class="text-[10px] font-medium text-gray-200">불러오는 중...</span>
+                <span id="banner-text-desc" class="text-[10px] font-medium text-gray-200">데이터 실시간 연동 중</span>
                 <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-3 py-1 rounded text-[10px] font-bold">신청</button>
             </div>
             <div class="flex items-center space-x-2">
@@ -83,8 +83,8 @@
                 <h1 class="text-4xl sm:text-6xl font-black leading-tight mb-8">홈페이지 가치는 <br><span class="gradient-text">얼굴 입니다</span></h1>
                 <p class="text-gray-400 mb-10 leading-relaxed max-w-md">감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 브랜드가 가장 빛나도록 설계합니다.</p>
                 <div class="flex gap-4">
-                    <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-8 py-4 rounded-xl font-bold text-sm">프로젝트 문의</button>
-                    <button onclick="document.getElementById('live-status').scrollIntoView({behavior:'smooth'})" class="border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-sm">현황 보기</button>
+                    <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all hover:scale-105">프로젝트 문의</button>
+                    <button onclick="document.getElementById('live-status').scrollIntoView({behavior:'smooth'})" class="border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all hover:bg-white/5">현황 보기</button>
                 </div>
             </div>
             <div class="hidden md:block">
@@ -96,16 +96,18 @@
         </div>
     </section>
 
-    <!-- 1. Live Status Section (위로 이동) -->
+    <!-- 1. Live Status Section (Absolute 유지) -->
     <section id="live-status" class="py-24 border-t border-white/5 bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center tracking-widest"><span class="status-dot"></span> LIVE STATUS</h2>
             <h3 class="text-3xl font-black mb-12">진행 중인 프로젝트</h3>
-            <div id="main-project-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            <div id="main-project-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Data will be loaded here -->
+            </div>
         </div>
     </section>
 
-    <!-- 2. Design Drafts Section (아래로 이동) -->
+    <!-- 2. Design Drafts Section -->
     <section class="py-24 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 tracking-widest">DESIGN DRAFTS</h2>
@@ -162,7 +164,7 @@
                     <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800" alt="Tech Startup" class="case-img">
                     <div class="relative z-20">
                         <span class="text-[10px] font-black text-purple-400 uppercase mb-2 block tracking-widest">Fintech Solution</span>
-                        <h4 class="text-2xl font-bold mb-2">NEXUS FINANCE</h4>
+                        <h4 class="text-2xl font-bold mb-2 text-white">NEXUS FINANCE</h4>
                         <p class="text-sm text-gray-400 mb-6">사용자 편의성을 극대화한 금융 플랫폼 리뉴얼 및 앱 제작</p>
                         <button class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-xs font-bold transition-all">사례 보기</button>
                     </div>
@@ -172,7 +174,7 @@
                     <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800" alt="Fashion Store" class="case-img">
                     <div class="relative z-20">
                         <span class="text-[10px] font-black text-purple-400 uppercase mb-2 block tracking-widest">E-Commerce</span>
-                        <h4 class="text-2xl font-bold mb-2">VOGUE ARCHIVE</h4>
+                        <h4 class="text-2xl font-bold mb-2 text-white">VOGUE ARCHIVE</h4>
                         <p class="text-sm text-gray-400 mb-6">매출 증대를 위한 하이엔드 의류 쇼핑몰 구축 및 SEO 최적화</p>
                         <button class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-xs font-bold transition-all">사례 보기</button>
                     </div>
@@ -185,7 +187,7 @@
     <section class="notice-ticker py-6">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center sm:space-x-6">
             <div class="flex items-center space-x-3 shrink-0"><span class="bg-purple-600 text-white text-[10px] font-black px-2 py-0.5 rounded">NOTICE</span><div class="w-px h-4 bg-white/20 hidden sm:block"></div></div>
-            <div class="flex-1 overflow-hidden w-full"><div class="flex items-center justify-between"><p id="notice-text" class="text-xs text-gray-300 truncate tracking-tight">최신 공지사항을 불러오고 있습니다...</p><span id="notice-date" class="text-[10px] text-gray-500 ml-4 font-mono">-</span></div></div>
+            <div class="flex-1 overflow-hidden w-full"><div class="flex items-center justify-between"><p id="notice-text" class="text-xs text-gray-300 truncate tracking-tight">최신 공지사항을 로드 중입니다...</p><span id="notice-date" class="text-[10px] text-gray-500 ml-4 font-mono">-</span></div></div>
         </div>
     </section>
 
@@ -207,10 +209,10 @@
             <div class="md:w-2/3 p-10 relative">
                 <button onclick="toggleModal('contact-modal', false)" class="absolute top-6 right-8 text-gray-500 hover:text-white transition-colors"><i class="fas fa-times"></i></button>
                 <h3 class="text-xl font-bold mb-8 text-white">상담 신청서</h3>
-                <form class="space-y-4">
-                    <input type="text" placeholder="성함/업체명" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm focus:border-purple-500 outline-none text-white" required>
-                    <input type="tel" placeholder="연락처" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm focus:border-purple-500 outline-none text-white" required>
-                    <textarea placeholder="프로젝트 내용" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm focus:border-purple-500 outline-none h-32 text-white"></textarea>
+                <form id="contact-form" class="space-y-4">
+                    <input type="text" id="contact-name" placeholder="성함/업체명" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm focus:border-purple-500 outline-none text-white" required>
+                    <input type="tel" id="contact-phone" placeholder="연락처" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm focus:border-purple-500 outline-none text-white" required>
+                    <textarea id="contact-memo" placeholder="프로젝트 내용" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm focus:border-purple-500 outline-none h-32 text-white"></textarea>
                     <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold mt-4 transition-all">상담 신청 완료</button>
                 </form>
             </div>
@@ -221,10 +223,10 @@
         <div class="modal-content p-10 !max-w-2xl"><h3 class="text-2xl font-bold mb-8 flex items-center gap-3"><i class="fas fa-tasks text-purple-500"></i> 프로젝트 현황</h3><div id="modal-project-list" class="space-y-4 text-white"></div><button onclick="toggleModal('status-modal', false)" class="w-full mt-8 py-4 bg-white/5 hover:bg-white/10 rounded-xl font-bold text-xs transition-colors">닫기</button></div>
     </div>
 
-    <!-- Firebase Logic -->
+    <!-- Firebase Logic with Virtual Data Injection -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = {
@@ -243,6 +245,15 @@
         const bannerDesc = document.getElementById('banner-text-desc');
         const bottomBarText = document.getElementById('bottom-bar-text');
         const bottomBarBtn = document.getElementById('bottom-bar-btn');
+        const mainProjectList = document.getElementById('main-project-list');
+        const modalProjectList = document.getElementById('modal-project-list');
+
+        // 가상의 과거 프로젝트 데이터 (과거 이력 표현)
+        const virtualProjects = [
+            { name: "최** 고객님 (쇼핑몰)", progress: 100, phase: "배포완료", status: "안정화 및 유지보수 중" },
+            { name: "S* 코퍼레이션 (기업형)", progress: 100, phase: "배포완료", status: "최종 납품 완료" },
+            { name: "정** 고객님 (브랜딩)", progress: 100, phase: "배포완료", status: "포트폴리오 등재 완료" }
+        ];
 
         async function initRealtime() {
             try {
@@ -255,8 +266,8 @@
                 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-                        onSnapshot(noticeCol, (snapshot) => {
+                        // 1. 공지사항 로직
+                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (snapshot) => {
                             let items = [];
                             snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
                             items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
@@ -266,19 +277,63 @@
                             }
                         });
 
+                        // 2. 프로젝트 현황 로직 (가상 데이터 + 실시간 데이터 결합)
+                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snapshot) => {
+                            let realtimeProjects = [];
+                            snapshot.forEach(doc => realtimeProjects.push({ id: doc.id, ...doc.data() }));
+                            
+                            // 실시간 데이터가 상단에, 가상 데이터가 하단에 오도록 결합
+                            const allProjects = [...realtimeProjects, ...virtualProjects];
+                            
+                            const render = allProjects.map(p => `
+                                <div class="project-card ${p.progress === 100 ? 'opacity-70 border-white/5' : ''}">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="text-[8px] font-bold ${p.progress === 100 ? 'bg-gray-600/30 text-gray-400' : 'bg-purple-600/30 text-purple-300'} px-2 py-1 rounded uppercase tracking-widest">${p.phase || '대기'}</span>
+                                        <span class="${p.progress === 100 ? 'text-gray-400' : 'text-purple-400'} font-bold text-xs">${p.progress || 0}%</span>
+                                    </div>
+                                    <h4 class="font-bold text-white mb-2">${p.name || '알 수 없는 고객'}</h4>
+                                    <div class="w-full bg-white/5 h-1 rounded-full mb-2">
+                                        <div class="${p.progress === 100 ? 'bg-gray-500' : 'bg-purple-600'} h-full rounded-full transition-all duration-1000" style="width:${p.progress || 0}%"></div>
+                                    </div>
+                                    <p class="text-[10px] ${p.progress === 100 ? 'text-gray-500' : 'text-purple-300/70'} font-medium">${p.status || '작업 준비 중'}</p>
+                                </div>
+                            `).join('');
+                            mainProjectList.innerHTML = render;
+                            modalProjectList.innerHTML = render;
+                        });
+
+                        // 3. 배너 및 하단바 연동
                         onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'topBanner'), (s) => {
                             if(s.exists()){
-                                bannerHighlight.innerText = s.data().highlight || "60% 캐시백!";
-                                bannerDesc.innerText = s.data().desc || "할인 중!";
+                                bannerHighlight.innerText = s.data().highlight || "동기화";
+                                bannerDesc.innerText = s.data().desc || "데이터 연동 완료";
                             }
                         });
 
                         onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bottomBar'), (s) => {
                             if(s.exists()){
-                                bottomBarText.innerText = s.data().text || "지금! 홈페이지 저렴한 가격 원해?";
+                                bottomBarText.innerText = s.data().text || "홈페이지가 필요하신가요?";
                                 bottomBarBtn.innerText = s.data().btnText || "즉시 신청";
                             }
                         });
+
+                        // 4. 리드 제출 로직
+                        document.getElementById('contact-form').onsubmit = async (e) => {
+                            e.preventDefault();
+                            try {
+                                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), {
+                                    name: document.getElementById('contact-name').value,
+                                    phone: document.getElementById('contact-phone').value,
+                                    memo: document.getElementById('contact-memo').value,
+                                    createdAt: serverTimestamp()
+                                });
+                                alert('성공적으로 접수되었습니다. 곧 연락드리겠습니다!');
+                                toggleModal('contact-modal', false);
+                                e.target.reset();
+                            } catch(err) {
+                                alert('접수 중 오류가 발생했습니다.');
+                            }
+                        };
                     }
                 });
             } catch (err) { console.error(err); }
@@ -291,15 +346,6 @@
             if(show) { m.classList.add('active'); document.body.style.overflow='hidden'; }
             else { m.classList.remove('active'); document.body.style.overflow='auto'; }
         }
-
-        const projectData = [
-            { name: "김** 고객님", progress: 65, phase: "디자인", status: "디자인 검수 중" },
-            { name: "이** 고객님", progress: 30, phase: "개발", status: "서버 환경 구축" },
-            { name: "박** 고객님", progress: 95, phase: "테스트", status: "최종 배포 준비" }
-        ];
-        const html = projectData.map(p => `<div class="project-card"><div class="flex justify-between items-start mb-4"><span class="text-[8px] font-bold bg-purple-600/30 text-purple-300 px-2 py-1 rounded uppercase tracking-widest">${p.phase}</span><span class="text-purple-400 font-bold text-xs">${p.progress}%</span></div><h4 class="font-bold text-white mb-2">${p.name}</h4><div class="w-full bg-white/5 h-1 rounded-full mb-2"><div class="bg-purple-600 h-full rounded-full" style="width:${p.progress}%"></div></div><p class="text-[10px] text-purple-300/70 font-medium">${p.status}</p></div>`).join('');
-        document.getElementById('main-project-list').innerHTML = html;
-        document.getElementById('modal-project-list').innerHTML = html;
     </script>
 </body>
 </html>
