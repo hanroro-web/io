@@ -79,7 +79,6 @@
 
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* Hero Visual Box */
         .hero-visual-box {
             background: #0c051a;
             border-radius: 2rem;
@@ -118,33 +117,41 @@
             width: 100%; height: 70vh; border-radius: 12px; overflow: hidden; background: white;
         }
 
-        /* Hover Effect for Project Cards (Restored) */
+        /* 튀어나오는 효과 적용된 고객 현황 카드 */
         .project-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 1.5rem;
             padding: 1.5rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 1;
         }
         .project-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-12px) scale(1.03);
             border-color: var(--vibe-primary);
-            box-shadow: 0 10px 30px rgba(138, 79, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(138, 79, 255, 0.25);
+            background: rgba(138, 79, 255, 0.08);
+            z-index: 10;
         }
 
-        /* Case Cards Hover */
+        /* 튀어나오는 효과 적용된 제작 사례 카드 */
         .case-card {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 20px;
             overflow: hidden;
-            transition: all 0.4s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
+            position: relative;
+            z-index: 1;
         }
         .case-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-15px) scale(1.03);
             border-color: #8a4fff;
-            background: rgba(138, 79, 255, 0.05);
+            background: rgba(138, 79, 255, 0.08);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(138, 79, 255, 0.2);
+            z-index: 10;
         }
 
         .form-card {
@@ -233,7 +240,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center"><span class="status-dot"></span> LIVE STATUS</h2>
             <h3 class="text-3xl font-black mb-12">진행 중인 프로젝트</h3>
-            <div id="main-project-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="main-project-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
@@ -246,7 +253,7 @@
                 <p class="text-gray-500 mt-4">한로로와 함께 성공적인 비즈니스를 구축한 파트너사들을 확인해보세요.</p>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <!-- Case 1 -->
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-purple-900/20 flex items-center justify-center border-b border-white/5">
@@ -389,7 +396,6 @@
             const mainList = document.getElementById('main-project-list');
             const modalList = document.getElementById('modal-project-list');
             
-            // Apply .project-card class for hover effect
             const html = projectData.map(p => `
                 <div class="project-card">
                     <div class="flex justify-between items-start mb-4">
