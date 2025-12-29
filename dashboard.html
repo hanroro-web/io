@@ -10,6 +10,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
         .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-focus:focus { border-color: #8a4fff; box-shadow: 0 0 15px rgba(138, 79, 255, 0.2); }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
@@ -17,35 +18,35 @@
         <header class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
             <div>
                 <h1 class="text-2xl font-black text-purple-400 tracking-tighter uppercase">Admin Panel</h1>
-                <p class="text-gray-400 text-xs mt-1">프로젝트 ID: hanroro-web | 실시간 관리</p>
+                <p class="text-gray-400 text-[10px] mt-1 uppercase tracking-widest">Project: hanroro-web</p>
             </div>
-            <div id="status-badge" class="bg-white/5 text-gray-500 px-4 py-2 rounded-lg text-[10px] font-black border border-white/10 uppercase">
-                시스템 초기화 중...
+            <div id="status-badge" class="bg-amber-500/10 text-amber-500 px-4 py-2 rounded-lg text-[10px] font-black border border-amber-500/20 uppercase">
+                서버 연결 시도 중...
             </div>
         </header>
 
-        <div class="space-y-12">
+        <div id="main-ui" class="space-y-12 opacity-40 pointer-events-none transition-all duration-700">
             <!-- 공지사항 작성 -->
-            <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl">
-                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                    <i class="fas fa-paper-plane text-purple-400"></i> 공지사항 업데이트
+            <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl border border-white/5">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-purple-300">
+                    <i class="fas fa-bullhorn"></i> 실시간 공지사항 게시
                 </h2>
                 <div class="space-y-4">
-                    <textarea id="notice-input" rows="3" placeholder="모든 접속자에게 보여질 문구를 입력하세요." 
-                              class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all text-white"></textarea>
-                    <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg">
-                        게시하기
+                    <textarea id="notice-input" rows="3" placeholder="모든 유저에게 즉시 전달될 메시지를 입력하세요." 
+                              class="w-full bg-black/60 border border-white/10 rounded-2xl p-5 text-sm input-focus outline-none transition-all text-white placeholder:text-gray-700"></textarea>
+                    <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-[0.98]">
+                        지금 게시하기
                     </button>
                 </div>
             </div>
 
             <!-- 기록 리스트 -->
             <div>
-                <h2 class="text-md font-bold mb-6 text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-stream"></i> 실시간 게시 기록
+                <h2 class="text-md font-bold mb-6 text-gray-500 flex items-center gap-2 uppercase tracking-tighter">
+                    <i class="fas fa-history"></i> 최근 게시 기록
                 </h2>
                 <div id="notice-history" class="space-y-3">
-                    <div class="py-10 text-center text-gray-600 text-xs">데이터를 불러오는 중...</div>
+                    <div class="py-10 text-center text-gray-600 text-xs">데이터 로딩 중...</div>
                 </div>
             </div>
         </div>
@@ -54,122 +55,112 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+        // 입력해주신 실시간 Firebase 설정값
+        const firebaseConfig = {
+          apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI",
+          authDomain: "hanroro-web.firebaseapp.com",
+          projectId: "hanroro-web",
+          storageBucket: "hanroro-web.firebasestorage.app",
+          messagingSenderId: "461514865624",
+          appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad",
+          measurementId: "G-8L3EFM6PY8"
+        };
 
         const badge = document.getElementById('status-badge');
+        const mainUi = document.getElementById('main-ui');
         const historyEl = document.getElementById('notice-history');
         const postBtn = document.getElementById('post-btn');
         const input = document.getElementById('notice-input');
 
-        // [핵심] 서버 연동 시도 함수
-        async function startSystem() {
+        async function init() {
             try {
-                // 1. 설정값 확인 (보내주신 project_id 기반)
-                let config;
-                if (typeof __firebase_config !== 'undefined') {
-                    config = JSON.parse(__firebase_config);
-                } else {
-                    // 환경 설정이 없을 경우 프로젝트 ID 기반 기본 구조 생성 (Fallback)
-                    config = { projectId: "hanroro-web", authDomain: "hanroro-web.firebaseapp.com" };
-                }
-
-                const app = initializeApp(config);
+                const app = initializeApp(firebaseConfig);
                 const db = getFirestore(app);
                 const auth = getAuth(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web-artifact';
+                
+                // 앱 전용 고정 식별자
+                const appId = "hanroro-official-service";
 
-                // 2. 인증 시도 (RULE 3)
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // 익명 로그인 (실시간 동기화 필수 과정)
+                await signInAnonymously(auth);
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        badge.innerText = "ONLINE: CLOUD READY";
-                        badge.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20";
-                        setupDatabase(db, appId, user.uid);
+                        badge.innerText = "ONLINE";
+                        badge.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20 uppercase";
+                        mainUi.classList.remove('opacity-40', 'pointer-events-none');
+                        setupRealtimeSync(db, appId, user.uid);
                     }
                 });
-
             } catch (err) {
-                console.warn("Cloud connection failed, using local mode", err);
-                badge.innerText = "LOCAL MODE (NO SERVER)";
-                badge.className = "bg-amber-500/10 text-amber-400 px-4 py-2 rounded-lg text-[10px] font-black border border-amber-500/20";
-                setupLocalDatabase();
+                console.error(err);
+                badge.innerText = "OFFLINE: AUTH ERROR";
+                badge.className = "bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-black border border-red-500/20 uppercase";
             }
         }
 
-        // 서버 기반 데이터 처리
-        function setupDatabase(db, appId, uid) {
+        function setupRealtimeSync(db, appId, uid) {
             const col = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-            
-            onSnapshot(col, (snap) => {
-                const docs = [];
-                snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
-                render(docs);
-            }, (err) => setupLocalDatabase());
+
+            onSnapshot(col, (snapshot) => {
+                let items = [];
+                snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+                
+                // 최신순 정렬
+                items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+                if (items.length === 0) {
+                    historyEl.innerHTML = '<div class="py-20 text-center text-gray-700 text-[10px] font-bold uppercase tracking-widest opacity-30">No Messages</div>';
+                    return;
+                }
+
+                historyEl.innerHTML = items.map(item => `
+                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div class="min-w-0 pr-4">
+                            <p class="text-sm text-gray-200 leading-relaxed">${item.text}</p>
+                            <span class="text-[9px] text-gray-600 mt-2 block font-mono">
+                                ${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString('ko-KR') : '동기화 중...'}
+                            </span>
+                        </div>
+                        <button onclick="window.confirmDelete('${item.id}')" class="text-gray-700 hover:text-red-500 p-2 transition-colors">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
+                    </div>
+                `).join('');
+            });
 
             postBtn.onclick = async () => {
                 const text = input.value.trim();
-                if(!text) return;
+                if (!text) return;
+                
                 postBtn.disabled = true;
-                await addDoc(col, { text, createdAt: serverTimestamp(), author: uid });
-                input.value = '';
-                postBtn.disabled = false;
+                postBtn.innerText = "전송 중...";
+
+                try {
+                    await addDoc(col, {
+                        text: text,
+                        createdAt: serverTimestamp(),
+                        author: uid
+                    });
+                    input.value = '';
+                } catch (e) {
+                    alert("게시 실패: Firebase 규칙 설정을 확인하세요.");
+                } finally {
+                    postBtn.disabled = false;
+                    postBtn.innerText = "지금 게시하기";
+                }
             };
 
-            window.handleDelete = async (id) => {
-                if(confirm("삭제하시겠습니까?")) {
+            window.confirmDelete = async (id) => {
+                if (confirm("삭제하시겠습니까? 모든 유저의 화면에서 실시간으로 제거됩니다.")) {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
                 }
             };
         }
 
-        // 로컬 기반 데이터 처리 (서버 연결 실패 시 자동 전환)
-        function setupLocalDatabase() {
-            const getLocal = () => JSON.parse(localStorage.getItem('hn_notices') || '[]');
-            const saveLocal = (data) => {
-                localStorage.setItem('hn_notices', JSON.stringify(data));
-                render(getLocal());
-            };
-
-            render(getLocal());
-
-            postBtn.onclick = () => {
-                const text = input.value.trim();
-                if(!text) return;
-                const data = getLocal();
-                data.unshift({ id: Date.now(), text, createdAt: { seconds: Date.now()/1000 } });
-                saveLocal(data);
-                input.value = '';
-            };
-
-            window.handleDelete = (id) => {
-                const data = getLocal().filter(i => i.id != id);
-                saveLocal(data);
-            };
-        }
-
-        function render(items) {
-            items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-            if (items.length === 0) {
-                historyEl.innerHTML = '<div class="py-10 text-center text-gray-600 text-[10px] font-bold opacity-30">NO DATA</div>';
-                return;
-            }
-            historyEl.innerHTML = items.map(item => `
-                <div class="admin-card p-5 rounded-2xl flex justify-between items-center">
-                    <div class="min-w-0 pr-4">
-                        <p class="text-sm text-gray-200">${item.text}</p>
-                        <span class="text-[9px] text-gray-600 mt-2 block font-mono">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : 'Saving...'}</span>
-                    </div>
-                    <button onclick="window.handleDelete('${item.id}')" class="text-gray-700 hover:text-red-500 p-2"><i class="fas fa-trash-alt text-xs"></i></button>
-                </div>
-            `).join('');
-        }
-
-        startSystem();
+        init();
     </script>
 </body>
 </html>
