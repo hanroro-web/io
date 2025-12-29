@@ -88,18 +88,34 @@
         .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 850px; border-radius: 28px; overflow: hidden; animation: modalPop 0.4s ease-out; position: relative; }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        .project-card, .case-card {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem;
-            padding: 1.5rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Unified Card Interaction Strategy */
+        .project-card, .case-card, .design-draft {
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
-        .project-card:hover, .case-card:hover { transform: translateY(-10px); border-color: var(--vibe-primary); background: rgba(138, 79, 255, 0.05); box-shadow: 0 20px 40px rgba(138, 79, 255, 0.15); }
+
+        .project-card:hover, .case-card:hover, .design-draft:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--vibe-primary); 
+            background: rgba(138, 79, 255, 0.05); 
+            box-shadow: 0 20px 40px rgba(138, 79, 255, 0.15); 
+        }
+
+        .project-card { padding: 1.5rem; }
+        .case-card { padding: 1.5rem; }
 
         .notice-ticker { background: rgba(255, 255, 255, 0.03); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
         .float-animation { animation: float 4s ease-in-out infinite; }
 
-        .design-draft { background: #1a1a2e; border: 1px solid rgba(138, 79, 255, 0.3); border-radius: 1rem; overflow: hidden; position: relative; }
-        .draft-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 20px; }
+        .design-draft { background: #1a1a2e; }
+        .draft-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 20px; transition: background 0.4s ease; }
+        .design-draft:hover .draft-overlay { background: linear-gradient(0deg, rgba(138, 79, 255, 0.4), transparent); }
     </style>
 </head>
 <body class="overflow-x-hidden pb-32">
@@ -160,7 +176,7 @@
         </div>
     </section>
 
-    <!-- 01. Projects Section (디자인 시안 위로 이동) -->
+    <!-- 01. Projects Section (진행 중인 프로젝트) -->
     <section id="live-status" class="py-24 border-t border-white/5 bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center"><span class="status-dot"></span> LIVE STATUS</h2>
@@ -169,7 +185,7 @@
         </div>
     </section>
 
-    <!-- 02. Draft Showcase (시안 2개) -->
+    <!-- 02. Draft Showcase (디자인 시안 2개) -->
     <section id="draft-showcase" class="py-24 border-t border-white/5 bg-black/40">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 tracking-widest">PREMIUM DRAFTS</h2>
