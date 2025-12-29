@@ -10,9 +10,10 @@
     <!-- Firebase SDK Setup -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
+        // 기존 환경 변수 및 설정 유지
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -30,32 +31,22 @@
                 onSnapshot(noticeCol, (snapshot) => {
                     let notices = [];
                     snapshot.forEach(doc => notices.push({ id: doc.id, ...doc.data() }));
+                    // 최신순 정렬
                     notices.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
                     
                     if (notices.length > 0) {
                         const latest = notices[0];
-                        document.getElementById('notice-text').innerText = latest.text;
-                        const date = latest.createdAt ? new Date(latest.createdAt.seconds * 1000) : new Date();
-                        document.getElementById('notice-date').innerText = date.toLocaleDateString();
+                        const noticeEl = document.getElementById('notice-text');
+                        const dateEl = document.getElementById('notice-date');
+                        if(noticeEl) noticeEl.innerText = latest.text;
+                        if(dateEl) {
+                            const date = latest.createdAt ? new Date(latest.createdAt.seconds * 1000) : new Date();
+                            dateEl.innerText = date.toLocaleDateString();
+                        }
                     }
                 }, (error) => console.error("Firestore Error", error));
             }
         });
-
-        window.postNotice = async () => {
-            const text = document.getElementById('new-notice-input').value;
-            if (!text.trim()) return;
-            try {
-                const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-                await addDoc(noticeCol, {
-                    text: text,
-                    createdAt: serverTimestamp(),
-                    uid: auth.currentUser.uid
-                });
-                document.getElementById('new-notice-input').value = "";
-                toggleModal('admin-modal', false);
-            } catch (e) { console.error("Write Error", e); }
-        };
     </script>
 
     <style>
@@ -88,7 +79,6 @@
         .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 850px; border-radius: 28px; overflow: hidden; animation: modalPop 0.4s ease-out; position: relative; }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* Unified Card Interaction Strategy */
         .project-card, .case-card, .design-draft {
             background: rgba(255, 255, 255, 0.03); 
             border: 1px solid rgba(255, 255, 255, 0.05); 
@@ -259,7 +249,7 @@
     </section>
 
     <!-- Notice Ticker (Firebase Linked) -->
-    <section class="notice-ticker py-6" onclick="toggleModal('admin-modal', true)">
+    <section class="notice-ticker py-6">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center sm:space-x-6">
             <div class="flex items-center space-x-3 shrink-0">
                 <span class="bg-purple-600 text-white text-[10px] font-black px-2 py-0.5 rounded">NOTICE</span>
@@ -267,11 +257,10 @@
             </div>
             <div class="flex-1 overflow-hidden">
                 <div class="flex items-center justify-between">
-                    <p id="notice-text" class="text-xs text-gray-300 truncate">공지사항을 불러오는 중...</p>
+                    <p id="notice-text" class="text-xs text-gray-300 truncate">최신 소식을 불러오는 중...</p>
                     <span id="notice-date" class="text-[10px] text-gray-500 ml-4 font-mono">-</span>
                 </div>
             </div>
-            <div class="text-[9px] text-purple-400 font-bold uppercase hidden sm:block">Edit <i class="fas fa-edit"></i></div>
         </div>
     </section>
 
@@ -347,17 +336,6 @@
             <h3 class="text-2xl font-bold mb-8">프로젝트 현황 리스트</h3>
             <div id="modal-project-list" class="space-y-4"></div>
             <button onclick="toggleModal('status-modal', false)" class="w-full mt-8 py-4 bg-white/5 rounded-xl font-bold text-xs">닫기</button>
-        </div>
-    </div>
-
-    <div id="admin-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('admin-modal', false)">
-        <div class="modal-content !max-w-md p-8">
-            <h3 class="text-white text-xl font-bold mb-4">공지사항 작성</h3>
-            <textarea id="new-notice-input" rows="4" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm mb-4 focus:outline-none focus:border-purple-600" placeholder="하단 공지에 노출될 내용을 입력하세요."></textarea>
-            <div class="flex gap-4">
-                <button onclick="toggleModal('admin-modal', false)" class="flex-1 py-3 bg-white/5 rounded-xl font-bold text-xs">취소</button>
-                <button onclick="postNotice()" class="flex-1 py-3 bg-purple-600 text-white rounded-xl font-bold text-xs">게시</button>
-            </div>
         </div>
     </div>
 
