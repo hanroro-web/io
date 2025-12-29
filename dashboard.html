@@ -69,41 +69,25 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-        #login-overlay {
-            backdrop-filter: blur(20px);
-            background: rgba(9, 9, 11, 0.8);
-        }
-
         .hidden-content { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
     <!-- Login Section -->
-    <div id="login-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
-        <div class="glass-card w-full max-w-md p-8 border-t border-white/20">
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 mb-6 shadow-lg shadow-purple-500/20">
-                    <i class="fas fa-crown text-2xl text-white"></i>
-                </div>
-                <h2 class="text-3xl font-black tracking-tighter">ADMIN LOGIN</h2>
-                <p class="text-zinc-500 text-sm mt-2">한로로 공식 관리자 도구</p>
+    <div id="login-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
+        <div class="glass-card w-full max-w-md p-8 border-t border-white/20 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 mb-6 shadow-lg shadow-purple-500/20">
+                <i class="fas fa-crown text-2xl text-white"></i>
             </div>
-            <form id="login-form" class="space-y-4">
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-zinc-400 ml-1">ID</label>
-                    <input type="text" id="admin-id" class="input-premium w-full p-4 rounded-xl text-white" placeholder="ID" required>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-zinc-400 ml-1">PASSWORD</label>
-                    <input type="password" id="admin-pw" class="input-premium w-full p-4 rounded-xl text-white" placeholder="••••••••" required>
-                </div>
+            <h2 class="text-3xl font-black tracking-tighter mb-8">ADMIN LOGIN</h2>
+            <form id="login-form" class="space-y-4 text-left">
+                <input type="text" id="admin-id" class="input-premium w-full p-4 rounded-xl text-white" placeholder="ID" required>
+                <input type="password" id="admin-pw" class="input-premium w-full p-4 rounded-xl text-white" placeholder="••••••••" required>
                 <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-purple-500/20 mt-4">
                     시스템 접속
                 </button>
-                <div id="login-error" class="hidden text-center text-rose-500 text-xs font-medium animate-bounce">
-                    <i class="fas fa-exclamation-circle mr-1"></i> 인증 정보가 올바르지 않습니다.
-                </div>
+                <p id="login-error" class="hidden text-center text-rose-500 text-xs font-medium animate-bounce mt-2">인증 정보가 올바르지 않습니다.</p>
             </form>
         </div>
     </div>
@@ -125,10 +109,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <div class="hidden sm:block text-right mr-4">
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Active Admin</p>
-                    <p class="text-sm font-bold text-purple-400" id="current-user-display">hanroro</p>
-                </div>
                 <button onclick="logout()" class="glass-card px-5 py-2.5 text-xs font-bold text-zinc-400 hover:text-white hover:border-white/20 transition-all active:scale-95">
                     로그아웃
                 </button>
@@ -136,76 +116,57 @@
         </header>
 
         <div class="grid lg:grid-cols-12 gap-8">
-            <!-- Left: Forms (Grid 4) -->
+            <!-- Left: Settings (4) -->
             <div class="lg:col-span-4 space-y-6">
-                <!-- Project Form -->
+                <!-- Bank Info -->
+                <div class="glass-card p-6 overflow-hidden relative">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-yellow-500"></div>
+                    <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-yellow-100">
+                        <i class="fas fa-university"></i> 입금 계좌 설정
+                    </h2>
+                    <div class="space-y-3">
+                        <p class="text-[10px] text-zinc-500">웹사이트 노출 계좌 정보</p>
+                        <input type="text" id="bank-info" class="input-premium w-full p-3 rounded-lg text-xs text-white" placeholder="은행명 계좌번호 예금주">
+                        <button onclick="updateBankInfo()" class="w-full bg-white/5 hover:bg-white/10 py-3 rounded-lg text-xs font-bold transition-all border border-white/5">저장하기</button>
+                    </div>
+                </div>
+
+                <!-- Manual Proj Add -->
                 <div class="glass-card p-6 overflow-hidden relative">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
                     <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-purple-100">
-                        <i class="fas fa-rocket"></i> 프로젝트 관리
+                        <i class="fas fa-rocket"></i> 프로젝트 추가
                     </h2>
-                    <input type="hidden" id="edit-proj-id">
                     <div class="space-y-3">
                         <input type="text" id="proj-name" placeholder="고객명" class="input-premium w-full p-3 rounded-lg text-xs text-white">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="number" id="proj-progress" placeholder="진척률(%)" class="input-premium w-full p-3 rounded-lg text-xs text-white">
-                            <input type="text" id="proj-phase" placeholder="단계" class="input-premium w-full p-3 rounded-lg text-xs text-white">
-                        </div>
-                        <input type="text" id="proj-status" placeholder="상세 상태 설명" class="input-premium w-full p-3 rounded-lg text-xs text-white">
-                        <button onclick="saveProject()" class="w-full bg-purple-600/20 hover:bg-purple-600 text-purple-400 hover:text-white py-3 rounded-lg text-xs font-bold transition-all mt-2">
-                            데이터 저장
-                        </button>
+                        <input type="text" id="proj-phase" placeholder="단계 (예: 개발 중)" class="input-premium w-full p-3 rounded-lg text-xs text-white">
+                        <button onclick="saveProject()" class="w-full bg-purple-600/20 hover:bg-purple-600 text-purple-400 hover:text-white py-3 rounded-lg text-xs font-bold transition-all mt-2">등록</button>
                     </div>
-                </div>
-
-                <!-- Notice Form -->
-                <div class="glass-card p-6 overflow-hidden relative">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-pink-500"></div>
-                    <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-pink-100">
-                        <i class="fas fa-bullhorn"></i> 공지사항 관리
-                    </h2>
-                    <input type="hidden" id="edit-notice-id">
-                    <textarea id="notice-input" placeholder="전할 메시지를 입력하세요..." class="input-premium w-full p-3 rounded-lg text-xs text-white h-32 resize-none"></textarea>
-                    <button onclick="saveNotice()" class="w-full bg-pink-600/20 hover:bg-pink-600 text-pink-400 hover:text-white py-3 rounded-lg text-xs font-bold transition-all mt-3">
-                        메시지 배포
-                    </button>
                 </div>
             </div>
 
-            <!-- Right: Lists (Grid 8) -->
+            <!-- Right: Monitor (8) -->
             <div class="lg:col-span-8 space-y-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Project List -->
-                    <div class="glass-card p-6 flex flex-col h-[350px]">
-                        <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
-                            진행 프로젝트 <span>ACTIVES</span>
-                        </h2>
-                        <div id="project-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3"></div>
-                    </div>
-
-                    <!-- Leads List -->
-                    <div class="glass-card p-6 flex flex-col h-[350px]">
-                        <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
-                            상담 신청 내역 <span>DB</span>
-                        </h2>
-                        <div id="lead-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3"></div>
-                    </div>
-                </div>
-
-                <!-- History List -->
-                <div class="glass-card p-6">
+                <!-- Payment Queue -->
+                <div class="glass-card p-6 h-[400px] flex flex-col">
                     <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
-                        배포 히스토리 <span>HISTORY</span>
+                        무통장 입금 대기열 <span>WAITING</span>
                     </h2>
-                    <div id="notice-list" class="grid sm:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto custom-scrollbar"></div>
+                    <div id="payment-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3"></div>
                 </div>
 
-                <!-- Trash Section -->
+                <!-- Active Projects -->
+                <div class="glass-card p-6">
+                    <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6">진행 프로젝트 <span>ACTIVE</span></h2>
+                    <div id="project-list" class="grid sm:grid-cols-2 gap-4"></div>
+                </div>
+
+                <!-- Trash -->
                 <div class="bg-rose-500/5 border border-rose-500/10 rounded-3xl p-6">
                     <h2 class="text-xs font-black text-rose-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <i class="fas fa-trash-can"></i> 데이터 임시 보관소 (90일 정책)
+                        <i class="fas fa-trash-can"></i> 휴지통 (90일 보관)
                     </h2>
-                    <div id="trash-list" class="grid sm:grid-cols-3 gap-3"></div>
+                    <div id="trash-list" class="flex flex-wrap gap-2"></div>
                 </div>
             </div>
         </div>
@@ -213,7 +174,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc, serverTimestamp, getDoc, enableNetwork, disableNetwork } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -222,8 +183,7 @@
           projectId: "hanroro-web",
           storageBucket: "hanroro-web.firebasestorage.app",
           messagingSenderId: "461514865624",
-          appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad",
-          measurementId: "G-8L3EFM6PY8"
+          appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad"
         };
 
         const appId = "hanroro-official-service";
@@ -232,229 +192,137 @@
         let db;
 
         // Login Logic
-        window.addEventListener('load', () => {
-            if(sessionStorage.getItem('hanroro_admin_auth') === 'true') showDashboard();
-        });
-
         document.getElementById('login-form').onsubmit = (e) => {
             e.preventDefault();
-            const id = document.getElementById('admin-id').value;
-            const pw = document.getElementById('admin-pw').value;
-            if(id === ADMIN_ID && pw === ADMIN_PW) {
+            if(document.getElementById('admin-id').value === ADMIN_ID && document.getElementById('admin-pw').value === ADMIN_PW) {
                 sessionStorage.setItem('hanroro_admin_auth', 'true');
-                showDashboard();
+                location.reload();
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
         };
 
-        window.logout = () => { sessionStorage.removeItem('hanroro_admin_auth'); location.reload(); };
-
-        async function showDashboard() {
+        if(sessionStorage.getItem('hanroro_admin_auth') === 'true') {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('main-content').classList.remove('hidden-content');
-            
+            initApp();
+        }
+
+        async function initApp() {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             const auth = getAuth(app);
-
-            // Connect State Tracker
-            checkConnectionStatus(db);
-
-            await signInAnonymously(auth);
-            onAuthStateChanged(auth, (u) => { if(u) loadAll(); });
-        }
-
-        // Firebase Connection Check Logic
-        function checkConnectionStatus(database) {
-            const pulse = document.getElementById('conn-pulse');
-            const text = document.getElementById('conn-text');
-
-            // Firestore snapshot with metadata can detect offline state
-            onSnapshot(doc(database, 'artifacts', appId), { includeMetadataChanges: true }, (doc) => {
+            
+            // Connection Tracker
+            onSnapshot(doc(db, 'artifacts', appId), { includeMetadataChanges: true }, (doc) => {
+                const pulse = document.getElementById('conn-pulse');
+                const text = document.getElementById('conn-text');
                 if (doc.metadata.fromCache) {
                     pulse.className = 'status-pulse pulse-offline';
-                    text.innerText = 'OFFLINE (캐시 데이터)';
-                    text.className = 'text-rose-500 uppercase';
+                    text.innerText = 'OFFLINE';
                 } else {
                     pulse.className = 'status-pulse pulse-online';
-                    text.innerText = 'ONLINE (안정적)';
-                    text.className = 'text-emerald-500 uppercase';
+                    text.innerText = 'ONLINE';
                 }
-            }, (error) => {
-                pulse.className = 'status-pulse pulse-offline';
-                text.innerText = '연결 오류';
-                text.className = 'text-rose-500 uppercase';
             });
+
+            await signInAnonymously(auth);
+            loadData();
         }
 
-        // --- Core Logic ---
-
-        window.moveToTrash = async (colName, docId) => {
-            if(!confirm('휴지통으로 보낼까요? 90일 후 자동 삭제됩니다.')) return;
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', colName, docId);
-            const snap = await getDoc(docRef);
-            if(snap.exists()) {
-                const expiresAt = new Date();
-                expiresAt.setDate(expiresAt.getDate() + 90);
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), {
-                    originalCollection: colName,
-                    originalData: snap.data(),
-                    deletedAt: serverTimestamp(),
-                    expiresAt: expiresAt,
-                    type: colName
-                });
-                await deleteDoc(docRef);
-            }
+        // Methods
+        window.approveTransfer = async (id, data) => {
+            if(!confirm(`[${data.name}] 님의 입금을 승인하고 프로젝트를 생성하시겠습니까?`)) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), {
+                name: data.name, progress: 10, phase: '준비 중', status: '입금 확인 완료', createdAt: serverTimestamp()
+            });
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'leads', id));
         };
 
-        window.restoreFromTrash = async (trashId) => {
-            const trashRef = doc(db, 'artifacts', appId, 'public', 'data', 'trash', trashId);
-            const snap = await getDoc(trashRef);
-            if(snap.exists()) {
-                const { originalCollection, originalData } = snap.data();
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', originalCollection), originalData);
-                await deleteDoc(trashRef);
-            }
-        };
-
-        window.permanentDelete = async (trashId) => {
-            if(confirm('완전히 삭제합니다. 복구 불가합니다.')) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trash', trashId));
-            }
+        window.updateBankInfo = async () => {
+            const info = document.getElementById('bank-info').value;
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bank'), { info });
+            alert('저장되었습니다.');
         };
 
         window.saveProject = async () => {
-            const id = document.getElementById('edit-proj-id').value;
-            const data = {
-                name: document.getElementById('proj-name').value,
-                progress: parseInt(document.getElementById('proj-progress').value || 0),
-                phase: document.getElementById('proj-phase').value,
-                status: document.getElementById('proj-status').value,
-                updatedAt: serverTimestamp()
-            };
-            if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), data);
-            else { data.createdAt = serverTimestamp(); await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), data); }
-            resetProjForm();
-        };
-
-        window.editProject = (id, n, p, ph, s) => {
-            document.getElementById('edit-proj-id').value = id;
-            document.getElementById('proj-name').value = n;
-            document.getElementById('proj-progress').value = p;
-            document.getElementById('proj-phase').value = ph;
-            document.getElementById('proj-status').value = s;
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-
-        function resetProjForm() { ['edit-proj-id','proj-name','proj-progress','proj-phase','proj-status'].forEach(i => document.getElementById(i).value=''); }
-
-        window.saveNotice = async () => {
-            const id = document.getElementById('edit-notice-id').value;
-            const text = document.getElementById('notice-input').value;
-            if(!text) return;
-            if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id), { text, updatedAt: serverTimestamp() });
-            else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), { text, createdAt: serverTimestamp() });
-            document.getElementById('edit-notice-id').value = ''; document.getElementById('notice-input').value = '';
-        };
-
-        window.editNotice = (id, t) => { 
-            document.getElementById('edit-notice-id').value = id; 
-            document.getElementById('notice-input').value = t;
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-
-        function loadAll() {
-            // Project Render
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (s) => {
-                const list = document.getElementById('project-list');
-                let h = '';
-                s.forEach(d => {
-                    const p = d.data();
-                    h += `
-                        <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 group hover:border-purple-500/30 transition-all">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <p class="text-[9px] font-black text-purple-500 uppercase tracking-widest">${p.phase}</p>
-                                    <h3 class="font-bold text-sm text-white">${p.name}</h3>
-                                </div>
-                                <div class="opacity-0 group-hover:opacity-100 transition-all flex gap-3">
-                                    <button onclick="editProject('${d.id}','${p.name}',${p.progress},'${p.phase}','${p.status}')" class="text-zinc-400 hover:text-purple-400 text-[10px] font-bold">수정</button>
-                                    <button onclick="moveToTrash('projects', '${d.id}')" class="text-zinc-400 hover:text-rose-500 text-[10px] font-bold">삭제</button>
-                                </div>
-                            </div>
-                            <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
-                                <div class="bg-purple-500 h-full transition-all duration-1000" style="width: ${p.progress}%"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-                list.innerHTML = h || '<p class="text-zinc-600 text-xs text-center py-8 font-medium">진행 중인 프로젝트가 없습니다.</p>';
+            const name = document.getElementById('proj-name').value;
+            const phase = document.getElementById('proj-phase').value;
+            if(!name) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), {
+                name, progress: 0, phase, status: '수동 등록', createdAt: serverTimestamp()
             });
+            document.getElementById('proj-name').value = '';
+            document.getElementById('proj-phase').value = '';
+        };
 
-            // Notice Render
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (s) => {
-                const list = document.getElementById('notice-list');
-                let notices = []; s.forEach(d => notices.push({id: d.id, ...d.data()}));
-                notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                
-                let h = '';
-                notices.forEach(n => {
-                    h += `
-                        <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 relative group">
-                            <p class="text-[11px] text-zinc-300 leading-relaxed mb-4 line-clamp-2">${n.text}</p>
-                            <div class="flex justify-between items-center border-t border-white/5 pt-3">
-                                <span class="text-[9px] text-zinc-600 font-mono">${n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString() : 'N/A'}</span>
-                                <div class="flex gap-3">
-                                    <button onclick="editNotice('${n.id}', '${n.text.replace(/'/g, "\\'")}')" class="text-zinc-500 hover:text-pink-400 text-[9px] font-bold">수정</button>
-                                    <button onclick="moveToTrash('notices', '${n.id}')" class="text-zinc-500 hover:text-rose-500 text-[9px] font-bold">삭제</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                list.innerHTML = h || '<p class="text-zinc-600 text-xs py-8">메시지 내역이 없습니다.</p>';
+        window.moveToTrash = async (col, id) => {
+            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+            const expiresAt = new Date(); expiresAt.setDate(expiresAt.getDate() + 90);
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), {
+                originalCollection: col, originalData: snap.data(), expiresAt
             });
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+        };
 
-            // Leads Render
+        function loadData() {
+            // Waiting List
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), (s) => {
-                const list = document.getElementById('lead-list');
+                const list = document.getElementById('payment-list');
                 let h = '';
                 s.forEach(d => {
                     const l = d.data();
                     h += `
                         <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 flex justify-between items-center group">
                             <div>
-                                <h3 class="font-bold text-xs text-white">${l.name}</h3>
-                                <p class="text-[10px] text-zinc-500 mt-1">${l.phone}</p>
+                                <p class="text-[9px] text-yellow-500 font-bold uppercase mb-1">입금 대기</p>
+                                <h3 class="text-xs font-bold text-white">${l.name} <span class="text-[10px] text-zinc-500 ml-2">${l.phone}</span></h3>
                             </div>
-                            <button onclick="moveToTrash('leads', '${d.id}')" class="opacity-0 group-hover:opacity-100 text-rose-500 text-[10px] font-bold transition-all">삭제</button>
+                            <div class="flex gap-2">
+                                <button onclick="approveTransfer('${d.id}', ${JSON.stringify(l).replace(/"/g, '&quot;')})" class="bg-emerald-500/10 text-emerald-500 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-500 hover:text-white transition-all">승인</button>
+                                <button onclick="moveToTrash('leads', '${d.id}')" class="text-rose-500/50 hover:text-rose-500 text-[10px] px-2">X</button>
+                            </div>
                         </div>
                     `;
                 });
-                list.innerHTML = h || '<p class="text-zinc-600 text-xs text-center py-8">신청 내역이 없습니다.</p>';
+                list.innerHTML = h || '<p class="text-zinc-600 text-xs py-10 text-center">대기 내역 없음</p>';
             });
 
-            // Trash Render
+            // Project List
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (s) => {
+                const list = document.getElementById('project-list');
+                let h = '';
+                s.forEach(d => {
+                    const p = d.data();
+                    h += `
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5 relative group">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[9px] font-black text-purple-500 uppercase tracking-widest">${p.phase}</span>
+                                <button onclick="moveToTrash('projects', '${d.id}')" class="opacity-0 group-hover:opacity-100 text-rose-500 text-[10px] transition-all">삭제</button>
+                            </div>
+                            <h3 class="text-xs font-bold text-white">${p.name}</h3>
+                            <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-3">
+                                <div class="bg-purple-500 h-full" style="width: ${p.progress}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.innerHTML = h;
+            });
+
+            // Trash
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), (s) => {
                 const list = document.getElementById('trash-list');
                 let h = '';
-                s.forEach(d => {
-                    const t = d.data();
-                    const name = t.originalData.name || t.originalData.text?.substring(0,6) || 'ITEM';
-                    h += `
-                        <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col justify-between">
-                            <p class="text-[10px] font-bold text-zinc-400 mb-2 truncate">${name}...</p>
-                            <div class="flex justify-between items-center">
-                                <button onclick="restoreFromTrash('${d.id}')" class="text-emerald-500 text-[9px] font-black uppercase">복구</button>
-                                <button onclick="permanentDelete('${d.id}')" class="text-rose-500 text-[9px] font-black uppercase">영구파기</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                list.innerHTML = h || '<p class="col-span-3 text-center text-zinc-600 text-[10px] py-4">비어 있음</p>';
+                s.forEach(d => { h += `<span class="bg-black/30 px-3 py-1 rounded-full text-[9px] text-zinc-600 border border-white/5">${d.data().originalData.name || 'ITEM'}</span>`; });
+                list.innerHTML = h;
             });
+
+            // Bank Init
+            getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bank')).then(s => { if(s.exists()) document.getElementById('bank-info').value = s.data().info; });
         }
+
+        window.logout = () => { sessionStorage.removeItem('hanroro_admin_auth'); location.reload(); };
     </script>
 </body>
 </html>
