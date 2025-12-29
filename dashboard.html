@@ -3,102 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한로로 관리자 대시보드 | 보안 및 복구 센터</title>
+    <title>Hanroro Admin | Premium Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #fff; min-height: 100vh; }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem; }
-        .input-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; width: 100%; color: white; outline: none; }
-        .input-dark:focus { border-color: #8a4fff; }
-        .btn-primary { background: #8a4fff; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: bold; transition: all 0.2s; cursor: pointer; border: none; }
-        .btn-primary:hover { background: #763ee6; transform: translateY(-2px); }
-        .btn-edit { color: #a78bfa; font-size: 10px; font-weight: bold; margin-right: 8px; }
-        .btn-delete { color: #ef4444; font-size: 10px; font-weight: bold; }
-        .btn-restore { color: #10b981; font-size: 10px; font-weight: bold; margin-right: 8px; }
         
-        #login-overlay { position: fixed; inset: 0; background: #05020a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { width: 100%; max-width: 400px; background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #ec4899;
+            --bg-dark: #09090b;
+            --card-bg: rgba(24, 24, 27, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
+            color: #fafafa;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-premium {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-premium:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .pulse-online { background: #10b981; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite; }
+        .pulse-offline { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+        .pulse-connecting { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        #login-overlay {
+            backdrop-filter: blur(20px);
+            background: rgba(9, 9, 11, 0.8);
+        }
+
         .hidden-content { display: none; }
-        .trash-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: bold; }
     </style>
 </head>
-<body class="p-4 sm:p-10">
-    <!-- Login Overlay -->
-    <div id="login-overlay">
-        <div class="login-box">
-            <div class="text-center mb-8">
-                <i class="fas fa-shield-alt text-4xl text-purple-500 mb-4"></i>
-                <h2 class="text-2xl font-black uppercase tracking-tighter text-white">Admin Login</h2>
+<body class="p-4 md:p-8">
+
+    <!-- Login Section -->
+    <div id="login-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <div class="glass-card w-full max-w-md p-8 border-t border-white/20">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 mb-6 shadow-lg shadow-purple-500/20">
+                    <i class="fas fa-crown text-2xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-black tracking-tighter">ADMIN LOGIN</h2>
+                <p class="text-zinc-500 text-sm mt-2">한로로 공식 관리자 도구</p>
             </div>
             <form id="login-form" class="space-y-4">
-                <input type="text" id="admin-id" class="input-dark" placeholder="ID" required>
-                <input type="password" id="admin-pw" class="input-dark" placeholder="Password" required>
-                <button type="submit" class="btn-primary w-full mt-4 py-4">인증 및 접속</button>
-                <p id="login-error" class="text-red-500 text-[10px] text-center mt-2 hidden">정보가 일치하지 않습니다.</p>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-zinc-400 ml-1">ID</label>
+                    <input type="text" id="admin-id" class="input-premium w-full p-4 rounded-xl text-white" placeholder="ID" required>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-zinc-400 ml-1">PASSWORD</label>
+                    <input type="password" id="admin-pw" class="input-premium w-full p-4 rounded-xl text-white" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-purple-500/20 mt-4">
+                    시스템 접속
+                </button>
+                <div id="login-error" class="hidden text-center text-rose-500 text-xs font-medium animate-bounce">
+                    <i class="fas fa-exclamation-circle mr-1"></i> 인증 정보가 올바르지 않습니다.
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Dashboard -->
     <div id="main-content" class="max-w-7xl mx-auto hidden-content">
-        <header class="mb-12 flex justify-between items-end">
-            <div>
-                <h1 class="text-3xl font-black mb-2 uppercase tracking-tighter text-purple-400">Control Panel</h1>
-                <p class="text-gray-500 text-sm font-medium">90일 데이터 보관 정책 적용됨</p>
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center">
+                    <i class="fas fa-bolt text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight text-white uppercase">Hanroro Center</h1>
+                    <div class="flex items-center text-[10px] font-mono mt-0.5">
+                        <span id="conn-pulse" class="status-pulse pulse-connecting"></span>
+                        <span id="conn-text" class="text-zinc-500 uppercase">연결 확인 중...</span>
+                    </div>
+                </div>
             </div>
-            <button onclick="logout()" class="text-[10px] text-gray-400 hover:text-white border border-white/10 px-4 py-2 rounded-lg">로그아웃</button>
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:block text-right mr-4">
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Active Admin</p>
+                    <p class="text-sm font-bold text-purple-400" id="current-user-display">hanroro</p>
+                </div>
+                <button onclick="logout()" class="glass-card px-5 py-2.5 text-xs font-bold text-zinc-400 hover:text-white hover:border-white/20 transition-all active:scale-95">
+                    로그아웃
+                </button>
+            </div>
         </header>
 
-        <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Left: Forms -->
-            <div class="lg:col-span-1 space-y-6">
-                <div class="card">
-                    <h2 id="project-form-title" class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-edit text-purple-500"></i> 프로젝트 관리</h2>
+        <div class="grid lg:grid-cols-12 gap-8">
+            <!-- Left: Forms (Grid 4) -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Project Form -->
+                <div class="glass-card p-6 overflow-hidden relative">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+                    <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-purple-100">
+                        <i class="fas fa-rocket"></i> 프로젝트 관리
+                    </h2>
                     <input type="hidden" id="edit-proj-id">
                     <div class="space-y-3">
-                        <input type="text" id="proj-name" placeholder="고객명" class="input-dark text-xs">
-                        <input type="number" id="proj-progress" placeholder="진척률(%)" class="input-dark text-xs">
-                        <input type="text" id="proj-phase" placeholder="단계" class="input-dark text-xs">
-                        <input type="text" id="proj-status" placeholder="상세 상태" class="input-dark text-xs">
-                        <button onclick="saveProject()" class="btn-primary w-full py-3 text-xs mt-2">저장</button>
+                        <input type="text" id="proj-name" placeholder="고객명" class="input-premium w-full p-3 rounded-lg text-xs text-white">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="proj-progress" placeholder="진척률(%)" class="input-premium w-full p-3 rounded-lg text-xs text-white">
+                            <input type="text" id="proj-phase" placeholder="단계" class="input-premium w-full p-3 rounded-lg text-xs text-white">
+                        </div>
+                        <input type="text" id="proj-status" placeholder="상세 상태 설명" class="input-premium w-full p-3 rounded-lg text-xs text-white">
+                        <button onclick="saveProject()" class="w-full bg-purple-600/20 hover:bg-purple-600 text-purple-400 hover:text-white py-3 rounded-lg text-xs font-bold transition-all mt-2">
+                            데이터 저장
+                        </button>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2 id="notice-form-title" class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-bullhorn text-purple-500"></i> 공지사항</h2>
+                <!-- Notice Form -->
+                <div class="glass-card p-6 overflow-hidden relative">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-pink-500"></div>
+                    <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-pink-100">
+                        <i class="fas fa-bullhorn"></i> 공지사항 관리
+                    </h2>
                     <input type="hidden" id="edit-notice-id">
-                    <textarea id="notice-input" placeholder="내용 입력" class="input-dark h-32 text-xs mb-3"></textarea>
-                    <button onclick="saveNotice()" class="btn-primary w-full py-3 text-xs">저장</button>
+                    <textarea id="notice-input" placeholder="전할 메시지를 입력하세요..." class="input-premium w-full p-3 rounded-lg text-xs text-white h-32 resize-none"></textarea>
+                    <button onclick="saveNotice()" class="w-full bg-pink-600/20 hover:bg-pink-600 text-pink-400 hover:text-white py-3 rounded-lg text-xs font-bold transition-all mt-3">
+                        메시지 배포
+                    </button>
                 </div>
             </div>
 
-            <!-- Middle/Right: Lists -->
-            <div class="lg:col-span-2 space-y-6">
+            <!-- Right: Lists (Grid 8) -->
+            <div class="lg:col-span-8 space-y-6">
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="card">
-                        <h2 class="text-sm font-bold mb-4 opacity-50">진행 중인 프로젝트</h2>
-                        <div id="project-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2"></div>
+                    <!-- Project List -->
+                    <div class="glass-card p-6 flex flex-col h-[350px]">
+                        <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
+                            진행 프로젝트 <span>ACTIVES</span>
+                        </h2>
+                        <div id="project-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3"></div>
                     </div>
-                    <div class="card">
-                        <h2 class="text-sm font-bold mb-4 opacity-50">상담 신청</h2>
-                        <div id="lead-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2"></div>
+
+                    <!-- Leads List -->
+                    <div class="glass-card p-6 flex flex-col h-[350px]">
+                        <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
+                            상담 신청 내역 <span>DB</span>
+                        </h2>
+                        <div id="lead-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3"></div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2 class="text-sm font-bold mb-4 opacity-50">공지사항 내역</h2>
-                    <div id="notice-list" class="space-y-3 max-h-[250px] overflow-y-auto"></div>
+                <!-- History List -->
+                <div class="glass-card p-6">
+                    <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
+                        배포 히스토리 <span>HISTORY</span>
+                    </h2>
+                    <div id="notice-list" class="grid sm:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto custom-scrollbar"></div>
                 </div>
 
                 <!-- Trash Section -->
-                <div class="card border-dashed border-red-500/20 bg-red-500/5">
-                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2 text-red-400">
-                        <i class="fas fa-trash-alt"></i> 휴지통 (90일 보관)
+                <div class="bg-rose-500/5 border border-rose-500/10 rounded-3xl p-6">
+                    <h2 class="text-xs font-black text-rose-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i class="fas fa-trash-can"></i> 데이터 임시 보관소 (90일 정책)
                     </h2>
-                    <p class="text-[9px] text-gray-500 mb-4">삭제된 항목은 90일 후 자동 파기됩니다.</p>
-                    <div id="trash-list" class="space-y-2 max-h-[300px] overflow-y-auto"></div>
+                    <div id="trash-list" class="grid sm:grid-cols-3 gap-3"></div>
                 </div>
             </div>
         </div>
@@ -106,7 +213,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc, serverTimestamp, getDoc, enableNetwork, disableNetwork } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -124,14 +231,16 @@
         const ADMIN_PW = "gksfhfh00@@";
         let db;
 
-        // Auth handling
+        // Login Logic
         window.addEventListener('load', () => {
             if(sessionStorage.getItem('hanroro_admin_auth') === 'true') showDashboard();
         });
 
         document.getElementById('login-form').onsubmit = (e) => {
             e.preventDefault();
-            if(document.getElementById('admin-id').value === ADMIN_ID && document.getElementById('admin-pw').value === ADMIN_PW) {
+            const id = document.getElementById('admin-id').value;
+            const pw = document.getElementById('admin-pw').value;
+            if(id === ADMIN_ID && pw === ADMIN_PW) {
                 sessionStorage.setItem('hanroro_admin_auth', 'true');
                 showDashboard();
             } else {
@@ -144,35 +253,57 @@
         async function showDashboard() {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('main-content').classList.remove('hidden-content');
+            
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             const auth = getAuth(app);
+
+            // Connect State Tracker
+            checkConnectionStatus(db);
+
             await signInAnonymously(auth);
             onAuthStateChanged(auth, (u) => { if(u) loadAll(); });
         }
 
-        // --- Logic: Trash & Expiry ---
+        // Firebase Connection Check Logic
+        function checkConnectionStatus(database) {
+            const pulse = document.getElementById('conn-pulse');
+            const text = document.getElementById('conn-text');
 
-        // Move to Trash instead of direct delete
+            // Firestore snapshot with metadata can detect offline state
+            onSnapshot(doc(database, 'artifacts', appId), { includeMetadataChanges: true }, (doc) => {
+                if (doc.metadata.fromCache) {
+                    pulse.className = 'status-pulse pulse-offline';
+                    text.innerText = 'OFFLINE (캐시 데이터)';
+                    text.className = 'text-rose-500 uppercase';
+                } else {
+                    pulse.className = 'status-pulse pulse-online';
+                    text.innerText = 'ONLINE (안정적)';
+                    text.className = 'text-emerald-500 uppercase';
+                }
+            }, (error) => {
+                pulse.className = 'status-pulse pulse-offline';
+                text.innerText = '연결 오류';
+                text.className = 'text-rose-500 uppercase';
+            });
+        }
+
+        // --- Core Logic ---
+
         window.moveToTrash = async (colName, docId) => {
-            if(!confirm('휴지통으로 이동하시겠습니까? (90일 보관)')) return;
-            
+            if(!confirm('휴지통으로 보낼까요? 90일 후 자동 삭제됩니다.')) return;
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', colName, docId);
             const snap = await getDoc(docRef);
-            
             if(snap.exists()) {
-                const data = snap.data();
-                const expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + 90);
-
+                const expiresAt = new Date();
+                expiresAt.setDate(expiresAt.getDate() + 90);
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), {
                     originalCollection: colName,
-                    originalData: data,
+                    originalData: snap.data(),
                     deletedAt: serverTimestamp(),
-                    expiresAt: expiryDate,
-                    type: colName === 'projects' ? '프로젝트' : colName === 'notices' ? '공지' : '상담신청'
+                    expiresAt: expiresAt,
+                    type: colName
                 });
-
                 await deleteDoc(docRef);
             }
         };
@@ -184,17 +315,15 @@
                 const { originalCollection, originalData } = snap.data();
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', originalCollection), originalData);
                 await deleteDoc(trashRef);
-                alert('복구되었습니다.');
             }
         };
 
         window.permanentDelete = async (trashId) => {
-            if(confirm('이 항목을 영구적으로 삭제하시겠습니까? 복구할 수 없습니다.')) {
+            if(confirm('완전히 삭제합니다. 복구 불가합니다.')) {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trash', trashId));
             }
         };
 
-        // --- Standard CRUD ---
         window.saveProject = async () => {
             const id = document.getElementById('edit-proj-id').value;
             const data = {
@@ -215,6 +344,7 @@
             document.getElementById('proj-progress').value = p;
             document.getElementById('proj-phase').value = ph;
             document.getElementById('proj-status').value = s;
+            window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
         function resetProjForm() { ['edit-proj-id','proj-name','proj-progress','proj-phase','proj-status'].forEach(i => document.getElementById(i).value=''); }
@@ -222,77 +352,107 @@
         window.saveNotice = async () => {
             const id = document.getElementById('edit-notice-id').value;
             const text = document.getElementById('notice-input').value;
+            if(!text) return;
             if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id), { text, updatedAt: serverTimestamp() });
             else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), { text, createdAt: serverTimestamp() });
             document.getElementById('edit-notice-id').value = ''; document.getElementById('notice-input').value = '';
         };
 
-        window.editNotice = (id, t) => { document.getElementById('edit-notice-id').value = id; document.getElementById('notice-input').value = t; };
+        window.editNotice = (id, t) => { 
+            document.getElementById('edit-notice-id').value = id; 
+            document.getElementById('notice-input').value = t;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
 
-        // --- Data Loading ---
         function loadAll() {
-            const render = (col, elId, template) => {
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', col), (s) => {
-                    let h = ''; s.forEach(d => h += template(d.id, d.data()));
-                    document.getElementById(elId).innerHTML = h || '<p class="text-[10px] text-gray-600">내역 없음</p>';
-                });
-            };
-
-            render('projects', 'project-list', (id, p) => `
-                <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
-                    <span class="text-xs font-bold">${p.name}</span>
-                    <div>
-                        <button onclick="editProject('${id}','${p.name}',${p.progress},'${p.phase}','${p.status}')" class="btn-edit">수정</button>
-                        <button onclick="moveToTrash('projects', '${id}')" class="btn-delete">삭제</button>
-                    </div>
-                </div>
-            `);
-
-            render('notices', 'notice-list', (id, n) => `
-                <div class="bg-white/5 p-3 rounded-lg border border-white/5 mb-2">
-                    <p class="text-[10px] text-gray-400 line-clamp-1">${n.text}</p>
-                    <div class="mt-2">
-                        <button onclick="editNotice('${id}', '${n.text.replace(/'/g, "\\'")}')" class="btn-edit">수정</button>
-                        <button onclick="moveToTrash('notices', '${id}')" class="btn-delete">삭제</button>
-                    </div>
-                </div>
-            `);
-
-            render('leads', 'lead-list', (id, l) => `
-                <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center">
-                    <span class="text-[10px] font-bold">${l.name}</span>
-                    <button onclick="moveToTrash('leads', '${id}')" class="btn-delete">삭제</button>
-                </div>
-            `);
-
-            // Trash loading with 90-day filter (client-side)
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), (s) => {
-                const list = document.getElementById('trash-list');
+            // Project Render
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (s) => {
+                const list = document.getElementById('project-list');
                 let h = '';
-                const now = new Date();
-                
                 s.forEach(d => {
-                    const t = d.data();
-                    const expiresAt = t.expiresAt?.toDate();
-                    
-                    // 만료된 항목은 표시하지 않음 (서버리스 환경이라 여기서 필터링하거나 별도 스케줄러 필요)
-                    if(expiresAt && expiresAt < now) return; 
-
-                    const name = t.originalData.name || t.originalData.text?.substring(0,10) || '항목';
+                    const p = d.data();
                     h += `
-                        <div class="bg-black/40 p-3 rounded-xl border border-red-500/10 flex justify-between items-center">
-                            <div>
-                                <span class="trash-badge">${t.type}</span>
-                                <span class="text-[10px] ml-2 font-medium">${name}...</span>
+                        <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 group hover:border-purple-500/30 transition-all">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <p class="text-[9px] font-black text-purple-500 uppercase tracking-widest">${p.phase}</p>
+                                    <h3 class="font-bold text-sm text-white">${p.name}</h3>
+                                </div>
+                                <div class="opacity-0 group-hover:opacity-100 transition-all flex gap-3">
+                                    <button onclick="editProject('${d.id}','${p.name}',${p.progress},'${p.phase}','${p.status}')" class="text-zinc-400 hover:text-purple-400 text-[10px] font-bold">수정</button>
+                                    <button onclick="moveToTrash('projects', '${d.id}')" class="text-zinc-400 hover:text-rose-500 text-[10px] font-bold">삭제</button>
+                                </div>
                             </div>
-                            <div>
-                                <button onclick="restoreFromTrash('${d.id}')" class="btn-restore">복구</button>
-                                <button onclick="permanentDelete('${d.id}')" class="btn-delete">영구 삭제</button>
+                            <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full transition-all duration-1000" style="width: ${p.progress}%"></div>
                             </div>
                         </div>
                     `;
                 });
-                list.innerHTML = h || '<p class="text-[10px] text-gray-600 text-center py-4">비어 있음</p>';
+                list.innerHTML = h || '<p class="text-zinc-600 text-xs text-center py-8 font-medium">진행 중인 프로젝트가 없습니다.</p>';
+            });
+
+            // Notice Render
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (s) => {
+                const list = document.getElementById('notice-list');
+                let notices = []; s.forEach(d => notices.push({id: d.id, ...d.data()}));
+                notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                
+                let h = '';
+                notices.forEach(n => {
+                    h += `
+                        <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 relative group">
+                            <p class="text-[11px] text-zinc-300 leading-relaxed mb-4 line-clamp-2">${n.text}</p>
+                            <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                                <span class="text-[9px] text-zinc-600 font-mono">${n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleDateString() : 'N/A'}</span>
+                                <div class="flex gap-3">
+                                    <button onclick="editNotice('${n.id}', '${n.text.replace(/'/g, "\\'")}')" class="text-zinc-500 hover:text-pink-400 text-[9px] font-bold">수정</button>
+                                    <button onclick="moveToTrash('notices', '${n.id}')" class="text-zinc-500 hover:text-rose-500 text-[9px] font-bold">삭제</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.innerHTML = h || '<p class="text-zinc-600 text-xs py-8">메시지 내역이 없습니다.</p>';
+            });
+
+            // Leads Render
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), (s) => {
+                const list = document.getElementById('lead-list');
+                let h = '';
+                s.forEach(d => {
+                    const l = d.data();
+                    h += `
+                        <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 flex justify-between items-center group">
+                            <div>
+                                <h3 class="font-bold text-xs text-white">${l.name}</h3>
+                                <p class="text-[10px] text-zinc-500 mt-1">${l.phone}</p>
+                            </div>
+                            <button onclick="moveToTrash('leads', '${d.id}')" class="opacity-0 group-hover:opacity-100 text-rose-500 text-[10px] font-bold transition-all">삭제</button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = h || '<p class="text-zinc-600 text-xs text-center py-8">신청 내역이 없습니다.</p>';
+            });
+
+            // Trash Render
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), (s) => {
+                const list = document.getElementById('trash-list');
+                let h = '';
+                s.forEach(d => {
+                    const t = d.data();
+                    const name = t.originalData.name || t.originalData.text?.substring(0,6) || 'ITEM';
+                    h += `
+                        <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col justify-between">
+                            <p class="text-[10px] font-bold text-zinc-400 mb-2 truncate">${name}...</p>
+                            <div class="flex justify-between items-center">
+                                <button onclick="restoreFromTrash('${d.id}')" class="text-emerald-500 text-[9px] font-black uppercase">복구</button>
+                                <button onclick="permanentDelete('${d.id}')" class="text-rose-500 text-[9px] font-black uppercase">영구파기</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.innerHTML = h || '<p class="col-span-3 text-center text-zinc-600 text-[10px] py-4">비어 있음</p>';
             });
         }
     </script>
