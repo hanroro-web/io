@@ -12,93 +12,91 @@
         import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-        // 1. 전역 변수 설정
-        let db, auth, appId;
+        // 1. Firebase 초기화
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : '517873073';
+
         let isAuthReady = false;
         let editingId = null;
 
-        // 2. 초기화 및 인증 (비동기 안전 처리)
-        const initializeDashboard = async () => {
+        // 2. 인증 처리
+        const initAuth = async () => {
             try {
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web-app';
-
-                // 인증 수단 확인 (Custom Token 우선)
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        isAuthReady = true;
-                        document.getElementById('connection-status').innerText = "시스템 정상 작동 중";
-                        document.getElementById('connection-dot').classList.replace('bg-yellow-500', 'bg-emerald-500');
-                        setupRealtimeListener();
-                    }
-                });
-            } catch (err) {
-                console.error("초기화 실패:", err);
-                document.getElementById('connection-status').innerText = "연결 오류 발생";
+            } catch (e) {
+                console.error("인증 오류:", e);
+                showToast("시스템 연결에 실패했습니다.");
             }
         };
 
-        // 3. 실시간 리스너 (경로 규칙 준수)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                isAuthReady = true;
+                document.getElementById('status-text').innerText = "연결됨";
+                document.getElementById('status-dot').classList.replace('bg-yellow-500', 'bg-emerald-500');
+                setupRealtimeListener();
+            }
+        });
+
+        initAuth();
+
+        // 3. 실시간 데이터 리스너
         function setupRealtimeListener() {
-            // Rule 1: /artifacts/{appId}/public/data/notices 경로 사용
             const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-            
             onSnapshot(noticeCol, (snapshot) => {
                 const listElement = document.getElementById('notice-list');
                 let notices = [];
                 snapshot.forEach(doc => notices.push({ id: doc.id, ...doc.data() }));
                 
-                // Rule 2: 메모리 내 정렬
+                // 최신순 정렬
                 notices.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
                 let html = '';
                 notices.forEach(notice => {
                     const date = notice.createdAt ? new Date(notice.createdAt.seconds * 1000).toLocaleString('ko-KR') : '방금 전';
                     html += `
-                        <div class="group bg-white/[0.03] border border-white/5 p-5 rounded-2xl hover:border-purple-500/50 transition-all duration-300 mb-4 animate-fade-in">
-                            <div class="flex justify-between items-start mb-3">
+                        <div class="group bg-white/[0.03] border border-white/5 p-5 rounded-2xl hover:border-purple-500/50 transition-all mb-4">
+                            <div class="flex justify-between items-start">
                                 <div class="flex-1 overflow-hidden">
                                     <p class="text-white text-[15px] leading-relaxed break-all font-medium">${notice.text}</p>
-                                    <p class="text-gray-500 text-[10px] mt-2 font-mono uppercase tracking-tighter">
+                                    <p class="text-gray-500 text-[10px] mt-2 uppercase tracking-tighter">
                                         <i class="far fa-clock mr-1"></i> ${date}
                                     </p>
                                 </div>
                                 <div class="flex space-x-2 ml-4">
-                                    <button onclick="prepareEdit('${notice.id}', \`${notice.text.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-all">
-                                        <i class="fas fa-pen text-[10px]"></i>
+                                    <button onclick="prepareEdit('${notice.id}', \`${notice.text.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
+                                            class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center" title="수정">
+                                        <i class="fas fa-edit text-xs"></i>
                                     </button>
-                                    <button onclick="deleteNotice('${notice.id}')" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all">
-                                        <i class="fas fa-trash-alt text-[10px]"></i>
+                                    <button onclick="deleteNotice('${notice.id}')" 
+                                            class="w-9 h-9 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center" title="삭제">
+                                        <i class="fas fa-trash-alt text-xs"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     `;
                 });
-                listElement.innerHTML = html || `<div class="py-20 text-center opacity-30 text-xs">등록된 공지가 없습니다.</div>`;
-            }, (error) => {
-                console.error("데이터 수신 오류:", error);
-            });
+                listElement.innerHTML = html || `<div class="py-20 text-center opacity-30 text-xs">등록된 공지사항이 없습니다.</div>`;
+            }, (error) => console.error("데이터 로드 실패:", error));
         }
 
-        // 4. 저장/수정 함수 (Rule 3 준수: Auth 완료 후 실행)
+        // 4. 저장 및 수정 로직
         window.saveNotice = async () => {
-            if (!isAuthReady) return showToast("서버 인증 중입니다. 잠시만 기다려주세요.");
+            if (!isAuthReady) return showToast("인증 중입니다. 잠시만 기다려주세요.");
 
             const input = document.getElementById('notice-input');
             const text = input.value.trim();
             const btn = document.getElementById('submit-btn');
 
-            if (!text) return showToast("내용을 입력해주세요.");
+            if (!text) return showToast("공지 내용을 입력해주세요.");
 
             try {
                 btn.disabled = true;
@@ -106,13 +104,16 @@
 
                 if (editingId) {
                     const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'notices', editingId);
-                    await updateDoc(docRef, { text, updatedAt: serverTimestamp() });
-                    showToast("성공적으로 수정되었습니다.");
+                    await updateDoc(docRef, { 
+                        text: text,
+                        updatedAt: serverTimestamp() 
+                    });
+                    showToast("공지가 수정되었습니다.");
                     cancelEdit();
                 } else {
                     const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
                     await addDoc(noticeCol, {
-                        text,
+                        text: text,
                         createdAt: serverTimestamp(),
                         uid: auth.currentUser.uid
                     });
@@ -121,134 +122,139 @@
                 input.value = "";
             } catch (e) {
                 console.error("저장 오류:", e);
-                showToast("데이터 저장에 실패했습니다.");
+                showToast("저장에 실패했습니다.");
             } finally {
                 btn.disabled = false;
-                updateButtonState();
+                updateUIState();
             }
         };
 
+        // 5. 수정 모드 진입
         window.prepareEdit = (id, text) => {
             editingId = id;
             const input = document.getElementById('notice-input');
             input.value = text;
             input.focus();
-            updateButtonState();
+            updateUIState();
             showToast("수정 모드 활성화");
         };
 
+        // 6. 수정 취소
         window.cancelEdit = () => {
             editingId = null;
             document.getElementById('notice-input').value = "";
-            updateButtonState();
+            updateUIState();
         };
 
+        // 7. 삭제 로직
         window.deleteNotice = async (id) => {
-            if (!confirm("이 공지를 삭제하시겠습니까?")) return;
+            if (!confirm("이 공지사항을 삭제하시겠습니까?\n삭제 즉시 홈페이지에서 사라집니다.")) return;
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'notices', id);
                 await deleteDoc(docRef);
-                showToast("삭제되었습니다.");
+                showToast("삭제 완료");
             } catch (e) {
                 showToast("삭제 실패");
             }
         };
 
-        function updateButtonState() {
+        function updateUIState() {
             const btn = document.getElementById('submit-btn');
-            const cancelBtn = document.getElementById('cancel-edit-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const title = document.getElementById('editor-title');
+            
             if (editingId) {
                 btn.innerText = "공지 수정 완료";
                 btn.classList.replace('bg-purple-600', 'bg-blue-600');
                 cancelBtn.classList.remove('hidden');
+                title.innerText = "공지 수정하기";
             } else {
-                btn.innerText = "공지 등록 및 배포";
+                btn.innerText = "공지 등록 및 즉시 배포";
                 btn.classList.replace('bg-blue-600', 'bg-purple-600');
                 cancelBtn.classList.add('hidden');
+                title.innerText = "새 공지 작성";
             }
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.querySelector('span').innerText = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
+            toast.classList.replace('translate-y-20', 'translate-y-0');
+            toast.classList.replace('opacity-0', 'opacity-100');
             setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.replace('translate-y-0', 'translate-y-20');
+                toast.classList.replace('opacity-100', 'opacity-0');
             }, 3000);
         }
-
-        // 실행
-        window.onload = initializeDashboard;
     </script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         body { font-family: 'Pretendard', sans-serif; background: #05020a; color: #fff; -webkit-font-smoothing: antialiased; }
         .glass-panel { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .purple-glow { box-shadow: 0 0 60px -10px rgba(138, 79, 255, 0.1); }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        ::-webkit-scrollbar { width: 4px; }
+        .purple-glow { box-shadow: 0 0 60px -15px rgba(138, 79, 255, 0.15); }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen">
     <div class="max-w-6xl mx-auto px-6 py-12 lg:py-20">
-        <!-- Header -->
+        <!-- 상단 헤더 -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
             <div>
                 <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-bolt text-white"></i>
+                    <div class="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/40">
+                        <i class="fas fa-cog text-white text-lg"></i>
                     </div>
                     <h1 class="text-2xl font-black tracking-tighter uppercase">Hanroro Center</h1>
                 </div>
-                <p class="text-gray-500 text-sm">실시간 공지사항 통합 관리 환경</p>
+                <p class="text-gray-500 text-sm">공지사항 실시간 관리 및 데이터 배포 시스템</p>
             </div>
             
             <div class="glass-panel px-6 py-4 rounded-2xl flex items-center">
                 <div class="flex items-center text-xs font-bold">
-                    <span id="connection-dot" class="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-pulse"></span>
-                    <span id="connection-status" class="text-gray-300">서버 연결 중...</span>
+                    <span id="status-dot" class="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-pulse"></span>
+                    <span id="status-text" class="text-gray-300">연결 대기 중...</span>
                 </div>
             </div>
         </header>
 
-        <!-- UI Layout -->
+        <!-- 메인 관리 영역 -->
         <div class="grid lg:grid-cols-12 gap-10">
-            <!-- Left: Writer -->
+            <!-- 왼쪽: 에디터 -->
             <div class="lg:col-span-7">
-                <div class="glass-panel rounded-[2.5rem] p-10 purple-glow relative">
+                <div class="glass-panel rounded-[2.5rem] p-10 purple-glow">
                     <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-lg font-bold flex items-center">
-                            <span class="w-1 h-5 bg-purple-500 mr-3 rounded-full"></span>
+                        <h2 id="editor-title" class="text-lg font-bold flex items-center">
                             새 공지 작성
                         </h2>
-                        <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden text-[10px] font-black text-red-400 uppercase tracking-widest hover:opacity-70">
+                        <button id="cancel-btn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-400 hover:opacity-70 transition-all">
                             수정 취소 <i class="fas fa-times ml-1"></i>
                         </button>
                     </div>
 
-                    <textarea id="notice-input" rows="6" 
-                        class="w-full bg-white/[0.03] border border-white/10 p-6 rounded-3xl text-[15px] leading-relaxed text-gray-200 outline-none transition-all focus:border-purple-600 focus:bg-purple-600/[0.02] resize-none" 
-                        placeholder="공지 내용을 입력해 주세요. 등록 즉시 메인 페이지에 반영됩니다."></textarea>
+                    <textarea id="notice-input" rows="8" 
+                        class="w-full bg-white/[0.03] border border-white/10 p-7 rounded-[1.5rem] text-[15px] leading-relaxed text-gray-200 outline-none transition-all focus:border-purple-600 focus:bg-purple-600/[0.02] resize-none placeholder:text-gray-600" 
+                        placeholder="공지할 내용을 입력하세요. 등록 시 홈페이지에 실시간으로 반영됩니다."></textarea>
                     
                     <button id="submit-btn" onclick="saveNotice()" 
                         class="w-full mt-6 bg-purple-600 hover:bg-purple-500 text-white py-5 rounded-2xl font-black text-[15px] transition-all transform active:scale-[0.98] shadow-2xl shadow-purple-900/40">
-                        공지 등록 및 배포
+                        공지 등록 및 즉시 배포
                     </button>
                 </div>
             </div>
 
-            <!-- Right: History -->
+            <!-- 오른쪽: 히스토리 -->
             <div class="lg:col-span-5 flex flex-col">
                 <div class="glass-panel rounded-[2.5rem] p-10 flex-1 flex flex-col min-h-[500px]">
-                    <h2 class="text-lg font-bold mb-8">배포 기록 관리</h2>
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-lg font-bold">배포 기록</h2>
+                        <span class="text-[10px] text-gray-600 font-mono">HISTORY LOG</span>
+                    </div>
+
                     <div id="notice-list" class="flex-1 overflow-y-auto pr-2 custom-scroll">
                         <div class="flex flex-col items-center justify-center py-20 opacity-20">
-                            <i class="fas fa-spinner animate-spin text-2xl mb-4"></i>
+                            <i class="fas fa-circle-notch animate-spin text-2xl mb-4"></i>
                             <p class="text-xs">데이터 로드 중...</p>
                         </div>
                     </div>
@@ -256,8 +262,8 @@
             </div>
         </div>
 
-        <!-- Toast -->
-        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-black px-8 py-4 rounded-2xl font-black text-xs shadow-2xl transition-all duration-500 transform translate-y-20 opacity-0 pointer-events-none z-[100] flex items-center">
+        <!-- 알림 토스트 -->
+        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass-panel !bg-white !text-black px-10 py-5 rounded-2xl font-black text-xs shadow-2xl transition-all duration-500 transform translate-y-20 opacity-0 pointer-events-none z-[100] flex items-center">
             <i class="fas fa-info-circle text-purple-600 mr-3 text-lg"></i>
             <span>메시지</span>
         </div>
