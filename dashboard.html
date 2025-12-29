@@ -12,6 +12,7 @@
         import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
+        // 1. 설정 (프로젝트 ID: hanroro-web)
         let db, auth;
         const appId = 'hanroro-web';
         let isAuthReady = false;
@@ -23,19 +24,13 @@
             const debugArea = document.getElementById('debug-log');
 
             try {
-                // 1. Firebase 설정 확인
-                let config;
-                if (typeof __firebase_config !== 'undefined') {
-                    config = JSON.parse(__firebase_config);
-                } else {
-                    throw new Error("환경 변수(__firebase_config)를 찾을 수 없습니다.");
-                }
-
+                // 환경변수 체크 및 초기화
+                const config = JSON.parse(__firebase_config);
                 const app = initializeApp(config);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // 2. 인증 시도
+                // 2. 인증 시도 (Rule 3 준수)
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -45,26 +40,23 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         isAuthReady = true;
-                        statusText.innerText = "연결 성공 (ID: " + user.uid.substring(0,6) + ")";
-                        statusDot.classList.replace('bg-red-500', 'bg-emerald-500');
-                        statusDot.classList.replace('bg-yellow-500', 'bg-emerald-500');
-                        statusDot.classList.remove('animate-pulse');
+                        statusText.innerText = "데이터베이스 연결됨";
+                        statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 mr-2";
+                        debugArea.classList.add('hidden');
                         setupRealtimeListener();
                     }
                 });
 
             } catch (err) {
-                console.error("초기화 실패:", err);
-                statusText.innerText = "연결 오류";
-                statusDot.classList.replace('bg-yellow-500', 'bg-red-500');
-                statusDot.classList.remove('animate-pulse');
-                
-                // 화면에 에러 로그 출력 (디버깅용)
+                console.error("연결 실패:", err);
+                statusText.innerText = "연결 오류 발생";
+                statusDot.className = "w-2 h-2 rounded-full bg-red-500 mr-2";
                 debugArea.classList.remove('hidden');
-                debugArea.innerText = "Error: " + err.message + "\n파이어베이스 설정값 혹은 보안 규칙을 확인해주세요.";
+                debugArea.innerText = "오류 원인: " + err.message;
             }
         };
 
+        // 3. 실시간 데이터 읽기
         function setupRealtimeListener() {
             const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
             
@@ -72,69 +64,103 @@
                 const listElement = document.getElementById('notice-list');
                 let notices = [];
                 snapshot.forEach(doc => notices.push({ id: doc.id, ...doc.data() }));
+                
+                // 최신순 정렬
                 notices.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
                 let html = '';
                 notices.forEach(notice => {
                     const date = notice.createdAt ? new Date(notice.createdAt.seconds * 1000).toLocaleString('ko-KR') : '방금 전';
                     html += `
-                        <div class="group bg-white/[0.03] border border-white/5 p-5 rounded-2xl hover:border-purple-500/40 transition-all mb-4">
+                        <div class="group glass-item p-5 rounded-2xl mb-4 border border-white/5 hover:border-purple-500/30 transition-all">
                             <div class="flex justify-between items-start">
-                                <div class="flex-1 overflow-hidden">
-                                    <p class="text-white text-[14px] leading-relaxed break-all">${notice.text}</p>
-                                    <p class="mt-2 text-[10px] text-gray-500 font-mono">${date}</p>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm leading-relaxed">${notice.text}</p>
+                                    <p class="text-[10px] text-gray-500 mt-2 font-mono">${date}</p>
                                 </div>
                                 <div class="flex space-x-2 ml-4">
-                                    <button onclick="prepareEdit('${notice.id}', \`${notice.text.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" class="text-blue-400 p-2 hover:bg-blue-500/10 rounded-lg transition-all"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteNotice('${notice.id}')" class="text-red-400 p-2 hover:bg-red-500/10 rounded-lg transition-all"><i class="fas fa-trash-alt"></i></button>
+                                    <button onclick="prepareEdit('${notice.id}', \`${notice.text.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
+                                            class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center">
+                                        <i class="fas fa-pen text-[10px]"></i>
+                                    </button>
+                                    <button onclick="deleteNotice('${notice.id}')" 
+                                            class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
+                                        <i class="fas fa-trash text-[10px]"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>`;
                 });
-                listElement.innerHTML = html || `<div class="py-20 text-center opacity-20 text-xs">기록이 없습니다.</div>`;
+                listElement.innerHTML = html || `<div class="py-20 text-center opacity-20 text-xs">작성된 공지가 없습니다.</div>`;
             }, (err) => {
-                document.getElementById('debug-log').innerText = "Firestore 권한 에러: 보안 규칙을 확인하세요.";
-                document.getElementById('debug-log').classList.remove('hidden');
+                showToast("데이터 읽기 권한이 없습니다.");
             });
         }
 
+        // 4. 공지 저장 (등록/수정)
         window.saveNotice = async () => {
             if (!isAuthReady) return;
             const input = document.getElementById('notice-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text) return showToast("내용을 입력해주세요.");
 
+            const btn = document.getElementById('submit-btn');
             try {
+                btn.disabled = true;
+                btn.innerText = "처리 중...";
+
                 if (editingId) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', editingId), { text, updatedAt: serverTimestamp() });
-                    editingId = null;
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'notices', editingId);
+                    await updateDoc(docRef, { text, updatedAt: serverTimestamp() });
+                    showToast("수정되었습니다.");
+                    cancelEdit();
                 } else {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), { text, createdAt: serverTimestamp(), uid: auth.currentUser.uid });
+                    const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+                    await addDoc(noticeCol, { 
+                        text, 
+                        createdAt: serverTimestamp(), 
+                        uid: auth.currentUser.uid 
+                    });
+                    showToast("성공적으로 등록되었습니다.");
                 }
                 input.value = "";
-                updateUI();
-                showToast("처리 완료");
             } catch (e) {
-                showToast("저장 실패 (권한 없음)");
+                showToast("저장 실패: 보안 규칙을 확인하세요.");
+            } finally {
+                btn.disabled = false;
+                updateUI();
             }
         };
 
         window.deleteNotice = async (id) => {
-            if (!confirm("삭제하시겠습니까?")) return;
-            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id)); } catch (e) { showToast("삭제 실패"); }
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
+                showToast("삭제 완료");
+            } catch (e) { showToast("삭제 실패"); }
         };
 
         window.prepareEdit = (id, text) => {
             editingId = id;
             document.getElementById('notice-input').value = text;
+            document.getElementById('notice-input').focus();
+            updateUI();
+        };
+
+        window.cancelEdit = () => {
+            editingId = null;
+            document.getElementById('notice-input').value = "";
             updateUI();
         };
 
         function updateUI() {
             const btn = document.getElementById('submit-btn');
-            btn.innerText = editingId ? "내용 수정하기" : "공지 등록 및 즉시 배포";
-            btn.classList.toggle('bg-blue-600', !!editingId);
-            btn.classList.toggle('bg-purple-600', !editingId);
+            const cancelBtn = document.getElementById('cancel-btn');
+            btn.innerText = editingId ? "내용 수정 완료" : "공지 등록 및 배포";
+            btn.className = editingId 
+                ? "w-full mt-4 bg-blue-600 py-4 rounded-xl font-bold text-sm shadow-lg transition-all" 
+                : "w-full mt-4 bg-purple-600 py-4 rounded-xl font-bold text-sm shadow-lg transition-all";
+            editingId ? cancelBtn.classList.remove('hidden') : cancelBtn.classList.add('hidden');
         }
 
         function showToast(msg) {
@@ -149,37 +175,48 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;900&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background: #05020a; color: white; -webkit-font-smoothing: antialiased; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        body { font-family: 'Pretendard', sans-serif; background: #080410; color: white; -webkit-font-smoothing: antialiased; }
+        .glass-panel { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-item { background: rgba(255, 255, 255, 0.03); }
     </style>
 </head>
 <body class="p-6 md:p-12 min-h-screen">
     <div class="max-w-4xl mx-auto">
         <header class="flex justify-between items-center mb-10">
-            <h1 class="text-xl font-black tracking-tighter uppercase italic">Hanroro Admin</h1>
-            <div class="glass px-4 py-2 rounded-xl flex items-center text-[10px] font-bold">
+            <div>
+                <h1 class="text-xl font-black tracking-tighter uppercase italic text-purple-500">Hanroro Admin</h1>
+                <p class="text-[10px] text-gray-500 font-bold uppercase mt-1">Real-time Control Panel</p>
+            </div>
+            <div class="glass-panel px-4 py-2 rounded-xl flex items-center text-[10px] font-bold">
                 <span id="status-dot" class="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-pulse"></span>
-                <span id="status-text" class="text-gray-400">시스템 초기화 중...</span>
+                <span id="status-text" class="text-gray-400">시스템 연결 시도 중...</span>
             </div>
         </header>
 
-        <div id="debug-log" class="hidden mb-6 p-4 bg-red-900/20 border border-red-500/50 rounded-xl text-red-400 text-xs font-mono break-all"></div>
+        <div id="debug-log" class="hidden mb-6 p-4 bg-red-900/20 border border-red-500/50 rounded-xl text-red-400 text-[10px] font-mono break-all"></div>
 
         <div class="grid gap-8">
-            <div class="glass rounded-3xl p-8">
-                <textarea id="notice-input" rows="5" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-purple-600 transition-all resize-none" placeholder="내용을 입력하세요..."></textarea>
-                <button id="submit-btn" onclick="saveNotice()" class="w-full mt-4 bg-purple-600 py-4 rounded-xl font-bold text-sm shadow-lg shadow-purple-900/20">공지 등록 및 즉시 배포</button>
+            <div class="glass-panel rounded-3xl p-8 shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold text-sm">공지 작성</h2>
+                    <button id="cancel-btn" onclick="cancelEdit()" class="hidden text-[10px] text-red-400 font-bold hover:underline">수정 취소</button>
+                </div>
+                <textarea id="notice-input" rows="4" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-purple-600 transition-all resize-none placeholder:text-gray-600" placeholder="여기에 내용을 입력하면 실시간으로 홈페이지에 반영됩니다."></textarea>
+                <button id="submit-btn" onclick="saveNotice()" class="w-full mt-4 bg-purple-600 py-4 rounded-xl font-bold text-sm shadow-lg shadow-purple-900/20 active:scale-95 transition-transform">공지 등록 및 배포</button>
             </div>
 
-            <div class="glass rounded-3xl p-8 min-h-[300px]">
-                <h2 class="font-bold text-sm mb-6 text-gray-400 uppercase tracking-widest">배포 기록</h2>
-                <div id="notice-list" class="space-y-4"></div>
+            <div class="glass-panel rounded-3xl p-8 min-h-[400px]">
+                <h2 class="font-bold text-sm mb-6 text-gray-400 uppercase tracking-widest">실시간 배포 기록</h2>
+                <div id="notice-list">
+                    <div class="text-center py-20 opacity-10"><i class="fas fa-database text-4xl"></i></div>
+                </div>
             </div>
         </div>
 
-        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass !bg-white !text-black px-6 py-3 rounded-xl font-bold text-[10px] opacity-0 transition-opacity pointer-events-none z-50 flex items-center shadow-2xl">
-            <i class="fas fa-info-circle mr-2 text-purple-600"></i><span>알림</span>
+        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass-panel !bg-white !text-black px-6 py-3 rounded-xl font-bold text-[11px] opacity-0 transition-opacity pointer-events-none z-50 flex items-center shadow-2xl">
+            <i class="fas fa-check-circle mr-2 text-purple-600"></i><span>메시지</span>
         </div>
     </div>
 </body>
 </html>
+
