@@ -194,7 +194,7 @@
         </div>
     </section>
 
-    <!-- Notice Ticker (실시간 연동 영역) -->
+    <!-- Notice Ticker (실시간 연동 영역 유지) -->
     <section class="notice-ticker py-6">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center sm:space-x-6">
             <div class="flex items-center space-x-3 shrink-0">
@@ -252,23 +252,36 @@
         </div>
     </div>
 
-    <!-- Firebase SDK (Real-time Integration) -->
+    <!-- Firebase SDK 실시간 연동 (디자인 유지 및 연동 로직 추가) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
+        // 제공해주신 실제 Firebase 설정값
+        const firebaseConfig = {
+          apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI",
+          authDomain: "hanroro-web.firebaseapp.com",
+          projectId: "hanroro-web",
+          storageBucket: "hanroro-web.firebasestorage.app",
+          messagingSenderId: "461514865624",
+          appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad",
+          measurementId: "G-8L3EFM6PY8"
+        };
+
+        const noticeText = document.getElementById('notice-text');
+        const noticeDate = document.getElementById('notice-date');
+
         async function initRealtimeNotice() {
             try {
-                if (typeof __firebase_config === 'undefined') return;
-
-                const firebaseConfig = JSON.parse(__firebase_config);
                 const app = initializeApp(firebaseConfig);
                 const db = getFirestore(app);
                 const auth = getAuth(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web-app';
+                
+                // 대시보드와 동일한 고정 앱 ID
+                const appId = "hanroro-official-service";
 
-                // 익명 로그인 후 데이터 구독
+                // 익명 로그인
                 await signInAnonymously(auth);
                 
                 onAuthStateChanged(auth, (user) => {
@@ -284,24 +297,24 @@
                             
                             if (items.length > 0) {
                                 const latest = items[0];
-                                document.getElementById('notice-text').innerText = latest.text;
+                                noticeText.innerText = latest.text;
                                 if (latest.createdAt) {
                                     const date = new Date(latest.createdAt.seconds * 1000);
-                                    document.getElementById('notice-date').innerText = date.toLocaleDateString();
+                                    noticeDate.innerText = date.toLocaleDateString('ko-KR');
                                 }
                             } else {
-                                document.getElementById('notice-text').innerText = "현재 등록된 새로운 소식이 없습니다.";
-                                document.getElementById('notice-date').innerText = "-";
+                                noticeText.innerText = "현재 등록된 소식이 없습니다.";
+                                noticeDate.innerText = "-";
                             }
                         });
                     }
                 });
             } catch (err) {
-                console.error("Notice Integration Error:", err);
+                console.error("Notice Sync Error:", err);
+                noticeText.innerText = "서버 연결 오류가 발생했습니다.";
             }
         }
 
-        // 초기화 실행
         initRealtimeNotice();
     </script>
 
