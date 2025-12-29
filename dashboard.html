@@ -6,49 +6,58 @@
     <title>한로로 관리자 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #05020a; color: #ffffff; }
+        .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen p-4 sm:p-8">
+<body class="min-h-screen p-4 sm:p-8">
     <div class="max-w-4xl mx-auto">
         <header class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
             <div>
                 <h1 class="text-2xl font-black text-purple-400">ADMIN DASHBOARD</h1>
-                <p class="text-slate-400 text-sm">메인 페이지의 실시간 공지사항을 관리합니다.</p>
+                <p class="text-gray-400 text-sm">메인 페이지 실시간 공지사항 관리</p>
             </div>
-            <div class="bg-purple-500/10 text-purple-400 px-4 py-2 rounded-lg text-xs font-bold border border-purple-500/20">
-                연결됨: <span id="user-id">...</span>
+            <div id="auth-status" class="bg-red-500/10 text-red-400 px-4 py-2 rounded-lg text-xs font-bold border border-red-500/20">
+                연결 대기 중...
             </div>
         </header>
 
-        <!-- 공지사항 작성 폼 -->
-        <div class="bg-slate-800 rounded-3xl p-6 sm:p-10 border border-white/5 shadow-2xl">
+        <!-- 공지사항 작성 -->
+        <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl mb-12">
             <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <i class="fas fa-bullhorn text-purple-400"></i> 새 공지사항 작성
+                <i class="fas fa-edit text-purple-400"></i> 새 공지사항 게시
             </h2>
             <div class="space-y-4">
-                <textarea id="notice-input" rows="4" placeholder="메인 페이지 하단에 표시될 텍스트를 입력하세요." 
-                          class="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all"></textarea>
-                <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-purple-900/20">
-                    메인 페이지에 즉시 게시하기
+                <textarea id="notice-input" rows="3" placeholder="메인 페이지 하단에 노출될 문구를 입력하세요." 
+                          class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all"></textarea>
+                <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all disabled:opacity-50">
+                    게시하기
                 </button>
             </div>
         </div>
 
-        <!-- 게시물 히스토리 -->
-        <div class="mt-12">
+        <!-- 게시 기록 -->
+        <div>
             <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <i class="fas fa-history text-slate-400"></i> 게시 기록
+                <i class="fas fa-list text-gray-400"></i> 최근 게시물 (최대 10개)
             </h2>
             <div id="notice-history" class="space-y-3">
-                <p class="text-slate-500 text-sm">기록을 불러오고 있습니다...</p>
+                <div class="animate-pulse flex space-x-4">
+                    <div class="flex-1 space-y-4 py-1">
+                        <div class="h-4 bg-white/5 rounded w-3/4"></div>
+                        <div class="h-4 bg-white/5 rounded"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK Setup -->
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
@@ -56,63 +65,113 @@
         const auth = getAuth(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web-app';
 
+        let currentUser = null;
+
+        // RULE 3: Auth Before Queries
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("인증 오류:", error);
+                document.getElementById('auth-status').innerText = "인증 실패";
+            }
+        };
+
         onAuthStateChanged(auth, (user) => {
+            currentUser = user;
             if (user) {
-                document.getElementById('user-id').innerText = user.uid.substring(0, 8);
-                const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-
-                // 1. 게시하기 로직
-                document.getElementById('post-btn').onclick = async () => {
-                    const text = document.getElementById('notice-input').value.trim();
-                    if (!text) return alert('내용을 입력해주세요.');
-
-                    try {
-                        await addDoc(noticeCol, {
-                            text: text,
-                            createdAt: serverTimestamp(),
-                            authorId: user.uid
-                        });
-                        document.getElementById('notice-input').value = '';
-                    } catch (e) {
-                        console.error(e);
-                    }
-                };
-
-                // 2. 히스토리 로드 및 실시간 업데이트
-                onSnapshot(noticeCol, (snapshot) => {
-                    let items = [];
-                    snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-                    items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-                    const listEl = document.getElementById('notice-history');
-                    if (items.length === 0) {
-                        listEl.innerHTML = '<p class="text-slate-600 text-sm">작성된 게시물이 없습니다.</p>';
-                        return;
-                    }
-
-                    listEl.innerHTML = items.map(item => `
-                        <div class="bg-slate-800/50 border border-white/5 p-4 rounded-xl flex justify-between items-center group">
-                            <div class="flex-1 min-w-0 pr-4">
-                                <p class="text-sm text-slate-200 truncate">${item.text}</p>
-                                <span class="text-[10px] text-slate-500">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : '방금 전'}</span>
-                            </div>
-                            <button onclick="deleteNotice('${item.id}')" class="text-slate-600 hover:text-red-400 p-2 transition-colors">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    `).join('');
-                });
-
-                // 글로벌 삭제 함수
-                window.deleteNotice = async (id) => {
-                    if (confirm('이 게시물을 삭제하시겠습니까?')) {
-                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
-                    }
-                };
-            } else {
-                signInAnonymously(auth);
+                const statusEl = document.getElementById('auth-status');
+                statusEl.innerText = "연결됨: " + user.uid.substring(0, 8);
+                statusEl.classList.replace('text-red-400', 'text-emerald-400');
+                statusEl.classList.replace('bg-red-500/10', 'bg-emerald-500/10');
+                statusEl.classList.replace('border-red-500/20', 'border-emerald-500/20');
+                
+                loadNotices();
             }
         });
+
+        const loadNotices = () => {
+            if (!currentUser) return;
+            const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+            
+            // RULE 2: No Complex Queries (JS에서 정렬)
+            onSnapshot(noticeCol, (snapshot) => {
+                let items = [];
+                snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+                
+                // 최신순 정렬
+                items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                
+                const listEl = document.getElementById('notice-history');
+                if (items.length === 0) {
+                    listEl.innerHTML = '<p class="text-gray-600 text-sm text-center py-10">기록이 없습니다.</p>';
+                    return;
+                }
+
+                listEl.innerHTML = items.map(item => `
+                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center">
+                        <div class="min-w-0 pr-4">
+                            <p class="text-sm text-gray-200">${item.text}</p>
+                            <span class="text-[10px] text-gray-500 mt-1 block">
+                                ${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : '저장 중...'}
+                            </span>
+                        </div>
+                        <button onclick="window.deleteNotice('${item.id}')" class="text-gray-500 hover:text-red-400 transition-colors px-2">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }, (error) => {
+                console.error("Firestore 리스너 오류:", error);
+            });
+        };
+
+        // 게시 기능
+        document.getElementById('post-btn').onclick = async () => {
+            if (!currentUser) return;
+            const input = document.getElementById('notice-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            const postBtn = document.getElementById('post-btn');
+            postBtn.disabled = true;
+            postBtn.innerText = "게시 중...";
+
+            try {
+                const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+                await addDoc(noticeCol, {
+                    text: text,
+                    createdAt: serverTimestamp(),
+                    uid: currentUser.uid
+                });
+                input.value = '';
+            } catch (error) {
+                console.error("게시 실패:", error);
+                alert("게시 중 오류가 발생했습니다.");
+            } finally {
+                postBtn.disabled = false;
+                postBtn.innerText = "게시하기";
+            }
+        };
+
+        // 전역 함수 등록
+        window.deleteNotice = async (id) => {
+            if (!currentUser) return;
+            if (confirm("게시물을 삭제하시겠습니까? 메인 페이지에서도 즉시 사라집니다.")) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
+                } catch (error) {
+                    console.error("삭제 실패:", error);
+                }
+            }
+        };
+
+        initAuth();
     </script>
 </body>
 </html>
