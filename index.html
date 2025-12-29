@@ -6,7 +6,6 @@
     <title>한로로(Hanroro) | 프리미엄 웹 에이전시</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         
@@ -124,7 +123,6 @@
             width: 100%; height: 70vh; border-radius: 12px; overflow: hidden; background: white;
         }
 
-        /* 튀어나오는 효과 적용된 고객 현황 카드 */
         .project-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -142,7 +140,6 @@
             z-index: 10;
         }
 
-        /* 튀어나오는 효과 적용된 제작 사례 카드 */
         .case-card {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.05);
@@ -161,7 +158,6 @@
             z-index: 10;
         }
 
-        /* 세련된 폼 카드 */
         .form-card {
             background: rgba(255, 255, 255, 0.02); 
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -193,13 +189,16 @@
             font-size: 15px; 
             font-weight: 500;
         }
-        .form-card select option {
-            background: #0f0a1f;
-            color: white;
-        }
 
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
         .float-animation { animation: float 4s ease-in-out infinite; }
+
+        .notice-ticker {
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
     </style>
 </head>
 <body class="overflow-x-hidden pb-32">
@@ -272,7 +271,7 @@
         </div>
     </section>
 
-    <!-- 1. 진행 중인 프로젝트 Section -->
+    <!-- Projects Section -->
     <section id="live-status" class="py-24 border-t border-white/5 bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center"><span class="status-dot"></span> LIVE STATUS</h2>
@@ -281,174 +280,65 @@
         </div>
     </section>
 
-    <!-- 2. 제작 사례 현황 Section -->
+    <!-- Case Studies Section -->
     <section id="case-studies" class="py-24 bg-black/30 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="mb-16">
                 <h2 class="text-purple-400 font-bold uppercase text-[10px] tracking-widest mb-2">Success Stories</h2>
                 <h3 class="text-3xl sm:text-4xl font-black">제작 사례 현황</h3>
-                <p class="text-gray-500 mt-4">한로로와 함께 성공적인 비즈니스를 구축한 파트너사들을 확인해보세요.</p>
             </div>
-
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-purple-900/20 flex items-center justify-center border-b border-white/5">
                         <i class="fas fa-laptop-code text-5xl text-purple-500/40"></i>
                     </div>
                     <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-purple-400 uppercase">Corporate</span>
-                            <span class="text-[10px] text-gray-500">2026.01</span>
-                        </div>
                         <h4 class="text-xl font-bold text-white mb-2">프리미엄 비즈니스 솔루션</h4>
-                        <p class="text-gray-500 text-sm mb-6">사용자 중심의 UX 설계로 전환율이 150% 향상된 전문 기업용 웹사이트입니다.</p>
-                        <div class="flex items-center text-purple-400 text-xs font-bold">
-                            상세 내역 보기 <i class="fas fa-external-link-alt ml-2"></i>
-                        </div>
+                        <p class="text-gray-500 text-sm mb-6">사용자 중심의 UX 설계로 전환율이 향상된 전문 기업용 웹사이트입니다.</p>
+                        <div class="flex items-center text-purple-400 text-xs font-bold">상세 보기 <i class="fas fa-external-link-alt ml-2"></i></div>
                     </div>
                 </div>
-
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-blue-900/20 flex items-center justify-center border-b border-white/5">
                         <i class="fas fa-shopping-cart text-5xl text-blue-500/40"></i>
                     </div>
                     <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-blue-400 uppercase">E-Commerce</span>
-                            <span class="text-[10px] text-gray-500">2025.12</span>
-                        </div>
                         <h4 class="text-xl font-bold text-white mb-2">글로벌 패션 스토어</h4>
-                        <p class="text-gray-500 text-sm mb-6">다국어 지원 및 결제 시스템 고도화로 글로벌 시장 확장에 최적화된 쇼핑몰입니다.</p>
-                        <div class="flex items-center text-purple-400 text-xs font-bold">
-                            상세 내역 보기 <i class="fas fa-external-link-alt ml-2"></i>
-                        </div>
+                        <p class="text-gray-500 text-sm mb-6">다국어 지원 및 결제 시스템 고도화로 시장 확장에 최적화된 쇼핑몰입니다.</p>
+                        <div class="flex items-center text-purple-400 text-xs font-bold">상세 보기 <i class="fas fa-external-link-alt ml-2"></i></div>
                     </div>
                 </div>
-
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-emerald-900/20 flex items-center justify-center border-b border-white/5">
                         <i class="fas fa-rocket text-5xl text-emerald-500/40"></i>
                     </div>
                     <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-emerald-400 uppercase">Startup</span>
-                            <span class="text-[10px] text-gray-500">2025.11</span>
-                        </div>
                         <h4 class="text-xl font-bold text-white mb-2">혁신 기술 스타트업</h4>
                         <p class="text-gray-500 text-sm mb-6">비전과 기술력을 효과적으로 전달하기 위한 인터랙티브한 랜딩 페이지입니다.</p>
-                        <div class="flex items-center text-purple-400 text-xs font-bold">
-                            상세 내역 보기 <i class="fas fa-external-link-alt ml-2"></i>
-                        </div>
+                        <div class="flex items-center text-purple-400 text-xs font-bold">상세 보기 <i class="fas fa-external-link-alt ml-2"></i></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Case Detail Preview Modal -->
-    <div id="preview-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('preview-modal', false)">
-        <div class="modal-content !max-w-5xl !p-0 overflow-hidden">
-            <div class="bg-[#1a0b35] p-4 flex items-center justify-between border-b border-white/10">
-                <span class="text-xs font-bold text-purple-300"><i class="fas fa-shield-alt mr-2"></i> 보안 연결: hanroro-web.github.io</span>
-                <button onclick="toggleModal('preview-modal', false)" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+    <!-- Notice Section -->
+    <section class="notice-ticker py-6">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6">
+            <div class="flex items-center space-x-3 shrink-0">
+                <span class="bg-purple-600 text-white text-[10px] font-black px-2 py-0.5 rounded">NOTICE</span>
+                <div class="w-px h-4 bg-white/20 hidden sm:block"></div>
             </div>
-            <div class="iframe-container">
-                <iframe src="https://hanroro-web.github.io/io/web-01.html" class="w-full h-full border-none" title="Portfolio Detail"></iframe>
-            </div>
-            <div class="p-4 bg-[#0f0a1f] flex justify-center">
-                <button onclick="toggleModal('preview-modal', false); toggleModal('contact-modal', true);" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold text-sm">나도 이런 홈페이지 만들기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 세련된 업데이트 버전: Contact Modal -->
-    <div id="contact-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('contact-modal', false)">
-        <div class="modal-content relative !p-0 flex flex-col md:flex-row min-h-[500px]">
-            <!-- 좌측: 안내 영역 -->
-            <div class="md:w-1/3 bg-gradient-to-br from-purple-800 to-purple-950 p-8 md:p-12 flex flex-col justify-between overflow-hidden relative">
-                <div class="relative z-10">
-                    <i class="fas fa-paper-plane text-4xl text-purple-200 mb-6"></i>
-                    <h2 class="text-white text-2xl font-black leading-tight mb-4">함께 더 높이 <br>비상할 시간입니다</h2>
-                    <p class="text-purple-200/70 text-sm leading-relaxed">아이디어를 현실로 만드는 한로로의 전문 팀이 24시간 이내에 답변 드립니다.</p>
-                </div>
-                <div class="relative z-10 mt-12">
-                    <div class="flex items-center space-x-3 text-purple-200/50 text-xs mb-4">
-                        <i class="fas fa-check-circle"></i>
-                        <span>60% 캐시백 프로모션 적용 가능</span>
-                    </div>
-                    <div class="flex items-center space-x-3 text-purple-200/50 text-xs">
-                        <i class="fas fa-check-circle"></i>
-                        <span>무료 기획 컨설팅 포함</span>
-                    </div>
-                </div>
-                <!-- 배경 장식 -->
-                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full blur-[80px] opacity-30"></div>
-            </div>
-
-            <!-- 우측: 입력 영역 -->
-            <div class="md:w-2/3 p-8 md:p-12 relative">
-                <button onclick="toggleModal('contact-modal', false)" class="absolute top-6 right-8 text-gray-500 hover:text-white transition-colors">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-                
-                <div class="mb-10">
-                    <h3 class="text-white text-xl font-bold mb-2">상담 신청</h3>
-                    <p class="text-gray-500 text-xs">귀하의 프로젝트를 위한 첫 단계를 시작하세요.</p>
-                </div>
-
-                <form id="contact-form" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="form-card">
-                            <label><i class="fas fa-user mr-2"></i> 성함/업체명</label>
-                            <input type="text" placeholder="홍길동" required>
-                        </div>
-                        <div class="form-card">
-                            <label><i class="fas fa-phone mr-2"></i> 연락처</label>
-                            <input type="tel" placeholder="010-0000-0000" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-card">
-                        <label><i class="fas fa-th-list mr-2"></i> 문의 유형</label>
-                        <select required>
-                            <option value="">유형을 선택하세요</option>
-                            <option>단순형 (60% 할인 프로모션)</option>
-                            <option>브랜드 맞춤형</option>
-                            <option>이커머스/쇼핑몰</option>
-                            <option>기타 문의</option>
-                        </select>
-                    </div>
-
-                    <div class="form-card">
-                        <label><i class="fas fa-pen mr-2"></i> 문의 상세 내용</label>
-                        <textarea rows="3" placeholder="제작하고자 하는 사이트의 목적이나 참고 사이트가 있다면 적어주세요." required></textarea>
-                    </div>
-
-                    <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-5 rounded-2xl font-black text-sm transition-all transform hover:scale-[1.02] shadow-xl shadow-purple-900/20 flex items-center justify-center group">
-                        <span>프로젝트 문의 전송하기</span>
-                        <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
-                    </button>
-                </form>
-
-                <div id="success-msg" class="hidden absolute inset-0 bg-[#0f0a1f] z-20 flex flex-col items-center justify-center p-12 text-center">
-                    <div class="w-20 h-20 bg-purple-500/20 text-purple-500 rounded-full flex items-center justify-center mb-6 text-3xl animate-bounce">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <h4 class="text-2xl font-black text-white mb-2">문의가 전송되었습니다!</h4>
-                    <p class="text-gray-400 text-sm mb-8">한로로 전문가가 검토 후 <br>영업일 기준 24시간 이내에 연락 드리겠습니다.</p>
-                    <button onclick="toggleModal('contact-modal', false)" class="text-purple-400 font-bold text-sm border-b border-purple-400 pb-1">닫기</button>
-                </div>
+            <div class="flex-1 overflow-hidden">
+                <a href="#" class="group flex items-center justify-between">
+                    <p class="text-xs sm:text-sm text-gray-300 group-hover:text-purple-400 transition-colors truncate">
+                        [안내] 2026년 상반기 홈페이지 제작 60% 캐시백 프로모션이 시작되었습니다.
+                    </p>
+                    <span class="text-[10px] text-gray-500 ml-4 shrink-0 font-mono">2026.01.30</span>
+                </a>
             </div>
         </div>
-    </div>
-
-    <!-- Status Modal -->
-    <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
-        <div class="modal-content p-10">
-            <h3 class="text-2xl font-bold mb-6">프로젝트 현황</h3>
-            <div id="modal-project-list" class="space-y-4"></div>
-        </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer class="py-20 bg-black border-t border-white/5">
@@ -466,15 +356,58 @@
         </div>
     </footer>
 
+    <!-- Modals -->
+    <div id="contact-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('contact-modal', false)">
+        <div class="modal-content relative !p-0 flex flex-col md:flex-row min-h-[500px]">
+            <div class="md:w-1/3 bg-gradient-to-br from-purple-800 to-purple-950 p-8 md:p-12 flex flex-col justify-between overflow-hidden relative">
+                <div class="relative z-10">
+                    <i class="fas fa-paper-plane text-4xl text-purple-200 mb-6"></i>
+                    <h2 class="text-white text-2xl font-black leading-tight mb-4">함께 더 높이 <br>비상할 시간입니다</h2>
+                    <p class="text-purple-200/70 text-sm leading-relaxed">아이디어를 현실로 만드는 한로로의 전문 팀이 24시간 이내에 답변 드립니다.</p>
+                </div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full blur-[80px] opacity-30"></div>
+            </div>
+            <div class="md:w-2/3 p-8 md:p-12 relative">
+                <button onclick="toggleModal('contact-modal', false)" class="absolute top-6 right-8 text-gray-500 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="mb-10">
+                    <h3 class="text-white text-xl font-bold mb-2">상담 신청</h3>
+                    <p class="text-gray-500 text-xs">프로젝트를 위한 첫 단계를 시작하세요.</p>
+                </div>
+                <form id="contact-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-card">
+                            <label><i class="fas fa-user mr-2"></i> 성함/업체명</label>
+                            <input type="text" placeholder="홍길동" required>
+                        </div>
+                        <div class="form-card">
+                            <label><i class="fas fa-phone mr-2"></i> 연락처</label>
+                            <input type="tel" placeholder="010-0000-0000" required>
+                        </div>
+                    </div>
+                    <div class="form-card">
+                        <label><i class="fas fa-pen mr-2"></i> 문의 상세 내용</label>
+                        <textarea rows="3" placeholder="제작 목적이나 참고 사이트를 적어주세요." required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-5 rounded-2xl font-black text-sm shadow-xl shadow-purple-900/20">문의 전송하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
+        <div class="modal-content p-10">
+            <h3 class="text-2xl font-bold mb-6">프로젝트 현황</h3>
+            <div id="modal-project-list" class="space-y-4"></div>
+        </div>
+    </div>
+
     <script>
         function toggleModal(id, show) {
             const m = document.getElementById(id);
             if(show) { m.classList.add('active'); document.body.style.overflow='hidden'; }
             else { m.classList.remove('active'); document.body.style.overflow='auto'; }
-        }
-
-        function openPreviewModal() {
-            toggleModal('preview-modal', true);
         }
 
         const projectData = [
@@ -486,7 +419,6 @@
         function renderProjects() {
             const mainList = document.getElementById('main-project-list');
             const modalList = document.getElementById('modal-project-list');
-            
             const html = projectData.map(p => `
                 <div class="project-card">
                     <div class="flex justify-between items-start mb-4">
@@ -500,23 +432,9 @@
                     <p class="text-[10px] text-purple-300">${p.status}</p>
                 </div>
             `).join('');
-
             if(mainList) mainList.innerHTML = html;
             if(modalList) modalList.innerHTML = html;
         }
-
-        document.getElementById('contact-form').onsubmit = function(e) {
-            e.preventDefault();
-            document.getElementById('success-msg').classList.remove('hidden');
-            setTimeout(() => {
-                toggleModal('contact-modal', false);
-                // Reset form for next opening
-                setTimeout(() => {
-                    document.getElementById('success-msg').classList.add('hidden');
-                    this.reset();
-                }, 500);
-            }, 3000);
-        };
 
         window.onload = renderProjects;
     </script>
