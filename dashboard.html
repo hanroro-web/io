@@ -10,44 +10,52 @@
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
         .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .loading-shimmer { background: linear-gradient(90deg, transparent, rgba(138, 79, 255, 0.1), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; border-radius: 12px; padding: 12px; font-size: 14px; outline: none; }
+        .glass-input:focus { border-color: #8a4fff; }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
     <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
+        <header class="flex justify-between items-start mb-10 border-b border-white/10 pb-6">
             <div>
                 <h1 class="text-2xl font-black text-purple-400 tracking-tighter uppercase">Admin Panel</h1>
                 <p class="text-gray-400 text-xs mt-1">실시간 전유저 공지사항 관리</p>
             </div>
-            <div id="auth-status" class="bg-white/5 text-gray-400 px-4 py-2 rounded-lg text-[10px] font-black border border-white/10 uppercase">
-                시스템 초기화 중...
+            <div class="flex flex-col items-end gap-2">
+                <div id="auth-status" class="bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-black border border-red-500/20 uppercase">
+                    연결 필요
+                </div>
+                <button onclick="toggleConfig()" class="text-[10px] text-gray-500 hover:text-white underline">Firebase 설정 수동 입력</button>
             </div>
         </header>
 
-        <div id="main-ui" class="space-y-12 opacity-40 pointer-events-none transition-opacity duration-1000">
-            <!-- 공지사항 작성 -->
+        <!-- 수동 설정창 (평소엔 숨김) -->
+        <div id="config-panel" class="hidden mb-10 p-6 bg-purple-900/10 border border-purple-500/20 rounded-2xl">
+            <h3 class="text-sm font-bold mb-4">Firebase Config (JSON)</h3>
+            <textarea id="manual-config" rows="5" placeholder='{"apiKey": "...", "authDomain": "...", ...}' class="w-full glass-input font-mono text-xs mb-4"></textarea>
+            <button onclick="saveManualConfig()" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold">설정 저장 및 연결</button>
+        </div>
+
+        <div id="main-ui" class="space-y-12 opacity-40 pointer-events-none">
             <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl">
                 <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                    <i class="fas fa-paper-plane text-purple-400"></i> 공지사항 즉시 업데이트
+                    <i class="fas fa-paper-plane text-purple-400"></i> 공지사항 업데이트
                 </h2>
                 <div class="space-y-4">
                     <textarea id="notice-input" rows="3" placeholder="모든 접속자에게 실시간으로 보여질 문구를 입력하세요." 
-                              class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all text-white placeholder:text-gray-700"></textarea>
+                              class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all text-white"></textarea>
                     <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg">
                         게시하기
                     </button>
                 </div>
             </div>
 
-            <!-- 기록 리스트 -->
             <div>
                 <h2 class="text-md font-bold mb-6 text-gray-400 flex items-center gap-2">
                     <i class="fas fa-stream"></i> 실시간 게시 기록
                 </h2>
                 <div id="notice-history" class="space-y-3">
-                    <div class="py-10 text-center text-gray-600 text-xs">연결을 시도하고 있습니다...</div>
+                    <div class="py-10 text-center text-gray-600 text-xs tracking-widest uppercase">No Connection</div>
                 </div>
             </div>
         </div>
@@ -64,30 +72,37 @@
         const postBtn = document.getElementById('post-btn');
         const input = document.getElementById('notice-input');
 
-        // [핵심] 설정값이 나타날 때까지 반복 확인하는 로직 (최대 10초)
-        async function getFirebaseConfig() {
-            let attempts = 0;
-            while (attempts < 50) {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    return JSON.parse(__firebase_config);
-                }
-                attempts++;
-                await new Promise(r => setTimeout(r, 200));
+        window.toggleConfig = () => document.getElementById('config-panel').classList.toggle('hidden');
+        window.saveManualConfig = () => {
+            const val = document.getElementById('manual-config').value;
+            if(val) {
+                localStorage.setItem('custom_fb_config', val);
+                location.reload();
             }
-            throw new Error("환경 설정 로드 실패 (TIMEOUT)");
-        }
+        };
 
         async function init() {
             try {
-                const config = await getFirebaseConfig();
+                let config;
+                // 1. 시스템 설정 확인
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    config = JSON.parse(__firebase_config);
+                } 
+                // 2. 수동 설정 확인
+                else {
+                    const saved = localStorage.getItem('custom_fb_config');
+                    if (saved) config = JSON.parse(saved);
+                }
+
+                if (!config) throw new Error("Config Not Found");
+
                 const app = initializeApp(config);
                 const db = getFirestore(app);
                 const auth = getAuth(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-global';
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web';
 
-                statusEl.innerText = "AUTHENTICATING...";
+                statusEl.innerText = "연결 중...";
 
-                // 인증 (RULE 3 준수)
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -96,43 +111,38 @@
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        statusEl.innerText = "ONLINE: " + user.uid.substring(0, 8);
-                        statusEl.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20 uppercase";
+                        statusEl.innerText = "ONLINE";
+                        statusEl.className = "bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20";
                         mainUi.classList.remove('opacity-40', 'pointer-events-none');
                         startSync(db, appId, user.uid);
                     }
                 });
-
             } catch (err) {
-                console.error(err);
-                statusEl.innerText = "OFFLINE: CONFIG ERROR";
-                statusEl.className = "bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-black border border-red-500/20 uppercase";
-                historyEl.innerHTML = `<div class='p-6 text-center text-gray-500 text-xs border border-white/5 rounded-2xl'>${err.message}<br><br><button onclick="location.reload()" class="bg-white/10 px-4 py-2 rounded-lg">다시 시도</button></div>`;
+                console.warn(err);
+                statusEl.innerText = "설정 필요";
+                document.getElementById('config-panel').classList.remove('hidden');
             }
         }
 
         function startSync(db, appId, uid) {
             const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-
             onSnapshot(noticeCol, (snapshot) => {
                 let items = [];
                 snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
                 items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
+                
                 if (items.length === 0) {
                     historyEl.innerHTML = '<div class="py-10 text-center text-gray-600 text-[10px] uppercase font-bold tracking-widest opacity-30">No Records</div>';
                     return;
                 }
 
                 historyEl.innerHTML = items.map(item => `
-                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center group animate-in fade-in duration-500">
-                        <div class="min-w-0 pr-4">
-                            <p class="text-sm text-gray-200 leading-relaxed">${item.text}</p>
-                            <span class="text-[9px] text-gray-600 mt-2 block font-mono">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : 'Saving...'}</span>
+                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center">
+                        <div class="min-w-0 pr-4 text-left">
+                            <p class="text-sm text-gray-200">${item.text}</p>
+                            <span class="text-[9px] text-gray-600 mt-2 block">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : 'Saving...'}</span>
                         </div>
-                        <button onclick="window.handleDelete('${item.id}')" class="text-gray-700 hover:text-red-500 p-2 transition-colors">
-                            <i class="fas fa-trash-alt text-xs"></i>
-                        </button>
+                        <button onclick="window.handleDelete('${item.id}')" class="text-gray-700 hover:text-red-500 p-2"><i class="fas fa-trash-alt text-xs"></i></button>
                     </div>
                 `).join('');
             });
@@ -141,25 +151,19 @@
                 const text = input.value.trim();
                 if (!text) return;
                 postBtn.disabled = true;
-                postBtn.innerText = "게시 중...";
-
-                try {
-                    await addDoc(noticeCol, { text, createdAt: serverTimestamp(), author: uid });
-                    input.value = '';
-                } finally {
-                    postBtn.disabled = false;
-                    postBtn.innerText = "게시하기";
-                }
+                await addDoc(noticeCol, { text, createdAt: serverTimestamp(), author: uid });
+                input.value = '';
+                postBtn.disabled = false;
             };
 
             window.handleDelete = async (id) => {
-                if (confirm("정말 삭제하시겠습니까? 메인 페이지에서도 즉시 제거됩니다.")) {
+                if (confirm("삭제하시겠습니까?")) {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
                 }
             };
         }
 
-        window.onload = init;
+        init();
     </script>
 </body>
 </html>
