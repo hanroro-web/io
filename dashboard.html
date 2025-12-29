@@ -26,28 +26,49 @@
 
         <div id="main-ui" class="space-y-8 opacity-40 pointer-events-none transition-all duration-700">
             
-            <!-- 상단 알림바 설정 섹션 (신규) -->
-            <div class="admin-card rounded-3xl p-6 sm:p-8 shadow-2xl">
-                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-purple-300">
-                    <i class="fas fa- exclamation-circle"></i> 상단 알림바 설정
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-2 block">강조 문구 (예: 60% 캐시백!)</label>
-                        <input id="banner-highlight" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-4 text-sm text-white" placeholder="강조 문구 입력">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-2 block">상세 설명 (예: 단순 웹제작 할인 중!)</label>
-                        <input id="banner-desc" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-4 text-sm text-white" placeholder="상세 설명 입력">
+            <!-- 상단 & 하단 바 설정 통합 섹션 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 상단 알림바 설정 -->
+                <div class="admin-card rounded-3xl p-6 shadow-2xl">
+                    <h2 class="text-md font-bold mb-6 flex items-center gap-2 text-purple-300">
+                        <i class="fas fa-arrow-up"></i> 상단 알림바 설정
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">강조 문구</label>
+                            <input id="banner-highlight" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 60% 캐시백!">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">상세 설명</label>
+                            <input id="banner-desc" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 한정 수량 할인 중">
+                        </div>
+                        <button id="save-banner-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-[10px] transition-all">업데이트</button>
                     </div>
                 </div>
-                <button id="save-banner-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs transition-all">알림바 문구 업데이트</button>
+
+                <!-- 하단 플로팅 바 설정 (신규) -->
+                <div class="admin-card rounded-3xl p-6 shadow-2xl">
+                    <h2 class="text-md font-bold mb-6 flex items-center gap-2 text-purple-300">
+                        <i class="fas fa-arrow-down"></i> 하단 플로팅 바 설정
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">메인 문구</label>
+                            <input id="bottom-text" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 지금! 홈페이지 저렴한 가격 원해?">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-gray-500 font-bold uppercase mb-1 block">버튼 문구</label>
+                            <input id="bottom-btn-text" type="text" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="예: 즉시 신청">
+                        </div>
+                        <button id="save-bottom-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-[10px] transition-all">업데이트</button>
+                    </div>
+                </div>
             </div>
 
             <!-- 공지사항 섹션 -->
             <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl">
                 <h2 class="text-lg font-bold mb-6 flex items-center gap-2 text-purple-300">
-                    <i class="fas fa-bullhorn"></i> 실시간 공지사항 게시 (하단 티커)
+                    <i class="fas fa-bullhorn"></i> 실시간 공지사항 (하단 티커)
                 </h2>
                 <div class="space-y-4">
                     <textarea id="notice-input" rows="3" placeholder="메인 페이지 하단에 흐를 메시지를 입력하세요." class="w-full bg-black/60 border border-white/10 rounded-2xl p-5 text-sm text-white"></textarea>
@@ -89,6 +110,10 @@
         const bannerDescInput = document.getElementById('banner-desc');
         const saveBannerBtn = document.getElementById('save-banner-btn');
 
+        const bottomTextInput = document.getElementById('bottom-text');
+        const bottomBtnTextInput = document.getElementById('bottom-btn-text');
+        const saveBottomBtn = document.getElementById('save-bottom-btn');
+
         async function init() {
             try {
                 const app = initializeApp(firebaseConfig);
@@ -109,7 +134,6 @@
                 });
             } catch (err) {
                 badge.innerText = "ERROR";
-                console.error(err);
             }
         }
 
@@ -120,26 +144,21 @@
                 let items = [];
                 snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
                 items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                
                 historyEl.innerHTML = items.map(item => `
                     <div class="admin-card p-5 rounded-2xl flex justify-between items-center">
                         <div>
                             <p class="text-sm text-gray-200">${item.text}</p>
                             <span class="text-[9px] text-gray-600 mt-2 block">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : '전송 중...'}</span>
                         </div>
-                        <button onclick="deleteNotice('${item.id}')" class="text-gray-700 hover:text-red-500 p-2 transition-colors">
-                            <i class="fas fa-trash-alt text-xs"></i>
-                        </button>
+                        <button onclick="deleteNotice('${item.id}')" class="text-gray-700 hover:text-red-500 p-2"><i class="fas fa-trash-alt text-xs"></i></button>
                     </div>
                 `).join('');
             });
 
             postBtn.onclick = async () => {
                 if (!noticeInput.value.trim()) return;
-                postBtn.disabled = true;
                 await addDoc(noticeCol, { text: noticeInput.value, createdAt: serverTimestamp(), author: uid });
                 noticeInput.value = '';
-                postBtn.disabled = false;
             };
 
             window.deleteNotice = async (id) => {
@@ -148,10 +167,8 @@
                 }
             };
 
-            // 2. 상단 알림바 연동 (settings 도큐먼트 사용)
+            // 2. 상단 알림바 연동
             const bannerDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'topBanner');
-            
-            // 초기값 불러오기
             const bannerSnap = await getDoc(bannerDocRef);
             if (bannerSnap.exists()) {
                 const data = bannerSnap.data();
@@ -160,14 +177,22 @@
             }
 
             saveBannerBtn.onclick = async () => {
-                saveBannerBtn.innerText = "저장 중...";
-                await setDoc(bannerDocRef, {
-                    highlight: bannerHighlightInput.value,
-                    desc: bannerDescInput.value,
-                    updatedAt: serverTimestamp()
-                }, { merge: true });
-                saveBannerBtn.innerText = "알림바 문구 업데이트";
-                alert("알림바 문구가 성공적으로 업데이트 되었습니다.");
+                await setDoc(bannerDocRef, { highlight: bannerHighlightInput.value, desc: bannerDescInput.value, updatedAt: serverTimestamp() }, { merge: true });
+                alert("상단 바 업데이트 완료");
+            };
+
+            // 3. 하단 플로팅 바 연동 (신규)
+            const bottomDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bottomBar');
+            const bottomSnap = await getDoc(bottomDocRef);
+            if (bottomSnap.exists()) {
+                const data = bottomSnap.data();
+                bottomTextInput.value = data.text || "";
+                bottomBtnTextInput.value = data.btnText || "";
+            }
+
+            saveBottomBtn.onclick = async () => {
+                await setDoc(bottomDocRef, { text: bottomTextInput.value, btnText: bottomBtnTextInput.value, updatedAt: serverTimestamp() }, { merge: true });
+                alert("하단 바 업데이트 완료");
             };
         }
 
