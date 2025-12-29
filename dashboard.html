@@ -7,48 +7,45 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #05020a; color: #ffffff; }
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
         .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .status-badge { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
     <div class="max-w-4xl mx-auto">
         <header class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
             <div>
-                <h1 class="text-2xl font-black text-purple-400">ADMIN DASHBOARD</h1>
-                <p class="text-gray-400 text-sm">메인 페이지 실시간 공지사항 관리</p>
+                <h1 class="text-2xl font-black text-purple-400 tracking-tighter">ADMIN PANEL</h1>
+                <p class="text-gray-400 text-xs mt-1">메인 페이지 실시간 공지사항 연동 시스템</p>
             </div>
-            <div id="auth-status" class="bg-red-500/10 text-red-400 px-4 py-2 rounded-lg text-xs font-bold border border-red-500/20">
-                연결 대기 중...
+            <div id="auth-status" class="status-badge bg-yellow-500/10 text-yellow-500 px-4 py-2 rounded-lg text-[10px] font-black border border-yellow-500/20 uppercase">
+                Checking Connection...
             </div>
         </header>
 
-        <!-- 공지사항 작성 -->
+        <!-- 게시판 연동 컨트롤러 -->
         <div class="admin-card rounded-3xl p-6 sm:p-10 shadow-2xl mb-12">
             <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <i class="fas fa-edit text-purple-400"></i> 새 공지사항 게시
+                <i class="fas fa-paper-plane text-purple-400"></i> 공지사항 즉시 업데이트
             </h2>
             <div class="space-y-4">
-                <textarea id="notice-input" rows="3" placeholder="메인 페이지 하단에 노출될 문구를 입력하세요." 
-                          class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all"></textarea>
-                <button id="post-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-2xl font-bold transition-all disabled:opacity-50">
-                    게시하기
+                <textarea id="notice-input" rows="3" placeholder="메인 페이지 하단 바에 표시될 문구를 입력하세요." 
+                          class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition-all placeholder:text-gray-600"></textarea>
+                <button id="post-btn" disabled class="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-800 disabled:text-gray-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg">
+                    게시하기 (연결 필요)
                 </button>
             </div>
         </div>
 
-        <!-- 게시 기록 -->
+        <!-- 실시간 기록 -->
         <div>
-            <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <i class="fas fa-list text-gray-400"></i> 최근 게시물 (최대 10개)
+            <h2 class="text-md font-bold mb-6 text-gray-400 flex items-center gap-2">
+                <i class="fas fa-stream"></i> 최근 게시물 기록
             </h2>
             <div id="notice-history" class="space-y-3">
-                <div class="animate-pulse flex space-x-4">
-                    <div class="flex-1 space-y-4 py-1">
-                        <div class="h-4 bg-white/5 rounded w-3/4"></div>
-                        <div class="h-4 bg-white/5 rounded"></div>
-                    </div>
-                </div>
+                <div class="py-10 text-center text-gray-600 text-xs">데이터를 불러오는 중입니다...</div>
             </div>
         </div>
     </div>
@@ -56,122 +53,125 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
+        // 1. 초기 환경 설정
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hanroro-web-app';
 
-        let currentUser = null;
+        const statusEl = document.getElementById('auth-status');
+        const postBtn = document.getElementById('post-btn');
+        const historyEl = document.getElementById('notice-history');
 
-        // RULE 3: Auth Before Queries
-        const initAuth = async () => {
+        // 2. 인증 상태 감시 (RULE 3 준수)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("인증 성공:", user.uid);
+                statusEl.innerText = "CONNECTED: " + user.uid.substring(0, 8);
+                statusEl.className = "status-badge bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-[10px] font-black border border-emerald-500/20";
+                
+                postBtn.disabled = false;
+                postBtn.innerText = "메인 페이지에 게시하기";
+                
+                startSync(user.uid);
+            } else {
+                statusEl.innerText = "RECONNECTING...";
+                attemptLogin();
+            }
+        });
+
+        // 3. 로그인 시도 함수
+        async function attemptLogin() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-            } catch (error) {
-                console.error("인증 오류:", error);
-                document.getElementById('auth-status').innerText = "인증 실패";
+            } catch (err) {
+                console.error("Login Error:", err);
+                statusEl.innerText = "AUTH ERROR";
+                statusEl.className = "status-badge bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-black border border-red-500/20";
             }
-        };
+        }
 
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                const statusEl = document.getElementById('auth-status');
-                statusEl.innerText = "연결됨: " + user.uid.substring(0, 8);
-                statusEl.classList.replace('text-red-400', 'text-emerald-400');
-                statusEl.classList.replace('bg-red-500/10', 'bg-emerald-500/10');
-                statusEl.classList.replace('border-red-500/20', 'border-emerald-500/20');
-                
-                loadNotices();
-            }
-        });
-
-        const loadNotices = () => {
-            if (!currentUser) return;
+        // 4. 실시간 데이터 동기화
+        function startSync(uid) {
             const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
             
-            // RULE 2: No Complex Queries (JS에서 정렬)
             onSnapshot(noticeCol, (snapshot) => {
                 let items = [];
                 snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
                 
-                // 최신순 정렬
+                // 최신순 정렬 (RULE 2)
                 items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
                 
-                const listEl = document.getElementById('notice-history');
                 if (items.length === 0) {
-                    listEl.innerHTML = '<p class="text-gray-600 text-sm text-center py-10">기록이 없습니다.</p>';
+                    historyEl.innerHTML = '<div class="py-10 text-center text-gray-600 text-xs">등록된 공지사항이 없습니다.</div>';
                     return;
                 }
 
-                listEl.innerHTML = items.map(item => `
-                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center">
+                historyEl.innerHTML = items.map(item => `
+                    <div class="admin-card p-5 rounded-2xl flex justify-between items-center group transition-all hover:border-purple-500/30">
                         <div class="min-w-0 pr-4">
-                            <p class="text-sm text-gray-200">${item.text}</p>
-                            <span class="text-[10px] text-gray-500 mt-1 block">
-                                ${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : '저장 중...'}
-                            </span>
+                            <p class="text-sm text-gray-200 leading-relaxed">${item.text}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-[9px] text-purple-500 font-bold uppercase tracking-wider">Live</span>
+                                <span class="text-[9px] text-gray-600">${item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleString() : 'Saving...'}</span>
+                            </div>
                         </div>
-                        <button onclick="window.deleteNotice('${item.id}')" class="text-gray-500 hover:text-red-400 transition-colors px-2">
-                            <i class="fas fa-trash-alt"></i>
+                        <button onclick="window.confirmDelete('${item.id}')" class="text-gray-600 hover:text-red-500 transition-colors p-2">
+                            <i class="fas fa-trash-alt text-xs"></i>
                         </button>
                     </div>
                 `).join('');
             }, (error) => {
-                console.error("Firestore 리스너 오류:", error);
+                console.error("Snapshot Error:", error);
             });
-        };
+        }
 
-        // 게시 기능
-        document.getElementById('post-btn').onclick = async () => {
-            if (!currentUser) return;
+        // 5. 게시 버튼 클릭 이벤트
+        postBtn.addEventListener('click', async () => {
             const input = document.getElementById('notice-input');
             const text = input.value.trim();
-            
-            if (!text) return;
+            if (!text || !auth.currentUser) return;
 
-            const postBtn = document.getElementById('post-btn');
             postBtn.disabled = true;
-            postBtn.innerText = "게시 중...";
+            postBtn.innerText = "전송 중...";
 
             try {
                 const noticeCol = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
                 await addDoc(noticeCol, {
                     text: text,
                     createdAt: serverTimestamp(),
-                    uid: currentUser.uid
+                    author: auth.currentUser.uid
                 });
                 input.value = '';
-            } catch (error) {
-                console.error("게시 실패:", error);
-                alert("게시 중 오류가 발생했습니다.");
+            } catch (err) {
+                alert("게시 실패: " + err.message);
             } finally {
                 postBtn.disabled = false;
-                postBtn.innerText = "게시하기";
+                postBtn.innerText = "메인 페이지에 게시하기";
             }
-        };
+        });
 
-        // 전역 함수 등록
-        window.deleteNotice = async (id) => {
-            if (!currentUser) return;
-            if (confirm("게시물을 삭제하시겠습니까? 메인 페이지에서도 즉시 사라집니다.")) {
+        // 6. 삭제 전역 함수
+        window.confirmDelete = async (id) => {
+            if (confirm("삭제하시겠습니까? 메인 페이지에서도 즉시 제거됩니다.")) {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
-                } catch (error) {
-                    console.error("삭제 실패:", error);
+                } catch (err) {
+                    console.error("Delete Error:", err);
                 }
             }
         };
 
-        initAuth();
+        // 초기 실행
+        attemptLogin();
     </script>
 </body>
 </html>
