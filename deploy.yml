@@ -1,7 +1,26 @@
-  - name: Deploy to Firebase Hosting
-    uses: FirebaseExtended/action-hosting-deploy@v0
-    with:
-      repoToken: '${{ secrets.GITHUB_TOKEN }}'
-      firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}'
-      channelId: live
-      projectId: ${{ secrets.FIREBASE_PROJECT_ID }} #517873073
+  name: Firebase Deploy
+on:
+  push:
+    branches:
+      - main  # 코드를 올리는 브랜치 이름 (main 또는 master)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          # 깃허브가 자동으로 생성하는 토큰입니다. (따로 설정 불필요)
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          
+          # 깃허브 Settings -> Secrets -> Actions에 등록한 키를 사용합니다.
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}'
+          
+          channelId: live
+          # 아래에 프로젝트 ID를 직접 입력해 두었습니다.
+          projectId: "517873073"
+
