@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>변호사 김인석 법률사무소 - 최선의 결과를 위한 법률 파트너</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100;300;400;600;700&display=swap');
+        
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-purple: #7000ff;
+            --dark-bg: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5), 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+
+        .neon-border-btn {
+            position: relative;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            padding: 1px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .neon-border-btn:hover {
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            border-color: var(--neon-blue);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-10px);
+        }
+
+        .glow-sphere {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(0, 242, 255, 0) 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+        }
+
+        .hero-title {
+            background: linear-gradient(to right, #fff 20%, var(--neon-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mini-alert {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translate(-50%, 100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        #sideMenu {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(10, 11, 16, 0.98);
+            backdrop-filter: blur(25px);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .side-link {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .side-link:hover {
+            color: var(--neon-blue);
+            padding-left: 10px;
+        }
+
+        .modal-overlay {
+            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #0f111a;
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        input, select, textarea {
+            background: rgba(255, 255, 255, 0.07) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 하단 미니 팝업 알림창 -->
+    <div class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] w-[90%] max-w-lg">
+        <div class="mini-alert rounded-full px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-cyan-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                </span>
+                <p class="text-sm font-medium text-white">지금 상담 받으세요.</p>
+            </div>
+            <button onclick="openModal('consultationModal')" class="text-xs font-bold bg-cyan-500 text-black px-4 py-1.5 rounded-full hover:bg-white transition duration-300">
+                상담 받기
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-[#0a0b10]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                    <i class="fas fa-scale-balanced text-cyan-400 text-xl"></i>
+                    <span class="text-xl font-bold tracking-tighter">김인석 법률사무소</span>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <div onclick="openModal('consultationModal')" class="hidden md:block neon-border-btn px-6 py-2 text-sm font-bold text-white">
+                        <div class="bg-[#0a0b10] px-4 py-1.5 rounded-[11px] h-full w-full flex items-center">상담 신청</div>
+                    </div>
+                    <button onclick="toggleSideMenu()" class="text-white text-2xl focus:outline-none hover:text-cyan-400 transition">
+                        <i class="fas fa-bars-staggered"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 사이드바 메뉴 (inseoklaw.kr 구조) -->
+    <div id="sideMenu" class="fixed inset-y-0 right-0 w-full sm:w-[400px] z-[70] transform translate-x-full flex flex-col p-10 overflow-y-auto">
+        <button onclick="toggleSideMenu()" class="self-end text-gray-400 hover:text-white text-3xl mb-8">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="mb-10">
+            <h2 class="text-2xl font-bold mb-2">김인석 법률사무소</h2>
+            <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase">Inseoklaw Menu</p>
+        </div>
+
+        <nav class="flex flex-col space-y-2">
+            <div class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-4 mb-2">Introduction</div>
+            <a href="javascript:void(0)" onclick="toggleSideMenu(); openModal('aboutModal')" class="side-link">
+                <i class="fas fa-user-tie w-8 text-cyan-500"></i> 변호사 소개
+            </a>
+            
+            <div class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-6 mb-2">Practice Areas</div>
+            <a href="javascript:void(0)" onclick="toggleSideMenu(); openModal('crimModal')" class="side-link">
+                <i class="fas fa-gavel w-8 text-cyan-500"></i> 형사사건
+            </a>
+            <a href="javascript:void(0)" onclick="toggleSideMenu(); openModal('civilModal')" class="side-link">
+                <i class="fas fa-balance-scale w-8 text-cyan-500"></i> 민사/가사사건
+            </a>
+            <a href="javascript:void(0)" onclick="toggleSideMenu(); openModal('successModal')" class="side-link">
+                <i class="fas fa-award w-8 text-cyan-500"></i> 성공사례
+            </a>
+            
+            <div class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-6 mb-2">Contact</div>
+            <a href="javascript:void(0)" onclick="toggleSideMenu(); openModal('locationModal')" class="side-link">
+                <i class="fas fa-map-marked-alt w-8 text-cyan-500"></i> 오시는 길
+            </a>
+            <a href="javascript:void(0)" onclick="toggleSideMenu(); openModal('consultationModal')" class="side-link">
+                <i class="fas fa-comments w-8 text-cyan-500"></i> 온라인 법률상담
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-10 border-t border-white/5">
+            <a href="tel:010-8671-5582" class="flex items-center space-x-4 text-white group">
+                <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500 transition">
+                    <i class="fas fa-phone-alt text-cyan-400 group-hover:text-black"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Fast Contact</p>
+                    <p class="font-bold">010-8671-5582</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="glow-sphere top-[-100px] left-[-100px]"></div>
+        <div class="max-w-7xl mx-auto px-6 text-center z-10">
+            <h1 class="hero-title text-5xl md:text-8xl font-bold mb-8 leading-[1.1] tracking-tighter">
+                진실된 마음으로<br>당신의 권리를 지킵니다.
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                풍부한 실무 경험과 치밀한 법리 검토를 바탕으로<br> 
+                의뢰인의 절박한 상황에 최적의 법률 솔루션을 제공합니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <button onclick="openModal('consultationModal')" class="bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-2xl text-lg font-bold transition duration-300 shadow-[0_0_20px_rgba(0,242,255,0.3)]">
+                    비공개 법률상담 예약
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 복구: Lawyer About Section (메인 페이지 데이터) -->
+    <section id="about" class="py-32 relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div class="relative bg-black rounded-3xl overflow-hidden aspect-[4/5] border border-white/10">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="변호사 김인석" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700">
+                    </div>
+                </div>
+                <div>
+                    <span class="text-purple-500 font-bold tracking-widest text-sm uppercase">LAWYER PROFILE</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-8">변호사 <span class="text-cyan-400 neon-text">김인석</span></h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-10">
+                        "법은 멀리 있는 것이 아니라, 항상 의뢰인의 곁에 있어야 합니다."<br><br>
+                        김인석 변호사는 의뢰인의 목소리에 귀 기울이고 사건의 본질을 정확히 파악하여, 단순히 승소를 넘어 의뢰인의 평온한 일상을 회복하는 것을 목표로 합니다.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <h5 class="text-white font-bold flex items-center"><span class="w-2 h-2 bg-cyan-400 rounded-full mr-3"></span> 학력 및 경력</h5>
+                            <ul class="text-gray-500 text-sm space-y-3 ml-5">
+                                <li>• 사법연수원 수료</li>
+                                <li>• 대한변호사협회 등록 변호사</li>
+                                <li>• 주요 법률사무소 전문 변호사 역임</li>
+                                <li>• 다수의 형사/민사 소송 대리 및 자문</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-4">
+                            <h5 class="text-white font-bold flex items-center"><span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span> 주요 활동</h5>
+                            <ul class="text-gray-500 text-sm space-y-3 ml-5">
+                                <li>• 공공기관 및 중소기업 법률 자문</li>
+                                <li>• 지역사회 무료 법률 상담 위원</li>
+                                <li>• 형사/민사/가사 전문성 보유</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 복구: Services Section (메인 페이지 데이터) -->
+    <section id="services" class="py-32 bg-[#0d0e14]">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">주요 업무분야</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">각 분야별 최상의 법률 서비스를 통해 의뢰인의 권익을 보호합니다.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-10 group" onclick="openModal('civilModal')">
+                    <div class="w-14 h-14 bg-cyan-400/10 rounded-2xl flex items-center justify-center mb-8 text-cyan-400 group-hover:scale-110 transition">
+                        <i class="fas fa-balance-scale text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">민사 / 손해배상</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">부동산, 대여금, 손해배상 등 다양한 금전 및 권리 분쟁에 대하여 치밀한 전략을 제시합니다.</p>
+                    <div class="pt-6 border-t border-white/5 space-y-2">
+                        <div class="text-xs text-gray-400 flex items-center"><i class="fas fa-check text-[10px] mr-2 text-cyan-500"></i> 부동산 및 임대차 분쟁</div>
+                        <div class="text-xs text-gray-400 flex items-center"><i class="fas fa-check text-[10px] mr-2 text-cyan-500"></i> 불법행위 손해배상 청구</div>
+                    </div>
+                </div>
+                <div class="glass-card p-10 group border-t-cyan-400/30" onclick="openModal('crimModal')">
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-8 text-purple-500 group-hover:scale-110 transition">
+                        <i class="fas fa-gavel text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">형사 사건 전문</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">경찰 조사 단계에서의 적극적인 방어권 행사는 물론 재판에서의 무죄/감형을 위해 최선을 다합니다.</p>
+                    <div class="pt-6 border-t border-white/5 space-y-2">
+                        <div class="text-xs text-gray-400 flex items-center"><i class="fas fa-check text-[10px] mr-2 text-purple-500"></i> 성범죄 / 사기 / 횡령 전문</div>
+                        <div class="text-xs text-gray-400 flex items-center"><i class="fas fa-check text-[10px] mr-2 text-purple-500"></i> 음주운전 및 교통사고 대응</div>
+                    </div>
+                </div>
+                <div class="glass-card p-10 group" onclick="openModal('civilModal')">
+                    <div class="w-14 h-14 bg-cyan-400/10 rounded-2xl flex items-center justify-center mb-8 text-cyan-400 group-hover:scale-110 transition">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">가사 / 상속 / 이혼</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">가족 간의 예민한 분쟁인 만큼 의뢰인의 감정적 부분까지 세심하게 케어하며 실질적 이득을 확보합니다.</p>
+                    <div class="pt-6 border-t border-white/5 space-y-2">
+                        <div class="text-xs text-gray-400 flex items-center"><i class="fas fa-check text-[10px] mr-2 text-cyan-500"></i> 재판상 이혼 및 재산분할</div>
+                        <div class="text-xs text-gray-400 flex items-center"><i class="fas fa-check text-[10px] mr-2 text-cyan-500"></i> 상속 재산 분할 및 기여분</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 복구: Location Section (메인 페이지 데이터) -->
+    <section id="location" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="glass-card p-12 overflow-hidden flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl font-bold mb-6">오시는 길</h2>
+                    <div class="space-y-6 text-gray-400">
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-cyan-400 mt-1 mr-4"></i>
+                            <p>서울특별시 서초구 법원로 15길 21 201호 (서초동, 서초동21빌딩)</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-phone-alt text-cyan-400 mt-1 mr-4"></i>
+                            <p>010-8671-5582</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-cyan-400 mt-1 mr-4"></i>
+                            <p>lawyer@inseoklaw.kr</p>
+                        </div>
+                    </div>
+                    <div class="mt-10">
+                        <button onclick="openModal('locationModal')" class="px-8 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition">상세 안내 보기</button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 w-full h-64 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center text-gray-500">
+                    <i class="fas fa-map-marked-alt text-5xl opacity-20"></i>
+                    <span class="ml-4 font-light italic text-sm">서초동 법원 인근 위치</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-20 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-8">
+            <div>
+                <div class="text-2xl font-bold mb-4 tracking-tighter">변호사 <span class="text-cyan-400">김인석</span> 법률사무소</div>
+                <p class="text-gray-600 text-sm">© 2025 Lawyer Kim In-Seok. All rights reserved.</p>
+                <p class="text-[10px] text-gray-700 mt-2">대표변호사: 김인석 | 서울특별시 서초구 법원로 15길 21 201호</p>
+            </div>
+            <div class="flex space-x-8 text-sm text-gray-500">
+                <a href="#" class="hover:text-white transition">이용약관</a>
+                <a href="#" class="text-white font-bold hover:text-cyan-400 transition">개인정보처리방침</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- [MODALS] 팝업창 섹션 (사이드바 메뉴 클릭 시 노출) -->
+
+    <!-- 1. 상담신청 모달 -->
+    <div id="consultationModal" class="modal-overlay">
+        <div class="modal-content p-8 md:p-12">
+            <button onclick="closeModal('consultationModal')" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-2">온라인 상담 신청</h2>
+            <p class="text-gray-400 mb-8 text-sm">상담 내용은 변호사법 제26조에 의해 철저히 비밀이 보장됩니다.</p>
+            <form id="modalForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" required placeholder="의뢰인 성함" class="w-full px-5 py-3 rounded-xl focus:outline-none">
+                    <input type="tel" required placeholder="연락처" class="w-full px-5 py-3 rounded-xl focus:outline-none">
+                </div>
+                <select class="w-full px-5 py-3 rounded-xl text-sm appearance-none focus:outline-none">
+                    <option>형사 사건 전문</option>
+                    <option>민사 / 손해배상</option>
+                    <option>가사 / 이혼 / 상속</option>
+                    <option>기업 법률 자문</option>
+                    <option>기타 법률 상담</option>
+                </select>
+                <textarea rows="4" placeholder="상담 내용을 간략히 적어주세요" class="w-full px-5 py-3 rounded-xl focus:outline-none resize-none"></textarea>
+                <button type="submit" class="w-full bg-cyan-500 text-black font-bold py-4 rounded-xl hover:bg-white transition">상담 예약 신청하기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. 변호사 소개 모달 -->
+    <div id="aboutModal" class="modal-overlay">
+        <div class="modal-content p-10">
+            <button onclick="closeModal('aboutModal')" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-6 text-cyan-400">변호사 김인석 약력</h2>
+            <div class="space-y-6 text-gray-300 leading-relaxed">
+                <div>
+                    <h4 class="text-white font-bold mb-2 border-l-2 border-cyan-400 pl-3">주요 학력 및 자격</h4>
+                    <p class="text-sm">• 사법연수원 수료</p>
+                    <p class="text-sm">• 대한변호사협회 등록 변호사</p>
+                    <p class="text-sm">• 한국법조인협회 정회원</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-2 border-l-2 border-cyan-400 pl-3">주요 경력</h4>
+                    <p class="text-sm">• 전) 대형 로펌 형사/민사 전담 변호사</p>
+                    <p class="text-sm">• 전) 공공기관 법률 자문 변호사</p>
+                    <p class="text-sm">• 현) 김인석 법률사무소 대표변호사</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-2 border-l-2 border-cyan-400 pl-3">전문성</h4>
+                    <p class="text-sm">• 형사(성범죄, 경제범죄, 음주운전) 전문 솔루션</p>
+                    <p class="text-sm">• 민사(부동산, 손해배상) 및 가사(이혼) 특화</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 형사사건 모달 -->
+    <div id="crimModal" class="modal-overlay">
+        <div class="modal-content p-10">
+            <button onclick="closeModal('crimModal')" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-6 text-red-500">형사사건 대응 센터</h2>
+            <p class="text-gray-400 text-sm mb-6">골든타임을 놓치지 않는 치밀한 전략이 필요합니다.</p>
+            <div class="space-y-4">
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-bold text-white mb-2">성범죄 (강제추행/성폭법)</h4>
+                    <p class="text-xs text-gray-500">피해자와의 합의 대행, 무고 입증, 디지털 성범죄 대응 등 초기 수사 단계부터 밀착 조력합니다.</p>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-bold text-white mb-2">경제범죄 (사기/공갈/횡령)</h4>
+                    <p class="text-xs text-gray-500">보이스피싱 연루, 기업 내 자금 횡령 등 복잡한 자금 흐름을 분석하여 법리적 방어권을 행사합니다.</p>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-bold text-white mb-2">음주운전 및 교통사고</h4>
+                    <p class="text-xs text-gray-500">집행유예 확보, 면허 취소 구제 등 실무적인 해결책을 제시합니다.</p>
+                </div>
+            </div>
+            <button onclick="closeModal('crimModal'); openModal('consultationModal');" class="mt-8 w-full py-4 bg-red-600/20 text-red-500 border border-red-500/50 rounded-xl hover:bg-red-600 hover:text-white transition">변호사 긴급 상담하기</button>
+        </div>
+    </div>
+
+    <!-- 4. 민사/가사 모달 -->
+    <div id="civilModal" class="modal-overlay">
+        <div class="modal-content p-10">
+            <button onclick="closeModal('civilModal')" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-3xl font-bold mb-6 text-purple-400">민사/가사 솔루션</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-purple-500 transition">
+                    <h4 class="font-bold text-white mb-2 underline decoration-purple-500 underline-offset-4">이혼 및 재산분할</h4>
+                    <p class="text-xs text-gray-500 leading-relaxed">단순한 결별을 넘어, 상간자 위자료 청구, 기여도 산정을 통한 공정한 재산분할, 양육권 확보까지 철저히 준비합니다.</p>
+                </div>
+                <div class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-purple-500 transition">
+                    <h4 class="font-bold text-white mb-2 underline decoration-purple-500 underline-offset-4">부동산 및 임대차</h4>
+                    <p class="text-xs text-gray-500 leading-relaxed">전세사기 대응, 명도 소송, 계약 해지 분쟁 등 자산 가치를 지키기 위한 법적 절차를 수행합니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 성공사례 모달 -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content p-10">
+            <button onclick="closeModal('successModal')" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-2xl font-bold mb-6">주요 성공사례 (Actual Result)</h2>
+            <div class="space-y-4">
+                <div class="p-5 bg-cyan-500/5 border-l-4 border-cyan-500 rounded-r-2xl">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">Case 01</span>
+                        <span class="text-[10px] bg-cyan-500 text-black px-2 py-0.5 rounded">무죄 확정</span>
+                    </div>
+                    <p class="text-sm font-bold text-white mb-1">강제추행 혐의 피의 사건</p>
+                    <p class="text-xs text-gray-500">CCTV 분석 및 일관된 진술 확보를 통해 검찰 단계에서 혐의없음(불기소) 처분 이끌어냄.</p>
+                </div>
+                <div class="p-5 bg-purple-500/5 border-l-4 border-purple-500 rounded-r-2xl">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest">Case 02</span>
+                        <span class="text-[10px] bg-purple-500 text-black px-2 py-0.5 rounded">전액 승소</span>
+                    </div>
+                    <p class="text-sm font-bold text-white mb-1">투자금 반환 청구 소송</p>
+                    <p class="text-xs text-gray-500">상대방의 기망 행위를 입증하여 청구 원금 및 지연 손해금 100% 인용 판결.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. 오시는길 모달 -->
+    <div id="locationModal" class="modal-overlay">
+        <div class="modal-content p-10">
+            <button onclick="closeModal('locationModal')" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-2xl font-bold mb-6">오시는 길 (Access)</h2>
+            <div class="space-y-6">
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 shrink-0">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm">주소 안내</p>
+                        <p class="text-xs text-gray-500 mt-1">서울특별시 서초구 법원로 15길 21 201호 (서초동, 서초동21빌딩)</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 shrink-0">
+                        <i class="fas fa-subway"></i>
+                    </div>
+                    <div>
+                        <p class="text-white font-bold text-sm">지하철 이용 시</p>
+                        <p class="text-xs text-gray-500 mt-1">2, 3호선 교대역 10번 출구에서 법원 방향 도보 약 5분 소요</p>
+                    </div>
+                </div>
+                <div class="w-full h-48 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fas fa-map-marked-alt text-4xl text-gray-700 mb-2"></i>
+                        <p class="text-[10px] text-gray-600 italic">서초동 법조 타운 내 위치</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sideMenu = document.getElementById('sideMenu');
+        const form = document.getElementById('modalForm');
+
+        function toggleSideMenu() {
+            if (sideMenu.style.transform === 'translateX(0%)') {
+                sideMenu.style.transform = 'translateX(100%)';
+            } else {
+                sideMenu.style.transform = 'translateX(0%)';
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 팝업 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // 폼 제출 애니메이션
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const msg = document.createElement('div');
+            msg.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-cyan-500 text-black p-8 rounded-3xl font-bold z-[200] text-center shadow-2xl';
+            msg.innerHTML = '<i class="fas fa-check-circle text-4xl mb-4 block"></i>신청 완료되었습니다!<br>곧 연락드리겠습니다.';
+            document.body.appendChild(msg);
+            
+            setTimeout(() => msg.remove(), 2500);
+            closeModal('consultationModal');
+            form.reset();
+        });
+
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                e.preventDefault();
+                const target = document.querySelector(targetId);
+                if(target) {
+                    const navHeight = 80;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
