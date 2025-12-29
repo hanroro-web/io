@@ -103,14 +103,21 @@
 
         .custom-modal {
             display: none; position: fixed; inset: 0; z-index: 2000;
-            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
             align-items: center; justify-content: center; padding: 16px;
         }
         .custom-modal.active { display: flex; }
 
         .modal-content {
-            background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.3);
-            width: 100%; max-width: 850px; max-height: 85vh; overflow-y: auto; border-radius: 24px; padding: 32px;
+            background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2);
+            width: 100%; max-width: 850px; max-height: 90vh; overflow-y: auto; border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .iframe-container {
@@ -154,12 +161,42 @@
             z-index: 10;
         }
 
+        /* 세련된 폼 카드 */
         .form-card {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px; padding: 16px;
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px; 
+            padding: 14px 20px;
+            transition: all 0.3s ease;
         }
-        .form-card label { display: flex; align-items: center; font-size: 10px; font-weight: 800; color: #8a4fff; text-transform: uppercase; margin-bottom: 8px; }
-        .form-card input, .form-card textarea, .form-card select { width: 100%; background: transparent; border: none; outline: none; color: white; font-size: 14px; }
+        .form-card:focus-within {
+            border-color: var(--vibe-primary);
+            background: rgba(138, 79, 255, 0.05);
+            box-shadow: 0 0 15px rgba(138, 79, 255, 0.1);
+        }
+        .form-card label { 
+            display: flex; 
+            align-items: center; 
+            font-size: 11px; 
+            font-weight: 800; 
+            color: #8a4fff; 
+            text-transform: uppercase; 
+            margin-bottom: 6px; 
+            letter-spacing: 0.05em;
+        }
+        .form-card input, .form-card textarea, .form-card select { 
+            width: 100%; 
+            background: transparent; 
+            border: none; 
+            outline: none; 
+            color: white; 
+            font-size: 15px; 
+            font-weight: 500;
+        }
+        .form-card select option {
+            background: #0f0a1f;
+            color: white;
+        }
 
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
         .float-animation { animation: float 4s ease-in-out infinite; }
@@ -254,7 +291,6 @@
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Case 1 -->
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-purple-900/20 flex items-center justify-center border-b border-white/5">
                         <i class="fas fa-laptop-code text-5xl text-purple-500/40"></i>
@@ -272,7 +308,6 @@
                     </div>
                 </div>
 
-                <!-- Case 2 -->
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-blue-900/20 flex items-center justify-center border-b border-white/5">
                         <i class="fas fa-shopping-cart text-5xl text-blue-500/40"></i>
@@ -290,7 +325,6 @@
                     </div>
                 </div>
 
-                <!-- Case 3 -->
                 <div class="case-card" onclick="openPreviewModal()">
                     <div class="h-48 bg-emerald-900/20 flex items-center justify-center border-b border-white/5">
                         <i class="fas fa-rocket text-5xl text-emerald-500/40"></i>
@@ -327,33 +361,90 @@
         </div>
     </div>
 
-    <!-- Contact Modal -->
+    <!-- 세련된 업데이트 버전: Contact Modal -->
     <div id="contact-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('contact-modal', false)">
-        <div class="modal-content relative !max-w-2xl">
-            <button onclick="toggleModal('contact-modal', false)" class="absolute top-6 right-6 text-gray-500"><i class="fas fa-times text-xl"></i></button>
-            <div class="mb-10 text-center">
-                <h2 class="text-purple-400 font-bold text-[10px] uppercase mb-2">Ready to Start?</h2>
-                <p class="text-3xl font-black">상담 신청</p>
-            </div>
-            <form id="contact-form" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="form-card"><label>성함/업체명</label><input type="text" placeholder="홍길동" required></div>
-                    <div class="form-card"><label>연락처</label><input type="tel" placeholder="010-0000-0000" required></div>
+        <div class="modal-content relative !p-0 flex flex-col md:flex-row min-h-[500px]">
+            <!-- 좌측: 안내 영역 -->
+            <div class="md:w-1/3 bg-gradient-to-br from-purple-800 to-purple-950 p-8 md:p-12 flex flex-col justify-between overflow-hidden relative">
+                <div class="relative z-10">
+                    <i class="fas fa-paper-plane text-4xl text-purple-200 mb-6"></i>
+                    <h2 class="text-white text-2xl font-black leading-tight mb-4">함께 더 높이 <br>비상할 시간입니다</h2>
+                    <p class="text-purple-200/70 text-sm leading-relaxed">아이디어를 현실로 만드는 한로로의 전문 팀이 24시간 이내에 답변 드립니다.</p>
                 </div>
-                <div class="form-card"><label>문의 유형</label><select><option>단순형 (60% 할인)</option><option>브랜드형</option><option>쇼핑몰</option></select></div>
-                <div class="form-card"><label>문의 내용</label><textarea rows="4" placeholder="상세 내용을 적어주세요."></textarea></div>
-                <button type="submit" class="w-full bg-purple-600 py-4 rounded-xl font-bold">문의 전송하기</button>
-            </form>
-            <div id="success-msg" class="hidden text-center py-10">
-                <i class="fas fa-check-circle text-5xl text-purple-500 mb-4"></i>
-                <p class="text-xl font-bold">접수 완료!</p>
+                <div class="relative z-10 mt-12">
+                    <div class="flex items-center space-x-3 text-purple-200/50 text-xs mb-4">
+                        <i class="fas fa-check-circle"></i>
+                        <span>60% 캐시백 프로모션 적용 가능</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-purple-200/50 text-xs">
+                        <i class="fas fa-check-circle"></i>
+                        <span>무료 기획 컨설팅 포함</span>
+                    </div>
+                </div>
+                <!-- 배경 장식 -->
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full blur-[80px] opacity-30"></div>
+            </div>
+
+            <!-- 우측: 입력 영역 -->
+            <div class="md:w-2/3 p-8 md:p-12 relative">
+                <button onclick="toggleModal('contact-modal', false)" class="absolute top-6 right-8 text-gray-500 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="mb-10">
+                    <h3 class="text-white text-xl font-bold mb-2">상담 신청</h3>
+                    <p class="text-gray-500 text-xs">귀하의 프로젝트를 위한 첫 단계를 시작하세요.</p>
+                </div>
+
+                <form id="contact-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-card">
+                            <label><i class="fas fa-user mr-2"></i> 성함/업체명</label>
+                            <input type="text" placeholder="홍길동" required>
+                        </div>
+                        <div class="form-card">
+                            <label><i class="fas fa-phone mr-2"></i> 연락처</label>
+                            <input type="tel" placeholder="010-0000-0000" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-card">
+                        <label><i class="fas fa-th-list mr-2"></i> 문의 유형</label>
+                        <select required>
+                            <option value="">유형을 선택하세요</option>
+                            <option>단순형 (60% 할인 프로모션)</option>
+                            <option>브랜드 맞춤형</option>
+                            <option>이커머스/쇼핑몰</option>
+                            <option>기타 문의</option>
+                        </select>
+                    </div>
+
+                    <div class="form-card">
+                        <label><i class="fas fa-pen mr-2"></i> 문의 상세 내용</label>
+                        <textarea rows="3" placeholder="제작하고자 하는 사이트의 목적이나 참고 사이트가 있다면 적어주세요." required></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-5 rounded-2xl font-black text-sm transition-all transform hover:scale-[1.02] shadow-xl shadow-purple-900/20 flex items-center justify-center group">
+                        <span>프로젝트 문의 전송하기</span>
+                        <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </form>
+
+                <div id="success-msg" class="hidden absolute inset-0 bg-[#0f0a1f] z-20 flex flex-col items-center justify-center p-12 text-center">
+                    <div class="w-20 h-20 bg-purple-500/20 text-purple-500 rounded-full flex items-center justify-center mb-6 text-3xl animate-bounce">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-white mb-2">문의가 전송되었습니다!</h4>
+                    <p class="text-gray-400 text-sm mb-8">한로로 전문가가 검토 후 <br>영업일 기준 24시간 이내에 연락 드리겠습니다.</p>
+                    <button onclick="toggleModal('contact-modal', false)" class="text-purple-400 font-bold text-sm border-b border-purple-400 pb-1">닫기</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Status Modal -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
-        <div class="modal-content">
+        <div class="modal-content p-10">
             <h3 class="text-2xl font-bold mb-6">프로젝트 현황</h3>
             <div id="modal-project-list" class="space-y-4"></div>
         </div>
@@ -416,9 +507,15 @@
 
         document.getElementById('contact-form').onsubmit = function(e) {
             e.preventDefault();
-            this.classList.add('hidden');
             document.getElementById('success-msg').classList.remove('hidden');
-            setTimeout(() => toggleModal('contact-modal', false), 2000);
+            setTimeout(() => {
+                toggleModal('contact-modal', false);
+                // Reset form for next opening
+                setTimeout(() => {
+                    document.getElementById('success-msg').classList.add('hidden');
+                    this.reset();
+                }, 500);
+            }, 3000);
         };
 
         window.onload = renderProjects;
