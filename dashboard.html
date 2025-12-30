@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Admin Console | HANRORO LIVE</title>
+    <!-- CDN 로드 안정성을 위해 순서 및 속성 확인 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -34,6 +35,10 @@
 
         /* Stats Cards */
         .stat-card { background: linear-gradient(145deg, #0f0a1f 0%, #05020a 100%); border-left: 4px solid var(--primary); }
+        
+        /* 스크롤바 숨기기 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="pb-10">
@@ -77,7 +82,7 @@
 
         <main class="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
             
-            <!-- 접속자 통계 섹션 (추가됨) -->
+            <!-- 접속자 통계 섹션 -->
             <section id="sec-stats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-card stat-card p-5">
                     <div class="flex justify-between items-start">
@@ -235,14 +240,13 @@
     </div>
 
     <script type="module">
+        // Firebase 라이브러리는 안정적인 버전(11.1.0)을 유지합니다.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-        // Security Configuration
         const CREDENTIALS = { id: 'hanroro', pw: 'gksfhfh00@@' };
         
-        // Login Logic
         window.attemptLogin = () => {
             const idInput = document.getElementById('admin-id').value;
             const pwInput = document.getElementById('admin-pw').value;
@@ -267,14 +271,12 @@
             initFirebase();
         };
 
-        // Check auth on load
         window.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('hanroro_auth') === 'true') {
                 showDashboard();
             }
         });
 
-        // Firebase Configuration
         const firebaseConfig = {
           apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI",
           authDomain: "hanroro-web.firebaseapp.com",
@@ -290,16 +292,26 @@
         const appId = "hanroro-official-service";
 
         async function initFirebase() {
-            await signInAnonymously(auth);
-            document.getElementById('sync-status').innerText = "ONLINE";
+            try {
+                await signInAnonymously(auth);
+                document.getElementById('sync-status').innerText = "ONLINE";
+                loadStats();
+                loadSettings();
+                loadProjects();
+                loadNotices();
+            } catch (error) {
+                console.error("Firebase Auth Error:", error);
+                document.getElementById('sync-status').innerText = "OFFLINE";
+            }
+        }
 
-            // --- Stats Listener (추가된 부분) ---
+        // 각 기능을 별도 함수로 분리하여 관리
+        function loadStats() {
             const today = new Date().toISOString().split('T')[0];
             const currentMonth = today.substring(0, 7);
             document.getElementById('stat-today-date').innerText = `${today} 기준`;
             document.getElementById('stat-month-label').innerText = `${currentMonth} 전체 통계`;
 
-            // Real-time / Today / Month Stats Sync
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'visitors'), (s) => {
                 if(s.exists()){
                     const data = s.data();
@@ -307,9 +319,10 @@
                     document.getElementById('stat-today').innerText = data.daily?.[today] || 0;
                     document.getElementById('stat-month').innerText = data.monthly?.[currentMonth] || 0;
                 }
-            }, (err) => console.log("Stats error:", err));
+            });
+        }
 
-            // 1. Settings Listener
+        function loadSettings() {
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'topBanner'), (s) => {
                 if(s.exists()){
                     document.getElementById('ui-top-highlight').value = s.data().highlight || "";
@@ -322,8 +335,9 @@
                     document.getElementById('ui-bottom-btn').value = s.data().btn || "";
                 }
             });
+        }
 
-            // 2. Projects Listener
+        function loadProjects() {
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
                 const list = document.getElementById('project-list-admin');
                 list.innerHTML = "";
@@ -350,8 +364,9 @@
                     list.appendChild(div);
                 });
             });
+        }
 
-            // 3. Notice Listener
+        function loadNotices() {
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (snap) => {
                 const list = document.getElementById('notice-list-admin');
                 list.innerHTML = "";
@@ -368,14 +383,18 @@
             });
         }
 
-        // --- Functions ---
+        // --- Global Functions (Window) ---
         window.switchTab = (target) => {
             ['ui', 'projects', 'portfolio', 'notices'].forEach(id => {
-                document.getElementById(`sec-${id}`).classList.add('hidden');
-                document.getElementById(`tab-${id}`).classList.remove('active');
+                const el = document.getElementById(`sec-${id}`);
+                const tab = document.getElementById(`tab-${id}`);
+                if(el) el.classList.add('hidden');
+                if(tab) tab.classList.remove('active');
             });
-            document.getElementById(`sec-${target}`).classList.remove('hidden');
-            document.getElementById(`tab-${target}`).classList.add('active');
+            const targetSec = document.getElementById(`sec-${target}`);
+            const targetTab = document.getElementById(`tab-${target}`);
+            if(targetSec) targetSec.classList.remove('hidden');
+            if(targetTab) targetTab.classList.add('active');
         };
 
         window.updateSettings = async (type) => {
@@ -397,15 +416,21 @@
         };
 
         window.openModal = (id) => {
-            document.getElementById(id).classList.add('active');
-            document.getElementById('modal-project-id').value = "";
-            document.getElementById('modal-project-name').value = "";
-            document.getElementById('modal-project-progress').value = 0;
-            document.getElementById('modal-project-phase').value = "";
-            document.getElementById('modal-project-status').value = "";
+            const el = document.getElementById(id);
+            if(el) el.classList.add('active');
+            if(id === 'project-modal') {
+                document.getElementById('modal-project-id').value = "";
+                document.getElementById('modal-project-name').value = "";
+                document.getElementById('modal-project-progress').value = 0;
+                document.getElementById('modal-project-phase').value = "";
+                document.getElementById('modal-project-status').value = "";
+            }
         };
 
-        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+        window.closeModal = (id) => {
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('active');
+        };
 
         window.editProject = (id, name, progress, phase, status) => {
             openModal('project-modal');
@@ -420,7 +445,7 @@
             const id = document.getElementById('modal-project-id').value;
             const data = {
                 name: document.getElementById('modal-project-name').value,
-                progress: parseInt(document.getElementById('modal-project-progress').value),
+                progress: parseInt(document.getElementById('modal-project-progress').value) || 0,
                 phase: document.getElementById('modal-project-phase').value,
                 status: document.getElementById('modal-project-status').value,
                 updatedAt: serverTimestamp()
