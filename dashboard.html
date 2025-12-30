@@ -75,13 +75,11 @@
         .status-waiting { background: #f59e0b20; color: #f59e0b; }
         .status-complete { background: #10b98120; color: #10b981; }
 
-        /* GitHub Image Picker Styles */
         .github-img-item { cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
         .github-img-item:hover { border-color: var(--primary); transform: scale(1.05); }
-        .github-img-item.selected { border-color: var(--primary); background: rgba(138, 79, 255, 0.2); }
     </style>
 </head>
-<body class="pb-10 safe-pb" oncontextmenu="return false">
+<body class="pb-10 safe-pb">
 
     <!-- Login Layer -->
     <div id="login-overlay">
@@ -91,7 +89,7 @@
                 <h2 class="text-xl font-black text-white">ADMIN ACCESS</h2>
                 <p class="text-[10px] text-gray-500 mt-2 tracking-widest uppercase">Hanroro Management System</p>
             </div>
-            <div class="space-y-4" id="login-form">
+            <div class="space-y-4">
                 <input type="text" id="admin-id" class="input-field text-center" placeholder="ID" autocomplete="off">
                 <input type="password" id="admin-pw" class="input-field text-center" placeholder="Password" autocomplete="off">
                 <div id="login-error" class="text-red-500 text-[11px] font-bold hidden italic">인증 정보가 일치하지 않습니다.</div>
@@ -104,7 +102,7 @@
     <div id="admin-content">
         <header class="p-6 flex items-center justify-between border-b border-white/5 bg-black/40 sticky top-0 z-50 backdrop-blur-md safe-pt">
             <div>
-                <h1 class="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Management Console v4.4</h1>
+                <h1 class="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Management Console v4.6</h1>
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
                     <span class="text-lg font-bold">Admin Dashboard</span>
@@ -122,7 +120,7 @@
                 <button onclick="switchTab('cases')" class="tab-btn" id="tab-cases">성공 사례</button>
             </div>
 
-            <!-- Content Sections -->
+            <!-- Popup Section -->
             <section id="sec-popup" class="space-y-6">
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="glass-card p-6">
@@ -134,7 +132,7 @@
                                 <input type="text" id="pop-top-btn-text" class="input-field" placeholder="버튼 이름">
                                 <input type="text" id="pop-top-btn-link" class="input-field" placeholder="버튼 링크">
                             </div>
-                            <button onclick="updateData('settings', 'topPopup', getPopupData('top'))" class="btn-primary w-full">상단 팝업 저장</button>
+                            <button onclick="updateSettings('topPopup', 'top')" class="btn-primary w-full">상단 팝업 저장</button>
                         </div>
                     </div>
                     <div class="glass-card p-6">
@@ -146,7 +144,7 @@
                                 <input type="text" id="pop-btm-btn-text" class="input-field" placeholder="버튼 이름">
                                 <input type="text" id="pop-btm-btn-link" class="input-field" placeholder="버튼 링크">
                             </div>
-                            <button onclick="updateData('settings', 'bottomPopup', getPopupData('btm'))" class="btn-primary w-full">하단 팝업 저장</button>
+                            <button onclick="updateSettings('bottomPopup', 'btm')" class="btn-primary w-full">하단 팝업 저장</button>
                         </div>
                     </div>
                 </div>
@@ -159,14 +157,16 @@
                 </div>
             </section>
 
+            <!-- Projects Section -->
             <section id="sec-projects" class="hidden space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-black tracking-tight text-white">Project Tracker</h3>
-                    <button onclick="openModal('project-modal')" class="bg-purple-600 px-4 py-2 rounded-lg text-xs font-bold">+ 수동 입력</button>
+                    <button onclick="openModal('project-modal')" class="bg-purple-600 px-4 py-2 rounded-lg text-xs font-bold">+ 프로젝트 추가</button>
                 </div>
                 <div id="admin-project-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </section>
 
+            <!-- Finance Section -->
             <section id="sec-finance" class="hidden space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-black tracking-tight text-white">Deposit Live Status</h3>
@@ -177,8 +177,8 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-white/5 text-[10px] uppercase text-gray-500 font-black">
                                 <tr>
-                                    <th class="p-4">고객명 (마스킹)</th>
-                                    <th class="p-4">금액 (보안)</th>
+                                    <th class="p-4">고객명</th>
+                                    <th class="p-4">금액</th>
                                     <th class="p-4">상태</th>
                                     <th class="p-4 text-right">관리</th>
                                 </tr>
@@ -189,6 +189,7 @@
                 </div>
             </section>
 
+            <!-- Cases Section -->
             <section id="sec-cases" class="hidden space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-black tracking-tight text-white">Success Cases</h3>
@@ -200,14 +201,15 @@
     </div>
 
     <!-- Modals -->
-    <div id="project-modal" class="modal"><div class="glass-card w-full max-md p-8 mx-4"><h3 class="text-lg font-black mb-4">Project Edit</h3><div class="space-y-3"><input type="hidden" id="modal-project-id"><input type="text" id="modal-project-name" class="input-field" placeholder="프로젝트명"><input type="number" id="modal-project-progress" class="input-field" placeholder="진행률 %"><input type="text" id="modal-project-phase" class="input-field" placeholder="현재 단계"><div class="flex gap-2 mt-4"><button onclick="closeModal('project-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button><button onclick="saveItem('projects')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
-    <div id="deposit-modal" class="modal"><div class="glass-card w-full max-md p-8 mx-4"><h3 class="text-lg font-black mb-4">Deposit Update</h3><div class="space-y-3"><input type="hidden" id="modal-deposit-id"><input type="text" id="modal-deposit-name" class="input-field" placeholder="고객명 (실제 이름 입력)"><input type="text" id="modal-deposit-amount" class="input-field" placeholder="입금 금액"><select id="modal-deposit-status" class="input-field"><option value="waiting">입금대기</option><option value="complete">입금완료</option></select><div class="flex gap-2 mt-4"><button onclick="closeModal('deposit-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button><button onclick="saveItem('deposits')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
-    <div id="notice-modal" class="modal"><div class="glass-card w-full max-md p-8 mx-4"><h3 class="text-lg font-black mb-4">Notice Edit</h3><div class="space-y-3"><input type="hidden" id="modal-notice-id"><input type="text" id="modal-notice-title" class="input-field" placeholder="공지 제목"><textarea id="modal-notice-content" class="input-field h-32" placeholder="공지 내용"></textarea><div class="flex gap-2 mt-4"><button onclick="closeModal('notice-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button><button onclick="saveItem('notices')" class="flex-1 btn-primary py-3 rounded-xl">공지 저장</button></div></div></div></div>
-    
-    <!-- Case Modal (Updated for GitHub Images) -->
+    <div id="project-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">프로젝트 편집</h3><div class="space-y-3"><input type="hidden" id="modal-project-id"><input type="text" id="modal-project-name" class="input-field" placeholder="프로젝트명"><input type="number" id="modal-project-progress" class="input-field" placeholder="진행률 %"><input type="text" id="modal-project-phase" class="input-field" placeholder="현재 단계"><div class="flex gap-2 mt-4"><button onclick="closeModal('project-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button><button onclick="saveItem('projects')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
+
+    <div id="deposit-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">입금 현황 편집</h3><div class="space-y-3"><input type="hidden" id="modal-deposit-id"><input type="text" id="modal-deposit-name" class="input-field" placeholder="고객명"><input type="text" id="modal-deposit-amount" class="input-field" placeholder="입금 금액"><select id="modal-deposit-status" class="input-field"><option value="waiting">입금대기</option><option value="complete">입금완료</option></select><div class="flex gap-2 mt-4"><button onclick="closeModal('deposit-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button><button onclick="saveItem('deposits')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
+
+    <div id="notice-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">공지사항 편집</h3><div class="space-y-3"><input type="hidden" id="modal-notice-id"><input type="text" id="modal-notice-title" class="input-field" placeholder="공지 제목"><textarea id="modal-notice-content" class="input-field h-32" placeholder="공지 내용"></textarea><div class="flex gap-2 mt-4"><button onclick="closeModal('notice-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button><button onclick="saveItem('notices')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
+
     <div id="case-modal" class="modal">
         <div class="glass-card w-full max-w-xl p-8 mx-4 overflow-y-auto max-h-[90vh]">
-            <h3 class="text-lg font-black mb-4">Case Study Edit</h3>
+            <h3 class="text-lg font-black mb-4">성공 사례 편집</h3>
             <div class="space-y-3">
                 <input type="hidden" id="modal-case-id">
                 <input type="text" id="modal-case-title" class="input-field" placeholder="제목">
@@ -217,27 +219,23 @@
                     <label class="text-[10px] font-black uppercase text-gray-500">Thumbnail Image</label>
                     <div class="flex gap-2">
                         <input type="text" id="modal-case-img" class="input-field" placeholder="이미지 URL">
-                        <button onclick="toggleGitHubPicker()" class="whitespace-nowrap px-4 bg-white/10 rounded-xl text-xs font-bold hover:bg-white/20">폴더에서 선택</button>
+                        <button onclick="toggleGitHubPicker()" class="whitespace-nowrap px-4 bg-white/10 rounded-xl text-xs font-bold hover:bg-white/20"><i class="fab fa-github mr-2"></i>폴더 선택</button>
                     </div>
-                    <!-- GitHub Image Picker Section -->
                     <div id="github-picker" class="hidden mt-2 p-3 bg-black/40 rounded-lg border border-purple-500/20 max-h-48 overflow-y-auto">
-                        <div id="github-img-list" class="grid grid-cols-4 gap-2">
-                            <p class="col-span-4 text-center text-[10px] text-gray-400 py-4 italic">이미지를 불러오는 중...</p>
-                        </div>
+                        <div id="github-img-list" class="grid grid-cols-4 gap-2"></div>
                     </div>
-                    <div id="case-img-preview" class="mt-2 h-20 w-full rounded-lg bg-black/20 overflow-hidden hidden">
-                        <img src="" class="w-full h-full object-contain">
+                    <div id="case-img-preview" class="mt-2 h-24 w-full rounded-lg bg-black/20 overflow-hidden hidden flex items-center justify-center">
+                        <img src="" class="max-h-full max-w-full object-contain">
                     </div>
                 </div>
 
                 <textarea id="modal-case-summary" class="input-field h-20" placeholder="요약"></textarea>
-                <hr class="border-white/5">
                 <input type="text" id="modal-case-client" class="input-field" placeholder="클라이언트/기간">
                 <textarea id="modal-case-detail" class="input-field h-32" placeholder="상세 내용"></textarea>
                 
                 <div class="flex gap-2 mt-4">
                     <button onclick="closeModal('case-modal')" class="flex-1 bg-white/5 py-3 rounded-xl text-sm">취소</button>
-                    <button onclick="saveItem('cases')" class="flex-1 btn-primary py-3 rounded-xl">사례 저장</button>
+                    <button onclick="saveItem('cases')" class="flex-1 btn-primary py-3 rounded-xl">저장</button>
                 </div>
             </div>
         </div>
@@ -245,17 +243,16 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-        // Admin Config
+        // Config
         const ADMIN_ID = 'hanroro';
         const ADMIN_PW = 'gksfhfh00@@';
         const AUTH_KEY = 'hanroro_secure_session_v4';
         
-        // GitHub Config
         const GITHUB_USER = 'hanroro-official';
-        const GITHUB_REPO = 'web-assets'; // 레포지토리 이름에 맞게 수정 필요
+        const PROJECT_REPO = 'web-assets'; 
         const GITHUB_IMAGE_PATH = 'images';
 
         const firebaseConfig = {
@@ -270,322 +267,190 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        // --- Auth Core ---
-        const handleLogin = () => {
-            const inputId = document.getElementById('admin-id').value;
-            const inputPw = document.getElementById('admin-pw').value;
-            
-            if (inputId === ADMIN_ID && inputPw === ADMIN_PW) {
+        // --- Auth ---
+        window.handleLogin = () => {
+            const id = document.getElementById('admin-id').value;
+            const pw = document.getElementById('admin-pw').value;
+            if (id === ADMIN_ID && pw === ADMIN_PW) {
                 sessionStorage.setItem(AUTH_KEY, 'TRUE');
                 showDashboard();
             } else {
-                const error = document.getElementById('login-error');
-                error.classList.remove('hidden');
-                setTimeout(() => error.classList.add('hidden'), 2500);
+                const err = document.getElementById('login-error');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 2000);
             }
         };
+
+        window.logout = () => { sessionStorage.removeItem(AUTH_KEY); location.reload(); };
 
         const showDashboard = () => {
-            const overlay = document.getElementById('login-overlay');
-            if(overlay) overlay.style.display = 'none';
+            document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('admin-content').classList.add('authorized');
-            initDataSync();
+            initData();
         };
 
-        const checkSession = () => {
-            if (sessionStorage.getItem(AUTH_KEY) === 'TRUE') {
-                showDashboard();
-            }
-        };
-
-        window.logout = () => {
-            sessionStorage.removeItem(AUTH_KEY);
-            location.reload();
-        };
-
-        // Event Listeners
-        document.getElementById('login-btn').addEventListener('click', handleLogin);
-        document.getElementById('admin-pw').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
-
-        // --- GitHub Image Logic ---
+        // --- GitHub Picker ---
         window.toggleGitHubPicker = async () => {
             const picker = document.getElementById('github-picker');
             const list = document.getElementById('github-img-list');
-            
             if (picker.classList.contains('hidden')) {
                 picker.classList.remove('hidden');
-                
+                list.innerHTML = "<p class='col-span-4 text-center text-[10px] py-4 text-gray-500'>로딩 중...</p>";
                 try {
-                    // GitHub API to list images
-                    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_IMAGE_PATH}`);
+                    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${PROJECT_REPO}/contents/${GITHUB_IMAGE_PATH}`);
                     const files = await res.json();
-                    
-                    if (!Array.isArray(files)) throw new Error("Not a folder");
-
                     list.innerHTML = "";
-                    files.forEach(file => {
-                        if (file.type === 'file' && /\.(jpe?g|png|gif|webp|svg)$/i.test(file.name)) {
-                            const imgItem = document.createElement('div');
-                            imgItem.className = "github-img-item aspect-square rounded bg-black/50 overflow-hidden";
-                            imgItem.innerHTML = `<img src="${file.download_url}" class="w-full h-full object-cover" title="${file.name}">`;
-                            imgItem.onclick = () => selectGitHubImage(file.download_url);
-                            list.appendChild(imgItem);
-                        }
+                    files.filter(f => f.type === 'file' && /\.(jpe?g|png|gif|webp)$/i.test(f.name)).forEach(file => {
+                        const div = document.createElement('div');
+                        div.className = "github-img-item aspect-square rounded bg-black/50 overflow-hidden";
+                        div.innerHTML = `<img src="${file.download_url}" class="w-full h-full object-cover">`;
+                        div.onclick = () => {
+                            document.getElementById('modal-case-img').value = file.download_url;
+                            updateImgPreview(file.download_url);
+                            picker.classList.add('hidden');
+                        };
+                        list.appendChild(div);
                     });
-                    
-                    if (list.innerHTML === "") list.innerHTML = "<p class='col-span-4 text-[10px] text-gray-500 text-center py-4'>이미지가 없습니다.</p>";
-
-                } catch (err) {
-                    list.innerHTML = `<p class="col-span-4 text-center text-[10px] text-red-500 py-4">폴더를 찾을 수 없습니다.<br>(Repo: ${GITHUB_REPO}/images)</p>`;
-                }
-            } else {
-                picker.classList.add('hidden');
-            }
+                } catch (e) { list.innerHTML = "<p class='col-span-4 text-red-500 text-center text-[10px] py-4'>에러 발생</p>"; }
+            } else picker.classList.add('hidden');
         };
 
-        function selectGitHubImage(url) {
-            const input = document.getElementById('modal-case-img');
-            input.value = url;
-            updatePreview(url);
-            document.getElementById('github-picker').classList.add('hidden');
+        function updateImgPreview(url) {
+            const wrap = document.getElementById('case-img-preview');
+            const img = wrap.querySelector('img');
+            if(url) { img.src = url; wrap.classList.remove('hidden'); }
+            else wrap.classList.add('hidden');
         }
 
-        function updatePreview(url) {
-            const previewWrap = document.getElementById('case-img-preview');
-            const previewImg = previewWrap.querySelector('img');
-            if (url) {
-                previewImg.src = url;
-                previewWrap.classList.remove('hidden');
-            } else {
-                previewWrap.classList.add('hidden');
-            }
-        }
-
-        document.getElementById('modal-case-img').addEventListener('input', (e) => updatePreview(e.target.value));
+        document.getElementById('modal-case-img').addEventListener('input', e => updateImgPreview(e.target.value));
 
         // --- Data Logic ---
-        async function initDataSync() {
-            try {
-                await signInAnonymously(auth);
-                sync('projects', 'admin-project-list', renderProject);
-                sync('deposits', 'admin-deposit-list', renderDeposit);
-                sync('notices', 'admin-notice-list', renderNotice);
-                sync('cases', 'admin-case-list', renderCase);
-                loadPopups();
-            } catch (err) {
-                console.error("Auth Fail", err);
+        async function initData() {
+            await signInAnonymously(auth);
+            sync('projects', 'admin-project-list', renderProject);
+            sync('deposits', 'admin-deposit-list', renderDeposit);
+            sync('notices', 'admin-notice-list', renderNotice);
+            sync('cases', 'admin-case-list', renderCase);
+            loadSettings();
+        }
+
+        function sync(col, elId, renderFn) {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', col), snap => {
+                const el = document.getElementById(elId);
+                el.innerHTML = "";
+                snap.forEach(d => el.appendChild(renderFn(d.id, d.data())));
+            });
+        }
+
+        async function loadSettings() {
+            const settings = ['topPopup', 'bottomPopup'];
+            for(const s of settings) {
+                const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', s));
+                if(docSnap.exists()) {
+                    const d = docSnap.data();
+                    const pre = s === 'topPopup' ? 'top' : 'btm';
+                    document.getElementById(`pop-${pre}-title`).value = d.title || "";
+                    document.getElementById(`pop-${pre}-content`).value = d.content || "";
+                    document.getElementById(`pop-${pre}-btn-text`).value = d.btnText || "";
+                    document.getElementById(`pop-${pre}-btn-link`).value = d.btnLink || "";
+                }
             }
         }
 
-        function sync(colName, elementId, renderFn) {
-            const colRef = collection(db, 'artifacts', appId, 'public', 'data', colName);
-            onSnapshot(colRef, (snap) => {
-                const el = document.getElementById(elementId);
-                if(!el) return;
-                el.innerHTML = "";
-                snap.forEach(d => {
-                    const node = renderFn(d.id, d.data());
-                    el.appendChild(node);
-                });
-            }, (err) => console.error(colName, err));
-        }
+        window.updateSettings = async (docId, prefix) => {
+            const data = {
+                title: document.getElementById(`pop-${prefix}-title`).value,
+                content: document.getElementById(`pop-${prefix}-content`).value,
+                btnText: document.getElementById(`pop-${prefix}-btn-text`).value,
+                btnLink: document.getElementById(`pop-${prefix}-btn-link`).value,
+                updatedAt: serverTimestamp()
+            };
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', docId), data);
+            alert('저장되었습니다.');
+        };
 
-        // --- Masking Helpers ---
-        function maskName(name) {
-            if (!name) return "***";
-            if (name.length <= 1) return "*";
-            if (name.length === 2) return name[0] + "*";
-            return name[0] + "*".repeat(name.length - 2) + name[name.length - 1];
-        }
+        window.saveItem = async (col) => {
+            const pre = col.slice(0, -1);
+            const id = document.getElementById(`modal-${pre}-id`).value;
+            let data = { updatedAt: serverTimestamp() };
+            
+            if(col === 'projects') {
+                data.name = document.getElementById('modal-project-name').value;
+                data.progress = parseInt(document.getElementById('modal-project-progress').value);
+                data.phase = document.getElementById('modal-project-phase').value;
+            } else if(col === 'deposits') {
+                data.name = document.getElementById('modal-deposit-name').value;
+                data.amount = document.getElementById('modal-deposit-amount').value;
+                data.status = document.getElementById('modal-deposit-status').value;
+            } else if(col === 'notices') {
+                data.title = document.getElementById('modal-notice-title').value;
+                data.content = document.getElementById('modal-notice-content').value;
+            } else if(col === 'cases') {
+                data.title = document.getElementById('modal-case-title').value;
+                data.category = document.getElementById('modal-case-category').value;
+                data.image = document.getElementById('modal-case-img').value;
+                data.summary = document.getElementById('modal-case-summary').value;
+                data.client = document.getElementById('modal-case-client').value;
+                data.detail = document.getElementById('modal-case-detail').value;
+            }
 
-        // --- Rendering ---
+            if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id), data);
+            else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', col), data);
+            closeModal(`${pre}-modal`);
+        };
+
+        window.deleteItem = async (col, id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id)); };
+
+        // --- Render Helpers ---
         function renderProject(id, p) {
-            const div = document.createElement('div');
-            div.className = "glass-card p-5 border border-white/5";
-            div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div><h4 class="font-bold text-white text-sm">${p.name || ''}</h4><span class="text-[9px] text-purple-400 font-black uppercase tracking-wider">${p.phase || ''} - ${p.progress || 0}%</span></div>
-                    <div class="flex gap-3">
-                        <button onclick="window.editProject('${id}', \`${(p.name || '').replace(/'/g, "\\'")}\`, ${p.progress || 0}, '${p.phase || ''}')" class="text-gray-500 hover:text-white"><i class="fas fa-edit"></i></button>
-                        <button onclick="window.deleteItem('projects', '${id}')" class="text-red-900/40 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `;
-            return div;
+            const d = document.createElement('div');
+            d.className = "glass-card p-4 border border-white/5";
+            d.innerHTML = `<div class="flex justify-between"><div><h4 class="font-bold text-sm">${p.name}</h4><p class="text-[10px] text-purple-400">${p.phase} - ${p.progress}%</p></div><div class="flex gap-2"><button onclick="editProject('${id}', \`${encodeURIComponent(JSON.stringify(p))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('projects', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div></div>`;
+            return d;
         }
 
         function renderDeposit(id, d) {
             const tr = document.createElement('tr');
-            tr.className = "border-b border-white/5 hover:bg-white/5";
-            tr.innerHTML = `
-                <td class="p-4 font-bold text-white text-xs">
-                    <span title="${d.name || ''}">${maskName(d.name)}</span>
-                </td>
-                <td class="p-4 text-purple-500 font-mono text-xs font-black tracking-widest">****</td>
-                <td class="p-4"><span class="status-badge ${d.status === 'complete' ? 'status-complete' : 'status-waiting'}">${d.status === 'complete' ? '입금완료' : '입금대기'}</span></td>
-                <td class="p-4 text-right">
-                    <button onclick="window.editDeposit('${id}', \`${(d.name || '').replace(/'/g, "\\'")}\`, '${d.amount || ''}', '${d.status || ''}')" class="mr-3 text-gray-500 hover:text-white"><i class="fas fa-edit"></i></button>
-                    <button onclick="window.deleteItem('deposits', '${id}')" class="text-red-900/40 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                </td>
-            `;
+            tr.className = "border-b border-white/5";
+            tr.innerHTML = `<td class="p-4 text-xs font-bold">${d.name}</td><td class="p-4 text-xs text-purple-400">${d.amount}</td><td class="p-4"><span class="status-badge ${d.status === 'complete' ? 'status-complete' : 'status-waiting'}">${d.status === 'complete' ? '완료' : '대기'}</span></td><td class="p-4 text-right"><button onclick="editDeposit('${id}', \`${encodeURIComponent(JSON.stringify(d))}\`)" class="mr-2"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('deposits', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></td>`;
             return tr;
         }
 
         function renderNotice(id, n) {
-            const safeContent = (n.content || "").replace(/`/g, '\\`');
-            const safeTitle = (n.title || "").replace(/'/g, "\\'");
-            const div = document.createElement('div');
-            div.className = "flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5";
-            div.innerHTML = `
-                <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-purple-500 rounded-full"></div><span class="text-xs font-semibold">${n.title || '제목 없음'}</span></div>
-                <div class="flex gap-4">
-                    <button onclick="window.editNotice('${id}', \`${safeTitle}\`, \`${safeContent}\`)" class="text-gray-500 hover:text-white"><i class="fas fa-edit text-xs"></i></button>
-                    <button onclick="window.deleteItem('notices', '${id}')" class="text-red-900/40 hover:text-red-500"><i class="fas fa-trash text-xs"></i></button>
-                </div>
-            `;
-            return div;
+            const d = document.createElement('div');
+            d.className = "flex justify-between items-center p-3 bg-white/5 rounded-xl";
+            d.innerHTML = `<span class="text-xs">${n.title}</span><div class="flex gap-3"><button onclick="editNotice('${id}', \`${encodeURIComponent(JSON.stringify(n))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('notices', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div>`;
+            return d;
         }
 
         function renderCase(id, c) {
-            const div = document.createElement('div');
-            div.className = "glass-card overflow-hidden border border-white/5";
-            div.innerHTML = `
-                <div class="h-24 bg-black/40"><img src="${c.image || ''}" class="w-full h-full object-cover opacity-50" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'"></div>
-                <div class="p-4">
-                    <div class="flex justify-between items-start">
-                        <div><h4 class="font-bold text-xs text-white">${c.title || ''}</h4><span class="text-[8px] text-purple-400 font-black uppercase">${c.category || ''}</span></div>
-                        <div class="flex gap-2">
-                             <button onclick="window.editCase('${id}', \`${JSON.stringify(c).replace(/"/g, '&quot;')}\`)" class="text-gray-500 hover:text-white"><i class="fas fa-edit text-xs"></i></button>
-                             <button onclick="window.deleteItem('cases', '${id}')" class="text-red-900/40 hover:text-red-500"><i class="fas fa-trash text-xs"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return div;
+            const d = document.createElement('div');
+            d.className = "glass-card overflow-hidden border border-white/5";
+            d.innerHTML = `<div class="h-24 bg-black/40"><img src="${c.image}" class="w-full h-full object-cover opacity-50"></div><div class="p-4 flex justify-between"><div><h4 class="text-xs font-bold">${c.title}</h4><p class="text-[8px] text-purple-400">${c.category}</p></div><div class="flex gap-2"><button onclick="editCase('${id}', \`${encodeURIComponent(JSON.stringify(c))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('cases', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div></div>`;
+            return d;
         }
 
-        // --- Global Actions ---
-        window.saveItem = async (col) => {
-            const prefix = col.slice(0, -1);
-            const idInput = document.getElementById(`modal-${prefix}-id`);
-            if(!idInput) return;
-            const id = idInput.value;
-            let data = { updatedAt: serverTimestamp() };
-            
-            try {
-                if(col === 'projects') {
-                    data.name = document.getElementById('modal-project-name').value;
-                    data.progress = parseInt(document.getElementById('modal-project-progress').value) || 0;
-                    data.phase = document.getElementById('modal-project-phase').value;
-                } else if(col === 'deposits') {
-                    data.name = document.getElementById('modal-deposit-name').value;
-                    data.amount = document.getElementById('modal-deposit-amount').value;
-                    data.status = document.getElementById('modal-deposit-status').value;
-                } else if(col === 'notices') {
-                    data.title = document.getElementById('modal-notice-title').value;
-                    data.content = document.getElementById('modal-notice-content').value;
-                } else if(col === 'cases') {
-                    data.title = document.getElementById('modal-case-title').value;
-                    data.category = document.getElementById('modal-case-category').value;
-                    data.image = document.getElementById('modal-case-img').value;
-                    data.summary = document.getElementById('modal-case-summary').value;
-                    data.client = document.getElementById('modal-case-client').value;
-                    data.detail = document.getElementById('modal-case-detail').value;
-                }
-
-                if(id) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id), data);
-                } else {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', col), data);
-                }
-                window.closeModal(`${prefix}-modal`);
-            } catch (err) { alert("저장 실패: 권한 또는 네트워크 오류"); }
+        // --- Utils ---
+        window.switchTab = (t) => {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`sec-${t}`).classList.remove('hidden');
+            document.getElementById(`tab-${t}`).classList.add('active');
         };
-
-        window.deleteItem = async (col, id) => {
-            if(confirm('데이터를 영구 삭제하시겠습니까?')) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
-            }
-        };
-
-        window.updateData = async (col, docId, data) => {
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', col, docId), data);
-            alert('설정이 반영되었습니다.');
-        };
-
-        window.getPopupData = (prefix) => ({
-            title: document.getElementById(`pop-${prefix}-title`)?.value || "",
-            content: document.getElementById(`pop-${prefix}-content`)?.value || "",
-            btnText: document.getElementById(`pop-${prefix}-btn-text`)?.value || "",
-            btnLink: document.getElementById(`pop-${prefix}-btn-link`)?.value || ""
-        });
-
-        async function loadPopups() {
-            ['top', 'bottom'].forEach(prefix => {
-                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', `${prefix}Popup`), (s) => {
-                    if(s.exists()) {
-                        const d = s.data();
-                        const titleEl = document.getElementById(`pop-${prefix}-title`);
-                        const contentEl = document.getElementById(`pop-${prefix}-content`);
-                        const btnTextEl = document.getElementById(`pop-${prefix}-btn-text`);
-                        const btnLinkEl = document.getElementById(`pop-${prefix}-btn-link`);
-                        
-                        if(titleEl) titleEl.value = d.title || "";
-                        if(contentEl) contentEl.value = d.content || "";
-                        if(btnTextEl) btnTextEl.value = d.btnText || "";
-                        if(btnLinkEl) btnLinkEl.value = d.btnLink || "";
-                    }
-                });
-            });
-        }
-
-        // Navigation
-        window.switchTab = (target) => {
-            ['popup', 'projects', 'finance', 'cases'].forEach(id => {
-                const s = document.getElementById(`sec-${id}`);
-                const t = document.getElementById(`tab-${id}`);
-                if(s) s.classList.add('hidden');
-                if(t) t.classList.remove('active');
-            });
-            document.getElementById(`sec-${target}`).classList.remove('hidden');
-            document.getElementById(`tab-${target}`).classList.add('active');
-        };
-
         window.openModal = (id) => {
-            const m = document.getElementById(id);
-            if(!m) return;
-            m.classList.add('active');
-            m.querySelectorAll('input, textarea').forEach(i => { if(i.type !== 'hidden') i.value = ""; });
-            
-            // Special handling for case modal
-            if(id === 'case-modal') {
-                document.getElementById('github-picker').classList.add('hidden');
-                updatePreview("");
-            }
+            const m = document.getElementById(id); m.classList.add('active');
+            m.querySelectorAll('input, textarea').forEach(i => i.value = "");
+            if(id === 'case-modal') updateImgPreview("");
         };
         window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
-        // Utils for modals
-        window.editProject = (id, n, pr, ph) => { window.openModal('project-modal'); document.getElementById('modal-project-id').value = id; document.getElementById('modal-project-name').value = n; document.getElementById('modal-project-progress').value = pr; document.getElementById('modal-project-phase').value = ph; };
-        window.editDeposit = (id, n, a, s) => { window.openModal('deposit-modal'); document.getElementById('modal-deposit-id').value = id; document.getElementById('modal-deposit-name').value = n; document.getElementById('modal-deposit-amount').value = a; document.getElementById('modal-deposit-status').value = s; };
-        window.editNotice = (id, t, c) => { window.openModal('notice-modal'); document.getElementById('modal-notice-id').value = id; document.getElementById('modal-notice-title').value = t; document.getElementById('modal-notice-content').value = c; };
-        window.editCase = (id, jsonStr) => { 
-            const c = JSON.parse(jsonStr); 
-            window.openModal('case-modal'); 
-            document.getElementById('modal-case-id').value = id; 
-            document.getElementById('modal-case-title').value = c.title || ""; 
-            document.getElementById('modal-case-category').value = c.category || ""; 
-            document.getElementById('modal-case-img').value = c.image || ""; 
-            document.getElementById('modal-case-summary').value = c.summary || c.desc || ""; 
-            document.getElementById('modal-case-client').value = c.client || ""; 
-            document.getElementById('modal-case-detail').value = c.detail || ""; 
-            updatePreview(c.image || "");
-        };
+        window.editProject = (id, enc) => { const p = JSON.parse(decodeURIComponent(enc)); openModal('project-modal'); document.getElementById('modal-project-id').value = id; document.getElementById('modal-project-name').value = p.name; document.getElementById('modal-project-progress').value = p.progress; document.getElementById('modal-project-phase').value = p.phase; };
+        window.editDeposit = (id, enc) => { const d = JSON.parse(decodeURIComponent(enc)); openModal('deposit-modal'); document.getElementById('modal-deposit-id').value = id; document.getElementById('modal-deposit-name').value = d.name; document.getElementById('modal-deposit-amount').value = d.amount; document.getElementById('modal-deposit-status').value = d.status; };
+        window.editNotice = (id, enc) => { const n = JSON.parse(decodeURIComponent(enc)); openModal('notice-modal'); document.getElementById('modal-notice-id').value = id; document.getElementById('modal-notice-title').value = n.title; document.getElementById('modal-notice-content').value = n.content; };
+        window.editCase = (id, enc) => { const c = JSON.parse(decodeURIComponent(enc)); openModal('case-modal'); document.getElementById('modal-case-id').value = id; document.getElementById('modal-case-title').value = c.title; document.getElementById('modal-case-category').value = c.category; document.getElementById('modal-case-img').value = c.image; document.getElementById('modal-case-summary').value = c.summary || ""; document.getElementById('modal-case-client').value = c.client || ""; document.getElementById('modal-case-detail').value = c.detail || ""; updateImgPreview(c.image); };
 
-        // Start
-        checkSession();
+        document.getElementById('login-btn').onclick = handleLogin;
+        if (sessionStorage.getItem(AUTH_KEY) === 'TRUE') showDashboard();
     </script>
 </body>
 </html>
