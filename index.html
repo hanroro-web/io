@@ -3,85 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V2.1 - Data Recovery)</title>
+    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V2.5 - 그리드 통일화)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --vibe-deep: #05020a; --vibe-primary: #8a4fff; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--vibe-deep); color: #ffffff; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        
+        /* UI Components */
         .glass-nav { background: rgba(5, 2, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .hero-gradient { background: radial-gradient(circle at 50% 50%, #150b2e 0%, #05020a 100%); }
         .gradient-text { background: linear-gradient(90deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .neon-notification-bar { background: rgba(13, 5, 25, 0.95); border: 1px solid #8a4fff; box-shadow: 0 0 20px rgba(138, 79, 255, 0.4); border-radius: 12px; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 450px; }
+        
+        /* Status Animations */
         .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #8a4fff; box-shadow: 0 0 8px #8a4fff; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+        .status-dot.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
         @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+        
         .bottom-floating-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; background: linear-gradient(to right, #0f0a1f, #1a0b35); border-top: 1px solid rgba(138, 79, 255, 0.5); padding: 16px 20px; display: flex; align-items: center; justify-content: center; }
+        
+        /* Layout Elements */
         .hero-visual-box { background: #0c051a; border-radius: 2.5rem; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .pattern-overlay { position: absolute; inset: 0; background-image: radial-gradient(rgba(138, 79, 255, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; }
+        
+        /* Modal System */
         .custom-modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; padding: 16px; }
         .custom-modal.active { display: flex; }
         .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 850px; border-radius: 28px; overflow: hidden; animation: modalPop 0.4s ease-out; position: relative; }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         
-        .project-card, .case-card, .design-draft, .payment-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; overflow: hidden; }
-        .project-card:hover, .case-card:hover, .design-draft:hover, .payment-card:hover { transform: translateY(-10px); border-color: var(--vibe-primary); background: rgba(138, 79, 255, 0.05); box-shadow: 0 20px 40px rgba(138, 79, 255, 0.15); }
-        .project-card, .payment-card { padding: 1.5rem; }
-        
-        /* Payment Auto-Scroll Animation */
-        .payment-ticker-wrapper { overflow: hidden; white-space: nowrap; width: 100%; position: relative; }
-        .payment-ticker-content { display: inline-flex; gap: 1rem; animation: ticker-scroll 40s linear infinite; }
-        .payment-ticker-content:hover { animation-play-state: paused; }
-        @keyframes ticker-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        /* Unified Card Style */
+        .unified-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 1.5rem; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden; 
+            padding: 1.5rem;
         }
-        .payment-card { flex-shrink: 0; width: 240px; }
+        .unified-card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--vibe-primary); 
+            background: rgba(138, 79, 255, 0.05); 
+            box-shadow: 0 20px 40px rgba(138, 79, 255, 0.15); 
+        }
+        
+        .payment-card-status { border-left: 4px solid #10b981; }
+        .payment-card-status.waiting { border-left-color: #f59e0b; }
 
-        .case-card { height: 320px; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; }
+        /* Case Cards */
+        .case-card { height: 320px; border-radius: 1.5rem; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; }
         .case-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: transform 0.6s ease; }
         .case-card:hover .case-img { transform: scale(1.1); opacity: 0.6; }
         .case-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #05020a 20%, transparent 100%); }
         
-        .design-draft { padding: 2rem; border-style: dashed; }
+        .design-draft { padding: 2rem; border-style: dashed; border-radius: 1.5rem; border-width: 1px; border-color: rgba(255, 255, 255, 0.1); }
         .draft-tag { font-size: 10px; font-weight: 800; background: #8a4fff; color: white; padding: 2px 8px; border-radius: 4px; margin-bottom: 1rem; display: inline-block; }
 
-        .notice-ticker { background: rgba(255, 255, 255, 0.03); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .notice-board { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; overflow: hidden; display: flex; align-items: center; padding: 0 20px; height: 50px; }
         .float-animation { animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
 
-        .payment-badge { font-size: 9px; font-weight: 900; background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        .payment-badge { font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 8px; border-radius: 4px; display: inline-block; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .payment-badge.waiting { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
 
-        .wand-container { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-        .drip {
-            position: absolute; width: 4px; height: 4px; background: #a78bfa; border-radius: 50%;
-            top: 20px; left: 50%; transform: translateX(-50%); opacity: 0; filter: blur(1px); animation: paintDrip 3s infinite;
-        }
-        .drip:nth-child(2) { animation-delay: 1s; background: #c084fc; width: 6px; height: 6px; }
-        .drip:nth-child(3) { animation-delay: 2s; background: #8a4fff; width: 3px; height: 3px; }
-
-        @keyframes paintDrip {
-            0% { top: 15px; opacity: 0; transform: translateX(-50%) scale(1); }
-            10% { opacity: 1; }
-            50% { top: 45px; opacity: 0.8; transform: translateX(-50%) scale(1.2); }
-            80% { opacity: 0; top: 60px; transform: translateX(-50%) scale(0.5); }
-            100% { opacity: 0; top: 60px; }
-        }
-
-        /* Status Modal Minimal Design */
-        .status-row { display: grid; grid-template-columns: 80px 1fr 60px; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s; }
-        .status-row:last-child { border-bottom: none; }
-        .compact-progress { height: 3px; width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; }
+        /* Progress Modal */
+        .status-row { display: grid; grid-template-columns: 80px 1fr 60px; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .compact-progress { height: 4px; width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; }
         .compact-progress-bar { height: 100%; background: linear-gradient(90deg, #8a4fff, #a78bfa); transition: width 1s ease-in-out; }
+        
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(138, 79, 255, 0.2); border-radius: 10px; }
-
-        /* Notice Board */
-        .notice-board { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; overflow: hidden; display: flex; align-items: center; padding: 0 20px; height: 50px; }
-
-        /* Portfolio Modal Extra Style */
-        .portfolio-tag { font-size: 10px; font-weight: 800; background: rgba(138, 79, 255, 0.1); color: #a78bfa; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(138, 79, 255, 0.2); display: inline-block; margin-right: 6px; margin-bottom: 6px; }
     </style>
 </head>
 <body class="overflow-x-hidden pb-32">
@@ -89,21 +86,19 @@
     <nav class="fixed w-full z-50 glass-nav">
         <div class="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-2 shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
-                <div class="wand-container">
-                    <i class="fas fa-magic text-xl text-purple-400"></i>
-                    <div class="drip"></div><div class="drip"></div><div class="drip"></div>
-                </div>
+                <i class="fas fa-magic text-xl text-purple-400"></i>
                 <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
             </div>
             <div class="hidden md:flex neon-notification-bar">
                 <div class="flex items-center space-x-2">
-                    <i class="fas fa-infinity text-purple-400 text-sm"></i>
-                    <span id="banner-text-highlight" class="text-[10px] font-black text-white">동기화 완료</span>
+                    <span id="sync-dot" class="status-dot online"></span>
+                    <span id="banner-text-highlight" class="text-[10px] font-black text-white">라이브 서버</span>
                 </div>
-                <span id="banner-text-desc" class="text-[10px] font-medium text-gray-200">데이터 실시간 연동 중</span>
-                <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-3 py-1 rounded text-[10px] font-bold">신청</button>
+                <span id="banner-text-desc" class="text-[10px] font-medium text-gray-200 uppercase tracking-widest">실시간 데이터 스트림 연결됨</span>
+                <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-3 py-1 rounded text-[10px] font-bold">상담신청</button>
             </div>
             <div class="flex items-center space-x-2">
+                <!-- 상단 버튼 연동 완료 -->
                 <button onclick="toggleModal('status-modal', true)" class="border border-white/10 text-white px-4 py-2 rounded-md text-xs font-bold transition-all hover:bg-white/5">현황보기</button>
                 <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-4 py-2 rounded-md font-bold text-xs">시작하기</button>
             </div>
@@ -113,11 +108,12 @@
     <!-- Floating Bottom Bar -->
     <div class="bottom-floating-bar">
         <div class="max-w-7xl w-full flex items-center justify-between">
-            <div class="flex items-center">
-                <span class="status-dot"></span>
-                <h4 id="bottom-bar-text" class="text-white font-bold text-sm">연결 상태 확인 중...</h4>
+            <!-- 하단 바 클릭 시 모달 연동 완료 (cursor-pointer 추가) -->
+            <div class="flex items-center cursor-pointer" onclick="toggleModal('status-modal', true)">
+                <span class="status-dot online"></span>
+                <h4 id="bottom-bar-text" class="text-white font-bold text-sm">실시간 데이터를 수신하고 있습니다</h4>
             </div>
-            <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-6 py-3 rounded-full font-black text-xs">즉시 신청</button>
+            <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-6 py-3 rounded-full font-black text-xs">즉시 상담 신청</button>
         </div>
     </div>
 
@@ -126,8 +122,8 @@
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
             <div>
                 <div class="inline-flex items-center px-3 py-1 mb-6 rounded-md border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase">Premium Web Agency</div>
-                <h1 class="text-4xl sm:text-6xl font-black leading-tight mb-8">홈페이지 가치는 <br><span class="gradient-text">얼굴 입니다</span></h1>
-                <p class="text-gray-400 mb-10 leading-relaxed max-w-md">감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 브랜드가 가장 빛나도록 설계합니다.</p>
+                <h1 class="text-4xl sm:text-6xl font-black leading-tight mb-8">홈페이지 가치는 <br><span class="gradient-text">브랜드의 얼굴입니다</span></h1>
+                <p class="text-gray-400 mb-10 leading-relaxed max-w-md">감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 브랜드가 온라인에서 가장 빛나도록 설계합니다.</p>
                 <div class="flex gap-4">
                     <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all hover:scale-105">프로젝트 문의</button>
                     <button onclick="document.getElementById('live-status').scrollIntoView({behavior:'smooth'})" class="border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all hover:bg-white/5">현황 보기</button>
@@ -148,51 +144,35 @@
     <!-- Live Status Section -->
     <section id="live-status" class="py-24 border-t border-white/5 bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center tracking-widest"><span class="status-dot"></span> LIVE STATUS</h2>
+            <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 flex items-center tracking-widest"><span class="status-dot"></span> LIVE PROJECTS</h2>
             <h3 class="text-3xl font-black mb-12">진행 중인 프로젝트</h3>
             <div id="main-project-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Data will be loaded from Firebase -->
+                <!-- Loaded from Firebase -->
             </div>
         </div>
     </section>
 
-    <!-- Real-time Payment Section (Auto-Scrolling Ticker) -->
-    <section id="payment-status" class="py-12 border-t border-white/5 bg-black/40 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 mb-8">
-            <h2 class="text-emerald-400 font-bold uppercase text-[10px] mb-2 flex items-center tracking-widest"><i class="fas fa-check-circle mr-2"></i> REAL-TIME PAYMENTS</h2>
-            <h3 class="text-xl font-black text-gray-200">실시간 입금 현황</h3>
-        </div>
-        <div class="payment-ticker-wrapper">
-            <div id="payment-list-ticker" class="payment-ticker-content">
-                <!-- Data from Firebase will be rendered here -->
+    <!-- Real-time Deposit Status Section (Unified Grid) -->
+    <section id="payment-status" class="py-24 border-t border-white/5 bg-black/40">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-emerald-400 font-bold uppercase text-[10px] mb-2 flex items-center tracking-widest"><i class="fas fa-check-circle mr-2"></i> REAL-TIME DEPOSITS</h2>
+            <div class="flex justify-between items-end mb-12">
+                <h3 class="text-3xl font-black text-gray-200">실시간 입금 및 계약 현황</h3>
+                <p class="hidden sm:block text-[10px] text-gray-500 font-bold italic">실시간으로 업데이트되는 확인된 데이터입니다</p>
+            </div>
+            <div id="payment-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Loaded from Firebase (Grid Style) -->
             </div>
         </div>
     </section>
 
-    <!-- Case Studies -->
+    <!-- Success Cases Section -->
     <section id="cases" class="py-24 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 tracking-widest">SELECTED CASES</h2>
             <h3 class="text-3xl font-black mb-12">성공적인 파트너십 사례</h3>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="case-card group" onclick="openPortfolio('v-store')">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800" alt="Case 1" class="case-img">
-                    <div class="case-overlay"></div>
-                    <div class="relative z-10">
-                        <span class="text-[10px] font-bold text-purple-400 mb-2 block uppercase">E-Commerce System</span>
-                        <h4 class="text-2xl font-black text-white mb-2 tracking-tight">글로벌 패션 브랜드 'V' 스토어</h4>
-                        <p class="text-xs text-gray-400">매출 240% 향상 및 고객 유지율 최적화</p>
-                    </div>
-                </div>
-                <div class="case-card group" onclick="openPortfolio('n-platform')">
-                    <img src="https://images.unsplash.com/photo-1551288049-bbdac8a28a1e?auto=format&fit=crop&q=80&w=800" alt="Case 2" class="case-img">
-                    <div class="case-overlay"></div>
-                    <div class="relative z-10">
-                        <span class="text-[10px] font-bold text-purple-400 mb-2 block uppercase">Platform Design</span>
-                        <h4 class="text-2xl font-black text-white mb-2 tracking-tight">핀테크 스타트업 'N' 인터페이스</h4>
-                        <p class="text-xs text-gray-400">사용자 경험 중심의 직관적인 자산 관리 앱 디자인</p>
-                    </div>
-                </div>
+            <div id="cases-container" class="grid md:grid-cols-2 gap-8">
+                <!-- Loaded from Firebase -->
             </div>
         </div>
     </section>
@@ -203,62 +183,43 @@
             <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-2 tracking-widest">DESIGN DRAFTS</h2>
             <h3 class="text-3xl font-black mb-12">제공 가능한 디자인 시안</h3>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="design-draft"><span class="draft-tag">MODERN</span><h4 class="text-lg font-bold mb-2">미니멀리즘 비즈니스</h4><p class="text-xs text-gray-500">깔끔한 여백과 그리드 시스템을 활용</p></div>
-                <div class="design-draft"><span class="draft-tag">DYNAMIC</span><h4 class="text-lg font-bold mb-2">임팩트 포트폴리오</h4><p class="text-xs text-gray-500">강렬한 타이포그래피와 애니메이션</p></div>
-                <div class="design-draft"><span class="draft-tag">LUXURY</span><h4 class="text-lg font-bold mb-2">프리미엄 브랜딩</h4><p class="text-xs text-gray-500">고급스러운 컬러웨이와 질감 강조</p></div>
-                <div class="design-draft"><span class="draft-tag">SMART</span><h4 class="text-lg font-bold mb-2">다크 모드 플랫폼</h4><p class="text-xs text-gray-500">최신 트렌드인 다크 UI와 직관적인 UX</p></div>
+                <div class="design-draft"><span class="draft-tag">MODERN</span><h4 class="text-lg font-bold mb-2 text-white">미니멀리즘 비즈니스</h4><p class="text-xs text-gray-500">깔끔한 여백과 그리드 시스템을 활용</p></div>
+                <div class="design-draft"><span class="draft-tag">DYNAMIC</span><h4 class="text-lg font-bold mb-2 text-white">임팩트 포트폴리오</h4><p class="text-xs text-gray-500">강렬한 타이포그래피와 애니메이션</p></div>
+                <div class="design-draft"><span class="draft-tag">LUXURY</span><h4 class="text-lg font-bold mb-2 text-white">프리미엄 브랜딩</h4><p class="text-xs text-gray-500">고급스러운 컬러웨이와 질감 강조</p></div>
+                <div class="design-draft"><span class="draft-tag">SMART</span><h4 class="text-lg font-bold mb-2 text-white">다크 모드 플랫폼</h4><p class="text-xs text-gray-500">최신 트렌드인 다크 UI와 직관적인 UX</p></div>
             </div>
             <div class="mt-20">
                 <div class="notice-board">
                     <div class="flex items-center space-x-4 w-full overflow-hidden">
                         <span class="text-[10px] font-black text-purple-500 uppercase shrink-0 tracking-widest">Notice</span>
                         <div class="w-[1px] h-3 bg-white/10 shrink-0"></div>
-                        <div id="notice-content" class="text-xs text-gray-400 font-medium truncate">한로로 웹 에이전시 공식 홈페이지가 V2.1로 업데이트 되었습니다.</div>
+                        <div id="notice-content" class="text-xs text-gray-400 font-medium truncate">데이터를 안전하게 동기화 중입니다...</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="py-20 bg-black border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
             <div>
                 <div class="text-2xl font-black text-purple-400 uppercase mb-4">HANRORO</div>
                 <p class="text-xs text-gray-500 leading-loose">대표: 김상우 | 사업자번호: 540-40-00028<br>이메일: hanroro-web@gmail.com | 고객센터: 0507-1354-9107</p>
             </div>
-            <div class="text-[10px] text-gray-600 md:text-right self-end">© 2026 Hanroro. V2.1 Portfolio Sync.</div>
+            <div class="text-[10px] text-gray-600 md:text-right self-end">© 2026 Hanroro. V2.5 Grid Unified Engine.</div>
         </div>
     </footer>
 
-    <!-- Modals -->
-    <div id="portfolio-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('portfolio-modal', false)">
-        <div class="modal-content !max-w-4xl flex flex-col md:flex-row bg-[#08040f] border-none shadow-3xl">
-            <div class="md:w-1/2 h-[300px] md:h-auto overflow-hidden bg-black relative">
-                <img id="pf-image" src="" alt="Detail" class="w-full h-full object-cover opacity-80">
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#08040f]/50"></div>
+    <!-- Modals (Status Modal ID: status-modal) -->
+    <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
+        <div class="modal-content !max-w-lg bg-[#08040f] p-0 border border-purple-500/20 shadow-3xl">
+            <div class="p-8 pb-4 flex justify-between items-center">
+                <div><h3 class="text-xl font-black text-white uppercase tracking-tight">작업 현황 데이터</h3><p class="text-[10px] text-purple-400 font-bold tracking-widest"><span class="status-dot"></span> LIVE FEED</p></div>
+                <button onclick="toggleModal('status-modal', false)" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:text-white transition-colors"><i class="fas fa-times text-sm"></i></button>
             </div>
-            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <button onclick="toggleModal('portfolio-modal', false)" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-all transform hover:rotate-90">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-                <div class="mb-8">
-                    <span id="pf-category" class="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-3 block">Category Name</span>
-                    <h3 id="pf-title" class="text-3xl font-black text-white mb-4 leading-tight">Project Title</h3>
-                    <p id="pf-desc" class="text-sm text-gray-400 leading-relaxed mb-8">Detailed project information will be displayed here.</p>
-                </div>
-                <div class="space-y-6">
-                    <div>
-                        <h5 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Core Features</h5>
-                        <div id="pf-features" class="flex flex-wrap"></div>
-                    </div>
-                    <div>
-                        <h5 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Project Specs</h5>
-                        <ul class="space-y-2 text-xs text-gray-300">
-                            <li class="flex items-center gap-2"><i class="fas fa-link text-purple-500 text-[10px]"></i> <span id="pf-link" class="text-purple-400 underline cursor-pointer">www.example.com</span></li>
-                            <li class="flex items-center gap-2"><i class="fas fa-code text-purple-500 text-[10px]"></i> <span id="pf-tech">Next.js / Tailwind CSS / Firebase</span></li>
-                        </ul>
-                    </div>
-                </div>
+            <div id="modal-project-list" class="px-8 pb-10 max-h-[450px] overflow-y-auto custom-scrollbar">
+                <!-- Loaded from Firebase -->
             </div>
         </div>
     </div>
@@ -266,31 +227,40 @@
     <div id="contact-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('contact-modal', false)">
         <div class="modal-content !max-w-4xl flex flex-col md:flex-row shadow-2xl border-none">
             <div class="md:w-[35%] bg-gradient-to-br from-purple-900/40 via-black to-black p-12 border-r border-white/5">
-                <h2 class="text-3xl font-black mb-6 uppercase text-white">Elevate Presence</h2>
-                <p class="text-xs text-purple-200/50 leading-relaxed font-medium">한로로와 함께 성공적인 비즈니스를 시작하세요.</p>
+                <h2 class="text-3xl font-black mb-6 uppercase text-white">협업의 시작</h2>
+                <p class="text-xs text-purple-200/50 leading-relaxed font-medium">한로로와 함께 독창적인 웹 경험을 만들어보세요.</p>
             </div>
             <div class="md:w-[65%] p-12 relative bg-[#0a0514]">
-                <button onclick="toggleModal('contact-modal', false)" class="absolute top-8 right-10 text-gray-500 hover:text-white transition-all transform hover:rotate-90"><i class="fas fa-times text-xl"></i></button>
+                <button onclick="toggleModal('contact-modal', false)" class="absolute top-8 right-10 text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
                 <h3 class="text-2xl font-black text-white mb-10 uppercase tracking-tight">비즈니스 협업 신청</h3>
                 <form id="contact-form" class="space-y-6">
                     <div class="grid grid-cols-2 gap-6">
                         <input type="text" id="contact-name" placeholder="성함 또는 업체명" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm outline-none text-white focus:border-purple-600" required>
                         <input type="tel" id="contact-phone" placeholder="전화번호" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm outline-none text-white focus:border-purple-600" required>
                     </div>
-                    <textarea id="contact-memo" placeholder="프로젝트 목표를 기재해 주세요." class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm outline-none h-40 text-white focus:border-purple-600 resize-none"></textarea>
-                    <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-xl font-black text-xs uppercase tracking-[0.3em]">Send Inquiry</button>
+                    <textarea id="contact-memo" placeholder="프로젝트 목표나 필요하신 기능을 기재해 주세요." class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm outline-none h-40 text-white focus:border-purple-600 resize-none"></textarea>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-xl font-black text-xs uppercase tracking-[0.3em]">신청하기</button>
                 </form>
             </div>
         </div>
     </div>
-    
-    <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
-        <div class="modal-content !max-w-lg bg-[#08040f] p-0 border border-purple-500/20 shadow-3xl">
-            <div class="p-8 pb-4 flex justify-between items-center">
-                <div><h3 class="text-xl font-black text-white uppercase tracking-tight">Active Insight</h3><p class="text-[10px] text-purple-400 font-bold tracking-widest"><span class="status-dot"></span> LIVE FEED</p></div>
-                <button onclick="toggleModal('status-modal', false)" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:text-white"><i class="fas fa-times text-sm"></i></button>
+
+    <div id="portfolio-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('portfolio-modal', false)">
+        <div class="modal-content !max-w-4xl flex flex-col md:flex-row bg-[#08040f] border-none shadow-3xl">
+            <div class="md:w-1/2 h-[300px] md:h-auto overflow-hidden bg-black relative">
+                <img id="pf-image" src="" alt="Detail" class="w-full h-full object-cover opacity-80">
             </div>
-            <div id="modal-project-list" class="px-8 pb-10 max-h-[450px] overflow-y-auto custom-scrollbar"></div>
+            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                <button onclick="toggleModal('portfolio-modal', false)" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-all transform hover:rotate-90"><i class="fas fa-times text-xl"></i></button>
+                <span id="pf-category" class="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-3 block">Category</span>
+                <h3 id="pf-title" class="text-3xl font-black text-white mb-4 leading-tight">Title</h3>
+                <p id="pf-desc" class="text-sm text-gray-400 leading-relaxed mb-8">Description</p>
+                <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
+                    <h5 class="text-[10px] font-bold text-gray-500 uppercase mb-4">프로젝트 정보</h5>
+                    <p id="pf-client" class="text-xs text-purple-300 font-bold mb-2"></p>
+                    <p id="pf-detail" class="text-xs text-gray-400 leading-relaxed"></p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -300,120 +270,170 @@
         import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
-        const firebaseConfig = { apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", authDomain: "hanroro-web.firebaseapp.com", projectId: "hanroro-web", storageBucket: "hanroro-web.firebasestorage.app", messagingSenderId: "461514865624", appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
+            authDomain: "hanroro-web.firebaseapp.com", 
+            projectId: "hanroro-web", 
+            appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
+        };
 
-        const pfData = {
-            'v-store': {
-                title: "글로벌 패션 브랜드 'V' 스토어",
-                category: "E-Commerce System",
-                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1000",
-                desc: "기존 시스템의 속도 저하와 낮은 전환율을 개선하기 위해 전면 리뉴얼된 쇼핑몰입니다.",
-                features: ["반응형 레이아웃", "글로벌 결제 연동", "AI 추천 엔진", "실시간 재고 알림"],
-                tech: "React / Node.js / AWS / GraphQL",
-                link: "v-fashion-global.com"
-            },
-            'n-platform': {
-                title: "핀테크 스타트업 'N' 인터페이스",
-                category: "Platform Design & UX",
-                image: "https://images.unsplash.com/photo-1551288049-bbdac8a28a1e?auto=format&fit=crop&q=80&w=1000",
-                desc: "복잡한 금융 정보를 한눈에 파악할 수 있도록 데이터 시각화에 집중한 플랫폼입니다.",
-                features: ["실시간 데이터 차트", "암호화 보안 모듈", "사용자 맞춤 대시보드", "멀티 디바이스 동기화"],
-                tech: "Vue.js / D3.js / Spring Boot / Redis",
-                link: "n-fintech-solution.io"
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = "hanroro-official-service";
+
+        // 모달 제어 함수 (전역 등록)
+        window.toggleModal = (id, show) => {
+            const m = document.getElementById(id);
+            if(m) {
+                if(show) m.classList.add('active');
+                else m.classList.remove('active');
             }
         };
 
-        window.openPortfolio = (id) => {
-            const data = pfData[id];
-            if(!data) return;
-            document.getElementById('pf-image').src = data.image;
-            document.getElementById('pf-category').innerText = data.category;
-            document.getElementById('pf-title').innerText = data.title;
-            document.getElementById('pf-desc').innerText = data.desc;
-            document.getElementById('pf-tech').innerText = data.tech;
-            document.getElementById('pf-link').innerText = data.link;
-            document.getElementById('pf-features').innerHTML = data.features.map(f => `<span class="portfolio-tag">${f}</span>`).join('');
+        async function init() {
+            try {
+                await signInAnonymously(auth);
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        syncProjects();
+                        syncDeposits();
+                        syncNotices();
+                        syncCases();
+                    }
+                });
+            } catch (err) {
+                console.error("Firebase Init Error:", err);
+            }
+        }
+
+        function syncProjects() {
+            const q = collection(db, 'artifacts', appId, 'public', 'data', 'projects');
+            onSnapshot(q, (snap) => {
+                let html = '';
+                let modalHtml = '';
+                const docs = [];
+                snap.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+                docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
+
+                docs.forEach(p => {
+                    html += `
+                        <div class="unified-card">
+                            <h4 class="font-bold text-white mb-2 truncate">${p.name || '프로젝트'}</h4>
+                            <div class="w-full bg-white/5 h-1 rounded-full mb-3">
+                                <div class="bg-purple-600 h-full rounded-full transition-all duration-1000" style="width:${p.progress || 0}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <p class="text-[10px] text-purple-300/70 uppercase font-black tracking-widest">${p.phase || '작업중'}</p>
+                                <p class="text-[10px] text-gray-500 font-bold">${p.progress || 0}%</p>
+                            </div>
+                        </div>`;
+                    modalHtml += `
+                        <div class="status-row">
+                            <span class="text-[9px] font-black text-purple-500 uppercase">${p.phase || '대기중'}</span>
+                            <div class="px-5">
+                                <h4 class="text-xs font-bold text-gray-200 mb-1">${p.name || '-'}</h4>
+                                <div class="compact-progress"><div class="compact-progress-bar" style="width:${p.progress || 0}%"></div></div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] font-black text-gray-400">${p.progress || 0}%</span>
+                            </div>
+                        </div>`;
+                });
+                document.getElementById('main-project-list').innerHTML = html || '<p class="text-gray-600 text-xs italic">진행 중인 프로젝트가 없습니다.</p>';
+                document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-gray-600 text-xs italic text-center p-8">데이터가 없습니다.</p>';
+            });
+        }
+
+        function maskAmount(str) {
+            if(!str) return "**원";
+            return str.replace(/[0-9]/g, "*");
+        }
+
+        function syncDeposits() {
+            const q = collection(db, 'artifacts', appId, 'public', 'data', 'deposits');
+            onSnapshot(q, (snap) => {
+                let html = '';
+                const deposits = [];
+                snap.forEach(doc => deposits.push(doc.data()));
+                deposits.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
+
+                deposits.forEach(d => {
+                    const isComplete = d.status === 'complete';
+                    const statusLabel = isComplete ? '입금완료' : '입금대기';
+                    const maskedAmt = maskAmount(d.amount);
+
+                    html += `
+                        <div class="unified-card payment-card-status ${isComplete ? '' : 'waiting'}">
+                            <h4 class="font-bold text-white mb-2 truncate">${d.name || '고객님'}</h4>
+                            <div class="flex justify-between items-end mt-4">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-purple-300/70 uppercase font-black tracking-widest mb-1">${d.type || '신규 계약'}</span>
+                                    <span class="text-[11px] text-emerald-400 font-mono font-bold">${maskedAmt}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="payment-badge ${isComplete ? '' : 'waiting'}">${statusLabel}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-600 text-xs italic">최근 입금 내역이 없습니다.</p>';
+            });
+        }
+
+        function syncNotices() {
+            const q = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+            onSnapshot(q, (snap) => {
+                const notices = [];
+                snap.forEach(doc => notices.push(doc.data()));
+                notices.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
+                if(notices.length > 0) document.getElementById('notice-content').innerText = notices[0].title;
+            });
+        }
+
+        function syncCases() {
+            const q = collection(db, 'artifacts', appId, 'public', 'data', 'cases');
+            onSnapshot(q, (snap) => {
+                let html = '';
+                const cases = [];
+                snap.forEach(doc => cases.push({ id: doc.id, ...doc.data() }));
+                cases.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
+
+                cases.forEach(c => {
+                    html += `
+                        <div class="case-card group" onclick='openCaseDetail(\`${encodeURIComponent(JSON.stringify(c))}\`)'>
+                            <img src="${c.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'}" alt="Case" class="case-img">
+                            <div class="case-overlay"></div>
+                            <div class="relative z-10">
+                                <span class="text-[10px] font-bold text-purple-400 mb-2 block uppercase tracking-widest">${c.category || '포트폴리오'}</span>
+                                <h4 class="text-2xl font-black text-white mb-2 tracking-tight">${c.title || '성공 사례'}</h4>
+                                <p class="text-xs text-gray-400 truncate">${c.summary || '상세 내용을 확인하세요.'}</p>
+                            </div>
+                        </div>`;
+                });
+                document.getElementById('cases-container').innerHTML = html || '<p class="text-gray-600 text-xs italic">등록된 사례가 없습니다.</p>';
+            });
+        }
+
+        window.openCaseDetail = (enc) => {
+            const c = JSON.parse(decodeURIComponent(enc));
+            document.getElementById('pf-image').src = c.image || "";
+            document.getElementById('pf-category').innerText = c.category || "프로젝트";
+            document.getElementById('pf-title').innerText = c.title || "제목 없음";
+            document.getElementById('pf-desc').innerText = c.summary || "";
+            document.getElementById('pf-client').innerText = `고객사/기간: ${c.client || '-'}`;
+            document.getElementById('pf-detail').innerText = c.detail || "상세 설명이 등록되지 않았습니다.";
             toggleModal('portfolio-modal', true);
         };
 
-        async function init() {
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-            const auth = getAuth(app);
-            const appId = "hanroro-official-service";
-            await signInAnonymously(auth);
-            
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    document.getElementById('bottom-bar-text').innerText = "서버 실시간 데이터 수신 중";
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('신청이 완료되었습니다. 확인 후 신속히 연락드리겠습니다.');
+            toggleModal('contact-modal', false);
+            e.target.reset();
+        });
 
-                    // Projects Fetching
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snapshot) => {
-                        let html = '';
-                        let modalHtml = '';
-                        snapshot.forEach(doc => {
-                            const p = doc.data();
-                            html += `
-                                <div class="project-card p-6">
-                                    <h4 class="font-bold text-white mb-2">${p.name}</h4>
-                                    <div class="w-full bg-white/5 h-1 rounded-full mb-2">
-                                        <div class="bg-purple-600 h-full rounded-full" style="width:${p.progress}%"></div>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <p class="text-[10px] text-purple-300/70 uppercase font-black">${p.status || 'ING'}</p>
-                                        <p class="text-[10px] text-gray-500 font-bold">${p.progress}%</p>
-                                    </div>
-                                </div>`;
-                            modalHtml += `
-                                <div class="status-row">
-                                    <span class="text-[9px] font-black text-purple-500 uppercase">${p.phase || 'PROCESS'}</span>
-                                    <div class="px-5">
-                                        <h4 class="text-xs font-bold text-gray-200 mb-1">${p.name}</h4>
-                                        <div class="compact-progress"><div class="compact-progress-bar" style="width:${p.progress}%"></div></div>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="text-[10px] font-black text-gray-400">${p.progress}%</span>
-                                    </div>
-                                </div>`;
-                        });
-                        document.getElementById('main-project-list').innerHTML = html || '<p class="text-gray-600 text-xs italic px-4">진행 중인 프로젝트가 없습니다.</p>';
-                        document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-gray-600 text-xs italic p-8 text-center">활성 데이터가 없습니다.</p>';
-                    });
-                    
-                    // Payments Fetching (Ticker Logic Enhanced)
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'payments'), (snapshot) => {
-                        let innerHtml = '';
-                        const payments = [];
-                        snapshot.forEach(doc => payments.push(doc.data()));
-                        
-                        if(payments.length > 0) {
-                            // 리스트를 4번 반복하여 끊김 없는 무한 루프 구현
-                            const listToRender = [...payments, ...payments, ...payments, ...payments]; 
-                            listToRender.forEach((pay, index) => {
-                                innerHtml += `
-                                    <div class="payment-card border-emerald-500/10">
-                                        <span class="payment-badge">CONFIRMED</span>
-                                        <div class="text-xs font-bold text-gray-200 mt-2 truncate">${pay.name || '비공개 고객'}</div>
-                                        <div class="text-[10px] text-emerald-400/80 font-medium">${pay.type || '신규 계약'}</div>
-                                    </div>`;
-                            });
-                            document.getElementById('payment-list-ticker').innerHTML = innerHtml;
-                        } else {
-                            document.getElementById('payment-list-ticker').innerHTML = `
-                                <div class="py-4 px-6 text-gray-500 text-xs italic">최근 입금 내역이 없습니다.</div>
-                            `;
-                        }
-                    });
-                }
-            });
-        }
         init();
-
-        window.toggleModal = (id, show) => {
-            const m = document.getElementById(id);
-            if(show) m.classList.add('active');
-            else m.classList.remove('active');
-        }
     </script>
 </body>
 </html>
