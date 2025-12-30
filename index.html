@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>한로로(Hanroro) | 프리미엄 웹 에이전시</title>
+    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V2.6 - 문구 세부 복구)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -92,13 +92,13 @@
             <div class="hidden md:flex neon-notification-bar">
                 <div class="flex items-center space-x-2">
                     <span id="sync-dot" class="status-dot online"></span>
-                    <span id="banner-text-highlight" class="text-[10px] font-black text-white">라이브 서버</span>
+                    <span id="banner-text-highlight" class="text-[10px] font-black text-white">EVENT</span>
                 </div>
-                <span id="banner-text-desc" class="text-[10px] font-medium text-gray-200 uppercase tracking-widest">실시간 데이터 스트림 연결됨</span>
+                <!-- 상단 팝업 문구 복구: 60% 캐시백 데이터 -->
+                <span id="banner-text-desc" class="text-[10px] font-medium text-gray-200 uppercase tracking-widest cursor-pointer hover:text-purple-400 transition-colors" onclick="toggleModal('status-modal', true)">오늘 계약 시 60% 캐시백 이벤트 중</span>
                 <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-3 py-1 rounded text-[10px] font-bold">상담신청</button>
             </div>
             <div class="flex items-center space-x-2">
-                <!-- 상단 버튼 연동 완료 -->
                 <button onclick="toggleModal('status-modal', true)" class="border border-white/10 text-white px-4 py-2 rounded-md text-xs font-bold transition-all hover:bg-white/5">현황보기</button>
                 <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-4 py-2 rounded-md font-bold text-xs">시작하기</button>
             </div>
@@ -108,10 +108,10 @@
     <!-- Floating Bottom Bar -->
     <div class="bottom-floating-bar">
         <div class="max-w-7xl w-full flex items-center justify-between">
-            <!-- 하단 바 클릭 시 모달 연동 완료 (cursor-pointer 추가) -->
+            <!-- 하단 팝업 문구 복구: 지금 홈페이지 저렴한 가격원해 -->
             <div class="flex items-center cursor-pointer" onclick="toggleModal('status-modal', true)">
                 <span class="status-dot online"></span>
-                <h4 id="bottom-bar-text" class="text-white font-bold text-sm">실시간 데이터를 수신하고 있습니다</h4>
+                <h4 id="bottom-bar-text" class="text-white font-bold text-sm">지금 홈페이지 저렴한 가격 원해?</h4>
             </div>
             <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-6 py-3 rounded-full font-black text-xs">즉시 상담 신청</button>
         </div>
@@ -152,16 +152,15 @@
         </div>
     </section>
 
-    <!-- Real-time Deposit Status Section (Unified Grid) -->
+    <!-- Real-time Deposit Status Section -->
     <section id="payment-status" class="py-24 border-t border-white/5 bg-black/40">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-emerald-400 font-bold uppercase text-[10px] mb-2 flex items-center tracking-widest"><i class="fas fa-check-circle mr-2"></i> REAL-TIME DEPOSITS</h2>
             <div class="flex justify-between items-end mb-12">
                 <h3 class="text-3xl font-black text-gray-200">실시간 입금 및 계약 현황</h3>
-                <p class="hidden sm:block text-[10px] text-gray-500 font-bold italic">실시간으로 업데이트되는 확인된 데이터입니다</p>
             </div>
             <div id="payment-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Loaded from Firebase (Grid Style) -->
+                <!-- Loaded from Firebase -->
             </div>
         </div>
     </section>
@@ -207,11 +206,11 @@
                 <div class="text-2xl font-black text-purple-400 uppercase mb-4">HANRORO</div>
                 <p class="text-xs text-gray-500 leading-loose">대표: 김상우 | 사업자번호: 540-40-00028<br>이메일: hanroro-web@gmail.com | 고객센터: 0507-1354-9107</p>
             </div>
-            <div class="text-[10px] text-gray-600 md:text-right self-end">© 2026 Hanroro. V2.5 Grid Unified Engine.</div>
+            <div class="text-[10px] text-gray-600 md:text-right self-end">© 2026 Hanroro. V2.6 Grid Unified Engine.</div>
         </div>
     </footer>
 
-    <!-- Modals (Status Modal ID: status-modal) -->
+    <!-- Modals -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-lg bg-[#08040f] p-0 border border-purple-500/20 shadow-3xl">
             <div class="p-8 pb-4 flex justify-between items-center">
@@ -282,12 +281,16 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        // 모달 제어 함수 (전역 등록)
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
             if(m) {
-                if(show) m.classList.add('active');
-                else m.classList.remove('active');
+                if(show) {
+                    m.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    m.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             }
         };
 
@@ -328,6 +331,7 @@
                                 <p class="text-[10px] text-gray-500 font-bold">${p.progress || 0}%</p>
                             </div>
                         </div>`;
+                    
                     modalHtml += `
                         <div class="status-row">
                             <span class="text-[9px] font-black text-purple-500 uppercase">${p.phase || '대기중'}</span>
@@ -340,8 +344,9 @@
                             </div>
                         </div>`;
                 });
-                document.getElementById('main-project-list').innerHTML = html || '<p class="text-gray-600 text-xs italic">진행 중인 프로젝트가 없습니다.</p>';
-                document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-gray-600 text-xs italic text-center p-8">데이터가 없습니다.</p>';
+                
+                document.getElementById('main-project-list').innerHTML = html || '<p class="text-gray-600 text-xs italic text-center col-span-full">데이터를 불러오는 중입니다...</p>';
+                document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-gray-600 text-xs italic text-center p-8">진행 중인 데이터가 없습니다.</p>';
             });
         }
 
@@ -377,7 +382,7 @@
                             </div>
                         </div>`;
                 });
-                document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-600 text-xs italic">최근 입금 내역이 없습니다.</p>';
+                document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-600 text-xs italic text-center col-span-full">내역을 확인 중입니다.</p>';
             });
         }
 
@@ -411,7 +416,7 @@
                             </div>
                         </div>`;
                 });
-                document.getElementById('cases-container').innerHTML = html || '<p class="text-gray-600 text-xs italic">등록된 사례가 없습니다.</p>';
+                document.getElementById('cases-container').innerHTML = html || '<p class="text-gray-600 text-xs italic">사례를 불러오는 중입니다.</p>';
             });
         }
 
