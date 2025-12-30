@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Admin Console | HANRORO LIVE</title>
-    <!-- CDN 로드 안정성을 위해 순서 및 속성 확인 -->
+    
+    <!-- 깃허브 페이지 등 외부 환경에서 스타일 깨짐을 방지하기 위한 표준 라이브러리 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --dash-dark: #05020a; --dash-card: #0f0a1f; --primary: #8a4fff; }
@@ -240,7 +242,6 @@
     </div>
 
     <script type="module">
-        // Firebase 라이브러리는 안정적인 버전(11.1.0)을 유지합니다.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -305,7 +306,6 @@
             }
         }
 
-        // 각 기능을 별도 함수로 분리하여 관리
         function loadStats() {
             const today = new Date().toISOString().split('T')[0];
             const currentMonth = today.substring(0, 7);
@@ -383,7 +383,6 @@
             });
         }
 
-        // --- Global Functions (Window) ---
         window.switchTab = (target) => {
             ['ui', 'projects', 'portfolio', 'notices'].forEach(id => {
                 const el = document.getElementById(`sec-${id}`);
