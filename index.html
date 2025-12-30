@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V1)</title>
+    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V2 - Official)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -254,14 +253,14 @@
                 </div>
             </div>
 
-            <!-- Notice Board Restored -->
+            <!-- Notice Board (V2 Restored) -->
             <div class="mt-20">
                 <div class="notice-board">
                     <div class="flex items-center space-x-4 w-full overflow-hidden">
                         <span class="text-[10px] font-black text-purple-500 uppercase shrink-0 tracking-widest">Notice</span>
                         <div class="w-[1px] h-3 bg-white/10 shrink-0"></div>
                         <div id="notice-content" class="text-xs text-gray-400 font-medium truncate">
-                            데이터 로딩 중...
+                            한로로 크리에이티브 스튜디오 공지사항 로딩 중...
                         </div>
                     </div>
                 </div>
@@ -275,11 +274,11 @@
                 <div class="text-2xl font-black text-purple-400 uppercase mb-4">HANRORO</div>
                 <p class="text-xs text-gray-500 leading-loose">대표: 김상우 | 사업자번호: 540-40-00028<br>이메일: hanroro-web@gmail.com | 고객센터: 0507-1354-9107</p>
             </div>
-            <div class="text-[10px] text-gray-600 md:text-right self-end">© 2026 Hanroro. V1 Backup.</div>
+            <div class="text-[10px] text-gray-600 md:text-right self-end">© 2026 Hanroro. V2 Official Backup.</div>
         </div>
     </footer>
 
-    <!-- Modals -->
+    <!-- Modals (Contact & Status) -->
     <div id="contact-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('contact-modal', false)">
         <div class="modal-content !max-w-4xl flex flex-col md:flex-row shadow-2xl border-none">
             <div class="md:w-[35%] bg-gradient-to-br from-purple-900/40 via-black to-black p-12 flex flex-col justify-between border-r border-white/5">
@@ -332,7 +331,6 @@
         </div>
     </div>
     
-    <!-- Status Modal -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-xl bg-[#08040f] p-0 border border-white/10 shadow-3xl">
             <div class="p-8 pb-0">
@@ -345,7 +343,6 @@
                         <i class="fas fa-times text-sm"></i>
                     </button>
                 </div>
-                <!-- Mini Stats Bar -->
                 <div class="flex items-center gap-6 mb-8 py-4 border-y border-white/5">
                     <div class="flex flex-col">
                         <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Ongoing</span>
@@ -363,18 +360,14 @@
                     </div>
                 </div>
             </div>
-            
-            <div id="modal-project-list" class="px-8 pb-10 max-h-[350px] overflow-y-auto custom-scrollbar">
-                <!-- Compact project rows will be injected here -->
-            </div>
-
+            <div id="modal-project-list" class="px-8 pb-10 max-h-[350px] overflow-y-auto custom-scrollbar"></div>
             <div class="p-4 bg-purple-600/5 text-center">
                 <span class="text-[9px] font-black text-purple-400/60 tracking-widest uppercase">Syncing with hanroro cloud node-72</span>
             </div>
         </div>
     </div>
 
-    <!-- Firebase & Logic -->
+    <!-- Firebase SDK & Core Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
@@ -423,6 +416,7 @@
                 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
+                        // Projects Sync
                         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snapshot) => {
                             let realtime = [];
                             snapshot.forEach(doc => realtime.push({ id: doc.id, ...doc.data() }));
@@ -461,6 +455,7 @@
                             `).join('');
                         });
 
+                        // Payments Sync
                         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'payments'), (snapshot) => {
                             let realtime = [];
                             snapshot.forEach(doc => realtime.push({ id: doc.id, ...doc.data() }));
@@ -477,18 +472,18 @@
                             `).join('');
                         });
 
-                        // Notice Real-time Sync
+                        // Notices Sync (One-liner restored for V2)
                         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (snapshot) => {
                             const notices = [];
                             snapshot.forEach(doc => notices.push(doc.data()));
                             if(notices.length > 0) {
-                                // 최신 공지 한줄 표시
-                                noticeContent.innerText = notices[0].title || "새로운 공지사항이 등록되었습니다.";
+                                noticeContent.innerText = notices[0].title || "신규 소식이 업데이트되었습니다.";
                             } else {
-                                noticeContent.innerText = "한로로 크리에이티브 스튜디오에 오신 것을 환영합니다.";
+                                noticeContent.innerText = "한로로 크리에이티브 스튜디오 - 차별화된 웹 경험을 제공합니다.";
                             }
                         });
 
+                        // Global Settings Sync
                         onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'topBanner'), (s) => {
                             if(s.exists()){
                                 bannerHighlight.innerText = s.data().highlight || "동기화 완료";
@@ -502,16 +497,19 @@
                             }
                         });
 
+                        // Contact Form Logic
                         document.getElementById('contact-form').onsubmit = async (e) => {
                             e.preventDefault();
-                            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), {
-                                name: document.getElementById('contact-name').value,
-                                phone: document.getElementById('contact-phone').value,
-                                memo: document.getElementById('contact-memo').value,
-                                createdAt: serverTimestamp()
-                            });
-                            alert('문의가 성공적으로 전송되었습니다. 한로로 팀이 곧 연락드리겠습니다.');
-                            toggleModal('contact-modal', false);
+                            try {
+                                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), {
+                                    name: document.getElementById('contact-name').value,
+                                    phone: document.getElementById('contact-phone').value,
+                                    memo: document.getElementById('contact-memo').value,
+                                    createdAt: serverTimestamp()
+                                });
+                                alert('문의가 성공적으로 전송되었습니다.');
+                                toggleModal('contact-modal', false);
+                            } catch (e) { console.error(e); }
                         };
                     }
                 });
