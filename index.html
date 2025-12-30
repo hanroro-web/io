@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V2.9.5)</title>
+    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 (V3.2.1)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -107,12 +107,9 @@
         /* Cards */
         .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; overflow: hidden; padding: 1.5rem; }
         .unified-card:hover { transform: translateY(-10px); border-color: var(--vibe-primary); background: rgba(138, 79, 255, 0.05); box-shadow: 0 20px 40px rgba(138, 79, 255, 0.15); }
-        .payment-card-status { border-left: 4px solid #10b981; }
-        .payment-card-status.waiting { border-left-color: #f59e0b; }
 
         .case-card { height: 320px; border-radius: 1.5rem; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; }
         .case-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: transform 0.6s ease; }
-        .case-card:hover .case-img { transform: scale(1.1); opacity: 0.6; }
         .case-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #05020a 20%, transparent 100%); }
 
         .payment-badge { font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 8px; border-radius: 4px; display: inline-block; border: 1px solid rgba(16, 185, 129, 0.3); }
@@ -135,7 +132,6 @@
                 <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
             </div>
             
-            <!-- Top Notification Bar -->
             <div class="hidden lg:flex neon-notification-bar">
                 <div class="flex items-center">
                     <i class="fas fa-infinity infinity-icon"></i>
@@ -186,17 +182,12 @@
             <div class="hidden md:block">
                 <div class="hero-visual-box h-[500px] w-full max-w-[450px] mx-auto shadow-2xl shadow-purple-900/10">
                     <div class="pattern-overlay"></div>
-                    
                     <div class="drip-container">
                         <div class="paint-drip bg-purple-500" style="left: 42%; --drip-speed: 2.5s; animation-delay: 0s;"></div>
                         <div class="paint-drip bg-indigo-500" style="left: 48%; --drip-speed: 3.2s; animation-delay: 0.8s; width: 12px;"></div>
                         <div class="paint-drip bg-fuchsia-500" style="left: 55%; --drip-speed: 2.8s; animation-delay: 1.5s;"></div>
-                        <div class="paint-drip bg-blue-400" style="left: 50%; --drip-speed: 4s; animation-delay: 2.2s; width: 6px;"></div>
-                        <div class="paint-drip bg-purple-300" style="left: 45%; --drip-speed: 3.5s; animation-delay: 0.4s;"></div>
                     </div>
-
                     <i class="fas fa-magic text-9xl text-purple-400 float-animation mb-8 relative z-20"></i>
-                    
                     <div class="relative z-10 text-center">
                         <span class="text-[11px] font-black tracking-[0.4em] text-purple-300/60 uppercase">DESIGN BY HANRORO</span>
                     </div>
@@ -238,14 +229,15 @@
         </div>
     </section>
 
-    <!-- Notice Banner -->
+    <!-- Notice Banner (Modified: Real-time Sync Target) -->
     <div class="notice-banner py-6 px-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <span class="bg-white/10 text-white px-2 py-1 rounded text-[10px] font-black uppercase">Notice</span>
-                <p id="live-notice-text" class="text-xs text-gray-400 font-medium">실시간 공지사항을 불러오는 중입니다...</p>
+                <!-- 이곳의 텍스트가 대시보드 공지사항과 연동됩니다 -->
+                <p id="live-notice-text" class="text-xs text-gray-400 font-medium">최신 공지사항을 불러오는 중입니다...</p>
             </div>
-            <a href="#" class="text-[10px] font-bold text-purple-400 flex items-center gap-2 hover:underline">공지사항 전체보기 <i class="fas fa-chevron-right"></i></a>
+            <div id="notice-date" class="text-[10px] text-gray-600 font-bold"></div>
         </div>
     </div>
 
@@ -262,7 +254,7 @@
             </div>
             <div class="flex flex-col justify-end text-right">
                 <div class="text-[10px] text-gray-600 font-bold tracking-widest mb-2 uppercase">Hanroro Digital Experience Studio</div>
-                <div class="text-[10px] text-gray-700">© 2026 Hanroro. V2.9.5 Branding UI.</div>
+                <div class="text-[10px] text-gray-700">© 2026 Hanroro. All Rights Reserved.</div>
             </div>
         </div>
     </footer>
@@ -299,31 +291,12 @@
         </div>
     </div>
 
-    <div id="portfolio-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('portfolio-modal', false)">
-        <div class="modal-content !max-w-4xl flex flex-col md:flex-row bg-[#08040f] border-none shadow-3xl">
-            <div class="md:w-1/2 h-[300px] md:h-auto overflow-hidden bg-black relative">
-                <img id="pf-image" src="" alt="Detail" class="w-full h-full object-cover opacity-80">
-            </div>
-            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <button onclick="toggleModal('portfolio-modal', false)" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-all transform hover:rotate-90"><i class="fas fa-times text-xl"></i></button>
-                <span id="pf-category" class="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-3 block">Category</span>
-                <h3 id="pf-title" class="text-3xl font-black text-white mb-4 leading-tight">Title</h3>
-                <p id="pf-desc" class="text-sm text-gray-400 leading-relaxed mb-8">Description</p>
-                <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
-                    <p id="pf-client" class="text-xs text-purple-300 font-bold mb-2"></p>
-                    <p id="pf-detail" class="text-xs text-gray-400 leading-relaxed"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase Logic -->
+    <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
-        // Finalized Production Config
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
             authDomain: "hanroro-web.firebaseapp.com", 
@@ -344,19 +317,6 @@
             }
         };
 
-        window.openCaseDetail = (enc) => {
-            try {
-                const c = JSON.parse(decodeURIComponent(enc));
-                document.getElementById('pf-image').src = c.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800";
-                document.getElementById('pf-category').innerText = c.category || "PROJECT";
-                document.getElementById('pf-title').innerText = c.title || "Untitled Project";
-                document.getElementById('pf-desc').innerText = c.summary || "No summary provided.";
-                document.getElementById('pf-client').innerText = `Client/Period: ${c.client || 'Confidential'}`;
-                document.getElementById('pf-detail').innerText = c.detail || "Detailed information is being prepared.";
-                toggleModal('portfolio-modal', true);
-            } catch (e) { console.error("Portfolio Modal Error:", e); }
-        };
-
         async function init() {
             try {
                 await signInAnonymously(auth);
@@ -365,56 +325,62 @@
                         syncProjects(); 
                         syncDeposits(); 
                         syncCases(); 
-                        syncNotices();
+                        syncNotices(); // 공지사항 실시간 연동 시작
                     }
                 });
-            } catch (err) { 
-                console.error("Firebase Init Error:", err); 
-            }
+            } catch (err) { console.error("Firebase Auth Error:", err); }
         }
 
-        // Project Synchronization
+        // 1. 공지사항 실시간 연동 (초기 단계 복구 및 강화)
+        function syncNotices() {
+            const noticeRef = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
+            onSnapshot(noticeRef, (snap) => {
+                const notices = [];
+                snap.forEach(doc => notices.push({ id: doc.id, ...doc.data() }));
+                
+                // 최신순 정렬 (createdAt 필드 기준)
+                notices.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+                const noticeTextEl = document.getElementById('live-notice-text');
+                const noticeDateEl = document.getElementById('notice-date');
+
+                if (notices.length > 0) {
+                    const latest = notices[0];
+                    noticeTextEl.innerText = latest.title || latest.content || "새로운 공지사항이 있습니다.";
+                    
+                    if(latest.createdAt) {
+                        const date = new Date(latest.createdAt.seconds * 1000);
+                        noticeDateEl.innerText = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+                    }
+                } else {
+                    noticeTextEl.innerText = "한로로 에이전시 2026년 상반기 프로젝트 예약이 진행 중입니다.";
+                    noticeDateEl.innerText = "";
+                }
+            }, (err) => {
+                console.error("Notice Sync Failed:", err);
+                document.getElementById('live-notice-text').innerText = "공지사항을 불러오는 중 오류가 발생했습니다.";
+            });
+        }
+
+        // 2. 프로젝트 현황 연동
         function syncProjects() {
             const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'projects');
             onSnapshot(qRef, (snap) => {
                 let mainHtml = ''; let modalHtml = ''; const docs = [];
                 snap.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-                
-                // Sort by descending updatedAt (requires simple sorting in JS as per instructions)
                 docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
                 
-                if (docs.length === 0) {
-                    mainHtml = '<p class="text-gray-600 text-xs italic text-center col-span-full py-10">진행 중인 프로젝트가 없습니다.</p>';
-                } else {
-                    docs.forEach(p => {
-                        const progress = p.progress || 0;
-                        mainHtml += `
-                            <div class="unified-card">
-                                <h4 class="font-bold text-white mb-2 truncate">${p.name || '비공개'}</h4>
-                                <div class="w-full bg-white/5 h-1 rounded-full mb-3">
-                                    <div class="bg-purple-600 h-full rounded-full transition-all duration-1000" style="width:${progress}%"></div>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <p class="text-[10px] text-purple-300/70 font-black">${p.phase || '준비중'}</p>
-                                    <p class="text-[10px] text-gray-500 font-bold">${progress}%</p>
-                                </div>
-                            </div>`;
-                        modalHtml += `
-                            <div class="flex justify-between items-center py-5 border-b border-white/5 last:border-0">
-                                <div>
-                                    <h4 class="text-xs font-bold text-gray-200">${p.name || '비공개'}</h4>
-                                    <p class="text-[9px] text-purple-500 font-black uppercase">${p.phase || '준비중'}</p>
-                                </div>
-                                <div class="text-right"><span class="text-[10px] font-black text-gray-400 block">${progress}%</span></div>
-                            </div>`;
-                    });
-                }
-                document.getElementById('main-project-list').innerHTML = mainHtml;
+                docs.forEach(p => {
+                    const progress = p.progress || 0;
+                    mainHtml += `<div class="unified-card"><h4 class="font-bold text-white mb-2 truncate">${p.name || '비공개'}</h4><div class="w-full bg-white/5 h-1 rounded-full mb-3"><div class="bg-purple-600 h-full rounded-full" style="width:${progress}%"></div></div><div class="flex justify-between items-center"><p class="text-[10px] text-purple-300/70 font-black">${p.phase || '준비중'}</p><p class="text-[10px] text-gray-500 font-bold">${progress}%</p></div></div>`;
+                    modalHtml += `<div class="flex justify-between items-center py-5 border-b border-white/5 last:border-0"><div><h4 class="text-xs font-bold text-gray-200">${p.name || '비공개'}</h4><p class="text-[9px] text-purple-500 font-black uppercase">${p.phase || '준비중'}</p></div><div class="text-right"><span class="text-[10px] font-black text-gray-400 block">${progress}%</span></div></div>`;
+                });
+                document.getElementById('main-project-list').innerHTML = mainHtml || '<p class="text-gray-500 text-xs">진행 중인 프로젝트가 없습니다.</p>';
                 document.getElementById('modal-project-list').innerHTML = modalHtml;
-            }, (error) => console.error("Project Sync Error:", error));
+            });
         }
 
-        // Deposit Synchronization
+        // 3. 입금 현황 연동
         function syncDeposits() {
             const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'deposits');
             onSnapshot(qRef, (snap) => {
@@ -422,29 +388,15 @@
                 snap.forEach(doc => deposits.push({ id: doc.id, ...doc.data() }));
                 deposits.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
                 
-                if (deposits.length === 0) {
-                    html = '<p class="text-gray-600 text-xs italic text-center col-span-full py-10">최근 입금 내역이 없습니다.</p>';
-                } else {
-                    deposits.forEach(d => {
-                        const isComplete = d.status === 'complete';
-                        html += `
-                            <div class="unified-card payment-card-status ${isComplete ? '' : 'waiting'}">
-                                <h4 class="font-bold text-white mb-2 truncate">${d.name || '고객님'}</h4>
-                                <div class="flex justify-between items-end mt-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-[10px] text-purple-300/70 font-black uppercase">${d.type || '일반'}</span>
-                                        <span class="text-[11px] text-emerald-400 font-mono font-bold">${d.amount ? d.amount.replace(/[0-9]/g, "*") : "****원"}</span>
-                                    </div>
-                                    <span class="payment-badge ${isComplete ? '' : 'waiting'}">${isComplete ? '입금완료' : '입금대기'}</span>
-                                </div>
-                            </div>`;
-                    });
-                }
-                document.getElementById('payment-grid').innerHTML = html;
-            }, (error) => console.error("Deposit Sync Error:", error));
+                deposits.forEach(d => {
+                    const isComplete = d.status === 'complete';
+                    html += `<div class="unified-card ${isComplete ? '' : 'border-l-4 border-amber-500'}"><h4 class="font-bold text-white mb-2 truncate">${d.name || '고객님'}</h4><div class="flex justify-between items-end mt-4"><div class="flex flex-col"><span class="text-[10px] text-purple-300/70 font-black uppercase">${d.type || '일반'}</span><span class="text-[11px] text-emerald-400 font-mono font-bold">${d.amount ? d.amount.replace(/[0-9]/g, "*") : "****원"}</span></div><span class="payment-badge ${isComplete ? '' : 'waiting'}">${isComplete ? '입금완료' : '입금대기'}</span></div></div>`;
+                });
+                document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-500 text-xs">내역이 없습니다.</p>';
+            });
         }
 
-        // Case Study Synchronization
+        // 4. 성공 사례 연동
         function syncCases() {
             const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'cases');
             onSnapshot(qRef, (snap) => {
@@ -452,60 +404,20 @@
                 snap.forEach(doc => cases.push({ id: doc.id, ...doc.data() }));
                 cases.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
                 
-                if (cases.length === 0) {
-                    html = '<p class="text-gray-600 text-xs italic col-span-full py-10">등록된 성공 사례가 없습니다.</p>';
-                } else {
-                    cases.forEach(c => {
-                        const encodedData = encodeURIComponent(JSON.stringify(c));
-                        html += `
-                            <div class="case-card group" onclick='openCaseDetail(\`${encodedData}\`)'>
-                                <img src="${c.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'}" class="case-img">
-                                <div class="case-overlay"></div>
-                                <div class="relative z-10">
-                                    <span class="text-[10px] font-bold text-purple-400 mb-2 block uppercase tracking-widest">${c.category || 'Portfolio'}</span>
-                                    <h4 class="text-2xl font-black text-white mb-2 group-hover:text-purple-300 transition-colors">${c.title || 'Success Story'}</h4>
-                                    <p class="text-xs text-gray-400 truncate opacity-80">${c.summary || '클릭하여 상세 내용을 확인하세요.'}</p>
-                                </div>
-                            </div>`;
-                    });
-                }
-                document.getElementById('cases-container').innerHTML = html;
-            }, (error) => console.error("Case Sync Error:", error));
+                cases.forEach(c => {
+                    html += `<div class="case-card group"><img src="${c.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'}" class="case-img"><div class="case-overlay"></div><div class="relative z-10"><span class="text-[10px] font-bold text-purple-400 mb-2 block uppercase tracking-widest">${c.category || 'Portfolio'}</span><h4 class="text-2xl font-black text-white mb-2">${c.title || 'Success Story'}</h4><p class="text-xs text-gray-400 truncate opacity-80">${c.summary || '상세 내용을 확인하세요.'}</p></div></div>`;
+                });
+                document.getElementById('cases-container').innerHTML = html || '<p class="text-gray-500 text-xs">성공 사례가 없습니다.</p>';
+            });
         }
 
-        // Notice Synchronization
-        function syncNotices() {
-            const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
-            onSnapshot(qRef, (snap) => {
-                let latestNotice = "한로로 에이전시 2026년 상반기 프로젝트 예약이 진행 중입니다.";
-                const notices = [];
-                snap.forEach(doc => notices.push(doc.data()));
-                notices.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
-                if (notices.length > 0) latestNotice = notices[0].content || notices[0].message || latestNotice;
-                document.getElementById('live-notice-text').innerText = latestNotice;
-            }, (error) => console.error("Notice Sync Error:", error));
-        }
-
-        // Form Handling
         document.getElementById('contact-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = "전송 중..."; btn.disabled = true;
-            
-            // Mock submission for UX
-            setTimeout(() => { 
-                btn.innerText = "전송이 완료되었습니다"; 
-                setTimeout(() => {
-                    toggleModal('contact-modal', false); 
-                    e.target.reset(); 
-                    btn.innerText = originalText; 
-                    btn.disabled = false; 
-                }, 1000);
-            }, 1000);
+            alert('문의가 전송되었습니다. 곧 연락드리겠습니다!');
+            toggleModal('contact-modal', false);
+            e.target.reset();
         });
 
-        // Application Start
         init();
     </script>
 </body>
