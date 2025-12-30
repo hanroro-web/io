@@ -2,48 +2,103 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <!-- iOS 사파리에서 입력창 클릭 시 자동 줌 방지 및 뷰포트 피팅 설정 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Admin Console | HANRORO LIVE</title>
     
-    <!-- 깃허브 페이지 등 외부 환경에서 스타일 깨짐을 방지하기 위한 표준 라이브러리 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        :root { --dash-dark: #05020a; --dash-card: #0f0a1f; --primary: #8a4fff; }
+        :root { 
+            --dash-dark: #05020a; 
+            --dash-card: #0f0a1f; 
+            --primary: #8a4fff; 
+            /* iOS Safari 실시간 뷰포트 높이 대응 변수 */
+            --vvh: 1vh;
+        }
         
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--dash-dark); color: #ececec; margin: 0; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: var(--dash-dark); 
+            color: #ececec; 
+            margin: 0; 
+            /* iOS 바운스 스크롤 시 배경색 유지 */
+            overscroll-behavior-y: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* iOS Safe Area 대응 패딩 */
+        .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
+        .safe-pt { padding-top: env(safe-area-inset-top); }
+
         .glass-card { background: var(--dash-card); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; }
-        .input-field { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 0.75rem; width: 100%; font-size: 0.875rem; color: white; outline: none; }
+        
+        /* iOS에서 input 요소의 기본 스타일(그림자 등) 제거 */
+        .input-field { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 0.75rem; 
+            padding: 0.75rem; 
+            width: 100%; 
+            font-size: 16px; /* iOS 자동 줌 방지를 위해 최소 16px 권장 */
+            color: white; 
+            outline: none; 
+            -webkit-appearance: none;
+        }
         .input-field:focus { border-color: var(--primary); }
-        .btn-primary { background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; transition: all 0.2s; cursor: pointer; border: none; }
+        
+        .btn-primary { background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; transition: all 0.2s; cursor: pointer; border: none; -webkit-appearance: none; }
         .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
         
-        .tab-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; color: #71717a; transition: all 0.2s; border: none; background: transparent; cursor: pointer; }
+        .tab-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; color: #71717a; transition: all 0.2s; border: none; background: transparent; cursor: pointer; -webkit-appearance: none; }
         .tab-btn.active { background: rgba(138, 79, 255, 0.1); color: var(--primary); }
 
-        /* Login Overlay */
-        #login-overlay { position: fixed; inset: 0; z-index: 9999; background: var(--dash-dark); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        /* Login Overlay - iOS 높이 대응 */
+        #login-overlay { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 9999; 
+            background: var(--dash-dark); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1.5rem;
+            height: calc(var(--vvh, 1vh) * 100);
+        }
         .login-box { width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; border: 1px solid rgba(138, 79, 255, 0.2); box-shadow: 0 0 50px rgba(138, 79, 255, 0.1); }
         
-        /* Dashboard Container */
         #admin-content { display: none; }
         #admin-content.authorized { display: block; }
 
-        /* Modal Style */
-        .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 1rem; }
+        /* Modal - iOS 스크롤 차단 및 높이 대응 */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            z-index: 100; 
+            background: rgba(0,0,0,0.8); 
+            backdrop-filter: blur(4px); 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1rem;
+            height: calc(var(--vvh, 1vh) * 100);
+        }
         .modal.active { display: flex; }
 
-        /* Stats Cards */
         .stat-card { background: linear-gradient(145deg, #0f0a1f 0%, #05020a 100%); border-left: 4px solid var(--primary); }
         
-        /* 스크롤바 숨기기 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 모바일 터치 최적화 */
+        button, a {
+            touch-action: manipulation;
+        }
     </style>
 </head>
-<body class="pb-10">
+<body class="pb-10 safe-pb">
 
     <!-- Login Layer -->
     <div id="login-overlay">
@@ -56,7 +111,7 @@
                 <p class="text-[10px] text-gray-500 font-bold mt-1 tracking-widest uppercase">Hanroro Management System</p>
             </div>
             <div class="space-y-4">
-                <input type="text" id="admin-id" class="input-field" placeholder="ID">
+                <input type="text" id="admin-id" class="input-field" placeholder="ID" inputmode="text">
                 <input type="password" id="admin-pw" class="input-field" placeholder="Password">
                 <div id="login-error" class="text-red-500 text-[10px] font-bold hidden">인증 정보가 일치하지 않습니다.</div>
                 <button onclick="attemptLogin()" class="btn-primary w-full py-4 text-xs tracking-widest uppercase">Login</button>
@@ -67,7 +122,7 @@
     <!-- Main Admin Content -->
     <div id="admin-content">
         <!-- Header -->
-        <header class="p-6 flex items-center justify-between border-b border-white/5 bg-black/40 sticky top-0 z-50 backdrop-blur-md">
+        <header class="p-6 flex items-center justify-between border-b border-white/5 bg-black/40 sticky top-0 z-50 backdrop-blur-md safe-pt">
             <div>
                 <h1 class="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Management Console v3</h1>
                 <div class="flex items-center gap-2">
@@ -78,7 +133,6 @@
             <div class="flex items-center gap-4">
                 <span id="sync-status" class="text-[10px] text-gray-500 font-bold uppercase">Syncing...</span>
                 <button onclick="logout()" class="text-[10px] font-black text-gray-400 hover:text-white uppercase tracking-tighter border border-white/10 px-2 py-1 rounded">Logout</button>
-                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold">AD</div>
             </div>
         </header>
 
@@ -95,7 +149,6 @@
                         <h2 id="stat-live" class="text-3xl font-black">0</h2>
                         <span class="text-xs text-gray-500 font-bold">명</span>
                     </div>
-                    <p class="text-[9px] text-gray-600 mt-2 font-bold">최근 5분 내 활동 사용자</p>
                 </div>
                 <div class="glass-card stat-card p-5">
                     <span class="text-[10px] font-black text-purple-400 uppercase tracking-widest">오늘 접속자</span>
@@ -103,7 +156,6 @@
                         <h2 id="stat-today" class="text-3xl font-black">0</h2>
                         <span class="text-xs text-gray-500 font-bold">명</span>
                     </div>
-                    <p id="stat-today-date" class="text-[9px] text-gray-600 mt-2 font-bold">0000.00.00 기준</p>
                 </div>
                 <div class="glass-card stat-card p-5">
                     <span class="text-[10px] font-black text-purple-400 uppercase tracking-widest">월간 접속자</span>
@@ -111,7 +163,6 @@
                         <h2 id="stat-month" class="text-3xl font-black">0</h2>
                         <span class="text-xs text-gray-500 font-bold">명</span>
                     </div>
-                    <p id="stat-month-label" class="text-[9px] text-gray-600 mt-2 font-bold">이달 전체 통계</p>
                 </div>
             </section>
 
@@ -165,7 +216,7 @@
             <section id="sec-projects" class="hidden space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-black">진행 프로젝트 관리</h3>
-                    <button onclick="openModal('project-modal')" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ 새 프로젝트 추가</button>
+                    <button onclick="openModal('project-modal')" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ 추가</button>
                 </div>
                 <div id="project-list-admin" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </section>
@@ -174,21 +225,15 @@
             <section id="sec-portfolio" class="hidden space-y-6">
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="glass-card p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-sm font-black uppercase text-purple-400">성공 사례 (Portfolio)</h3>
-                            <button class="text-[10px] font-bold text-purple-500">+ 추가</button>
-                        </div>
+                        <h3 class="text-sm font-black uppercase text-purple-400 mb-6">성공 사례 (Portfolio)</h3>
                         <div class="space-y-3" id="case-list-admin">
-                            <div class="p-4 bg-white/5 rounded-xl text-xs text-gray-400 text-center italic">현재 수동 데이터 연결 준비 중...</div>
+                            <div class="p-4 bg-white/5 rounded-xl text-xs text-gray-400 text-center italic">준비 중...</div>
                         </div>
                     </div>
                     <div class="glass-card p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-sm font-black uppercase text-purple-400">디자인 시안 (Drafts)</h3>
-                            <button class="text-[10px] font-bold text-purple-500">+ 추가</button>
-                        </div>
+                        <h3 class="text-sm font-black uppercase text-purple-400 mb-6">디자인 시안 (Drafts)</h3>
                         <div class="space-y-3" id="draft-list-admin">
-                            <div class="p-4 bg-white/5 rounded-xl text-xs text-gray-400 text-center italic">현재 수동 데이터 연결 준비 중...</div>
+                            <div class="p-4 bg-white/5 rounded-xl text-xs text-gray-400 text-center italic">준비 중...</div>
                         </div>
                     </div>
                 </div>
@@ -197,10 +242,9 @@
             <!-- 공지사항 섹션 -->
             <section id="sec-notices" class="hidden space-y-6">
                 <div class="glass-card p-6">
-                    <h3 class="text-sm font-black uppercase text-purple-400 mb-6">메인 하단 공지사항 관리</h3>
+                    <h3 class="text-sm font-black uppercase text-purple-400 mb-6">공지사항 관리</h3>
                     <div id="notice-list-admin" class="space-y-4 mb-6"></div>
                     <div class="p-4 border border-white/5 rounded-xl space-y-4">
-                        <h4 class="text-xs font-bold">새 공지사항 등록</h4>
                         <input type="text" id="new-notice-title" class="input-field" placeholder="공지 내용을 입력하세요">
                         <button onclick="addNotice()" class="btn-primary w-full">공지사항 게시</button>
                     </div>
@@ -211,31 +255,19 @@
 
     <!-- Project Edit Modal -->
     <div id="project-modal" class="modal">
-        <div class="glass-card w-full max-w-md p-8 shadow-2xl">
+        <div class="glass-card w-full max-w-md p-8 shadow-2xl mx-4">
             <h3 class="text-xl font-black mb-6">프로젝트 정보</h3>
             <div class="space-y-4">
                 <input type="hidden" id="modal-project-id">
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase">고객명/프로젝트명</label>
-                    <input type="text" id="modal-project-name" class="input-field mt-1">
-                </div>
+                <input type="text" id="modal-project-name" class="input-field" placeholder="고객명/프로젝트명">
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">진행률 (%)</label>
-                        <input type="number" id="modal-project-progress" class="input-field mt-1" value="0">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">현재 단계</label>
-                        <input type="text" id="modal-project-phase" class="input-field mt-1" placeholder="예: 개발중">
-                    </div>
+                    <input type="number" id="modal-project-progress" class="input-field" placeholder="진행률 %">
+                    <input type="text" id="modal-project-phase" class="input-field" placeholder="단계">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase">세부 상태</label>
-                    <input type="text" id="modal-project-status" class="input-field mt-1" placeholder="예: 서버 세팅 완료">
-                </div>
+                <input type="text" id="modal-project-status" class="input-field" placeholder="세부 상태">
                 <div class="flex gap-2 pt-4">
                     <button onclick="closeModal('project-modal')" class="flex-1 bg-white/10 py-3 rounded-xl font-bold">취소</button>
-                    <button onclick="saveProject()" class="flex-1 btn-primary py-3 rounded-xl font-bold">저장하기</button>
+                    <button onclick="saveProject()" class="flex-1 btn-primary py-3 rounded-xl font-bold">저장</button>
                 </div>
             </div>
         </div>
@@ -243,21 +275,28 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+        // iOS Safari 뷰포트 높이 오류 수정 스크립트
+        const setVvh = () => {
+            let vvh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vvh', `${vvh}px`);
+        };
+        window.addEventListener('resize', setVvh);
+        window.addEventListener('orientationchange', setVvh);
+        setVvh();
 
         const CREDENTIALS = { id: 'hanroro', pw: 'gksfhfh00@@' };
         
         window.attemptLogin = () => {
             const idInput = document.getElementById('admin-id').value;
             const pwInput = document.getElementById('admin-pw').value;
-            const errorMsg = document.getElementById('login-error');
-
             if (idInput === CREDENTIALS.id && pwInput === CREDENTIALS.pw) {
                 sessionStorage.setItem('hanroro_auth', 'true');
                 showDashboard();
             } else {
-                errorMsg.classList.remove('hidden');
+                document.getElementById('login-error').classList.remove('hidden');
             }
         };
 
@@ -272,11 +311,7 @@
             initFirebase();
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('hanroro_auth') === 'true') {
-                showDashboard();
-            }
-        });
+        if (sessionStorage.getItem('hanroro_auth') === 'true') showDashboard();
 
         const firebaseConfig = {
           apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI",
@@ -300,18 +335,12 @@
                 loadSettings();
                 loadProjects();
                 loadNotices();
-            } catch (error) {
-                console.error("Firebase Auth Error:", error);
-                document.getElementById('sync-status').innerText = "OFFLINE";
-            }
+            } catch (e) { console.error(e); }
         }
 
         function loadStats() {
             const today = new Date().toISOString().split('T')[0];
             const currentMonth = today.substring(0, 7);
-            document.getElementById('stat-today-date').innerText = `${today} 기준`;
-            document.getElementById('stat-month-label').innerText = `${currentMonth} 전체 통계`;
-
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'visitors'), (s) => {
                 if(s.exists()){
                     const data = s.data();
@@ -352,14 +381,13 @@
                                 <span class="text-[9px] text-purple-400 font-black uppercase">${p.phase}</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="editProject('${docSnap.id}', '${p.name}', ${p.progress}, '${p.phase}', '${p.status}')" class="text-gray-500 hover:text-white"><i class="fas fa-edit"></i></button>
-                                <button onclick="deleteProject('${docSnap.id}')" class="text-red-500/50 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                                <button onclick="editProject('${docSnap.id}', '${p.name}', ${p.progress}, '${p.phase}', '${p.status}')" class="text-gray-500"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteProject('${docSnap.id}')" class="text-red-500/50"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
                         <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
                             <div class="h-full bg-purple-600" style="width: ${p.progress}%"></div>
                         </div>
-                        <p class="text-[10px] text-gray-500">${p.status}</p>
                     `;
                     list.appendChild(div);
                 });
@@ -374,10 +402,7 @@
                     const n = docSnap.data();
                     const div = document.createElement('div');
                     div.className = "flex items-center justify-between p-3 bg-white/5 rounded-lg";
-                    div.innerHTML = `
-                        <span class="text-xs truncate mr-4">${n.title}</span>
-                        <button onclick="deleteNotice('${docSnap.id}')" class="text-red-500 text-xs font-bold">삭제</button>
-                    `;
+                    div.innerHTML = `<span class="text-xs truncate mr-4">${n.title}</span><button onclick="deleteNotice('${docSnap.id}')" class="text-red-500 text-xs">삭제</button>`;
                     list.appendChild(div);
                 });
             });
@@ -385,51 +410,27 @@
 
         window.switchTab = (target) => {
             ['ui', 'projects', 'portfolio', 'notices'].forEach(id => {
-                const el = document.getElementById(`sec-${id}`);
-                const tab = document.getElementById(`tab-${id}`);
-                if(el) el.classList.add('hidden');
-                if(tab) tab.classList.remove('active');
+                document.getElementById(`sec-${id}`)?.classList.add('hidden');
+                document.getElementById(`tab-${id}`)?.classList.remove('active');
             });
-            const targetSec = document.getElementById(`sec-${target}`);
-            const targetTab = document.getElementById(`tab-${target}`);
-            if(targetSec) targetSec.classList.remove('hidden');
-            if(targetTab) targetTab.classList.add('active');
+            document.getElementById(`sec-${target}`)?.classList.remove('hidden');
+            document.getElementById(`tab-${target}`)?.classList.add('active');
         };
 
         window.updateSettings = async (type) => {
-            const path = doc(db, 'artifacts', appId, 'public', 'data', 'settings', type);
-            let data = {};
-            if(type === 'topBanner') {
-                data = {
-                    highlight: document.getElementById('ui-top-highlight').value,
-                    desc: document.getElementById('ui-top-desc').value
-                };
-            } else {
-                data = {
-                    text: document.getElementById('ui-bottom-text').value,
-                    btn: document.getElementById('ui-bottom-btn').value
-                };
-            }
-            await setDoc(path, data);
-            alert('설정이 실시간으로 반영되었습니다.');
+            const data = type === 'topBanner' ? {
+                highlight: document.getElementById('ui-top-highlight').value,
+                desc: document.getElementById('ui-top-desc').value
+            } : {
+                text: document.getElementById('ui-bottom-text').value,
+                btn: document.getElementById('ui-bottom-btn').value
+            };
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', type), data);
+            alert('저장되었습니다.');
         };
 
-        window.openModal = (id) => {
-            const el = document.getElementById(id);
-            if(el) el.classList.add('active');
-            if(id === 'project-modal') {
-                document.getElementById('modal-project-id').value = "";
-                document.getElementById('modal-project-name').value = "";
-                document.getElementById('modal-project-progress').value = 0;
-                document.getElementById('modal-project-phase').value = "";
-                document.getElementById('modal-project-status').value = "";
-            }
-        };
-
-        window.closeModal = (id) => {
-            const el = document.getElementById(id);
-            if(el) el.classList.remove('active');
-        };
+        window.openModal = (id) => document.getElementById(id)?.classList.add('active');
+        window.closeModal = (id) => document.getElementById(id)?.classList.remove('active');
 
         window.editProject = (id, name, progress, phase, status) => {
             openModal('project-modal');
@@ -449,33 +450,19 @@
                 status: document.getElementById('modal-project-status').value,
                 updatedAt: serverTimestamp()
             };
-            if(id) {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), data);
-            } else {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), data);
-            }
+            id ? await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), data) 
+               : await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), data);
             closeModal('project-modal');
         };
 
-        window.deleteProject = async (id) => {
-            if(confirm('정말 삭제하시겠습니까?')) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
-            }
-        };
-
+        window.deleteProject = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id)); };
         window.addNotice = async () => {
             const title = document.getElementById('new-notice-title').value;
             if(!title) return;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), {
-                title,
-                createdAt: serverTimestamp()
-            });
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), { title, createdAt: serverTimestamp() });
             document.getElementById('new-notice-title').value = "";
         };
-
-        window.deleteNotice = async (id) => {
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
-        };
+        window.deleteNotice = async (id) => await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
     </script>
 </body>
 </html>
