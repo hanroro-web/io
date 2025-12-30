@@ -83,15 +83,15 @@
         /* Status Modal Minimal Design */
         .status-row {
             display: grid;
-            grid-template-columns: 100px 1fr 100px;
+            grid-template-columns: 80px 1fr 60px;
             align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transition: background 0.2s;
         }
         .status-row:last-child { border-bottom: none; }
-        .compact-progress { height: 2px; width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; }
-        .compact-progress-bar { height: 100%; background: #8a4fff; transition: width 1s ease-in-out; }
+        .compact-progress { height: 3px; width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; }
+        .compact-progress-bar { height: 100%; background: linear-gradient(90deg, #8a4fff, #a78bfa); transition: width 1s ease-in-out; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(138, 79, 255, 0.2); border-radius: 10px; }
@@ -331,38 +331,28 @@
         </div>
     </div>
     
+    <!-- [현황만 나오게 최적화된 Status Modal] -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
-        <div class="modal-content !max-w-xl bg-[#08040f] p-0 border border-white/10 shadow-3xl">
-            <div class="p-8 pb-0">
-                <div class="flex items-center justify-between mb-8">
+        <div class="modal-content !max-w-lg bg-[#08040f] p-0 border border-purple-500/20 shadow-3xl">
+            <div class="p-8 pb-4">
+                <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-black text-white uppercase tracking-tight">Active Insight</h3>
-                        <p class="text-[10px] text-purple-400 font-bold tracking-widest">LIVE DEVELOPMENT TRACKER</p>
+                        <p class="text-[10px] text-purple-400 font-bold tracking-widest flex items-center gap-2">
+                            <span class="status-dot"></span> LIVE PROJECT FEED
+                        </p>
                     </div>
                     <button onclick="toggleModal('status-modal', false)" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:text-white transition-all">
                         <i class="fas fa-times text-sm"></i>
                     </button>
                 </div>
-                <div class="flex items-center gap-6 mb-8 py-4 border-y border-white/5">
-                    <div class="flex flex-col">
-                        <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Ongoing</span>
-                        <span class="text-lg font-black text-white">24</span>
-                    </div>
-                    <div class="w-[1px] h-6 bg-white/5"></div>
-                    <div class="flex flex-col">
-                        <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Queue</span>
-                        <span class="text-lg font-black text-white">12</span>
-                    </div>
-                    <div class="w-[1px] h-6 bg-white/5"></div>
-                    <div class="flex flex-col">
-                        <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Uptime</span>
-                        <span class="text-lg font-black text-emerald-500">99.9%</span>
-                    </div>
-                </div>
             </div>
-            <div id="modal-project-list" class="px-8 pb-10 max-h-[350px] overflow-y-auto custom-scrollbar"></div>
-            <div class="p-4 bg-purple-600/5 text-center">
-                <span class="text-[9px] font-black text-purple-400/60 tracking-widest uppercase">Syncing with hanroro cloud node-72</span>
+            <!-- 실시간 프로젝트 리스트 영역 -->
+            <div id="modal-project-list" class="px-8 pb-10 max-h-[450px] overflow-y-auto custom-scrollbar">
+                <!-- JS에서 데이터가 렌더링됩니다 -->
+            </div>
+            <div class="p-4 bg-purple-600/5 text-center border-t border-white/5">
+                <span class="text-[9px] font-black text-purple-400/60 tracking-widest uppercase">Real-time Encrypted Data Synchronization</span>
             </div>
         </div>
     </div>
@@ -438,10 +428,10 @@
 
                             modalProjectList.innerHTML = all.map(p => `
                                 <div class="status-row">
-                                    <span class="text-[9px] font-black text-gray-500 uppercase">${p.phase || 'PROCESS'}</span>
-                                    <div class="px-4">
+                                    <span class="text-[9px] font-black text-purple-500 uppercase tracking-tighter">${p.phase || 'PROCESS'}</span>
+                                    <div class="px-5">
                                         <div class="flex items-center justify-between mb-2">
-                                            <h4 class="text-xs font-bold text-gray-200">${p.name}</h4>
+                                            <h4 class="text-xs font-bold text-gray-200 tracking-tight">${p.name}</h4>
                                             <span class="text-[10px] text-purple-400 font-black">${p.progress}%</span>
                                         </div>
                                         <div class="compact-progress">
@@ -449,7 +439,7 @@
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <span class="text-[9px] font-medium text-gray-500 truncate block">${p.status}</span>
+                                        <span class="text-[8px] font-bold text-gray-600 uppercase block whitespace-nowrap">${p.progress === 100 ? 'SUCCESS' : 'ACTIVE'}</span>
                                     </div>
                                 </div>
                             `).join('');
