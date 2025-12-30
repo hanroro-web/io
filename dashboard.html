@@ -2,171 +2,180 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hanroro Admin | Premium Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Admin Console | HANRORO LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
+        :root { --dash-dark: #05020a; --dash-card: #0f0a1f; --primary: #8a4fff; }
         
-        :root {
-            --primary: #8b5cf6;
-            --secondary: #ec4899;
-            --bg-dark: #09090b;
-            --card-bg: rgba(24, 24, 27, 0.6);
-            --card-border: rgba(255, 255, 255, 0.08);
-        }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--dash-dark); color: #ececec; }
+        .glass-card { background: var(--dash-card); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; }
+        .input-field { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 0.75rem; width: 100%; font-size: 0.875rem; color: white; outline: none; }
+        .input-field:focus { border-color: var(--primary); }
+        .btn-primary { background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; transition: all 0.2s; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-danger { background: #ef4444; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; }
+        
+        .tab-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; color: #71717a; transition: all 0.2s; }
+        .tab-btn.active { background: rgba(138, 79, 255, 0.1); color: var(--primary); }
 
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
-            color: #fafafa;
-            min-height: 100vh;
-        }
-
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: 1.25rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .input-premium {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--card-border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .input-premium:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-            outline: none;
-        }
-
-        .status-pulse {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-        }
-
-        .pulse-online { background: #10b981; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite; }
-        .pulse-offline { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
-        .pulse-connecting { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; animation: pulse 1s infinite; }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-        .hidden-content { display: none; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+        
+        /* Modal Style */
+        .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 1rem; }
+        .modal.active { display: flex; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="pb-10">
 
-    <!-- Login Section -->
-    <div id="login-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
-        <div class="glass-card w-full max-w-md p-8 border-t border-white/20 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 mb-6 shadow-lg shadow-purple-500/20">
-                <i class="fas fa-crown text-2xl text-white"></i>
+    <!-- Header -->
+    <header class="p-6 flex items-center justify-between border-b border-white/5 bg-black/40 sticky top-0 z-50 backdrop-blur-md">
+        <div>
+            <h1 class="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Management Console v3</h1>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></span>
+                <span class="text-lg font-bold">Admin Dashboard</span>
             </div>
-            <h2 class="text-3xl font-black tracking-tighter mb-8">ADMIN LOGIN</h2>
-            <form id="login-form" class="space-y-4 text-left">
-                <input type="text" id="admin-id" class="input-premium w-full p-4 rounded-xl text-white" placeholder="ID" required>
-                <input type="password" id="admin-pw" class="input-premium w-full p-4 rounded-xl text-white" placeholder="••••••••" required>
-                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-purple-500/20 mt-4">
-                    시스템 접속
-                </button>
-                <p id="login-error" class="hidden text-center text-rose-500 text-xs font-medium animate-bounce mt-2">인증 정보가 올바르지 않습니다.</p>
-            </form>
         </div>
-    </div>
+        <div class="flex items-center gap-4">
+            <span id="sync-status" class="text-[10px] text-gray-500 font-bold uppercase">Syncing...</span>
+            <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold">AD</div>
+        </div>
+    </header>
 
-    <!-- Main Dashboard -->
-    <div id="main-content" class="max-w-7xl mx-auto hidden-content">
-        <!-- Header -->
-        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center">
-                    <i class="fas fa-bolt text-xl"></i>
+    <main class="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+        
+        <!-- Tab Navigation -->
+        <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+            <button onclick="switchTab('ui')" class="tab-btn active" id="tab-ui">UI 제어</button>
+            <button onclick="switchTab('projects')" class="tab-btn" id="tab-projects">프로젝트</button>
+            <button onclick="switchTab('portfolio')" class="tab-btn" id="tab-portfolio">사례/시안</button>
+            <button onclick="switchTab('notices')" class="tab-btn" id="tab-notices">공지사항</button>
+        </div>
+
+        <!-- Section 1: UI Text Control (Top/Bottom Bar) -->
+        <section id="sec-ui" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Top Banner Control -->
+                <div class="glass-card p-6">
+                    <h3 class="text-sm font-black uppercase text-purple-400 mb-6 flex items-center gap-2">
+                        <i class="fas fa-window-maximize"></i> 상단 배너 제어
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">하이라이트 문구</label>
+                            <input type="text" id="ui-top-highlight" class="input-field mt-1" placeholder="예: 동기화 완료">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">상세 설명</label>
+                            <input type="text" id="ui-top-desc" class="input-field mt-1" placeholder="예: 데이터 실시간 연동 중">
+                        </div>
+                        <button onclick="updateSettings('topBanner')" class="btn-primary w-full">상단 설정 저장</button>
+                    </div>
+                </div>
+                <!-- Bottom Bar Control -->
+                <div class="glass-card p-6">
+                    <h3 class="text-sm font-black uppercase text-purple-400 mb-6 flex items-center gap-2">
+                        <i class="fas fa-window-minimize"></i> 하단 플로팅 바 제어
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">바 텍스트</label>
+                            <input type="text" id="ui-bottom-text" class="input-field mt-1" placeholder="예: 현재 프로젝트 신청 가능">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase ml-1">버튼 이름</label>
+                            <input type="text" id="ui-bottom-btn" class="input-field mt-1" placeholder="예: 즉시 신청">
+                        </div>
+                        <button onclick="updateSettings('bottomBar')" class="btn-primary w-full">하단 설정 저장</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Projects (CRUD) -->
+        <section id="sec-projects" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-black">진행 프로젝트 관리</h3>
+                <button onclick="openModal('project-modal')" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ 새 프로젝트 추가</button>
+            </div>
+            <div id="project-list-admin" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
+        <!-- Section 3: Portfolio & Drafts -->
+        <section id="sec-portfolio" class="hidden space-y-6">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Case Studies -->
+                <div class="glass-card p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black uppercase text-purple-400">성공 사례 (Portfolio)</h3>
+                        <button class="text-[10px] font-bold text-purple-500">+ 추가</button>
+                    </div>
+                    <div class="space-y-3" id="case-list-admin">
+                        <div class="p-4 bg-white/5 rounded-xl text-xs text-gray-400 text-center italic">현재 수동 데이터 연결 준비 중...</div>
+                    </div>
+                </div>
+                <!-- Design Drafts -->
+                <div class="glass-card p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black uppercase text-purple-400">디자인 시안 (Drafts)</h3>
+                        <button class="text-[10px] font-bold text-purple-500">+ 추가</button>
+                    </div>
+                    <div class="space-y-3" id="draft-list-admin">
+                        <div class="p-4 bg-white/5 rounded-xl text-xs text-gray-400 text-center italic">현재 수동 데이터 연결 준비 중...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Notices -->
+        <section id="sec-notices" class="hidden space-y-6">
+            <div class="glass-card p-6">
+                <h3 class="text-sm font-black uppercase text-purple-400 mb-6">메인 하단 공지사항 관리</h3>
+                <div id="notice-list-admin" class="space-y-4 mb-6">
+                    <!-- Dynamic Content -->
+                </div>
+                <div class="p-4 border border-white/5 rounded-xl space-y-4">
+                    <h4 class="text-xs font-bold">새 공지사항 등록</h4>
+                    <input type="text" id="new-notice-title" class="input-field" placeholder="공지 내용을 입력하세요">
+                    <button onclick="addNotice()" class="btn-primary w-full">공지사항 게시</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Project Edit Modal -->
+    <div id="project-modal" class="modal">
+        <div class="glass-card w-full max-w-md p-8 shadow-2xl">
+            <h3 class="text-xl font-black mb-6">프로젝트 정보</h3>
+            <div class="space-y-4">
+                <input type="hidden" id="modal-project-id">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase">고객명/프로젝트명</label>
+                    <input type="text" id="modal-project-name" class="input-field mt-1">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">진행률 (%)</label>
+                        <input type="number" id="modal-project-progress" class="input-field mt-1" value="0">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">현재 단계</label>
+                        <input type="text" id="modal-project-phase" class="input-field mt-1" placeholder="예: 개발중">
+                    </div>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-black tracking-tight text-white uppercase">Hanroro Center</h1>
-                    <div class="flex items-center text-[10px] font-mono mt-0.5">
-                        <span id="conn-pulse" class="status-pulse pulse-connecting"></span>
-                        <span id="conn-text" class="text-zinc-500 uppercase">연결 확인 중...</span>
-                    </div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase">세부 상태</label>
+                    <input type="text" id="modal-project-status" class="input-field mt-1" placeholder="예: 서버 세팅 완료">
                 </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="logout()" class="glass-card px-5 py-2.5 text-xs font-bold text-zinc-400 hover:text-white hover:border-white/20 transition-all active:scale-95">
-                    로그아웃
-                </button>
-            </div>
-        </header>
-
-        <div class="grid lg:grid-cols-12 gap-8">
-            <!-- Left: Settings (4) -->
-            <div class="lg:col-span-4 space-y-6">
-                <!-- Bank Info -->
-                <div class="glass-card p-6 overflow-hidden relative">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-yellow-500"></div>
-                    <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-yellow-100">
-                        <i class="fas fa-university"></i> 입금 계좌 설정
-                    </h2>
-                    <div class="space-y-3">
-                        <p class="text-[10px] text-zinc-500">웹사이트 노출 계좌 정보</p>
-                        <input type="text" id="bank-info" class="input-premium w-full p-3 rounded-lg text-xs text-white" placeholder="은행명 계좌번호 예금주">
-                        <button onclick="updateBankInfo()" class="w-full bg-white/5 hover:bg-white/10 py-3 rounded-lg text-xs font-bold transition-all border border-white/5">저장하기</button>
-                    </div>
-                </div>
-
-                <!-- Manual Proj Add -->
-                <div class="glass-card p-6 overflow-hidden relative">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
-                    <h2 class="text-sm font-bold flex items-center gap-2 mb-6 text-purple-100">
-                        <i class="fas fa-rocket"></i> 프로젝트 추가
-                    </h2>
-                    <div class="space-y-3">
-                        <input type="text" id="proj-name" placeholder="고객명" class="input-premium w-full p-3 rounded-lg text-xs text-white">
-                        <input type="text" id="proj-phase" placeholder="단계 (예: 개발 중)" class="input-premium w-full p-3 rounded-lg text-xs text-white">
-                        <button onclick="saveProject()" class="w-full bg-purple-600/20 hover:bg-purple-600 text-purple-400 hover:text-white py-3 rounded-lg text-xs font-bold transition-all mt-2">등록</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Monitor (8) -->
-            <div class="lg:col-span-8 space-y-6">
-                <!-- Payment Queue -->
-                <div class="glass-card p-6 h-[400px] flex flex-col">
-                    <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 flex justify-between">
-                        무통장 입금 대기열 <span>WAITING</span>
-                    </h2>
-                    <div id="payment-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3"></div>
-                </div>
-
-                <!-- Active Projects -->
-                <div class="glass-card p-6">
-                    <h2 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6">진행 프로젝트 <span>ACTIVE</span></h2>
-                    <div id="project-list" class="grid sm:grid-cols-2 gap-4"></div>
-                </div>
-
-                <!-- Trash -->
-                <div class="bg-rose-500/5 border border-rose-500/10 rounded-3xl p-6">
-                    <h2 class="text-xs font-black text-rose-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <i class="fas fa-trash-can"></i> 휴지통 (90일 보관)
-                    </h2>
-                    <div id="trash-list" class="flex flex-wrap gap-2"></div>
+                <div class="flex gap-2 pt-4">
+                    <button onclick="closeModal('project-modal')" class="flex-1 bg-white/10 py-3 rounded-xl font-bold">취소</button>
+                    <button onclick="saveProject()" class="flex-1 btn-primary py-3 rounded-xl font-bold">저장하기</button>
                 </div>
             </div>
         </div>
@@ -174,8 +183,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI",
@@ -186,143 +195,161 @@
           appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad"
         };
 
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
         const appId = "hanroro-official-service";
-        const ADMIN_ID = "hanroro";
-        const ADMIN_PW = "gksfhfh00@@";
-        let db;
 
-        // Login Logic
-        document.getElementById('login-form').onsubmit = (e) => {
-            e.preventDefault();
-            if(document.getElementById('admin-id').value === ADMIN_ID && document.getElementById('admin-pw').value === ADMIN_PW) {
-                sessionStorage.setItem('hanroro_admin_auth', 'true');
-                location.reload();
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
-        };
+        async function init() {
+            await signInAnonymously(auth);
+            document.getElementById('sync-status').innerText = "ONLINE";
 
-        if(sessionStorage.getItem('hanroro_admin_auth') === 'true') {
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('main-content').classList.remove('hidden-content');
-            initApp();
-        }
-
-        async function initApp() {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            const auth = getAuth(app);
-            
-            // Connection Tracker
-            onSnapshot(doc(db, 'artifacts', appId), { includeMetadataChanges: true }, (doc) => {
-                const pulse = document.getElementById('conn-pulse');
-                const text = document.getElementById('conn-text');
-                if (doc.metadata.fromCache) {
-                    pulse.className = 'status-pulse pulse-offline';
-                    text.innerText = 'OFFLINE';
-                } else {
-                    pulse.className = 'status-pulse pulse-online';
-                    text.innerText = 'ONLINE';
+            // 1. Settings Listener (UI Control)
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'topBanner'), (s) => {
+                if(s.exists()){
+                    document.getElementById('ui-top-highlight').value = s.data().highlight || "";
+                    document.getElementById('ui-top-desc').value = s.data().desc || "";
+                }
+            });
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bottomBar'), (s) => {
+                if(s.exists()){
+                    document.getElementById('ui-bottom-text').value = s.data().text || "";
+                    document.getElementById('ui-bottom-btn').value = s.data().btn || "";
                 }
             });
 
-            await signInAnonymously(auth);
-            loadData();
+            // 2. Projects Listener (CRUD)
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
+                const list = document.getElementById('project-list-admin');
+                list.innerHTML = "";
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    const div = document.createElement('div');
+                    div.className = "glass-card p-5 space-y-4";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-white">${p.name}</h4>
+                                <span class="text-[9px] text-purple-400 font-black uppercase">${p.phase}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editProject('${docSnap.id}', '${p.name}', ${p.progress}, '${p.phase}', '${p.status}')" class="text-gray-500 hover:text-white"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteProject('${docSnap.id}')" class="text-red-500/50 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-600" style="width: ${p.progress}%"></div>
+                        </div>
+                        <p class="text-[10px] text-gray-500">${p.status}</p>
+                    `;
+                    list.appendChild(div);
+                });
+            });
+
+            // 3. Notice Listener (CRUD)
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (snap) => {
+                const list = document.getElementById('notice-list-admin');
+                list.innerHTML = "";
+                snap.forEach(docSnap => {
+                    const n = docSnap.data();
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-3 bg-white/5 rounded-lg";
+                    div.innerHTML = `
+                        <span class="text-xs truncate mr-4">${n.title}</span>
+                        <button onclick="deleteNotice('${docSnap.id}')" class="text-red-500 text-xs font-bold">삭제</button>
+                    `;
+                    list.appendChild(div);
+                });
+            });
         }
 
-        // Methods
-        window.approveTransfer = async (id, data) => {
-            if(!confirm(`[${data.name}] 님의 입금을 승인하고 프로젝트를 생성하시겠습니까?`)) return;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), {
-                name: data.name, progress: 10, phase: '준비 중', status: '입금 확인 완료', createdAt: serverTimestamp()
+        // --- Functions ---
+        window.switchTab = (target) => {
+            ['ui', 'projects', 'portfolio', 'notices'].forEach(id => {
+                document.getElementById(`sec-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${id}`).classList.remove('active');
             });
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'leads', id));
+            document.getElementById(`sec-${target}`).classList.remove('hidden');
+            document.getElementById(`tab-${target}`).classList.add('active');
         };
 
-        window.updateBankInfo = async () => {
-            const info = document.getElementById('bank-info').value;
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bank'), { info });
-            alert('저장되었습니다.');
+        window.updateSettings = async (type) => {
+            const path = doc(db, 'artifacts', appId, 'public', 'data', 'settings', type);
+            let data = {};
+            if(type === 'topBanner') {
+                data = {
+                    highlight: document.getElementById('ui-top-highlight').value,
+                    desc: document.getElementById('ui-top-desc').value
+                };
+            } else {
+                data = {
+                    text: document.getElementById('ui-bottom-text').value,
+                    btn: document.getElementById('ui-bottom-btn').value
+                };
+            }
+            await setDoc(path, data);
+            alert('설정이 실시간으로 반영되었습니다.');
+        };
+
+        window.openModal = (id) => {
+            document.getElementById(id).classList.add('active');
+            // Reset modal
+            document.getElementById('modal-project-id').value = "";
+            document.getElementById('modal-project-name').value = "";
+            document.getElementById('modal-project-progress').value = 0;
+            document.getElementById('modal-project-phase').value = "";
+            document.getElementById('modal-project-status').value = "";
+        };
+
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+        window.editProject = (id, name, progress, phase, status) => {
+            openModal('project-modal');
+            document.getElementById('modal-project-id').value = id;
+            document.getElementById('modal-project-name').value = name;
+            document.getElementById('modal-project-progress').value = progress;
+            document.getElementById('modal-project-phase').value = phase;
+            document.getElementById('modal-project-status').value = status;
         };
 
         window.saveProject = async () => {
-            const name = document.getElementById('proj-name').value;
-            const phase = document.getElementById('proj-phase').value;
-            if(!name) return;
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), {
-                name, progress: 0, phase, status: '수동 등록', createdAt: serverTimestamp()
-            });
-            document.getElementById('proj-name').value = '';
-            document.getElementById('proj-phase').value = '';
+            const id = document.getElementById('modal-project-id').value;
+            const data = {
+                name: document.getElementById('modal-project-name').value,
+                progress: parseInt(document.getElementById('modal-project-progress').value),
+                phase: document.getElementById('modal-project-phase').value,
+                status: document.getElementById('modal-project-status').value,
+                updatedAt: serverTimestamp()
+            };
+            if(id) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), data);
+            } else {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), data);
+            }
+            closeModal('project-modal');
         };
 
-        window.moveToTrash = async (col, id) => {
-            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
-            const expiresAt = new Date(); expiresAt.setDate(expiresAt.getDate() + 90);
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), {
-                originalCollection: col, originalData: snap.data(), expiresAt
-            });
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+        window.deleteProject = async (id) => {
+            if(confirm('정말 삭제하시겠습니까?')) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
+            }
         };
 
-        function loadData() {
-            // Waiting List
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), (s) => {
-                const list = document.getElementById('payment-list');
-                let h = '';
-                s.forEach(d => {
-                    const l = d.data();
-                    h += `
-                        <div class="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 flex justify-between items-center group">
-                            <div>
-                                <p class="text-[9px] text-yellow-500 font-bold uppercase mb-1">입금 대기</p>
-                                <h3 class="text-xs font-bold text-white">${l.name} <span class="text-[10px] text-zinc-500 ml-2">${l.phone}</span></h3>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="approveTransfer('${d.id}', ${JSON.stringify(l).replace(/"/g, '&quot;')})" class="bg-emerald-500/10 text-emerald-500 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-500 hover:text-white transition-all">승인</button>
-                                <button onclick="moveToTrash('leads', '${d.id}')" class="text-rose-500/50 hover:text-rose-500 text-[10px] px-2">X</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                list.innerHTML = h || '<p class="text-zinc-600 text-xs py-10 text-center">대기 내역 없음</p>';
+        window.addNotice = async () => {
+            const title = document.getElementById('new-notice-title').value;
+            if(!title) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), {
+                title,
+                createdAt: serverTimestamp()
             });
+            document.getElementById('new-notice-title').value = "";
+        };
 
-            // Project List
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (s) => {
-                const list = document.getElementById('project-list');
-                let h = '';
-                s.forEach(d => {
-                    const p = d.data();
-                    h += `
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/5 relative group">
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="text-[9px] font-black text-purple-500 uppercase tracking-widest">${p.phase}</span>
-                                <button onclick="moveToTrash('projects', '${d.id}')" class="opacity-0 group-hover:opacity-100 text-rose-500 text-[10px] transition-all">삭제</button>
-                            </div>
-                            <h3 class="text-xs font-bold text-white">${p.name}</h3>
-                            <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-3">
-                                <div class="bg-purple-500 h-full" style="width: ${p.progress}%"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-                list.innerHTML = h;
-            });
+        window.deleteNotice = async (id) => {
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notices', id));
+        };
 
-            // Trash
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'trash'), (s) => {
-                const list = document.getElementById('trash-list');
-                let h = '';
-                s.forEach(d => { h += `<span class="bg-black/30 px-3 py-1 rounded-full text-[9px] text-zinc-600 border border-white/5">${d.data().originalData.name || 'ITEM'}</span>`; });
-                list.innerHTML = h;
-            });
-
-            // Bank Init
-            getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'bank')).then(s => { if(s.exists()) document.getElementById('bank-info').value = s.data().info; });
-        }
-
-        window.logout = () => { sessionStorage.removeItem('hanroro_admin_auth'); location.reload(); };
+        init();
     </script>
 </body>
 </html>
