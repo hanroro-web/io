@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <!-- iOS 사파리에서 입력창 클릭 시 자동 줌 방지 및 뷰포트 피팅 설정 -->
+    <!-- iOS 사파리 최적화 및 보안 설정 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Admin Console | HANRORO LIVE</title>
     
@@ -15,7 +15,6 @@
             --dash-dark: #05020a; 
             --dash-card: #0f0a1f; 
             --primary: #8a4fff; 
-            /* iOS Safari 실시간 뷰포트 높이 대응 변수 */
             --vvh: 1vh;
         }
         
@@ -24,25 +23,34 @@
             background-color: var(--dash-dark); 
             color: #ececec; 
             margin: 0; 
-            /* iOS 바운스 스크롤 시 배경색 유지 */
             overscroll-behavior-y: none;
             -webkit-tap-highlight-color: transparent;
+            /* 텍스트 선택 및 드래그 방지 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
-        /* iOS Safe Area 대응 패딩 */
+        /* 입력창은 예외적으로 텍스트 선택 허용 */
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
         .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
         .safe-pt { padding-top: env(safe-area-inset-top); }
-
         .glass-card { background: var(--dash-card); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; }
         
-        /* iOS에서 input 요소의 기본 스타일(그림자 등) 제거 */
         .input-field { 
             background: rgba(255, 255, 255, 0.03); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 0.75rem; 
             padding: 0.75rem; 
             width: 100%; 
-            font-size: 16px; /* iOS 자동 줌 방지를 위해 최소 16px 권장 */
+            font-size: 16px; 
             color: white; 
             outline: none; 
             -webkit-appearance: none;
@@ -55,7 +63,6 @@
         .tab-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; color: #71717a; transition: all 0.2s; border: none; background: transparent; cursor: pointer; -webkit-appearance: none; }
         .tab-btn.active { background: rgba(138, 79, 255, 0.1); color: var(--primary); }
 
-        /* Login Overlay - iOS 높이 대응 */
         #login-overlay { 
             position: fixed; 
             inset: 0; 
@@ -72,7 +79,6 @@
         #admin-content { display: none; }
         #admin-content.authorized { display: block; }
 
-        /* Modal - iOS 스크롤 차단 및 높이 대응 */
         .modal { 
             display: none; 
             position: fixed; 
@@ -86,19 +92,14 @@
             height: calc(var(--vvh, 1vh) * 100);
         }
         .modal.active { display: flex; }
-
         .stat-card { background: linear-gradient(145deg, #0f0a1f 0%, #05020a 100%); border-left: 4px solid var(--primary); }
-        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 모바일 터치 최적화 */
-        button, a {
-            touch-action: manipulation;
-        }
+        button, a { touch-action: manipulation; }
     </style>
 </head>
-<body class="pb-10 safe-pb">
+<body class="pb-10 safe-pb" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
     <!-- Login Layer -->
     <div id="login-overlay">
@@ -111,8 +112,8 @@
                 <p class="text-[10px] text-gray-500 font-bold mt-1 tracking-widest uppercase">Hanroro Management System</p>
             </div>
             <div class="space-y-4">
-                <input type="text" id="admin-id" class="input-field" placeholder="ID" inputmode="text">
-                <input type="password" id="admin-pw" class="input-field" placeholder="Password">
+                <input type="text" id="admin-id" class="input-field" placeholder="ID" inputmode="text" autocomplete="off">
+                <input type="password" id="admin-pw" class="input-field" placeholder="Password" autocomplete="off">
                 <div id="login-error" class="text-red-500 text-[10px] font-bold hidden">인증 정보가 일치하지 않습니다.</div>
                 <button onclick="attemptLogin()" class="btn-primary w-full py-4 text-xs tracking-widest uppercase">Login</button>
             </div>
@@ -137,7 +138,6 @@
         </header>
 
         <main class="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
-            
             <!-- 접속자 통계 섹션 -->
             <section id="sec-stats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-card stat-card p-5">
@@ -275,10 +275,36 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-        // iOS Safari 뷰포트 높이 오류 수정 스크립트
+        /* --- 보안 스크립트: 소스 보기 및 추출 방지 --- */
+        document.addEventListener('keydown', function(e) {
+            // F12 방지
+            if (e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+Shift+I (개발자 도구) 방지
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+U (소스 보기) 방지
+            if (e.ctrlKey && e.keyCode === 85) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+S (저장) 방지
+            if (e.ctrlKey && e.keyCode === 83) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // 우클릭 방지 (보조적 확인)
+        document.oncontextmenu = function() { return false; };
+
         const setVvh = () => {
             let vvh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vvh', `${vvh}px`);
@@ -341,13 +367,16 @@
         function loadStats() {
             const today = new Date().toISOString().split('T')[0];
             const currentMonth = today.substring(0, 7);
-            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'visitors'), (s) => {
+            const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'visitors');
+            onSnapshot(statsDocRef, (s) => {
                 if(s.exists()){
                     const data = s.data();
                     document.getElementById('stat-live').innerText = data.liveCount || 0;
                     document.getElementById('stat-today').innerText = data.daily?.[today] || 0;
                     document.getElementById('stat-month').innerText = data.monthly?.[currentMonth] || 0;
                 }
+            }, (error) => {
+                document.getElementById('sync-status').innerText = "SYNC ERROR";
             });
         }
 
