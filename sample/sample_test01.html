@@ -134,7 +134,6 @@
             transform: scale(1.05);
         }
 
-        /* Image Zoom Modal Styles */
         #imageZoomModal.active {
             opacity: 1;
             pointer-events: auto;
@@ -184,7 +183,7 @@
 </head>
 <body>
 
-    <!-- Image Zoom Modal -->
+    <!-- 이미지 확대 모달 -->
     <div id="imageZoomModal" class="fixed inset-0 z-[200] bg-black/95 opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center p-4 md:p-12" onclick="closeImageZoom()">
         <button class="absolute top-6 right-6 text-white text-3xl hover:text-indigo-400 transition z-[210]">
             <i class="fas fa-times"></i>
@@ -192,7 +191,7 @@
         <img id="zoomedImage" src="" alt="확대 이미지" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-transform duration-500 scale-90" onclick="event.stopPropagation()">
     </div>
 
-    <!-- Lawyer Detail Profile Modal -->
+    <!-- 변호사 상세 프로필 모달 -->
     <div id="lawyerProfileView" class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto">
         <div class="min-h-screen py-16 px-6">
             <div class="max-w-4xl mx-auto">
@@ -204,7 +203,6 @@
                 </div>
                 
                 <div class="flex flex-col md:flex-row gap-12 items-start">
-                    <!-- Profile Sidebar -->
                     <div class="w-full md:w-1/3">
                         <div class="glass p-2 rounded-3xl border-white/10 overflow-hidden sticky top-12">
                             <img src="https://hanroro.app/sample/images/IMG_9493.jpeg" alt="이은숙 변호사" class="w-full rounded-2xl">
@@ -221,7 +219,6 @@
                         </div>
                     </div>
                     
-                    <!-- Profile Main Content -->
                     <div class="w-full md:w-2/3 space-y-16">
                         <section>
                             <span class="profile-section-title">◇ 학력</span>
@@ -342,7 +339,7 @@
         </div>
     </div>
 
-    <!-- Admin Login Modal -->
+    <!-- 관리자 로그인 모달 -->
     <div id="adminModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAdminModal()"></div>
         <div class="relative glass w-full max-w-sm p-8 rounded-[2rem] border-white/10 shadow-2xl">
@@ -356,7 +353,7 @@
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!-- 상단 네비게이션 -->
     <nav class="nav-container fixed w-[90%] z-50 glass border-b-0 top-4 max-w-5xl left-1/2 -translate-x-1/2 rounded-2xl px-5 py-3 md:px-6 md:py-4 transition-all">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-2 md:space-x-2.5">
@@ -390,7 +387,7 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- 히어로 섹션 -->
     <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden section-px">
         <div class="hero-glow"></div>
         <div class="max-w-4xl mx-auto text-center z-10">
@@ -399,8 +396,8 @@
                 <span class="gradient-text">명쾌한 해답</span>으로
             </h1>
             <p class="text-sm md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed px-2">
-                이은숙 법률사무소는 현대적인 감각과 철저한 법리 분석을 바탕으로 <br class="hidden md:block">
-                의뢰인의 권익을 가장 진보된 방식으로 보호합니다.
+                의뢰인과의 소통을 매우 중요시하며, <br class="hidden md:block">
+                진심을 담은 열정적인 변론이 저의 가장 큰 장점입니다.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4 px-8 md:px-0">
                 <a href="tel:031-340-4036" class="bg-white text-black px-8 py-4 text-base md:text-lg font-bold rounded-2xl md:rounded-full hover:scale-105 transition-all text-center">
@@ -413,7 +410,7 @@
         </div>
     </section>
 
-    <!-- Lawyer Introduction (Preview) -->
+    <!-- 변호사 소개 섹션 -->
     <section id="intro" class="py-24 md:py-32 relative section-px">
         <div class="max-w-6xl mx-auto">
             <div class="intro-border-container p-8 md:p-16 bg-zinc-900/20 glass border-0">
@@ -422,18 +419,36 @@
                         <div class="relative group cursor-pointer" onclick="openLawyerProfile()">
                             <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-700"></div>
                             <div class="relative bg-zinc-800 aspect-[3/4] overflow-hidden rounded-3xl border border-white/10">
-                                 <img src="https://hanroro.app/sample/images/IMG_9493.jpeg" alt="변호사 이은숙" class="w-full h-full object-cover transition duration-700">
+                                 <img src="https://hanroro.app/sample/images/IMG_9493.jpeg" alt="변호사 이은숙" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                                 <!-- 사진 위 성함 표기 (영문에서 한국어로 변경) -->
+                                 <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
+                                     <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-1 opacity-80">Professional Attorney</p>
+                                     <p class="text-white font-bold text-xl tracking-tight">변호사 이은숙</p>
+                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="w-full md:w-7/12 text-center md:text-left">
                         <h3 class="text-indigo-400 font-semibold mb-4 tracking-widest uppercase text-xs md:text-sm">The Attorney</h3>
                         <h2 class="serif text-3xl md:text-5xl font-bold mb-6 md:mb-8">이은숙 변호사</h2>
-                        <p class="text-zinc-400 leading-relaxed mb-10 text-base md:text-lg font-light">
-                            "법률의 문턱은 낮아야 하고, 그 결과는 단단해야 합니다. <br class="hidden md:block">
-                            의뢰인의 삶이 다시 일상의 평온을 찾을 수 있도록, <br class="hidden md:block">
-                            가장 정교하고 진정성 있는 솔루션을 제공합니다."
-                        </p>
+                        
+                        <div class="text-zinc-300 leading-relaxed mb-10 text-base md:text-lg font-light space-y-4">
+                            <p>
+                                지역사회 등에서 다양한 분야의 위원활동을 하고 있으며, 
+                                이로 인한 경험을 바탕으로 
+                                의뢰인에게 좀 더 도움이 될 수 있는 
+                                해결책을 제공하고자 노력하고 있습니다.
+                            </p>
+                            <p>
+                                변호사인 제가 직접 의뢰인과 상담을 하고, 
+                                의뢰인과 소통하며, 
+                                서면작성 및 변호까지 직접 수행합니다.
+                            </p>
+                            <p class="font-bold text-white">
+                                힘든 순간, 당신의 편이 되어 드리겠습니다.<br>
+                                감사합니다.
+                            </p>
+                        </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-10">
                             <div class="glass p-6 rounded-2xl border-white/10 bg-white/[0.04]">
@@ -472,7 +487,7 @@
         </div>
     </section>
 
-    <!-- Expertise Section -->
+    <!-- 업무분야 섹션 -->
     <section id="expertise" class="py-24 md:py-32 bg-[#0d0d0d] section-px">
         <div class="max-w-7xl mx-auto text-center mb-16 md:mb-20">
             <h2 class="serif text-3xl md:text-4xl font-bold mb-4">전문 분야</h2>
@@ -512,13 +527,12 @@
         </div>
     </section>
 
-    <!-- Location Section (Updated with specific map image) -->
+    <!-- 오시는 길 섹션 -->
     <section id="location" class="py-28 md:py-40 relative overflow-hidden section-px">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none"></div>
         
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="flex flex-col lg:flex-row gap-16 lg:gap-24 items-stretch">
-                <!-- Text Area: Address Info -->
                 <div class="w-full lg:w-5/12">
                     <div class="h-full flex flex-col justify-center glass p-8 md:p-12 rounded-[2.5rem] border-white/5 bg-white/[0.02]">
                         <h2 class="serif text-4xl md:text-5xl font-bold mb-8 leading-[1.2]">
@@ -565,18 +579,14 @@
                     </div>
                 </div>
 
-                <!-- Map Area with specific image -->
                 <div class="w-full lg:w-7/12">
                     <div class="relative p-[1px] rounded-[2.5rem] bg-gradient-to-br from-indigo-500/30 via-white/10 to-transparent h-[450px] lg:h-full">
-                        <div class="bg-zinc-950/80 backdrop-blur-3xl rounded-[2.4rem] shadow-2xl h-full overflow-hidden relative group">
-                            <!-- Provided Map Image -->
+                        <div class="bg-zinc-950/80 backdrop-blur-3xl rounded-[2.4rem] shadow-2xl h-full overflow-hidden relative group cursor-pointer" onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0227.jpeg')">
                             <div class="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
                                 <img src="https://hanroro.app/sample/images/IMG_0227.jpeg" alt="이은숙 법률사무소 지도" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
-                                <!-- Subtle Gradient Overlay to blend with design -->
                                 <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/50"></div>
                             </div>
                             
-                            <!-- Visual Accent: Map Pin Overlay -->
                             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div class="relative">
                                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-indigo-500/20 rounded-full animate-pulse"></div>
@@ -589,7 +599,6 @@
                                 </div>
                             </div>
 
-                            <!-- Map Controls & Parking Info (Kept as requested) -->
                             <div class="absolute bottom-6 left-6 right-6">
                                 <div class="glass p-4 rounded-2xl bg-black/60 backdrop-blur-md flex justify-between items-center border-white/10">
                                     <div class="flex items-center gap-3">
@@ -599,7 +608,7 @@
                                         <p class="text-[11px] text-zinc-100 font-bold">건물 내 지하 주차장 이용 가능 (A.F.C 빌딩)</p>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0227.jpeg')" class="w-8 h-8 rounded-lg glass border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition">
+                                        <button class="w-8 h-8 rounded-lg glass border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition">
                                             <i class="fas fa-expand-alt text-[10px]"></i>
                                         </button>
                                     </div>
@@ -612,11 +621,10 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- 푸터 -->
     <footer class="py-20 bg-black border-t border-white/5 section-px">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col lg:flex-row justify-between items-start gap-12">
-                <!-- Branding & Terms -->
                 <div class="w-full lg:w-1/3">
                     <div class="flex items-center space-x-2.5 mb-6">
                         <i class="fas fa-balance-scale text-indigo-500 text-xl"></i>
@@ -634,7 +642,6 @@
                     </p>
                 </div>
 
-                <!-- Office Info -->
                 <div class="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4">
                     <div class="space-y-4">
                         <div class="info-item">
@@ -680,7 +687,6 @@
             }
         }
 
-        // Lawyer Profile Modal
         function openLawyerProfile() {
             const view = document.getElementById('lawyerProfileView');
             view.classList.add('active');
@@ -697,7 +703,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Image Zoom Functionality
         function openImageZoom(src) {
             const modal = document.getElementById('imageZoomModal');
             const img = document.getElementById('zoomedImage');
@@ -714,7 +719,6 @@
             }
         }
 
-        // Admin functionality
         function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
         function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
         
