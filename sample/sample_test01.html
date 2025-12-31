@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>이은숙 법률사무소</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Inter:wght@300;400;600;700&family=Pretendard:wght@300;400;600;700;800&display=swap');
+        
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #a1a1aa;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+
+        .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+        }
+
+        .intro-border-container {
+            position: relative;
+            padding: 1px;
+            background: linear-gradient(to right, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+            border-radius: 2rem;
+        }
+
+        @media (max-width: 380px) {
+            .hero-title { font-size: 2.25rem !important; }
+            .nav-container { width: 95% !important; padding: 0.75rem 1rem !important; }
+            .section-px { padding-left: 1.25rem; padding-right: 1.25rem; }
+            .logo-text { font-size: 1.1rem !important; }
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .input-dark {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .input-dark:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-gradient {
+            background: var(--accent-gradient);
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+
+        .btn-gradient:hover {
+            background-position: right center;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-gradient:active {
+            transform: scale(0.98);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+
+        .admin-only { display: none; }
+        body.is-admin .admin-only { display: block; }
+
+        #lawyerProfileView {
+            z-index: 110;
+        }
+        #lawyerProfileView.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .award-slot {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .award-slot:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .award-slot img {
+            transition: transform 0.5s ease;
+        }
+        .award-slot:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Image Zoom Modal Styles */
+        #imageZoomModal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #imageZoomModal.active img {
+            transform: scale(1);
+        }
+
+        .profile-section-title {
+            color: #818cf8;
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .portrait-mockup {
+            position: relative;
+            width: 100%;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #111;
+        }
+        .portrait-mockup img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        footer .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #71717a;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+        footer .footer-link {
+            transition: color 0.3s ease;
+        }
+        footer .footer-link:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Image Zoom Modal -->
+    <div id="imageZoomModal" class="fixed inset-0 z-[200] bg-black/95 opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center p-4 md:p-12" onclick="closeImageZoom()">
+        <button class="absolute top-6 right-6 text-white text-3xl hover:text-indigo-400 transition z-[210]">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="zoomedImage" src="" alt="확대 이미지" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-transform duration-500 scale-90" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Lawyer Detail Profile Modal -->
+    <div id="lawyerProfileView" class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto">
+        <div class="min-h-screen py-16 px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-12">
+                    <h2 class="serif text-3xl font-bold gradient-text">Attorney Profile</h2>
+                    <button onclick="closeLawyerProfile()" class="w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:bg-white/10 transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-12 items-start">
+                    <!-- Profile Sidebar -->
+                    <div class="w-full md:w-1/3">
+                        <div class="glass p-2 rounded-3xl border-white/10 overflow-hidden sticky top-12">
+                            <img src="https://hanroro.app/sample/images/IMG_9493.jpeg" alt="이은숙 변호사" class="w-full rounded-2xl">
+                        </div>
+                        <div class="mt-8 space-y-4">
+                            <div class="glass p-6 rounded-2xl">
+                                <p class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Position</p>
+                                <p class="text-white font-bold text-lg">대표변호사 이은숙</p>
+                            </div>
+                            <div class="glass p-6 rounded-2xl">
+                                <p class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Professional License</p>
+                                <p class="text-zinc-300 text-sm">형사법·가사법 전문변호사</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Main Content -->
+                    <div class="w-full md:w-2/3 space-y-16">
+                        <section>
+                            <span class="profile-section-title">◇ 학력</span>
+                            <ul class="space-y-4 text-zinc-300 text-base">
+                                <li class="flex items-center gap-3">
+                                    <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                                    <span>경북대학교 사법학과 졸업</span>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <span class="profile-section-title">◇ 경력</span>
+                            <div class="space-y-6">
+                                <ul class="space-y-4 text-zinc-300 text-base">
+                                    <li class="flex gap-4">
+                                        <span class="text-indigo-500 font-mono font-bold">01</span>
+                                        <p class="text-white font-bold">제47회 사법시험 합격 (2005년)</p>
+                                    </li>
+                                    <li class="flex gap-4">
+                                        <span class="text-indigo-500 font-mono font-bold">02</span>
+                                        <p class="text-white font-bold">사법연수원 제37기 수료</p>
+                                    </li>
+                                    <li class="flex gap-4 text-zinc-400">
+                                        <span class="text-zinc-600 font-mono font-bold">•</span>
+                                        <p>법무법인 승</p>
+                                    </li>
+                                    <li class="flex gap-4 text-zinc-400">
+                                        <span class="text-zinc-600 font-mono font-bold">•</span>
+                                        <p>안산지원 국선전담변호사</p>
+                                    </li>
+                                    <li class="flex gap-4 text-zinc-400">
+                                        <span class="text-zinc-600 font-mono font-bold">•</span>
+                                        <p>안양지원 국선전담변호사</p>
+                                    </li>
+                                    <li class="flex gap-4">
+                                        <span class="text-indigo-500 font-mono font-bold">현</span>
+                                        <p class="text-white font-bold">변호사 이은숙 법률사무소 대표변호사</p>
+                                    </li>
+                                </ul>
+                                
+                                <div class="mt-8 pt-6 border-t border-white/5 space-y-3">
+                                    <p class="text-indigo-400 font-semibold flex items-center gap-2">
+                                        <i class="fas fa-certificate text-xs"></i> 대한변호사협회 형사법 전문변호사 등록
+                                    </p>
+                                    <p class="text-indigo-400 font-semibold flex items-center gap-2">
+                                        <i class="fas fa-certificate text-xs"></i> 대한변호사협회 가사법 전문변호사 등록
+                                    </p>
+                                    <p class="text-white font-bold mt-4 px-4 py-3 bg-white/5 rounded-xl border border-white/10 inline-block">
+                                        <i class="fas fa-file-signature mr-2 text-indigo-400"></i> 형사사건 3,700여건 이상 수행
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="mb-4">
+                            <div class="portrait-mockup glass group cursor-pointer" onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0226.jpeg')">
+                                <img src="https://hanroro.app/sample/images/IMG_0226.jpeg" alt="이은숙 변호사 사진" class="transition-transform duration-700 group-hover:scale-[1.02]">
+                                <div class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+                                        <i class="fas fa-expand text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <span class="profile-section-title">◇ 수상</span>
+                            <div class="mb-8">
+                                <ul class="space-y-4 text-zinc-300 text-base">
+                                    <li class="flex items-start gap-3">
+                                        <span class="mt-1.5 w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                                        <span class="font-bold text-white">제58회 법의 날 대한변호사협회장 표창</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0223.png')" class="award-slot glass rounded-2xl aspect-[3/4.2] flex flex-col items-center justify-center border-white/5 relative group cursor-pointer overflow-hidden">
+                                    <img src="https://hanroro.app/sample/images/IMG_0223.png" alt="표창장 01" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0224.jpeg')" class="award-slot glass rounded-2xl aspect-[3/4.2] flex flex-col items-center justify-center border-white/5 relative group cursor-pointer overflow-hidden">
+                                    <img src="https://hanroro.app/sample/images/IMG_0224.jpeg" alt="표창장 02" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0225.jpeg')" class="award-slot glass rounded-2xl aspect-[3/4.2] flex flex-col items-center justify-center border-white/5 relative group cursor-pointer overflow-hidden">
+                                    <img src="https://hanroro.app/sample/images/IMG_0225.jpeg" alt="표창장 03" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <span class="profile-section-title">◇ 주요 현직 및 대외 활동</span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-zinc-400 text-[13px] leading-relaxed">
+                                <p>• 대한변호사협회 법관평가특별위원회 위원</p>
+                                <p>• 안양동안 / 과천 / 의왕경찰서 경미범죄심사위원</p>
+                                <p>• 수원고등검찰청 보통징계위원회 위원</p>
+                                <p>• 안양시 공직자윤리위원회 위원</p>
+                                <p>• 군포시 감사자문위원회 위원</p>
+                                <p>• 공무원연금관리공단 정보공개심의회 위원</p>
+                                <p>• 안양시 만안구 인사위원회 위원</p>
+                                <p>• 안양과천교육지원청 민원조정위원회 위원</p>
+                                <p>• 한국가정법률상담소 백인변호사단 변호사</p>
+                                <p>• 과천소방서 징계위원회 위원</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAdminModal()"></div>
+        <div class="relative glass w-full max-w-sm p-8 rounded-[2rem] border-white/10 shadow-2xl">
+            <h3 class="text-xl font-bold mb-6 text-center">관리자 로그인</h3>
+            <div class="space-y-4">
+                <input type="text" id="adminID" class="w-full input-dark p-4 rounded-xl text-sm" placeholder="아이디">
+                <input type="password" id="adminPW" class="w-full input-dark p-4 rounded-xl text-sm" placeholder="비밀번호">
+                <button onclick="attemptLogin()" class="btn-gradient w-full py-4 rounded-xl text-white font-bold shadow-lg">로그인</button>
+                <p id="loginError" class="text-red-400 text-[10px] text-center hidden">정보가 일치하지 않습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-container fixed w-[90%] z-50 glass border-b-0 top-4 max-w-5xl left-1/2 -translate-x-1/2 rounded-2xl px-5 py-3 md:px-6 md:py-4 transition-all">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2 md:space-x-2.5">
+                <div class="flex items-center justify-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i class="fas fa-balance-scale text-indigo-500 text-lg md:text-xl"></i>
+                </div>
+                <span class="logo-text text-lg md:text-xl font-bold tracking-tight cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="gradient-text">이은숙 법률사무소</span>
+                </span>
+            </div>
+            <div class="hidden md:flex space-x-8 items-center">
+                <button onclick="openLawyerProfile()" class="text-zinc-400 hover:text-white text-sm font-medium transition">변호사 소개</button>
+                <a href="#expertise" class="text-zinc-400 hover:text-white text-sm font-medium transition">업무분야</a>
+                <a href="#location" class="text-zinc-400 hover:text-white text-sm font-medium transition">오시는 길</a>
+                <button id="adminBtn" onclick="openAdminModal()" class="text-zinc-700 hover:text-zinc-500 text-[10px] transition uppercase tracking-tighter">Admin</button>
+                <a href="tel:031-340-4036" class="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition">
+                    전화 연결
+                </a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-white p-1" onclick="toggleMenu()">
+                    <i class="fas fa-bars text-lg" id="menuIcon"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden pt-4 pb-2 flex flex-col space-y-3">
+            <button onclick="openLawyerProfile(); toggleMenu();" class="text-zinc-300 py-2 border-b border-white/5 text-sm text-left px-2">변호사 상세 소개</button>
+            <a href="#expertise" onclick="toggleMenu()" class="text-zinc-300 py-2 border-b border-white/5 text-sm px-2">업무분야</a>
+            <a href="#location" onclick="toggleMenu()" class="text-zinc-300 py-2 border-b border-white/5 text-sm px-2">오시는 길</a>
+            <a href="tel:031-340-4036" class="btn-gradient text-white text-center py-3 rounded-xl font-bold text-sm shadow-lg mx-2">전화 바로 연결</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden section-px">
+        <div class="hero-glow"></div>
+        <div class="max-w-4xl mx-auto text-center z-10">
+            <h1 class="serif hero-title text-4xl md:text-7xl font-bold mb-6 md:mb-8 leading-[1.2] tracking-tight pt-12">
+                당신의 법률 고민,<br>
+                <span class="gradient-text">명쾌한 해답</span>으로
+            </h1>
+            <p class="text-sm md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed px-2">
+                이은숙 법률사무소는 현대적인 감각과 철저한 법리 분석을 바탕으로 <br class="hidden md:block">
+                의뢰인의 권익을 가장 진보된 방식으로 보호합니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 px-8 md:px-0">
+                <a href="tel:031-340-4036" class="bg-white text-black px-8 py-4 text-base md:text-lg font-bold rounded-2xl md:rounded-full hover:scale-105 transition-all text-center">
+                    전화 상담하기
+                </a>
+                <a href="#expertise" class="glass text-white px-8 py-4 text-base md:text-lg font-bold rounded-2xl md:rounded-full hover:bg-white/10 transition-all">
+                    업무분야 보기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lawyer Introduction (Preview) -->
+    <section id="intro" class="py-24 md:py-32 relative section-px">
+        <div class="max-w-6xl mx-auto">
+            <div class="intro-border-container p-8 md:p-16 bg-zinc-900/20 glass border-0">
+                <div class="flex flex-col md:flex-row items-center gap-12 md:gap-20">
+                    <div class="w-full md:w-5/12 max-w-sm mx-auto md:mx-0">
+                        <div class="relative group cursor-pointer" onclick="openLawyerProfile()">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-700"></div>
+                            <div class="relative bg-zinc-800 aspect-[3/4] overflow-hidden rounded-3xl border border-white/10">
+                                 <img src="https://hanroro.app/sample/images/IMG_9493.jpeg" alt="변호사 이은숙" class="w-full h-full object-cover transition duration-700">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-7/12 text-center md:text-left">
+                        <h3 class="text-indigo-400 font-semibold mb-4 tracking-widest uppercase text-xs md:text-sm">The Attorney</h3>
+                        <h2 class="serif text-3xl md:text-5xl font-bold mb-6 md:mb-8">이은숙 변호사</h2>
+                        <p class="text-zinc-400 leading-relaxed mb-10 text-base md:text-lg font-light">
+                            "법률의 문턱은 낮아야 하고, 그 결과는 단단해야 합니다. <br class="hidden md:block">
+                            의뢰인의 삶이 다시 일상의 평온을 찾을 수 있도록, <br class="hidden md:block">
+                            가장 정교하고 진정성 있는 솔루션을 제공합니다."
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-10">
+                            <div class="glass p-6 rounded-2xl border-white/10 bg-white/[0.04]">
+                                <h4 class="font-extrabold text-white mb-3 text-sm flex items-center gap-2">
+                                    <span class="w-1 h-3 bg-indigo-500 rounded-full"></span>
+                                    전문 경력
+                                </h4>
+                                <ul class="text-zinc-200 space-y-2 text-[13px] font-semibold">
+                                    <li class="flex items-start gap-1.5"><span class="text-indigo-400">•</span> <span>제47회 사법시험 합격</span></li>
+                                    <li class="flex items-start gap-1.5"><span class="text-indigo-400">•</span> <span>형사법·가사법 전문변호사</span></li>
+                                    <li class="flex items-start gap-1.5"><span class="text-indigo-400">•</span> <span>안양지원 국선전담변호사</span></li>
+                                </ul>
+                            </div>
+                            <div class="glass p-6 rounded-2xl border-white/10 bg-white/[0.04]">
+                                <h4 class="font-extrabold text-white mb-3 text-sm flex items-center gap-2">
+                                    <span class="w-1 h-3 bg-purple-500 rounded-full"></span>
+                                    현직 활동
+                                </h4>
+                                <ul class="text-zinc-200 space-y-2 text-[13px] font-semibold">
+                                    <li class="flex items-start gap-1.5"><span class="text-purple-400">•</span> <span>대한변협 법관평가특별위원회 위원</span></li>
+                                    <li class="flex items-start gap-1.5"><span class="text-purple-400">•</span> <span>안양/과천/의왕 경미범죄심사위원</span></li>
+                                    <li class="flex items-start gap-1.5"><span class="text-purple-400">•</span> <span>안양시 공직자윤리위원회 위원</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center md:justify-start">
+                            <button onclick="openLawyerProfile()" class="group flex items-center gap-3 glass px-6 py-3.5 rounded-2xl border-white/10 hover:border-indigo-500/50 hover:bg-white/5 transition-all duration-300">
+                                <span class="text-sm font-bold text-zinc-300 group-hover:text-white">전체 주요 활동 및 프로필 보기</span>
+                                <i class="fas fa-chevron-right text-[10px] text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise" class="py-24 md:py-32 bg-[#0d0d0d] section-px">
+        <div class="max-w-7xl mx-auto text-center mb-16 md:mb-20">
+            <h2 class="serif text-3xl md:text-4xl font-bold mb-4">전문 분야</h2>
+            <p class="text-zinc-500 text-sm md:text-base">각 분야별 최적화된 대응팀이 최선의 결과를 보장합니다.</p>
+        </div>
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div class="glass p-8 md:p-12 rounded-[2rem] card-hover relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-gavel text-6xl"></i>
+                </div>
+                <h4 class="serif text-xl md:text-2xl font-bold mb-4">형사 사건</h4>
+                <p class="text-zinc-500 text-xs md:text-sm leading-relaxed mb-6">
+                    수사 단계부터 재판까지, 피의자의 권리를 최우선으로 보호하며 최선의 판결을 이끌어냅니다.
+                </p>
+                <div class="h-1 w-10 bg-indigo-500 rounded-full"></div>
+            </div>
+            <div class="glass p-8 md:p-12 rounded-[2rem] card-hover relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-balance-scale text-6xl"></i>
+                </div>
+                <h4 class="serif text-xl md:text-2xl font-bold mb-4">민사/기업</h4>
+                <p class="text-zinc-500 text-xs md:text-sm leading-relaxed mb-6">
+                    복잡한 손해배상, 금전 관계 및 기업 간 분쟁을 철저한 법리 분석을 통해 해결합니다.
+                </p>
+                <div class="h-1 w-10 bg-purple-500 rounded-full"></div>
+            </div>
+            <div class="glass p-8 md:p-12 rounded-[2rem] card-hover relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-heart text-6xl"></i>
+                </div>
+                <h4 class="serif text-xl md:text-2xl font-bold mb-4">이혼/가사</h4>
+                <p class="text-zinc-500 text-xs md:text-sm leading-relaxed mb-6">
+                    새로운 시작을 위한 정당한 권리, 재산 분할 및 양육권 등 가장 예민한 문제를 섬세하게 다룹니다.
+                </p>
+                <div class="h-1 w-10 bg-indigo-500 rounded-full"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section (Updated with specific map image) -->
+    <section id="location" class="py-28 md:py-40 relative overflow-hidden section-px">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16 lg:gap-24 items-stretch">
+                <!-- Text Area: Address Info -->
+                <div class="w-full lg:w-5/12">
+                    <div class="h-full flex flex-col justify-center glass p-8 md:p-12 rounded-[2.5rem] border-white/5 bg-white/[0.02]">
+                        <h2 class="serif text-4xl md:text-5xl font-bold mb-8 leading-[1.2]">
+                            찾아오시는 <span class="gradient-text">길</span>
+                        </h2>
+                        
+                        <div class="space-y-8">
+                            <div class="flex items-start gap-5">
+                                <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20 shrink-0">
+                                    <i class="fas fa-map-marker-alt text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-indigo-400/60 uppercase font-bold tracking-widest mb-1">Office Address</p>
+                                    <p class="text-white font-bold text-lg leading-relaxed">
+                                        경기도 안양시 동안구 시민대로 260,<br>
+                                        안양금융센터 A.F.C 907호
+                                    </p>
+                                    <p class="text-zinc-500 text-sm mt-2">안양시청 맞은편 위치</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-5">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20 shrink-0">
+                                    <i class="fas fa-subway text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-purple-400/60 uppercase font-bold tracking-widest mb-1">Public Transit</p>
+                                    <p class="text-white font-bold text-lg leading-relaxed">
+                                        지하철 4호선 평촌역 2번 출구
+                                    </p>
+                                    <p class="text-zinc-500 text-sm mt-2">도보 약 5분 소요 (직진 방향)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-10 mt-10 border-t border-white/5 grid grid-cols-2 gap-4">
+                            <a href="https://map.naver.com/v5/search/%EC%95%88%EC%96%91%EA%B8%88%EC%9C%B5%EC%84%BC%ED%84%B0" target="_blank" class="flex items-center justify-center gap-2 py-3 glass rounded-xl text-xs font-bold hover:bg-white/5 transition">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span> 네이버지도 연결
+                            </a>
+                            <a href="https://map.kakao.com/?q=%EC%95%88%EC%96%91%EA%B8%88%EC%9C%B5%EC%84%BC%ED%84%B0" target="_blank" class="flex items-center justify-center gap-2 py-3 glass rounded-xl text-xs font-bold hover:bg-white/5 transition">
+                                <span class="w-2 h-2 bg-yellow-500 rounded-full"></span> 카카오맵 연결
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Area with specific image -->
+                <div class="w-full lg:w-7/12">
+                    <div class="relative p-[1px] rounded-[2.5rem] bg-gradient-to-br from-indigo-500/30 via-white/10 to-transparent h-[450px] lg:h-full">
+                        <div class="bg-zinc-950/80 backdrop-blur-3xl rounded-[2.4rem] shadow-2xl h-full overflow-hidden relative group">
+                            <!-- Provided Map Image -->
+                            <div class="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
+                                <img src="https://hanroro.app/sample/images/IMG_0227.jpeg" alt="이은숙 법률사무소 지도" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                                <!-- Subtle Gradient Overlay to blend with design -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/50"></div>
+                            </div>
+                            
+                            <!-- Visual Accent: Map Pin Overlay -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="relative">
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-indigo-500/20 rounded-full animate-pulse"></div>
+                                    <div class="relative glass p-3 rounded-2xl border-indigo-500/50 shadow-2xl flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white">
+                                            <i class="fas fa-balance-scale text-xs"></i>
+                                        </div>
+                                        <p class="text-white font-bold text-xs pr-2">이은숙 법률사무소</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Map Controls & Parking Info (Kept as requested) -->
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <div class="glass p-4 rounded-2xl bg-black/60 backdrop-blur-md flex justify-between items-center border-white/10">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white text-xs">
+                                            <i class="fas fa-parking"></i>
+                                        </div>
+                                        <p class="text-[11px] text-zinc-100 font-bold">건물 내 지하 주차장 이용 가능 (A.F.C 빌딩)</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="openImageZoom('https://hanroro.app/sample/images/IMG_0227.jpeg')" class="w-8 h-8 rounded-lg glass border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition">
+                                            <i class="fas fa-expand-alt text-[10px]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 bg-black border-t border-white/5 section-px">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row justify-between items-start gap-12">
+                <!-- Branding & Terms -->
+                <div class="w-full lg:w-1/3">
+                    <div class="flex items-center space-x-2.5 mb-6">
+                        <i class="fas fa-balance-scale text-indigo-500 text-xl"></i>
+                        <span class="text-2xl font-bold gradient-text">변호사 이은숙 법률사무소</span>
+                    </div>
+                    <div class="flex gap-4 mb-8">
+                        <a href="#" class="footer-link text-[11px] text-zinc-500 font-bold uppercase tracking-wider">이용약관</a>
+                        <span class="text-zinc-800 text-[10px]">|</span>
+                        <a href="#" class="footer-link text-[11px] text-zinc-200 font-bold uppercase tracking-wider">개인정보처리방침</a>
+                        <span class="text-zinc-800 text-[10px]">|</span>
+                        <a href="#" class="footer-link text-[11px] text-zinc-500 font-bold uppercase tracking-wider">신고하기</a>
+                    </div>
+                    <p class="text-zinc-600 text-[10px] tracking-widest leading-relaxed">
+                        Copyright ⓒ 2025 변호사 이은숙 법률사무소 <br> All rights reserved.
+                    </p>
+                </div>
+
+                <!-- Office Info -->
+                <div class="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4">
+                    <div class="space-y-4">
+                        <div class="info-item">
+                            <i class="fas fa-user-tie w-4 text-zinc-600"></i>
+                            <span>대표변호사: 이은숙</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt w-4 text-zinc-600"></i>
+                            <span>경기도 안양시 동안구 시민대로 260, 907호 (관양동, 안양금융센터 A.F.C)</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-id-card w-4 text-zinc-600"></i>
+                            <span>사업자등록번호: 747-47-00685</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="info-item">
+                            <i class="fas fa-phone-alt w-4 text-zinc-600"></i>
+                            <span class="text-white font-bold">대표번호: 031-340-4036</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope w-4 text-zinc-600"></i>
+                            <span>이메일: leelawyer7@naver.com</span>
+                        </div>
+                        <div class="pt-4 md:pt-0">
+                            <button onclick="logout()" class="admin-only text-zinc-700 hover:text-red-400 text-[9px] uppercase tracking-tighter transition">Admin Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.classList.replace('fa-times', 'fa-bars');
+            } else {
+                icon.classList.replace('fa-bars', 'fa-times');
+            }
+        }
+
+        // Lawyer Profile Modal
+        function openLawyerProfile() {
+            const view = document.getElementById('lawyerProfileView');
+            view.classList.add('active');
+            view.style.opacity = '1';
+            view.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLawyerProfile() {
+            const view = document.getElementById('lawyerProfileView');
+            view.classList.remove('active');
+            view.style.opacity = '0';
+            view.style.pointerEvents = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Image Zoom Functionality
+        function openImageZoom(src) {
+            const modal = document.getElementById('imageZoomModal');
+            const img = document.getElementById('zoomedImage');
+            img.src = src;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageZoom() {
+            const modal = document.getElementById('imageZoomModal');
+            modal.classList.remove('active');
+            if (!document.getElementById('lawyerProfileView').classList.contains('active')) {
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Admin functionality
+        function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+        
+        function attemptLogin() {
+            const id = document.getElementById('adminID').value;
+            const pw = document.getElementById('adminPW').value;
+            if (id === "admin0000" && pw === "rhksflwk00@@") {
+                document.body.classList.add('is-admin');
+                closeAdminModal();
+                localStorage.setItem('lawyer_admin_session', 'true');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            document.body.classList.remove('is-admin');
+            localStorage.removeItem('lawyer_admin_session');
+        }
+
+        window.onload = () => {
+            if (localStorage.getItem('lawyer_admin_session') === 'true') {
+                document.body.classList.add('is-admin');
+            }
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeImageZoom();
+                closeLawyerProfile();
+            }
+        });
+    </script>
+</body>
+</html>
