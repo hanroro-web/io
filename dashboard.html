@@ -91,7 +91,7 @@
     <div id="admin-content">
         <header class="p-6 flex items-center justify-between border-b border-white/5 bg-black/40 sticky top-0 z-50 backdrop-blur-md safe-pt">
             <div>
-                <h1 class="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Management Console v4.8</h1>
+                <h1 class="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Management Console v4.9</h1>
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
                     <span class="text-lg font-bold">Admin Dashboard</span>
@@ -102,15 +102,41 @@
 
         <main class="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
             <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-white/5">
-                <button onclick="switchTab('popup')" class="tab-btn active" id="tab-popup">팝업/공지</button>
-                <button onclick="switchTab('quotes')" class="tab-btn" id="tab-quotes">견적 상담내역</button>
+                <button onclick="switchTab('quotes')" class="tab-btn active" id="tab-quotes">견적 상담내역</button>
+                <button onclick="switchTab('popup')" class="tab-btn" id="tab-popup">팝업/공지</button>
                 <button onclick="switchTab('projects')" class="tab-btn" id="tab-projects">프로젝트</button>
                 <button onclick="switchTab('finance')" class="tab-btn" id="tab-finance">입금현황</button>
                 <button onclick="switchTab('cases')" class="tab-btn" id="tab-cases">성공사례</button>
             </div>
 
+            <!-- 견적 상담내역 섹션 -->
+            <section id="sec-quotes" class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Consultation Requests</h3>
+                    <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Real-time Feed</div>
+                </div>
+                <div class="glass-card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-white/5 text-[10px] uppercase text-gray-500 font-black">
+                                <tr>
+                                    <th class="p-5">날짜</th>
+                                    <th class="p-5">고객명</th>
+                                    <th class="p-5">연락처</th>
+                                    <th class="p-5">유형</th>
+                                    <th class="p-5 text-right">상세</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-quote-list" class="divide-y divide-white/5">
+                                <!-- 데이터 렌더링 영역 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <!-- 팝업 및 공지사항 관리 섹션 -->
-            <section id="sec-popup" class="space-y-6">
+            <section id="sec-popup" class="hidden space-y-6">
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="glass-card p-6">
                         <h3 class="text-xs font-black uppercase text-purple-400 mb-6 italic">Top Popup</h3>
@@ -136,28 +162,6 @@
                         <button onclick="openModal('notice-modal')" class="text-[10px] font-bold bg-white/5 px-3 py-1 rounded-lg hover:bg-white/10">+ 공지 추가</button>
                     </div>
                     <div id="admin-notice-list" class="space-y-2"></div>
-                </div>
-            </section>
-
-            <!-- 견적 상담내역 섹션 -->
-            <section id="sec-quotes" class="hidden space-y-6">
-                <div class="glass-card overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-white/5 text-[10px] uppercase text-gray-500 font-black">
-                                <tr>
-                                    <th class="p-5">날짜</th>
-                                    <th class="p-5">고객/업체명</th>
-                                    <th class="p-5">연락처</th>
-                                    <th class="p-5">유형</th>
-                                    <th class="p-5 text-right">상세</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-quote-list" class="divide-y divide-white/5">
-                                <!-- 견적 데이터가 여기 렌더링됩니다 -->
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </section>
 
@@ -207,7 +211,7 @@
         </div>
     </div>
 
-    <!-- 기타 모달들 -->
+    <!-- 기타 모달 편집 레이어 -->
     <div id="notice-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">공지사항 편집</h3><div class="space-y-3"><input type="hidden" id="modal-notice-id"><input type="text" id="modal-notice-title" class="input-field" placeholder="공지 제목"><textarea id="modal-notice-content" class="input-field h-32" placeholder="공지 내용"></textarea><div class="flex gap-2 mt-4"><button onclick="closeModal('notice-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('notices')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
     <div id="project-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">프로젝트 편집</h3><div class="space-y-3"><input type="hidden" id="modal-project-id"><input type="text" id="modal-project-name" class="input-field" placeholder="프로젝트명"><input type="number" id="modal-project-progress" class="input-field" placeholder="진행률 %"><input type="text" id="modal-project-phase" class="input-field" placeholder="현재 단계"><div class="flex gap-2 mt-4"><button onclick="closeModal('project-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('projects')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
     <div id="deposit-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">입금현황 편집</h3><div class="space-y-3"><input type="hidden" id="modal-deposit-id"><input type="text" id="modal-deposit-name" class="input-field" placeholder="고객명"><input type="text" id="modal-deposit-amount" class="input-field" placeholder="금액"><select id="modal-deposit-status" class="input-field bg-black"><option value="waiting">입금 대기</option><option value="complete">입금 완료</option></select><div class="flex gap-2 mt-4"><button onclick="closeModal('deposit-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('deposits')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
@@ -234,6 +238,7 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
+        // 로그인 처리
         window.handleLogin = () => {
             const id = document.getElementById('admin-id').value;
             const pw = document.getElementById('admin-pw').value;
@@ -254,20 +259,21 @@
             try { await signInAnonymously(auth); initData(); } catch (error) { console.error("Auth Error:", error); }
         };
 
+        // 데이터 초기화 및 실시간 동기화 리스너 등록
         function initData() {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
+                    syncData('quotes', 'admin-quote-list', renderQuote);
                     syncData('projects', 'admin-project-list', renderProject);
                     syncData('deposits', 'admin-deposit-list', renderDeposit);
                     syncData('cases', 'admin-case-list', renderCase);
-                    syncData('quotes', 'admin-quote-list', renderQuote);
                     syncData('notices', 'admin-notice-list', renderNotice);
                     loadSettings();
                 }
             });
         }
 
-        // 실시간 동기화 개선 버전
+        // 실시간 데이터 동기화 함수
         function syncData(col, containerId, renderFn) {
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', col);
             
@@ -278,14 +284,14 @@
                 let docs = [];
                 snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
                 
-                // 시간 순 정렬
+                // 최신순 정렬 (updatedAt 기준)
                 docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
                 
                 if (docs.length === 0) {
                     if (containerId === 'admin-quote-list' || containerId === 'admin-deposit-list') {
-                        el.innerHTML = `<tr><td colspan="5" class="p-10 text-center text-gray-600">내역이 없습니다.</td></tr>`;
+                        el.innerHTML = `<tr><td colspan="5" class="p-10 text-center text-gray-600 text-xs italic">등록된 내역이 없습니다.</td></tr>`;
                     } else {
-                        el.innerHTML = `<p class="p-4 text-center text-gray-600 text-xs">데이터가 없습니다.</p>`;
+                        el.innerHTML = `<p class="p-4 text-center text-gray-600 text-[10px]">데이터가 없습니다.</p>`;
                     }
                 } else {
                     el.innerHTML = "";
@@ -300,7 +306,8 @@
             });
         }
 
-        // 렌더링: 견적 리스트 (tr 반환)
+        // --- 렌더링 함수군 ---
+
         function renderQuote(id, q) {
             const tr = document.createElement('tr'); 
             tr.className = "quote-row transition-colors cursor-pointer group border-b border-white/5";
@@ -311,7 +318,7 @@
                 <td class="p-5 text-xs font-bold text-white">${q.name || '미입력'}</td>
                 <td class="p-5 text-xs text-gray-400">${q.phone || '미입력'}</td>
                 <td class="p-5 text-[10px] text-purple-400 font-black uppercase">${Array.isArray(q.types) ? q.types.join(', ') : (q.type || 'N/A')}</td>
-                <td class="p-5 text-right"><i class="fas fa-search text-gray-600 group-hover:text-purple-400 transition-colors"></i></td>
+                <td class="p-5 text-right"><i class="fas fa-search text-gray-600 group-hover:text-purple-400 transition-all"></i></td>
             `;
             
             tr.onclick = () => viewQuoteDetail(id, q);
@@ -328,22 +335,42 @@
         function renderProject(id, p) {
             const d = document.createElement('div');
             d.className = "glass-card p-4 flex justify-between items-center";
-            d.innerHTML = `<div><h4 class="font-bold text-sm">${p.name || '-'}</h4><p class="text-[10px] text-purple-400 uppercase font-bold">${p.phase || '-'} (${p.progress || 0}%)</p></div><div class="flex gap-3"><button onclick="editProject('${id}', \`${encodeURIComponent(JSON.stringify(p))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('projects', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div>`;
+            d.innerHTML = `<div><h4 class="font-bold text-sm text-white">${p.name || '-'}</h4><p class="text-[10px] text-purple-400 uppercase font-bold tracking-widest">${p.phase || '-'} (${p.progress || 0}%)</p></div><div class="flex gap-3"><button onclick="editProject('${id}', \`${encodeURIComponent(JSON.stringify(p))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('projects', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div>`;
             return d;
         }
 
         function renderDeposit(id, d) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="p-5 text-xs text-white">${d.name || '-'}</td><td class="p-5 text-xs text-purple-400 font-bold">${d.amount || '-'}</td><td class="p-5"><span class="status-badge ${d.status === 'complete' ? 'status-complete' : 'status-waiting'}">${d.status === 'complete' ? 'COMPLETE' : 'WAITING'}</span></td><td class="p-5 text-right"><button onclick="editDeposit('${id}', \`${encodeURIComponent(JSON.stringify(d))}\`)" class="mr-3"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('deposits', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></td>`;
+            tr.innerHTML = `<td class="p-5 text-xs text-white font-bold">${d.name || '-'}</td><td class="p-5 text-xs text-purple-400 font-black">${d.amount || '-'}</td><td class="p-5"><span class="status-badge ${d.status === 'complete' ? 'status-complete' : 'status-waiting'}">${d.status === 'complete' ? 'COMPLETE' : 'WAITING'}</span></td><td class="p-5 text-right"><button onclick="editDeposit('${id}', \`${encodeURIComponent(JSON.stringify(d))}\`)" class="mr-3"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('deposits', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></td>`;
             return tr;
         }
 
         function renderCase(id, c) {
             const d = document.createElement('div');
-            d.className = "glass-card overflow-hidden";
-            d.innerHTML = `<div class="h-24 bg-black/40"><img src="${c.image || ''}" class="w-full h-full object-cover opacity-50"></div><div class="p-4 flex justify-between items-center"><h4 class="text-xs font-bold truncate pr-4">${c.title || '-'}</h4><div class="flex gap-2"><button onclick="editCase('${id}', \`${encodeURIComponent(JSON.stringify(c))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('cases', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div></div>`;
+            d.className = "glass-card overflow-hidden group";
+            d.innerHTML = `<div class="h-24 bg-black/40 overflow-hidden"><img src="${c.image || ''}" class="w-full h-full object-cover opacity-50 group-hover:scale-110 transition-transform duration-500"></div><div class="p-4 flex justify-between items-center"><h4 class="text-xs font-bold truncate pr-4 text-white">${c.title || '-'}</h4><div class="flex gap-2"><button onclick="editCase('${id}', \`${encodeURIComponent(JSON.stringify(c))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('cases', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div></div>`;
             return d;
         }
+
+        // --- 상세 보기 및 공통 액션 ---
+
+        window.viewQuoteDetail = (id, q) => {
+            const content = document.getElementById('quote-detail-content');
+            const dateStr = q.updatedAt ? new Date(q.updatedAt.seconds * 1000).toLocaleString() : 'N/A';
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">Customer Name</p><p class="text-white font-bold">${q.name || '미입력'}</p></div>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">Contact No.</p><p class="text-white font-bold">${q.phone || '미입력'}</p></div>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/5"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">Project Categories</p><p class="text-purple-400 font-bold">${Array.isArray(q.types) ? q.types.join(' / ') : (q.type || 'N/A')}</p></div>
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><p class="text-[9px] text-gray-500 uppercase font-black mb-1">Client Memo</p><p class="text-gray-300 leading-relaxed text-xs whitespace-pre-wrap">${q.memo || '남겨진 메모가 없습니다.'}</p></div>
+                    <div class="text-right text-[9px] text-gray-600 font-mono italic">Recorded at: ${dateStr}</div>
+                </div>
+            `;
+            document.getElementById('delete-quote-btn').onclick = () => deleteItem('quotes', id, 'quote-detail-modal');
+            openModal('quote-detail-modal');
+        };
 
         window.saveItem = async (col) => {
             const type = col === 'projects' ? 'project' : col === 'deposits' ? 'deposit' : col === 'notices' ? 'notice' : 'case';
@@ -373,11 +400,11 @@
                 if(id) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id), data);
                 else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', col), data);
                 closeModal(`${type}-modal`);
-            } catch (e) { alert('저장 실패: ' + e.message); }
+            } catch (e) { alert('저장 중 오류 발생: ' + e.message); }
         };
 
         window.deleteItem = async (col, id, modalToClose = null) => {
-            if(confirm('정말로 삭제하시겠습니까?')) {
+            if(confirm('이 항목을 영구적으로 삭제하시겠습니까?')) {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
                     if(modalToClose) closeModal(modalToClose);
@@ -385,24 +412,7 @@
             }
         };
 
-        window.viewQuoteDetail = (id, q) => {
-            const content = document.getElementById('quote-detail-content');
-            const dateStr = q.updatedAt ? new Date(q.updatedAt.seconds * 1000).toLocaleString() : 'N/A';
-            content.innerHTML = `
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Name</p><p class="text-white font-bold">${q.name || '미입력'}</p></div>
-                        <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Phone</p><p class="text-white font-bold">${q.phone || '미입력'}</p></div>
-                    </div>
-                    <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Project Types</p><p class="text-purple-400 font-bold">${Array.isArray(q.types) ? q.types.join(' / ') : (q.type || 'N/A')}</p></div>
-                    <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Memo</p><p class="text-gray-300 leading-relaxed whitespace-pre-wrap">${q.memo || '내용 없음'}</p></div>
-                    <div class="text-right text-[10px] text-gray-600 font-mono">Date: ${dateStr}</div>
-                </div>
-            `;
-            document.getElementById('delete-quote-btn').onclick = () => deleteItem('quotes', id, 'quote-detail-modal');
-            openModal('quote-detail-modal');
-        };
-
+        // 기타 설정 관리
         async function loadSettings() {
             ['topPopup', 'bottomPopup'].forEach(async (sid) => {
                 const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', sid));
@@ -422,9 +432,10 @@
                 updatedAt: serverTimestamp()
             };
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', docId), data);
-            alert('설정이 저장되었습니다.');
+            alert('설정값이 정상적으로 업데이트되었습니다.');
         };
 
+        // UI 유틸리티
         window.switchTab = (t) => {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -441,11 +452,13 @@
             inputs.forEach(i => i.value = "");
         };
 
+        // 편집 핸들러
         window.editProject = (id, enc) => { const p = JSON.parse(decodeURIComponent(enc)); openModal('project-modal'); document.getElementById('modal-project-id').value = id; document.getElementById('modal-project-name').value = p.name; document.getElementById('modal-project-progress').value = p.progress; document.getElementById('modal-project-phase').value = p.phase; };
         window.editDeposit = (id, enc) => { const d = JSON.parse(decodeURIComponent(enc)); openModal('deposit-modal'); document.getElementById('modal-deposit-id').value = id; document.getElementById('modal-deposit-name').value = d.name; document.getElementById('modal-deposit-amount').value = d.amount; document.getElementById('modal-deposit-status').value = d.status; };
         window.editCase = (id, enc) => { const c = JSON.parse(decodeURIComponent(enc)); openModal('case-modal'); document.getElementById('modal-case-id').value = id; document.getElementById('modal-case-title').value = c.title; document.getElementById('modal-case-category').value = c.category; document.getElementById('modal-case-img').value = c.image; document.getElementById('modal-case-summary').value = c.summary; document.getElementById('modal-case-detail').value = c.detail; };
         window.editNotice = (id, enc) => { const n = JSON.parse(decodeURIComponent(enc)); openModal('notice-modal'); document.getElementById('modal-notice-id').value = id; document.getElementById('modal-notice-title').value = n.title; document.getElementById('modal-notice-content').value = n.content; };
 
+        // 초기 바인딩
         document.getElementById('login-btn').addEventListener('click', window.handleLogin);
         document.getElementById('logout-btn').addEventListener('click', window.logout);
         if (sessionStorage.getItem(AUTH_KEY) === 'TRUE') showDashboard();
