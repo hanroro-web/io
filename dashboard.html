@@ -130,15 +130,12 @@
                     </div>
                 </div>
 
-                <!-- 공지사항 리스트 섹션 -->
                 <div class="glass-card p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xs font-black uppercase text-purple-400 italic">Notice Management</h3>
                         <button onclick="openModal('notice-modal')" class="text-[10px] font-bold bg-white/5 px-3 py-1 rounded-lg hover:bg-white/10">+ 공지 추가</button>
                     </div>
-                    <div id="admin-notice-list" class="space-y-2">
-                        <!-- 공지사항 렌더링 영역 -->
-                    </div>
+                    <div id="admin-notice-list" class="space-y-2"></div>
                 </div>
             </section>
 
@@ -156,7 +153,9 @@
                                     <th class="p-5 text-right">상세</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-quote-list" class="divide-y divide-white/5"></tbody>
+                            <tbody id="admin-quote-list" class="divide-y divide-white/5">
+                                <!-- 견적 데이터가 여기 렌더링됩니다 -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -195,22 +194,6 @@
         </main>
     </div>
 
-    <!-- 모달: 공지사항 편집 -->
-    <div id="notice-modal" class="modal">
-        <div class="glass-card w-full max-w-md p-8 mx-4">
-            <h3 class="text-lg font-black mb-4">공지사항 편집</h3>
-            <div class="space-y-3">
-                <input type="hidden" id="modal-notice-id">
-                <input type="text" id="modal-notice-title" class="input-field" placeholder="공지 제목">
-                <textarea id="modal-notice-content" class="input-field h-32" placeholder="공지 내용"></textarea>
-                <div class="flex gap-2 mt-4">
-                    <button onclick="closeModal('notice-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button>
-                    <button onclick="saveItem('notices')" class="flex-1 btn-primary py-3 rounded-xl">저장</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- 모달: 견적 상세보기 -->
     <div id="quote-detail-modal" class="modal">
         <div class="glass-card w-full max-w-lg p-8 mx-4">
@@ -224,14 +207,15 @@
         </div>
     </div>
 
-    <!-- 모달: 프로젝트/입금/성공사례 편집 -->
+    <!-- 기타 모달들 -->
+    <div id="notice-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">공지사항 편집</h3><div class="space-y-3"><input type="hidden" id="modal-notice-id"><input type="text" id="modal-notice-title" class="input-field" placeholder="공지 제목"><textarea id="modal-notice-content" class="input-field h-32" placeholder="공지 내용"></textarea><div class="flex gap-2 mt-4"><button onclick="closeModal('notice-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('notices')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
     <div id="project-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">프로젝트 편집</h3><div class="space-y-3"><input type="hidden" id="modal-project-id"><input type="text" id="modal-project-name" class="input-field" placeholder="프로젝트명"><input type="number" id="modal-project-progress" class="input-field" placeholder="진행률 %"><input type="text" id="modal-project-phase" class="input-field" placeholder="현재 단계"><div class="flex gap-2 mt-4"><button onclick="closeModal('project-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('projects')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
     <div id="deposit-modal" class="modal"><div class="glass-card w-full max-w-md p-8 mx-4"><h3 class="text-lg font-black mb-4">입금현황 편집</h3><div class="space-y-3"><input type="hidden" id="modal-deposit-id"><input type="text" id="modal-deposit-name" class="input-field" placeholder="고객명"><input type="text" id="modal-deposit-amount" class="input-field" placeholder="금액"><select id="modal-deposit-status" class="input-field bg-black"><option value="waiting">입금 대기</option><option value="complete">입금 완료</option></select><div class="flex gap-2 mt-4"><button onclick="closeModal('deposit-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('deposits')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
     <div id="case-modal" class="modal"><div class="glass-card w-full max-w-xl p-8 mx-4 overflow-y-auto max-h-[90vh]"><h3 class="text-lg font-black mb-4">성공 사례 편집</h3><div class="space-y-3"><input type="hidden" id="modal-case-id"><input type="text" id="modal-case-title" class="input-field" placeholder="제목"><input type="text" id="modal-case-category" class="input-field" placeholder="카테고리"><input type="text" id="modal-case-img" class="input-field" placeholder="이미지 URL"><textarea id="modal-case-summary" class="input-field h-20" placeholder="요약"></textarea><textarea id="modal-case-detail" class="input-field h-32" placeholder="상세 내용"></textarea><div class="flex gap-2 mt-4"><button onclick="closeModal('case-modal')" class="flex-1 bg-white/5 py-3 rounded-xl">취소</button><button onclick="saveItem('cases')" class="flex-1 btn-primary py-3 rounded-xl">저장</button></div></div></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, getDoc, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const ADMIN_ID = 'hanroro';
@@ -250,7 +234,6 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        // 로그인 로직
         window.handleLogin = () => {
             const id = document.getElementById('admin-id').value;
             const pw = document.getElementById('admin-pw').value;
@@ -271,7 +254,6 @@
             try { await signInAnonymously(auth); initData(); } catch (error) { console.error("Auth Error:", error); }
         };
 
-        // 데이터 초기화
         function initData() {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
@@ -285,113 +267,84 @@
             });
         }
 
-        // 실시간 동기화 함수
+        // 실시간 동기화 개선 버전
         function syncData(col, containerId, renderFn) {
-            const q = collection(db, 'artifacts', appId, 'public', 'data', col);
-            onSnapshot(q, (snap) => {
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', col);
+            
+            onSnapshot(colRef, (snap) => {
                 const el = document.getElementById(containerId);
                 if (!el) return;
+                
                 let docs = [];
                 snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
                 
+                // 시간 순 정렬
                 docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
                 
                 if (docs.length === 0) {
-                    el.innerHTML = containerId.includes('list') && !containerId.includes('project') && !containerId.includes('notice') ? '<tr><td colspan="5" class="p-10 text-center text-gray-600">내역이 없습니다.</td></tr>' : '<p class="p-4 text-center text-gray-600 text-xs">데이터가 없습니다.</p>';
+                    if (containerId === 'admin-quote-list' || containerId === 'admin-deposit-list') {
+                        el.innerHTML = `<tr><td colspan="5" class="p-10 text-center text-gray-600">내역이 없습니다.</td></tr>`;
+                    } else {
+                        el.innerHTML = `<p class="p-4 text-center text-gray-600 text-xs">데이터가 없습니다.</p>`;
+                    }
                 } else {
                     el.innerHTML = "";
                     docs.forEach(data => {
                         const item = renderFn(data.id, data);
-                        if(item instanceof Node) el.appendChild(item);
+                        if (item instanceof Node) el.appendChild(item);
                         else el.insertAdjacentHTML('beforeend', item);
                     });
                 }
+            }, (err) => {
+                console.error(`Sync Error (${col}):`, err);
             });
         }
 
-        // 렌더링: 공지사항
-        function renderNotice(id, n) {
-            const d = document.createElement('div');
-            d.className = "flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-purple-500/20 transition-all group";
-            d.innerHTML = `
-                <div>
-                    <h4 class="text-sm font-bold text-white">${n.title || '-'}</h4>
-                    <p class="text-[10px] text-gray-500 mt-1 truncate max-w-[200px]">${n.content || '-'}</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="editNotice('${id}', \`${encodeURIComponent(JSON.stringify(n))}\`)"><i class="fas fa-edit text-gray-500 hover:text-purple-400 transition-colors"></i></button>
-                    <button onclick="deleteItem('notices', '${id}')"><i class="fas fa-trash text-red-900/40 hover:text-red-500 transition-colors"></i></button>
-                </div>
-            `;
-            return d;
-        }
-
-        // 렌더링: 견적
+        // 렌더링: 견적 리스트 (tr 반환)
         function renderQuote(id, q) {
             const tr = document.createElement('tr'); 
-            tr.className = "quote-row transition-colors cursor-pointer group";
-            const dateStr = q.updatedAt ? new Date(q.updatedAt.seconds * 1000).toLocaleDateString() : '-';
+            tr.className = "quote-row transition-colors cursor-pointer group border-b border-white/5";
+            const dateStr = q.updatedAt ? new Date(q.updatedAt.seconds * 1000).toLocaleDateString() : 'N/A';
+            
             tr.innerHTML = `
                 <td class="p-5 text-[11px] text-gray-500 font-mono">${dateStr}</td>
-                <td class="p-5 text-xs font-bold text-white">${q.name || '-'}</td>
-                <td class="p-5 text-xs text-gray-400">${q.phone || '-'}</td>
-                <td class="p-5 text-[10px] text-purple-400 font-black uppercase">${Array.isArray(q.types) ? q.types.join(', ') : (q.type || '-')}</td>
-                <td class="p-5 text-right"><i class="fas fa-search text-gray-600 group-hover:text-purple-400"></i></td>
+                <td class="p-5 text-xs font-bold text-white">${q.name || '미입력'}</td>
+                <td class="p-5 text-xs text-gray-400">${q.phone || '미입력'}</td>
+                <td class="p-5 text-[10px] text-purple-400 font-black uppercase">${Array.isArray(q.types) ? q.types.join(', ') : (q.type || 'N/A')}</td>
+                <td class="p-5 text-right"><i class="fas fa-search text-gray-600 group-hover:text-purple-400 transition-colors"></i></td>
             `;
+            
             tr.onclick = () => viewQuoteDetail(id, q);
             return tr;
         }
 
-        // 렌더링: 프로젝트
+        function renderNotice(id, n) {
+            const d = document.createElement('div');
+            d.className = "flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-purple-500/20 transition-all";
+            d.innerHTML = `<div><h4 class="text-sm font-bold text-white">${n.title || '-'}</h4><p class="text-[10px] text-gray-500 mt-1 truncate max-w-[200px]">${n.content || '-'}</p></div><div class="flex gap-3"><button onclick="editNotice('${id}', \`${encodeURIComponent(JSON.stringify(n))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('notices', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div>`;
+            return d;
+        }
+
         function renderProject(id, p) {
             const d = document.createElement('div');
             d.className = "glass-card p-4 flex justify-between items-center";
-            d.innerHTML = `
-                <div>
-                    <h4 class="font-bold text-sm">${p.name || '-'}</h4>
-                    <p class="text-[10px] text-purple-400 uppercase font-bold">${p.phase || '-'} (${p.progress || 0}%)</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="editProject('${id}', \`${encodeURIComponent(JSON.stringify(p))}\`)"><i class="fas fa-edit text-gray-500"></i></button>
-                    <button onclick="deleteItem('projects', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button>
-                </div>
-            `;
+            d.innerHTML = `<div><h4 class="font-bold text-sm">${p.name || '-'}</h4><p class="text-[10px] text-purple-400 uppercase font-bold">${p.phase || '-'} (${p.progress || 0}%)</p></div><div class="flex gap-3"><button onclick="editProject('${id}', \`${encodeURIComponent(JSON.stringify(p))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('projects', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div>`;
             return d;
         }
 
-        // 렌더링: 입금
         function renderDeposit(id, d) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="p-5 text-xs text-white">${d.name || '-'}</td>
-                <td class="p-5 text-xs text-purple-400 font-bold">${d.amount || '-'}</td>
-                <td class="p-5"><span class="status-badge ${d.status === 'complete' ? 'status-complete' : 'status-waiting'}">${d.status === 'complete' ? 'COMPLETE' : 'WAITING'}</span></td>
-                <td class="p-5 text-right">
-                    <button onclick="editDeposit('${id}', \`${encodeURIComponent(JSON.stringify(d))}\`)" class="mr-3"><i class="fas fa-edit text-gray-500"></i></button>
-                    <button onclick="deleteItem('deposits', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button>
-                </td>
-            `;
+            tr.innerHTML = `<td class="p-5 text-xs text-white">${d.name || '-'}</td><td class="p-5 text-xs text-purple-400 font-bold">${d.amount || '-'}</td><td class="p-5"><span class="status-badge ${d.status === 'complete' ? 'status-complete' : 'status-waiting'}">${d.status === 'complete' ? 'COMPLETE' : 'WAITING'}</span></td><td class="p-5 text-right"><button onclick="editDeposit('${id}', \`${encodeURIComponent(JSON.stringify(d))}\`)" class="mr-3"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('deposits', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></td>`;
             return tr;
         }
 
-        // 렌더링: 성공사례
         function renderCase(id, c) {
             const d = document.createElement('div');
             d.className = "glass-card overflow-hidden";
-            d.innerHTML = `
-                <div class="h-24 bg-black/40"><img src="${c.image || ''}" class="w-full h-full object-cover opacity-50"></div>
-                <div class="p-4 flex justify-between items-center">
-                    <h4 class="text-xs font-bold truncate pr-4">${c.title || '-'}</h4>
-                    <div class="flex gap-2">
-                        <button onclick="editCase('${id}', \`${encodeURIComponent(JSON.stringify(c))}\`)"><i class="fas fa-edit text-gray-500"></i></button>
-                        <button onclick="deleteItem('cases', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button>
-                    </div>
-                </div>
-            `;
+            d.innerHTML = `<div class="h-24 bg-black/40"><img src="${c.image || ''}" class="w-full h-full object-cover opacity-50"></div><div class="p-4 flex justify-between items-center"><h4 class="text-xs font-bold truncate pr-4">${c.title || '-'}</h4><div class="flex gap-2"><button onclick="editCase('${id}', \`${encodeURIComponent(JSON.stringify(c))}\`)"><i class="fas fa-edit text-gray-500"></i></button><button onclick="deleteItem('cases', '${id}')"><i class="fas fa-trash text-red-900/40"></i></button></div></div>`;
             return d;
         }
 
-        // 데이터 저장
         window.saveItem = async (col) => {
             const type = col === 'projects' ? 'project' : col === 'deposits' ? 'deposit' : col === 'notices' ? 'notice' : 'case';
             const id = document.getElementById(`modal-${type}-id`).value;
@@ -425,23 +378,24 @@
 
         window.deleteItem = async (col, id, modalToClose = null) => {
             if(confirm('정말로 삭제하시겠습니까?')) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
-                if(modalToClose) closeModal(modalToClose);
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+                    if(modalToClose) closeModal(modalToClose);
+                } catch(e) { alert('삭제 오류: ' + e.message); }
             }
         };
 
-        // 견적 상세보기 모달
         window.viewQuoteDetail = (id, q) => {
             const content = document.getElementById('quote-detail-content');
-            const dateStr = q.updatedAt ? new Date(q.updatedAt.seconds * 1000).toLocaleString() : '-';
+            const dateStr = q.updatedAt ? new Date(q.updatedAt.seconds * 1000).toLocaleString() : 'N/A';
             content.innerHTML = `
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Name</p><p class="text-white font-bold">${q.name || '-'}</p></div>
-                        <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Phone</p><p class="text-white font-bold">${q.phone || '-'}</p></div>
+                        <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Name</p><p class="text-white font-bold">${q.name || '미입력'}</p></div>
+                        <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Phone</p><p class="text-white font-bold">${q.phone || '미입력'}</p></div>
                     </div>
-                    <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Project Types</p><p class="text-purple-400 font-bold">${Array.isArray(q.types) ? q.types.join(' / ') : (q.type || '-')}</p></div>
-                    <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Memo</p><p class="text-gray-300 leading-relaxed">${q.memo || '내용 없음'}</p></div>
+                    <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Project Types</p><p class="text-purple-400 font-bold">${Array.isArray(q.types) ? q.types.join(' / ') : (q.type || 'N/A')}</p></div>
+                    <div class="bg-white/5 p-3 rounded-lg"><p class="text-[9px] text-gray-500 uppercase">Memo</p><p class="text-gray-300 leading-relaxed whitespace-pre-wrap">${q.memo || '내용 없음'}</p></div>
                     <div class="text-right text-[10px] text-gray-600 font-mono">Date: ${dateStr}</div>
                 </div>
             `;
@@ -449,7 +403,6 @@
             openModal('quote-detail-modal');
         };
 
-        // 설정 로드/업데이트
         async function loadSettings() {
             ['topPopup', 'bottomPopup'].forEach(async (sid) => {
                 const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', sid));
@@ -469,27 +422,25 @@
                 updatedAt: serverTimestamp()
             };
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', docId), data);
-            alert('저장되었습니다.');
+            alert('설정이 저장되었습니다.');
         };
 
-        // 유틸리티
         window.switchTab = (t) => {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`sec-${t}`).classList.remove('hidden');
             document.getElementById(`tab-${t}`).classList.add('active');
         };
+
         window.openModal = (id) => { document.getElementById(id).classList.add('active'); };
         window.closeModal = (id) => { 
             document.getElementById(id).classList.remove('active'); 
-            // 모달 닫을 때 ID 초기화
             const hid = document.querySelector(`#${id} input[type="hidden"]`);
             if(hid) hid.value = "";
             const inputs = document.querySelectorAll(`#${id} input:not([type="hidden"]), #${id} textarea`);
             inputs.forEach(i => i.value = "");
         };
 
-        // 수정 핸들러
         window.editProject = (id, enc) => { const p = JSON.parse(decodeURIComponent(enc)); openModal('project-modal'); document.getElementById('modal-project-id').value = id; document.getElementById('modal-project-name').value = p.name; document.getElementById('modal-project-progress').value = p.progress; document.getElementById('modal-project-phase').value = p.phase; };
         window.editDeposit = (id, enc) => { const d = JSON.parse(decodeURIComponent(enc)); openModal('deposit-modal'); document.getElementById('modal-deposit-id').value = id; document.getElementById('modal-deposit-name').value = d.name; document.getElementById('modal-deposit-amount').value = d.amount; document.getElementById('modal-deposit-status').value = d.status; };
         window.editCase = (id, enc) => { const c = JSON.parse(decodeURIComponent(enc)); openModal('case-modal'); document.getElementById('modal-case-id').value = id; document.getElementById('modal-case-title').value = c.title; document.getElementById('modal-case-category').value = c.category; document.getElementById('modal-case-img').value = c.image; document.getElementById('modal-case-summary').value = c.summary; document.getElementById('modal-case-detail').value = c.detail; };
