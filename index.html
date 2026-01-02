@@ -15,8 +15,29 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --vibe-deep: #05020a; --vibe-primary: #8a4fff; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--vibe-deep); color: #ffffff; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
         
+        /* 보안: 텍스트 선택 및 드래그 방지 */
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: var(--vibe-deep); 
+            color: #ffffff; 
+            scroll-behavior: smooth; 
+            -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* 이미지 드래그 방지 */
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
         /* UI Components */
         .glass-nav { background: rgba(5, 2, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .hero-gradient { background: radial-gradient(circle at 50% 50%, #150b2e 0%, #05020a 100%); }
@@ -103,6 +124,22 @@
         .social-btn { width: 40px; height: 40px; border-radius: 10px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: center; transition: all 0.3s; color: #9ca3af; }
         .social-btn:hover { background: #8a4fff; color: white; border-color: #8a4fff; transform: translateY(-3px); }
     </style>
+    <script>
+        // 우클릭 방지
+        document.oncontextmenu = function() { return false; };
+
+        // 개발자 도구 및 소스 보기 단축키 차단
+        document.onkeydown = function(e) {
+            // F12 차단
+            if (e.keyCode == 123) return false;
+            // Ctrl + Shift + I (개발자 도구)
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) return false;
+            // Ctrl + U (소스 보기)
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            // Ctrl + S (저장)
+            if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false;
+        };
+    </script>
 </head>
 <body class="overflow-x-hidden">
 
