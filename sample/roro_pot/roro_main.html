@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로로 법률 사무소</title>
+    <title>로로 법률 사무소 - 교통사고 전문 법률 서비스</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -18,6 +18,11 @@
             background-color: #fff;
             color: #333;
             padding-bottom: 80px;
+            /* 드래그 방지 CSS */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         .serif { font-family: 'Noto Serif KR', serif; }
         
@@ -50,38 +55,6 @@
             background: var(--gold-primary);
             width: 24px;
             border-radius: 4px;
-        }
-
-        .fixed-side-menu {
-            position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 320px;
-            background: #2A2A2A;
-            color: white;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            padding: 40px 30px;
-            border-left: 1px solid #333;
-        }
-
-        @media (max-width: 1280px) {
-            .fixed-side-menu { display: none; }
-            .main-content { margin-right: 0 !important; }
-        }
-
-        .input-dark {
-            background: transparent;
-            border-bottom: 1px solid #555;
-            width: 100%;
-            padding: 10px 0;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .input-dark:focus {
-            border-color: var(--gold-primary);
         }
 
         .btn-gold {
@@ -120,9 +93,32 @@
             border-radius: 8px;
             font-size: 14px;
             outline: none;
+            /* 입력창은 선택 가능하도록 예외 처리 */
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
         .sticky-input::placeholder { color: #666; }
         .sticky-input:focus { border-color: var(--gold-primary); }
+
+        /* Floating Menu Overlay Styles */
+        #mobile-menu-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #mobile-menu-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #mobile-menu-content {
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        #mobile-menu-overlay.open #mobile-menu-content {
+            transform: translateY(0);
+        }
 
         .case-card {
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -141,9 +137,67 @@
             background: var(--gold-primary);
             color: white;
         }
+        
+        /* 이미지 저장 방지 */
+        img {
+            -webkit-touch-callout: none;
+            -webkit-user-drag: none;
+        }
     </style>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-white text-gray-900" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+
+    <!-- Floating Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm">
+        <div id="mobile-menu-content" class="bg-[#1A1A1A] w-full max-h-[60vh] rounded-b-[3rem] shadow-2xl overflow-hidden">
+            <div class="max-w-7xl mx-auto px-8 py-12">
+                <div class="flex justify-between items-center mb-10">
+                    <div class="text-xl font-bold serif text-white">MENU</div>
+                    <button id="close-btn" onclick="toggleMenu()" class="p-2 text-white hover:text-[#C5A059]">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <nav class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+                    <a href="#home" onclick="toggleMenu()" class="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                        <span class="text-white/30 font-bold italic group-hover:text-[#C5A059]">01</span>
+                        <span class="text-xl font-bold serif text-white group-hover:translate-x-2 transition-transform">로로 소개</span>
+                    </a>
+                    <a href="#cases" onclick="toggleMenu()" class="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                        <span class="text-white/30 font-bold italic group-hover:text-[#C5A059]">02</span>
+                        <span class="text-xl font-bold serif text-white group-hover:translate-x-2 transition-transform">사고유형</span>
+                    </a>
+                    <a href="#lawyers" onclick="toggleMenu()" class="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                        <span class="text-white/30 font-bold italic group-hover:text-[#C5A059]">03</span>
+                        <span class="text-xl font-bold serif text-white group-hover:translate-x-2 transition-transform">변호사 소개</span>
+                    </a>
+                    <a href="#notice" onclick="toggleMenu()" class="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                        <span class="text-white/30 font-bold italic group-hover:text-[#C5A059]">04</span>
+                        <span class="text-xl font-bold serif text-white group-hover:translate-x-2 transition-transform">공지/자료</span>
+                    </a>
+                    <a href="#contact" onclick="toggleMenu()" class="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                        <span class="text-white/30 font-bold italic group-hover:text-[#C5A059]">05</span>
+                        <span class="text-xl font-bold serif text-white group-hover:translate-x-2 transition-transform">찾아오시는 길</span>
+                    </a>
+                </nav>
+                <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center space-x-6">
+                        <div class="text-left">
+                            <p class="text-[10px] text-[#C5A059] font-bold uppercase tracking-widest">Main Office</p>
+                            <p class="text-white text-sm">안양시 만안구 법조로 123</p>
+                        </div>
+                        <div class="w-px h-8 bg-white/10"></div>
+                        <div class="text-left">
+                            <p class="text-[10px] text-[#C5A059] font-bold uppercase tracking-widest">Direct Call</p>
+                            <p class="text-white text-sm font-bold">031-123-4567</p>
+                        </div>
+                    </div>
+                    <button class="btn-gold px-10 py-3 rounded-full text-sm font-bold shadow-xl shadow-[#C5A059]/20">카카오톡 실시간 문의</button>
+                </div>
+            </div>
+        </div>
+        <!-- Background Click to Close -->
+        <div class="flex-grow cursor-pointer" onclick="toggleMenu()"></div>
+    </div>
 
     <!-- Sticky Bottom Bar -->
     <div class="sticky-bottom-bar flex justify-center">
@@ -172,46 +226,9 @@
         </div>
     </div>
 
-    <!-- Fixed Right Side Menu -->
-    <aside class="fixed-side-menu hidden xl:flex">
-        <div class="mb-12 text-left">
-            <h2 class="text-xs tracking-[0.2em] font-bold text-gray-400 mb-8 uppercase">MENU</h2>
-            <nav class="space-y-6 text-sm font-medium">
-                <a href="#home" class="block hover:text-[#C5A059] transition-colors">로로 법률 사무소 소개</a>
-                <a href="#lawyers" class="block hover:text-[#C5A059] transition-colors">변호사 소개</a>
-                <a href="#notice" class="block hover:text-[#C5A059] transition-colors">공지/자료</a>
-                <a href="#contact" class="block hover:text-[#C5A059] transition-colors">찾아오시는 길</a>
-            </nav>
-        </div>
-
-        <div class="mt-auto text-left">
-            <h2 class="text-xs tracking-[0.2em] font-bold text-gray-400 mb-8 uppercase">빠른 상담 신청</h2>
-            <div class="space-y-6">
-                <div>
-                    <label class="text-[11px] text-gray-500 uppercase">Name</label>
-                    <input type="text" placeholder="성함" class="input-dark text-sm">
-                </div>
-                <div>
-                    <label class="text-[11px] text-gray-500 uppercase">Contact</label>
-                    <input type="tel" placeholder="연락처" class="input-dark text-sm">
-                </div>
-                <div class="flex items-center space-x-2 py-2">
-                    <input type="checkbox" id="agree" class="rounded border-gray-700 bg-transparent">
-                    <label for="agree" class="text-[10px] text-gray-500">개인정보 수집 및 이용에 동의합니다.</label>
-                </div>
-                <button class="w-full btn-gold py-4 rounded font-bold text-sm tracking-widest">상담 신청하기</button>
-            </div>
-            
-            <div class="mt-12 pt-12 border-t border-gray-800 text-left">
-                <p class="text-[11px] text-gray-500 mb-2 uppercase">대표 번호</p>
-                <p class="text-sm font-bold">031-123-4567</p>
-            </div>
-        </div>
-    </aside>
-
-    <div class="main-content xl:mr-[320px]">
+    <div class="main-content">
         <!-- Header -->
-        <header class="h-24 flex items-center justify-between px-10 absolute w-full z-50">
+        <header class="h-24 flex items-center justify-between px-6 md:px-12 absolute w-full z-50">
             <div class="flex items-center space-x-3">
                 <svg class="w-10 h-10 logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 3v17"></path>
@@ -227,14 +244,17 @@
                     로로 <span class="text-[#C5A059]">법률 사무소</span>
                 </div>
             </div>
-            <div class="flex items-center space-x-8">
-                <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-100">
-                    <a href="#home" class="hover:text-[#C5A059] transition-colors">로로 소개</a>
-                    <a href="#lawyers" class="hover:text-[#C5A059] transition-colors">변호사 소개</a>
-                    <a href="#notice" class="hover:text-[#C5A059] transition-colors">공지/자료</a>
-                    <a href="#contact" class="hover:text-[#C5A059] transition-colors">찾아오시는 길</a>
-                </nav>
-                <a href="tel:031-123-4567" class="btn-gold px-6 py-2 text-xs font-bold rounded">전화상담</a>
+            
+            <div class="flex items-center">
+                <!-- Hamburger Button -->
+                <button onclick="toggleMenu()" class="group flex items-center space-x-3 focus:outline-none">
+                    <span class="text-xs font-bold text-white/50 uppercase tracking-widest group-hover:text-white transition-colors">Menu</span>
+                    <div class="p-3 rounded-full bg-white/10 group-hover:bg-[#C5A059] transition-all duration-300">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </div>
+                </button>
             </div>
         </header>
 
@@ -289,123 +309,109 @@
                 <!-- Right: Hero Text -->
                 <div class="text-white text-left">
                     <h4 class="text-[#C5A059] font-bold tracking-widest mb-6 uppercase">Specialized in Traffic Accidents</h4>
-                    <h1 class="text-5xl md:text-6xl font-bold serif leading-tight mb-8">
+                    <h1 class="text-5xl md:text-7xl font-bold serif leading-tight mb-8">
                         당신의 일상.<br>
                         로로 법률 사무소가<br>
                         보호합니다.
                     </h1>
                     <p class="text-gray-400 text-lg mb-12 max-w-md leading-relaxed">
-                        복잡한 교통사고 과실 비율부터 형사 합의까지,<br>
-                        의뢰인의 권익을 최우선으로 생각하는 로로의 전문 팀이 함께합니다.
+                        안양 지역 교통사고 전문 법률 상담.<br>
+                        복잡한 과실 비율부터 형사 합의까지,<br>
+                        의뢰인의 권익을 최우선으로 생각합니다.
                     </p>
                     <div class="flex space-x-4">
-                        <button class="btn-gold px-10 py-4 rounded font-bold shadow-xl shadow-[#C5A059]/30">전화 상담하기</button>
-                        <button class="bg-white/10 hover:bg-white/20 px-10 py-4 rounded font-bold transition-all border border-white/20">공지/자료 보기</button>
+                        <button class="btn-gold px-12 py-4 rounded font-bold shadow-xl shadow-[#C5A059]/30">무료 법률 상담</button>
+                        <button class="bg-white/10 hover:bg-white/20 px-12 py-4 rounded font-bold transition-all border border-white/20">사례 보기</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 사고 유형 전문 카드 섹션 -->
-        <section id="cases" class="py-24 bg-white">
+        <!-- Case Section -->
+        <section id="cases" class="py-32 bg-white">
             <div class="max-w-7xl mx-auto px-6">
-                <div class="text-center mb-20">
+                <div class="text-center mb-24">
                     <h4 class="text-[#C5A059] font-bold tracking-widest mb-4 uppercase text-sm">Case Expertise</h4>
-                    <h2 class="text-4xl font-bold serif leading-tight">로로 법률 사무소가 해결하는<br>사고 유형별 전문 솔루션</h2>
+                    <h2 class="text-4xl md:text-5xl font-bold serif leading-tight">로로 법률 사무소가 해결하는<br>사고 유형별 전문 솔루션</h2>
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="case-card bg-white p-10 rounded-3xl text-left">
-                        <div class="icon-box w-14 h-14 rounded-2xl flex items-center justify-center mb-8 text-[#C5A059]">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                    <div class="case-card bg-white p-12 rounded-3xl text-left">
+                        <div class="icon-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 text-[#C5A059]">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
                         </div>
-                        <h4 class="text-xl font-bold mb-4 serif">음주운전 및 위험운전</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                            단순 적발부터 인사 사고까지, 초기 대응이 처벌 수위를 결정합니다. 반성문, 탄원서 등 양형 자료를 철저히 준비하여 불이익을 최소화합니다.
+                        <h4 class="text-2xl font-bold mb-4 serif">음주운전 대응</h4>
+                        <p class="text-gray-500 leading-relaxed mb-6">
+                            단순 적발부터 인사 사고까지, 초기 대응이 처벌 수위를 결정합니다. 반성문, 탄원서 등 양형 자료를 철저히 준비합니다.
                         </p>
-                        <ul class="text-xs text-gray-400 space-y-2 mb-8">
-                            <li>• 면허 취소 행정 심판 대응</li>
-                            <li>• 구속 영장 실질 심사 방어</li>
-                            <li>• 피해자 합의 대행 및 조율</li>
-                        </ul>
                     </div>
 
-                    <div class="case-card bg-white p-10 rounded-3xl text-left">
-                        <div class="icon-box w-14 h-14 rounded-2xl flex items-center justify-center mb-8 text-[#C5A059]">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <div class="case-card bg-white p-12 rounded-3xl text-left">
+                        <div class="icon-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 text-[#C5A059]">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <h4 class="text-xl font-bold mb-4 serif">뺑소니 (도주치상)</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                            사고 인지 여부와 도주의 고의성을 정밀 분석합니다. 과학적 증거 분석을 통해 억울한 뺑소니 혐의를 벗을 수 있도록 조력합니다.
+                        <h4 class="text-2xl font-bold mb-4 serif">뺑소니 사고</h4>
+                        <p class="text-gray-500 leading-relaxed mb-6">
+                            사고 인지 여부와 도주의 고의성을 정밀 분석합니다. 과학적 증거 분석을 통해 억울한 혐의를 벗을 수 있도록 조력합니다.
                         </p>
-                        <ul class="text-xs text-gray-400 space-y-2 mb-8">
-                            <li>• 사고 당시 상황 재구성</li>
-                            <li>• 고의성 부존재 법리 입증</li>
-                            <li>• 수사 기관 조사 동행 및 대응</li>
-                        </ul>
                     </div>
 
-                    <div class="case-card bg-white p-10 rounded-3xl text-left">
-                        <div class="icon-box w-14 h-14 rounded-2xl flex items-center justify-center mb-8 text-[#C5A059]">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <div class="case-card bg-white p-12 rounded-3xl text-left">
+                        <div class="icon-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 text-[#C5A059]">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
-                        <h4 class="text-xl font-bold mb-4 serif">12대 중대과실 사고</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                            신호위반, 중앙선 침범 등 보험 가입 여부와 관계없이 형사 처벌 대상이 되는 사고를 전문 변호사가 직접 분석하여 방어권을 확보합니다.
+                        <h4 class="text-2xl font-bold mb-4 serif">12대 중대과실</h4>
+                        <p class="text-gray-500 leading-relaxed mb-6">
+                            신호위반, 중앙선 침범 등 보험 가입 여부와 관계없이 형사 처벌 대상이 되는 사고를 전문적으로 변호합니다.
                         </p>
-                        <ul class="text-xs text-gray-400 space-y-2 mb-8">
-                            <li>• 불가항력적 상황 증명</li>
-                            <li>• 과실 비율 재산정 및 항변</li>
-                            <li>• 검찰 단계 무혐의/기소유예 유도</li>
-                        </ul>
                     </div>
                 </div>
             </div>
         </section>
         
         <!-- Footer -->
-        <footer class="py-20 bg-[#1A1A1A] text-white border-t border-white/5 mb-16 md:mb-0">
+        <footer class="py-24 bg-[#1A1A1A] text-white border-t border-white/5">
             <div class="max-w-7xl mx-auto px-6 flex flex-col items-center">
-                <!-- Footer Logo Section -->
-                <div class="flex flex-col items-center mb-10 group text-center">
-                    <svg class="w-16 h-16 logo-icon mb-4 transition-transform group-hover:scale-110 duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 3v17"></path>
-                        <path d="M12 21a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"></path>
-                        <path d="M3 7h18"></path>
-                        <path d="M7 7c0 4 1 6 5 6s5-2 5-6"></path>
-                        <path d="M2 11c0 2.2 1.8 4 4 4s4-1.8 4-4"></path>
-                        <path d="M14 11c0 2.2 1.8 4 4 4s4-1.8 4-4"></path>
-                        <path d="M6 15v3"></path>
-                        <path d="M18 15v3"></path>
-                    </svg>
-                    <div class="text-3xl font-bold serif tracking-tighter">
+                <div class="flex flex-col items-center mb-12 group text-center">
+                    <div class="p-4 rounded-full border border-[#C5A059]/30 mb-6 group-hover:border-[#C5A059] transition-colors duration-500">
+                        <svg class="w-16 h-16 logo-icon transition-transform group-hover:rotate-12 duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3v17"></path>
+                            <path d="M12 21a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"></path>
+                            <path d="M3 7h18"></path>
+                            <path d="M7 7c0 4 1 6 5 6s5-2 5-6"></path>
+                            <path d="M2 11c0 2.2 1.8 4 4 4s4-1.8 4-4"></path>
+                            <path d="M14 11c0 2.2 1.8 4 4 4s4-1.8 4-4"></path>
+                            <path d="M6 15v3"></path>
+                            <path d="M18 15v3"></path>
+                        </svg>
+                    </div>
+                    <div class="text-4xl font-bold serif tracking-tighter">
                         로로 <span class="text-[#C5A059]">법률 사무소</span>
                     </div>
-                    <div class="w-12 h-0.5 bg-[#C5A059] mt-4"></div>
+                    <div class="w-16 h-1 bg-[#C5A059] mt-6"></div>
                 </div>
 
-                <!-- Footer Info Section -->
-                <div class="text-center space-y-3 text-gray-400">
-                    <p class="text-sm font-light tracking-wide">
+                <div class="text-center space-y-4 text-gray-400">
+                    <p class="text-base font-light tracking-wide flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         경기도 안양시 만안구 로로 법률 사무소
                     </p>
-                    <div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 pt-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-[10px] text-[#C5A059] font-bold uppercase tracking-widest">Tel</span>
-                            <span class="text-base font-bold text-gray-200">031-123-4567</span>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 pt-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs text-[#C5A059] font-bold uppercase tracking-[0.2em]">Call Center</span>
+                            <span class="text-xl font-bold text-gray-100">031-123-4567</span>
                         </div>
-                        <div class="hidden md:block w-px h-3 bg-gray-700"></div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-[10px] text-[#C5A059] font-bold uppercase tracking-widest">Fax</span>
-                            <span class="text-base font-bold text-gray-200">031-123-4568</span>
+                        <div class="hidden md:block w-px h-4 bg-white/10"></div>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs text-[#C5A059] font-bold uppercase tracking-[0.2em]">Fax</span>
+                            <span class="text-xl font-bold text-gray-100">031-123-4568</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Copyright -->
-                <div class="mt-16 pt-8 border-t border-white/5 w-full text-center">
-                    <p class="text-[11px] text-gray-600 font-medium uppercase tracking-widest">
-                        &copy; 2026 법률사무소 로로. All rights reserved.
+                <div class="mt-20 pt-10 border-t border-white/5 w-full text-center">
+                    <p class="text-[11px] text-gray-600 font-medium uppercase tracking-[0.3em]">
+                        &copy; 2024 Law Office RORO. All rights reserved.
                     </p>
                 </div>
             </div>
@@ -413,6 +419,21 @@
     </div>
 
     <script>
+        // 소스 보기 방지 스크립트
+        document.addEventListener('keydown', function(e) {
+            // F12, Ctrl+Shift+I (개발자 도구), Ctrl+U (소스 보기) 방지
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        function toggleMenu() {
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const isOpen = overlay.classList.toggle('open');
+            document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+        }
+
         function updateStep(step) {
             const container = document.getElementById('diag-step-content');
             const dots = document.querySelectorAll('.dot');
