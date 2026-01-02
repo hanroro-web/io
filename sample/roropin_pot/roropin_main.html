@@ -1,1 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>로로핀 ROROPin - 실시간 발송 스토어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #000000;
+            color: #e8eaed;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            /* 텍스트 선택 방지 CSS */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* 전체 컨텐츠 최대 너비 설정 */
+        .content-container {
+            max-width: 1024px;
+            margin: 0 auto;
+        }
 
+        .nav-glass {
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 20%, rgba(1, 135, 95, 0.15) 0%, rgba(0, 0, 0, 0) 60%);
+        }
+
+        .card-item {
+            background: #121212;
+            position: relative;
+            border-radius: 20px;
+            padding: 3px; 
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .card-item::before {
+            content: "";
+            position: absolute;
+            inset: -50%; 
+            background: conic-gradient(
+                from 0deg,
+                transparent 0%,
+                #4285f4 15%, 
+                #34a853 30%, 
+                #fbbc05 45%, 
+                #ea4335 60%, 
+                #9b51e0 75%, 
+                transparent 100%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        @keyframes rotateNeon {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-item:hover::before, .card-item:active::before {
+            opacity: 1;
+            animation: rotateNeon 1.5s linear infinite;
+        }
+
+        .card-inner {
+            position: relative;
+            z-index: 1;
+            background: #121212;
+            border-radius: 17px;
+            padding: 12px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 실시간 구매현황판 너비 및 스타일 수정 */
+        .live-status-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px;
+            width: 256px; 
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .live-item {
+            animation: slideInDown 0.4s ease-out;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px 0;
+            margin-bottom: 4px;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        @media (min-width: 768px) {
+            .modal-overlay {
+                align-items: center;
+            }
+            .modal-content-box {
+                border-radius: 24px !important;
+                transform: none !important;
+                animation: zoomIn 0.3s ease-out;
+            }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(4deg); }
+            50% { transform: translateY(-10px) rotate(6deg); }
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #16181a 0%, #222224 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+        }
+
+        .bottom-notice-bar {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            margin-top: 16px;
+        }
+
+        ::-webkit-scrollbar { display: none; }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .modal-content-box {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        footer {
+            background-color: #0a0a0a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .notice-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .google-btn {
+            background: white;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            transition: background-color .2s, box-shadow .2s;
+        }
+        .google-btn:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+        }
+
+        /* 보안 경고 메시지 박스 */
+        #security-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(234, 67, 53, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeInOut 2.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            15% { opacity: 1; transform: translate(-50%, 0); }
+            85% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+    </style>
+</head>
+<body oncontextmenu="return showSecurityNotice(event)" onselectstart="return false" ondragstart="return false">
+
+    <!-- 보안 알림 토스트 -->
+    <div id="security-toast">보안 정책에 의해 우클릭 및 소스 보기가 금지되어 있습니다.</div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 nav-glass">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <svg width="24" height="24" viewBox="0 0 48 48">
+                    <path fill="#4285F4" d="M44.4 23.3L8.9 2.5C7.7 1.8 6.2 1.8 5 2.5L25.3 22.8l19.1 0.5z"/>
+                    <path fill="#34A853" d="M5 45.5c1.2 0.7 2.7 0.7 3.9 0L44.4 24.7l-19.1-0.5L5 45.5z"/>
+                    <path fill="#EA4335" d="M5 2.5C4.4 2.8 4 3.4 4 4.2v39.6c0 0.8 0.4 1.4 1 1.7L25.3 25.3 5 2.5z"/>
+                    <path fill="#FBBC05" d="M44.4 24.7c1.2-0.7 1.9-2 1.9-3.4s-0.7-2.7-1.9-3.4L44.4 18l-19.1 7.3 19.1-0.6z"/>
+                </svg>
+                <span class="text-lg font-bold tracking-tight">로로핀 <span class="text-[#01875f]">ROROPin</span></span>
+            </a>
+            <div class="flex items-center gap-4">
+                <button id="navLoginBtn" onclick="openLoginModal()" class="bg-[#01875f] text-white px-5 py-2 rounded-full text-xs font-bold transition-all hover:brightness-110 active:scale-95">로그인</button>
+                <div id="userProfile" class="hidden flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#4285f4] to-[#34a853] border border-white/20"></div>
+                    <span class="text-xs font-bold text-white" id="userNameDisplay">사용자님</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-16 hero-gradient overflow-hidden px-6">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center md:justify-center gap-10 md:gap-16">
+            <!-- Left: Text & Card -->
+            <div class="flex flex-col items-start gap-8 flex-1 max-w-lg">
+                <div class="space-y-3">
+                    <h1 class="text-3xl md:text-4xl font-bold leading-tight">
+                        즐거움의 시작,<br>
+                        <span class="text-white">기프트카드 발송</span>
+                    </h1>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed opacity-80">
+                        성함과 전화번호만으로 간편하게.<br>
+                        결제 즉시 코드가 문자로 도착합니다.
+                    </p>
+                </div>
+
+                <div class="relative flex justify-center items-center w-[120px]">
+                    <div class="absolute w-32 h-32 bg-[#01875f] rounded-full blur-[60px] opacity-20"></div>
+                    <div style="animation: float 5.5s ease-in-out infinite;" class="relative z-10 w-[110px] h-[165px] bg-gradient-to-br from-[#01875f] to-[#004d36] rounded-[20px] shadow-2xl border-2 border-white/10 p-5 flex flex-col justify-between">
+                        <svg width="24" height="24" viewBox="0 0 48 48">
+                            <path fill="#FFF" fill-opacity="0.9" d="M44.4 23.3L8.9 2.5C7.7 1.8 6.2 1.8 5 2.5L25.3 22.8l19.1 0.5z"/>
+                            <path fill="#FFF" fill-opacity="0.7" d="M5 45.5c1.2 0.7 2.7 0.7 3.9 0L44.4 24.7l-19.1-0.5L5 45.5z"/>
+                            <path fill="#FFF" fill-opacity="1" d="M5 2.5C4.4 2.8 4 3.4 4 4.2v39.6c0 0.8 0.4 1.4 1 1.7L25.3 25.3 5 2.5z"/>
+                            <path fill="#FFF" fill-opacity="0.8" d="M44.4 24.7c1.2-0.7 1.9-2 1.9-3.4s-0.7-2.7-1.9-3.4L44.4 18l-19.1 7.3 19.1-0.6z"/>
+                        </svg>
+                        <div class="space-y-2">
+                            <div class="h-1 w-8 bg-white/20 rounded-full"></div>
+                            <div class="text-[14px] font-black text-white tracking-tighter">₩ 50,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Live Feed -->
+            <div class="live-status-container shadow-2xl shrink-0">
+                <div class="flex items-center gap-1.5 mb-4 shrink-0">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#01875f] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#01875f]"></span>
+                    </span>
+                    <span class="text-[11px] font-bold text-gray-300 uppercase tracking-tight">실시간 구매현황</span>
+                </div>
+                <div id="live-feed" class="flex-1 overflow-hidden space-y-2"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-container">
+        <main class="px-6">
+            <!-- 안내 배너 -->
+            <section class="mb-12">
+                <div class="info-banner p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#01875f]/20 p-2 rounded-lg">
+                            <svg width="20" height="20" fill="#01875f" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-sm md:text-base font-bold">기프트카드 이용 안내</h3>
+                            <p class="text-[11px] md:text-xs text-gray-400">결제 즉시 LMS 발송 시스템 가동 중</p>
+                        </div>
+                    </div>
+                    <ul class="flex flex-col md:flex-row gap-2 md:gap-6 text-[11px] md:text-xs text-gray-400">
+                        <li class="flex items-center gap-1.5"><span class="text-[#01875f]">•</span> 모든 콘텐츠 결제 가능</li>
+                        <li class="flex items-center gap-1.5"><span class="text-[#01875f]">•</span> 유효기간 발행일로부터 5년</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 상품 그리드 -->
+            <h2 class="text-2xl font-bold mb-8 px-1">기프트코드 선택</h2>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"></div>
+
+            <!-- 공지사항 섹션 -->
+            <h2 class="text-xl font-bold mb-6 px-1">공지사항 및 안내</h2>
+            <section class="notice-section p-8 mb-16">
+                <div class="flex items-center gap-2 mb-8 border-b border-white/5 pb-5">
+                    <svg width="20" height="20" fill="#9ca3af" viewBox="0 0 24 24"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 15H13V17H11V15ZM11 7H13V13H11V7Z"/></svg>
+                    <h3 class="text-gray-300 font-bold text-base tracking-tight">이용 전 필독사항</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <p class="text-xs font-bold text-[#01875f] uppercase">발송 시스템</p>
+                            <p class="text-xs text-gray-400 leading-relaxed">무통장 입금 확인은 시스템에서 24시간 자동 처리됩니다. 입금 후 약 1분 이내에 등록하신 번호로 기프트코드 LMS가 발송됩니다.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-xs font-bold text-[#01875f] uppercase">입금자명 일치</p>
+                            <p class="text-xs text-gray-400 leading-relaxed">주문서의 입금자명과 실제 송금 성함이 다를 경우 자동 발송이 지연될 수 있으니 반드시 성함을 확인해 주세요.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <p class="text-xs font-bold text-red-500/80 uppercase">환불 및 취소</p>
+                            <p class="text-xs text-gray-400 leading-relaxed">디지털 코드 상품 특성상 발송된 이후에는 상품 가치가 소멸되어 교환 및 환불이 어렵습니다. 번호 입력 시 오타가 없는지 확인 바랍니다.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-xs font-bold text-[#01875f] uppercase">고객 센터</p>
+                            <p class="text-xs text-gray-400 leading-relaxed">카카오톡 [기프트코드스토어] 채널을 통해 365일 실시간 상담을 지원합니다. (09:00 - 24:00)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-notice-bar mt-10">
+                    <p class="text-[11px] font-bold text-white/90 flex items-center gap-3">
+                        <span class="bg-[#01875f] px-2 py-0.5 rounded text-[9px] border border-white/10 uppercase tracking-wider">Update</span>
+                        현재 실시간 자동발송 시스템 정상 작동 중입니다.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="pb-16 pt-12 px-8">
+            <div class="max-w-5xl mx-auto space-y-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="flex items-center gap-3 opacity-60">
+                        <svg width="24" height="24" viewBox="0 0 48 48"><path fill="#FFF" d="M44.4 23.3L8.9 2.5C7.7 1.8 6.2 1.8 5 2.5L25.3 22.8l19.1 0.5z"/></svg>
+                        <span class="text-sm font-bold tracking-tight text-white">Google Play 파트너 리셀러</span>
+                    </div>
+                    <div class="flex gap-6 text-xs text-gray-500 font-bold">
+                        <a href="#" class="hover:text-white transition-colors">이용약관</a>
+                        <a href="#" class="hover:text-white transition-colors">개인정보처리방침</a>
+                        <a href="#" class="hover:text-white transition-colors">이용문의</a>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-[11px] text-gray-500 leading-relaxed font-medium">
+                    <div class="space-y-2">
+                        <p class="text-gray-400 font-bold">상호명: 한로로 로로핀코드 | 대표자: 한로로</p>
+                        <p>사업자번호: 123-45-67890 | 통신판매업: 제 2026-서울강남-1234호</p>
+                        <p>주소: 서울특별시 강남구 테헤란로 123 | 고객센터: 1588-0000</p>
+                    </div>
+                    <div class="md:text-right flex flex-col justify-end space-y-2">
+                        <p>© 2026 ROROPin Code Store. All Rights Reserved.</p>
+                        <p class="opacity-30">본 서비스는 구글 플레이의 공식 리셀러 정보를 제공합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="loginModal" class="modal-overlay" onclick="handleLoginOverlayClick(event)">
+        <div class="bg-white w-[90%] max-w-sm rounded-[24px] overflow-hidden shadow-2xl modal-content-box p-10">
+            <div class="text-center mb-10">
+                <svg class="mx-auto mb-6" width="56" height="56" viewBox="0 0 48 48">
+                    <path fill="#4285F4" d="M44.4 23.3L8.9 2.5C7.7 1.8 6.2 1.8 5 2.5L25.3 22.8l19.1 0.5z"/>
+                    <path fill="#34A853" d="M5 45.5c1.2 0.7 2.7 0.7 3.9 0L44.4 24.7l-19.1-0.5L5 45.5z"/>
+                    <path fill="#EA4335" d="M5 2.5C4.4 2.8 4 3.4 4 4.2v39.6c0 0.8 0.4 1.4 1 1.7L25.3 25.3 5 2.5z"/>
+                    <path fill="#FBBC05" d="M44.4 24.7c1.2-0.7 1.9-2 1.9-3.4s-0.7-2.7-1.9-3.4L44.4 18l-19.1 7.3 19.1-0.6z"/>
+                </svg>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">간편 로그인 및 가입</h3>
+                <p class="text-sm text-gray-500 leading-relaxed px-4">구매 내역을 확인하고 안전하게 관리하려면<br>Google 계정으로 로그인하세요.</p>
+            </div>
+            <button id="googleSignInBtn" onclick="simulateGoogleLogin()" class="google-btn w-full flex items-center justify-center gap-4 py-4 rounded-xl font-bold text-sm mb-6 active:scale-95 transition-all">
+                <svg width="20" height="20" viewBox="0 0 18 18">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.49h4.84c-.21 1.12-.84 2.07-1.79 2.7l2.85 2.21c1.67-1.53 2.64-3.79 2.64-6.56z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.85-2.21c-.79.53-1.8.85-3.11.85-2.39 0-4.41-1.61-5.14-3.78H.95v2.33C2.43 15.89 5.5 18 9 18z"/>
+                    <path fill="#FBBC05" d="M3.86 10.68c-.19-.53-.3-1.1-.3-1.68s.11-1.15.3-1.68V5.01H.95C.34 6.21 0 7.57 0 9s.34 2.79.95 3.99l2.91-2.31z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.47.89 11.43 0 9 0 5.5 0 2.43 2.11.95 5.01l2.91 2.31c.73-2.17 2.75-3.74 5.14-3.74z"/>
+                </svg>
+                Google 계정으로 시작하기
+            </button>
+            <button onclick="closeLoginModal()" class="w-full text-gray-400 text-xs font-bold hover:text-gray-600 transition-colors uppercase tracking-widest">Later</button>
+        </div>
+    </div>
+
+    <div id="buyModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="bg-[#1c1c1e] w-full md:max-w-md rounded-t-[32px] md:rounded-[32px] overflow-hidden border border-white/10 modal-content-box mx-auto">
+            <div class="w-12 h-1 bg-white/10 rounded-full mx-auto mt-4 mb-2 md:hidden"></div>
+            <div class="p-8">
+                <div class="flex items-center gap-5 mb-8 bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <div id="modalLogo" class="w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-2xl"></div>
+                    <div class="flex-1">
+                        <div class="text-[10px] font-bold text-[#01875f] uppercase tracking-widest mb-1">Google Play Gift Code</div>
+                        <h4 class="text-2xl font-black text-white leading-tight" id="modalPrice">₩ 0</h4>
+                        <p class="text-xs text-gray-500 mt-1">입금 확인 시 즉시 번호 발송</p>
+                    </div>
+                    <button onclick="closeModal()" class="self-start p-2 text-gray-500 hover:text-white transition-colors">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-8 text-xs text-white">
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 font-bold mb-1">유효기간</p>
+                        <p class="font-bold">발행일로부터 5년</p>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 font-bold mb-1">발송 방식</p>
+                        <p class="text-[#5bb98c] font-bold">LMS 자동발송</p>
+                    </div>
+                </div>
+                <div class="space-y-5 mb-10">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 ml-1 mb-2 block uppercase tracking-wide">입금자 성함</label>
+                        <input type="text" id="userName" placeholder="성함을 입력해주세요" class="w-full bg-[#2c2c2e] border border-white/5 rounded-xl px-5 py-4 text-sm text-white outline-none focus:ring-2 focus:ring-[#01875f] transition-all">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 ml-1 mb-2 block uppercase tracking-wide">수신 휴대폰 번호</label>
+                        <input type="tel" id="userPhone" placeholder="번호 입력 (- 제외)" class="w-full bg-[#2c2c2e] border border-white/5 rounded-xl px-5 py-4 text-sm text-white outline-none focus:ring-2 focus:ring-[#01875f] transition-all">
+                    </div>
+                </div>
+                <button onclick="handlePurchase()" id="purchaseBtn" class="w-full bg-[#01875f] text-white py-5 rounded-2xl font-bold text-lg shadow-2xl transition-all hover:brightness-110 active:scale-95">결제 신청하고 코드 받기</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="bankModal" class="modal-overlay" onclick="handleBankOverlayClick(event)">
+        <div class="bg-[#1c1c1e] w-full md:max-w-md rounded-t-[32px] md:rounded-[32px] overflow-hidden border border-white/10 modal-content-box mx-auto">
+            <div class="p-8">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-[#01875f]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg width="32" height="32" fill="#01875f" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">주문 접수 완료</h3>
+                    <p class="text-sm text-gray-400">아래 계좌로 입금 시 코드가 자동 발송됩니다.</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-2xl space-y-4 mb-8 border border-white/5">
+                    <div class="flex justify-between items-center"><span class="text-gray-500 text-xs">은행</span><span class="text-white text-sm font-bold">신한은행</span></div>
+                    <div class="flex justify-between items-center"><span class="text-gray-500 text-xs">계좌</span><span class="text-white text-sm font-bold tracking-tight">110-123-456789</span></div>
+                    <div class="flex justify-between items-center"><span class="text-gray-500 text-xs">예금주</span><span class="text-white text-sm font-bold">(주)기프트코드스토어</span></div>
+                    <div class="flex justify-between items-center pt-4 border-t border-white/10"><span class="text-gray-500 text-xs font-bold">입금 금액</span><span class="text-[#01875f] font-black text-xl" id="bankPrice">₩ 0</span></div>
+                </div>
+                <button onclick="closeBankModal()" class="w-full bg-[#3a3a3c] text-white py-5 rounded-2xl font-bold hover:bg-[#4a4a4c] transition-all active:scale-95">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 보안 기능: 우클릭 알림 및 차단
+        function showSecurityNotice(e) {
+            e.preventDefault();
+            const toast = document.getElementById('security-toast');
+            toast.style.display = 'block';
+            
+            // 애니메이션 재실행을 위해 클론 생성 또는 스타일 리셋
+            toast.style.animation = 'none';
+            toast.offsetHeight; /* 트리거 */
+            toast.style.animation = null;
+
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+            return false;
+        }
+
+        // 보안 기능: 키보드 단축키 차단 (F12, Ctrl+U, Ctrl+Shift+I 등)
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.keyCode === 123 || // F12
+                (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+                (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
+                (e.ctrlKey && e.shiftKey && e.keyCode === 67)    // Ctrl+Shift+C
+            ) {
+                showSecurityNotice(e);
+                return false;
+            }
+        });
+
+        // 상품 및 구매 현황 데이터
+        const products = [
+            { id: 1, amount: 10000, color: 'from-blue-600 to-blue-900' },
+            { id: 2, amount: 30000, color: 'from-orange-600 to-orange-900' },
+            { id: 3, amount: 50000, color: 'from-[#01875f] to-[#004d36]' },
+            { id: 4, amount: 100000, color: 'from-purple-600 to-purple-900' },
+            { id: 5, amount: 150000, color: 'from-slate-600 to-slate-900' },
+            { id: 6, amount: 200000, color: 'from-rose-600 to-rose-900' },
+            { id: 7, amount: 300000, color: 'from-indigo-600 to-indigo-900' },
+            { id: 8, amount: 500000, color: 'from-yellow-600 to-yellow-900' }
+        ];
+        const buyers = ["김*수", "이*희", "박*준", "최*아", "정*우", "유*진", "강*민", "한*성"];
+        const prices = [10000, 30000, 50000, 100000, 150000, 200000, 300000, 500000];
+        const playLogoSvg = `<svg width="32" height="32" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.4 23.3L8.9 2.5C7.7 1.8 6.2 1.8 5 2.5L25.3 22.8l19.1 0.5z"/><path fill="#34A853" d="M5 45.5c1.2 0.7 2.7 0.7 3.9 0L44.4 24.7l-19.1-0.5L5 45.5z"/><path fill="#EA4335" d="M5 2.5C4.4 2.8 4 3.4 4 4.2v39.6c0 0.8 0.4 1.4 1 1.7L25.3 25.3 5 2.5z"/><path fill="#FBBC05" d="M44.4 24.7c1.2-0.7 1.9-2 1.9-3.4s-0.7-2.7-1.9-3.4L44.4 18l-19.1 7.3 19.1-0.6z"/></svg>`;
+
+        function updateLiveFeed() {
+            const feed = document.getElementById('live-feed');
+            const b = buyers[Math.floor(Math.random() * buyers.length)];
+            const p = prices[Math.floor(Math.random() * prices.length)];
+            const item = document.createElement('div');
+            item.className = 'live-item';
+            item.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-[12px] text-gray-100 font-bold mb-0.5">${b}님</div>
+                        <div class="text-[11px] text-[#5bb98c] font-black">${p.toLocaleString()}원 결제 완료</div>
+                    </div>
+                    <div class="text-[9px] text-gray-600 font-bold uppercase mt-1">방금 전</div>
+                </div>
+            `;
+            feed.prepend(item);
+            if (feed.children.length > 6) feed.removeChild(feed.lastChild);
+        }
+
+        function init() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `<div class="card-item" onclick="openModal(${p.amount}, '${p.color}')"><div class="card-inner"><div class="aspect-square bg-gradient-to-br ${p.color} rounded-[16px] mb-4 flex items-center justify-center relative overflow-hidden group">${playLogoSvg}<div class="absolute bottom-3 text-[12px] font-black text-white">₩ ${p.amount.toLocaleString()}</div></div><div class="text-center"><h4 class="font-bold text-white text-[11px] md:text-xs truncate">Google Play 코드</h4><span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Auto LMS Delivery</span></div></div></div>`).join('');
+            for(let i=0; i<5; i++) updateLiveFeed();
+            setInterval(updateLiveFeed, 4000);
+        }
+
+        const modal = document.getElementById('buyModal');
+        const bankModal = document.getElementById('bankModal');
+        const loginModal = document.getElementById('loginModal');
+
+        function openModal(amount, colorClass) { 
+            document.getElementById('modalPrice').innerText = `₩ ${amount.toLocaleString()}`; 
+            document.getElementById('bankPrice').innerText = `₩ ${amount.toLocaleString()}`; 
+            const logo = document.getElementById('modalLogo'); 
+            logo.className = `w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br ${colorClass} shadow-2xl`; 
+            logo.innerHTML = playLogoSvg; 
+            modal.style.display = 'flex'; 
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+        function closeBankModal() { bankModal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+        function openLoginModal() { loginModal.style.display = 'flex'; }
+        function closeLoginModal() { loginModal.style.display = 'none'; }
+        function handleOverlayClick(e) { if (e.target === modal) closeModal(); }
+        function handleBankOverlayClick(e) { if (e.target === bankModal) closeBankModal(); }
+        function handleLoginOverlayClick(e) { if (e.target === loginModal) closeLoginModal(); }
+
+        function simulateGoogleLogin() { 
+            const btn = document.getElementById('googleSignInBtn'); 
+            btn.innerHTML = `연결 중...`; 
+            setTimeout(() => { 
+                closeLoginModal(); 
+                document.getElementById('navLoginBtn').classList.add('hidden'); 
+                document.getElementById('userProfile').classList.remove('hidden'); 
+                document.getElementById('userNameDisplay').innerText = "사용자님"; 
+            }, 1000); 
+        }
+
+        function handlePurchase() { 
+            const name = document.getElementById('userName').value; 
+            const phone = document.getElementById('userPhone').value; 
+            if(!name || !phone) return alert("필수 정보를 모두 입력해 주세요."); 
+            const btn = document.getElementById('purchaseBtn'); 
+            btn.innerText = '주문 생성 중...'; 
+            btn.disabled = true; 
+            setTimeout(() => { 
+                closeModal(); 
+                bankModal.style.display = 'flex'; 
+                btn.innerText = '결제 신청하고 코드 받기'; 
+                btn.disabled = false; 
+            }, 800); 
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
