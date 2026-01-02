@@ -378,6 +378,7 @@
         const types = ["랜딩페이지", "브랜드 사이트", "플랫폼", "쇼핑몰"];
         function showNotix() {
             const container = document.getElementById('notix-area');
+            if(!container) return;
             const name = names[Math.floor(Math.random() * names.length)];
             const type = types[Math.floor(Math.random() * types.length)];
             const div = document.createElement('div');
@@ -413,7 +414,7 @@
             } catch (err) { alert('오류가 발생했습니다.'); } finally { btn.disabled = false; btn.innerText = "신청 완료하기"; }
         });
 
-        // 포트폴리오 상세 팝업 오픈
+        // 포트폴리오 상세 팝업 오픈 (유형, 제목, 내용, 홈페이지주소URL 추가)
         window.openPortfolio = async (id) => {
             const detailContainer = document.getElementById('portfolio-detail-content');
             detailContainer.innerHTML = '<div class="p-20 text-center"><i class="fas fa-circle-notch fa-spin text-2xl text-purple-500"></i></div>';
@@ -424,34 +425,51 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     const iconClass = getIcon(data.category);
+                    const linkButton = data.link ? `
+                        <a href="${data.link}" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 text-white px-8 py-4 rounded-xl font-bold text-sm hover:bg-purple-500 transition-all">
+                            <i class="fas fa-external-link-alt text-[10px]"></i> 실시간 사이트 방문하기
+                        </a>
+                    ` : '';
+
                     detailContainer.innerHTML = `
-                        <div class="relative h-64 md:h-80 overflow-hidden">
-                            <img src="${data.imageUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f'}" class="w-full h-full object-cover">
+                        <div class="relative h-64 md:h-96 overflow-hidden">
+                            <img src="${data.imageUrl || data.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f'}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#0a0514] to-transparent"></div>
                         </div>
-                        <div class="p-8 md:p-12 -mt-16 relative z-10">
-                            <div class="flex items-center gap-3 mb-4">
+                        <div class="p-8 md:p-12 -mt-20 relative z-10">
+                            <div class="flex flex-wrap items-center gap-3 mb-6">
                                 <div class="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
                                     <i class="fas ${iconClass} text-purple-400"></i>
                                 </div>
-                                <span class="text-xs font-black text-purple-400 uppercase tracking-widest">${data.category || 'Portfolio'}</span>
+                                <span class="bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 px-3 py-1 rounded-md uppercase tracking-widest">
+                                    ${data.category || 'PROJECT'}
+                                </span>
                             </div>
-                            <h2 class="text-3xl font-black text-white mb-4">${data.title || '프로젝트명'}</h2>
-                            <p class="text-gray-400 text-sm leading-relaxed mb-10 whitespace-pre-wrap">${data.description || '상세 설명이 등록되지 않았습니다.'}</p>
+                            <h2 class="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">${data.title || '프로젝트명'}</h2>
                             
-                            <div class="grid grid-cols-2 gap-6 pt-10 border-t border-white/5">
-                                <div>
-                                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">클라이언트</h4>
-                                    <p class="text-white font-bold text-sm">${data.client || '비공개'}</p>
+                            <div class="prose prose-invert max-w-none">
+                                <p class="text-gray-400 text-base md:text-lg leading-relaxed mb-10 whitespace-pre-wrap">${data.description || data.summary || '상세 설명이 등록되지 않았습니다.'}</p>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 pt-10 border-t border-white/5">
+                                <div class="grid grid-cols-2 gap-8">
+                                    <div>
+                                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">클라이언트</h4>
+                                        <p class="text-white font-bold text-sm">${data.client || '비공개'}</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">카테고리</h4>
+                                        <p class="text-white font-bold text-sm">${data.category || '-'}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">수행 기간</h4>
-                                    <p class="text-white font-bold text-sm">${data.period || '-'}</p>
-                                </div>
+                                ${linkButton}
                             </div>
                         </div>`;
                 }
-            } catch (err) { detailContainer.innerHTML = '<p class="p-20 text-center text-red-500">데이터를 불러오지 못했습니다.</p>'; }
+            } catch (err) { 
+                console.error(err);
+                detailContainer.innerHTML = '<p class="p-20 text-center text-red-500">데이터를 불러오지 못했습니다.</p>'; 
+            }
         };
 
         // 데이터 동기화
@@ -468,11 +486,13 @@
                         mainHtml += `<div class="unified-card"><h4 class="font-bold text-white mb-2 truncate">${name}</h4><div class="flex justify-between text-[10px] text-purple-400 font-black mb-1"><span>${phase}</span><span>${progress}%</span></div><div class="gauge-container"><div class="gauge-bar" style="width: ${progress}%"></div></div></div>`;
                         modalHtml += `<div class="py-4 border-b border-white/5"><div class="flex justify-between items-center mb-2"><div><p class="text-xs font-bold text-white">${name}</p><p class="text-[9px] text-gray-500">${phase}</p></div><span class="text-[10px] font-black text-purple-400">${progress}%</span></div><div class="gauge-container !mt-0 !h-[4px]"><div class="gauge-bar" style="width: ${progress}%"></div></div></div>`;
                     });
-                    document.getElementById('main-project-list').innerHTML = mainHtml || '<p class="text-gray-600 py-10 text-center col-span-full">현재 진행 중인 프로젝트가 없습니다.</p>';
-                    document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-gray-600 py-10 text-center">진행 내역이 없습니다.</p>';
+                    const mList = document.getElementById('main-project-list');
+                    if(mList) mList.innerHTML = mainHtml || '<p class="text-gray-600 py-10 text-center col-span-full">현재 진행 중인 프로젝트가 없습니다.</p>';
+                    const modList = document.getElementById('modal-project-list');
+                    if(modList) modList.innerHTML = modalHtml || '<p class="text-gray-600 py-10 text-center">진행 내역이 없습니다.</p>';
                 }, (error) => console.error(error));
 
-                // 입금 현황 (Undefined 방지 처리)
+                // 입금 현황
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), (snap) => {
                     let html = '';
                     snap.forEach(doc => {
@@ -482,7 +502,8 @@
                         const isComp = d.status === 'complete';
                         html += `<div class="unified-card ${isComp ? '' : 'border-l-4 border-amber-500'}"><h4 class="font-bold text-white mb-2 truncate">${name}</h4><div class="flex justify-between items-center"><div class="flex flex-col"><span class="text-[10px] text-purple-300 font-black uppercase">${type}</span><span class="text-[11px] text-gray-400 font-bold mt-1">***원</span></div><span class="payment-badge ${isComp ? '' : 'waiting'}">${isComp ? '입금완료' : '입금대기'}</span></div></div>`;
                     });
-                    document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-600 py-10 text-center col-span-full">최근 입금 및 계약 현황이 없습니다.</p>';
+                    const pGrid = document.getElementById('payment-grid');
+                    if(pGrid) pGrid.innerHTML = html || '<p class="text-gray-600 py-10 text-center col-span-full">최근 입금 및 계약 현황이 없습니다.</p>';
                 }, (error) => console.error(error));
 
                 // 성공 사례 (Portfolio) 로드
@@ -493,7 +514,7 @@
                         const iconClass = getIcon(c.category);
                         html += `
                             <div class="case-card group" onclick="openPortfolio('${doc.id}')">
-                                <img src="${c.imageUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f'}" class="case-img" alt="사례">
+                                <img src="${c.imageUrl || c.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f'}" class="case-img" alt="사례">
                                 <div class="case-overlay"></div>
                                 <div class="relative z-10">
                                     <div class="type-icon-box"><i class="fas ${iconClass} text-purple-400 text-xs"></i></div>
@@ -503,17 +524,20 @@
                                 </div>
                             </div>`;
                     });
-                    document.getElementById('portfolio-grid').innerHTML = html || '<p class="text-gray-600 col-span-full py-10 text-center">등록된 성공 사례가 없습니다.</p>';
+                    const pfGrid = document.getElementById('portfolio-grid');
+                    if(pfGrid) pfGrid.innerHTML = html || '<p class="text-gray-600 col-span-full py-10 text-center">등록된 성공 사례가 없습니다.</p>';
                 }, (error) => console.error(error));
 
                 // 공지사항 로드
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), (snap) => {
                     const notices = []; snap.forEach(doc => notices.push(doc.data()));
+                    const nText = document.getElementById('footer-notice-text');
+                    if(!nText) return;
                     if(notices.length > 0) {
                         const latest = notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))[0];
-                        document.getElementById('footer-notice-text').innerText = latest.title || '새로운 공지사항이 없습니다.';
+                        nText.innerText = latest.title || '새로운 공지사항이 없습니다.';
                     } else {
-                        document.getElementById('footer-notice-text').innerText = '진행 중인 이벤트 및 공지사항이 없습니다.';
+                        nText.innerText = '진행 중인 이벤트 및 공지사항이 없습니다.';
                     }
                 }, (error) => console.error(error));
             } else { 
