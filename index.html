@@ -73,7 +73,41 @@
         .quote-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
         .quote-item.selected { background: rgba(138, 79, 255, 0.15); border-color: var(--vibe-primary); }
 
-        .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem; transition: all 0.4s; cursor: pointer; padding: 1.5rem; }
+        /* Unified Card Hover Effect */
+        .unified-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 1.5rem; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer; 
+            padding: 1.5rem; 
+            position: relative;
+            overflow: hidden;
+        }
+        .unified-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(138, 79, 255, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(138, 79, 255, 0.3);
+        }
+
+        /* Progress Gauge Styles */
+        .gauge-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .gauge-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8a4fff, #c084fc);
+            border-radius: 10px;
+            transition: width 1s ease-out;
+            box-shadow: 0 0 10px rgba(138, 79, 255, 0.4);
+        }
+
         .case-card { height: 320px; border-radius: 1.5rem; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.05); }
         .case-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: transform 0.5s ease; }
         .case-card:hover .case-img { transform: scale(1.05); }
@@ -231,7 +265,7 @@
                 </div>
             </div>
 
-            <!-- Restored Notice Banner -->
+            <!-- Notice Banner -->
             <div class="notice-banner">
                 <div class="flex items-center">
                     <span class="notice-tag">NOTICE</span>
@@ -439,8 +473,31 @@
                     let mainHtml = ''; let modalHtml = '';
                     snap.forEach(doc => {
                         const p = doc.data();
-                        mainHtml += `<div class="unified-card"><h4 class="font-bold text-white mb-2 truncate">${p.name || '프로젝트'}</h4><div class="flex justify-between text-[10px] text-purple-400 font-black"><span>${p.phase}</span><span>${p.progress}%</span></div></div>`;
-                        modalHtml += `<div class="py-3 border-b border-white/5 last:border-0 flex justify-between"><div><p class="text-xs font-bold text-white">${p.name}</p><p class="text-[9px] text-gray-500">${p.phase}</p></div><span class="text-[10px] font-black">${p.progress}%</span></div>`;
+                        const progress = p.progress || 0;
+                        mainHtml += `
+                            <div class="unified-card">
+                                <h4 class="font-bold text-white mb-2 truncate">${p.name || '프로젝트'}</h4>
+                                <div class="flex justify-between text-[10px] text-purple-400 font-black mb-1">
+                                    <span>${p.phase}</span>
+                                    <span>${progress}%</span>
+                                </div>
+                                <div class="gauge-container">
+                                    <div class="gauge-bar" style="width: ${progress}%"></div>
+                                </div>
+                            </div>`;
+                        modalHtml += `
+                            <div class="py-4 border-b border-white/5 last:border-0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-xs font-bold text-white">${p.name}</p>
+                                        <p class="text-[9px] text-gray-500">${p.phase}</p>
+                                    </div>
+                                    <span class="text-[10px] font-black text-purple-400">${progress}%</span>
+                                </div>
+                                <div class="gauge-container !mt-0 !h-[4px]">
+                                    <div class="gauge-bar" style="width: ${progress}%"></div>
+                                </div>
+                            </div>`;
                     });
                     document.getElementById('main-project-list').innerHTML = mainHtml;
                     document.getElementById('modal-project-list').innerHTML = modalHtml;
@@ -451,7 +508,20 @@
                     snap.forEach(doc => {
                         const d = doc.data();
                         const isComplete = d.status === 'complete';
-                        html += `<div class="unified-card ${isComplete ? '' : 'border-l-4 border-amber-500'}"><h4 class="font-bold text-white mb-2 truncate">${d.name}</h4><div class="flex justify-between items-center"><span class="text-[10px] text-purple-300 font-black uppercase">${d.type}</span><span class="payment-badge ${isComplete ? '' : 'waiting'}">${isComplete ? '입금완료' : '입금대기'}</span></div></div>`;
+                        // 입금액 마스킹 처리 (undefined 방지 및 ***원 표기)
+                        const amountStr = d.amount ? `***원` : `***원`;
+                        
+                        html += `
+                            <div class="unified-card ${isComplete ? '' : 'border-l-4 border-amber-500'}">
+                                <h4 class="font-bold text-white mb-2 truncate">${d.name || '미지정'}</h4>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex flex-col">
+                                        <span class="text-[10px] text-purple-300 font-black uppercase">${d.type || '계약'}</span>
+                                        <span class="text-[11px] text-gray-400 font-bold mt-1">${amountStr}</span>
+                                    </div>
+                                    <span class="payment-badge ${isComplete ? '' : 'waiting'}">${isComplete ? '입금완료' : '입금대기'}</span>
+                                </div>
+                            </div>`;
                     });
                     document.getElementById('payment-grid').innerHTML = html;
                 });
@@ -460,7 +530,6 @@
                     const notices = [];
                     snap.forEach(doc => notices.push(doc.data()));
                     if(notices.length > 0) {
-                        // 가장 최근 공지 하나만 표시
                         const latest = notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))[0];
                         document.getElementById('footer-notice-text').innerText = latest.title;
                     } else {
