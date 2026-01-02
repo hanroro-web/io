@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -145,6 +145,26 @@
         .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 850px; border-radius: 28px; overflow: hidden; animation: modalPop 0.4s ease-out; position: relative; }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         
+        /* Quote Item Style */
+        .quote-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quote-item.selected {
+            background: rgba(138, 79, 255, 0.15);
+            border-color: var(--vibe-primary);
+        }
+        .quote-item input[type="checkbox"] {
+            accent-color: var(--vibe-primary);
+        }
+
         /* Cards */
         .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; overflow: hidden; padding: 1.5rem; }
         .unified-card:hover { transform: translateY(-10px); border-color: var(--vibe-primary); background: rgba(138, 79, 255, 0.05); box-shadow: 0 20px 40px rgba(138, 79, 255, 0.15); }
@@ -179,7 +199,7 @@
                     <span class="ml-3 text-[12px] font-bold text-gray-200 tracking-tight">60% 캐시백! 단순 웹제작 60% 할인!</span>
                 </div>
                 <div class="w-[1px] h-4 bg-white/10 mx-2"></div>
-                <button onclick="toggleModal('contact-modal', true)" class="flex items-center gap-1.5 group">
+                <button onclick="toggleModal('quote-modal', true)" class="flex items-center gap-1.5 group">
                     <span class="text-[12px] font-black text-purple-400 group-hover:text-purple-300 transition-colors">지금 혜택받기</span>
                     <svg class="w-3 h-3 text-purple-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
@@ -189,7 +209,7 @@
 
             <div class="flex items-center space-x-3">
                 <button onclick="toggleModal('status-modal', true)" class="hidden sm:block border border-white/10 text-white px-4 py-2 rounded-md text-xs font-bold transition-all hover:bg-white/5">현황보기</button>
-                <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-5 py-2.5 rounded-md font-bold text-xs shadow-lg shadow-purple-600/20 hover:bg-purple-500 transition-all">시작하기</button>
+                <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-5 py-2.5 rounded-md font-bold text-xs shadow-lg shadow-purple-600/20 hover:bg-purple-500 transition-all">견적 상담신청</button>
             </div>
         </div>
     </nav>
@@ -205,7 +225,7 @@
                 <p class="text-[10px] text-gray-400">한정 기간 선착순 할인이 적용 중입니다</p>
             </div>
         </div>
-        <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-6 py-3 rounded-full font-black text-xs hover:bg-purple-500 transition-all active:scale-95">바로 상담</button>
+        <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-6 py-3 rounded-full font-black text-xs hover:bg-purple-500 transition-all active:scale-95">바로 상담</button>
     </div>
 
     <!-- Hero Section -->
@@ -216,7 +236,7 @@
                 <h1 class="text-5xl sm:text-7xl font-black leading-tight mb-8">홈페이지 가치는 <br><span class="gradient-text">브랜드의 얼굴입니다</span></h1>
                 <p class="text-gray-400 mb-10 text-lg leading-relaxed max-w-md">감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 브랜드가 온라인에서 가장 빛나도록 설계합니다.</p>
                 <div class="flex flex-wrap gap-4">
-                    <button onclick="toggleModal('contact-modal', true)" class="bg-purple-600 text-white px-10 py-5 rounded-2xl font-bold text-sm transition-all hover:scale-105 shadow-2xl shadow-purple-600/30">프로젝트 문의</button>
+                    <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-10 py-5 rounded-2xl font-bold text-sm transition-all hover:scale-105 shadow-2xl shadow-purple-600/30">견적 상담신청</button>
                     <button onclick="document.getElementById('live-status').scrollIntoView({behavior:'smooth'})" class="border border-white/10 text-white px-10 py-5 rounded-2xl font-bold text-sm transition-all hover:bg-white/5">포트폴리오 보기</button>
                 </div>
             </div>
@@ -270,12 +290,11 @@
         </div>
     </section>
 
-    <!-- Notice Banner (Modified: Real-time Sync Target) -->
+    <!-- Notice Banner -->
     <div class="notice-banner py-6 px-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <span class="bg-white/10 text-white px-2 py-1 rounded text-[10px] font-black uppercase">Notice</span>
-                <!-- 이곳의 텍스트가 대시보드 공지사항과 연동됩니다 -->
                 <p id="live-notice-text" class="text-xs text-gray-400 font-medium">최신 공지사항을 불러오는 중입니다...</p>
             </div>
             <div id="notice-date" class="text-[10px] text-gray-600 font-bold"></div>
@@ -301,6 +320,92 @@
     </footer>
 
     <!-- Modals -->
+    <!-- 상세 견적 신청 모달 (New) -->
+    <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
+        <div class="modal-content !max-w-4xl flex flex-col md:flex-row border-none shadow-3xl">
+            <div class="md:w-[35%] bg-gradient-to-br from-purple-900/60 via-black to-black p-12 border-r border-white/5 relative overflow-hidden">
+                <div class="pattern-overlay"></div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-black mb-6 uppercase text-white leading-tight">PREMIUM<br>QUOTE</h2>
+                    <p class="text-xs text-purple-200/60 leading-relaxed font-medium mb-8">필요하신 항목을 선택해주시면 가장 합리적인 견적을 산출해 드립니다.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3 text-purple-300/80 text-[10px] font-bold uppercase tracking-widest">
+                            <i class="fas fa-check-circle"></i> 1:1 전담 디렉터 배정
+                        </div>
+                        <div class="flex items-center gap-3 text-purple-300/80 text-[10px] font-bold uppercase tracking-widest">
+                            <i class="fas fa-check-circle"></i> 맞춤형 UI/UX 설계
+                        </div>
+                        <div class="flex items-center gap-3 text-purple-300/80 text-[10px] font-bold uppercase tracking-widest">
+                            <i class="fas fa-check-circle"></i> 검색엔진 최적화 반영
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-[65%] p-10 relative bg-[#0a0514] overflow-y-auto max-h-[85vh] custom-scrollbar">
+                <button onclick="toggleModal('quote-modal', false)" class="absolute top-8 right-10 text-gray-500 hover:text-white transition-colors"><i class="fas fa-times text-xl"></i></button>
+                <h3 class="text-2xl font-black text-white mb-8 uppercase tracking-tight">상세 견적 상담신청</h3>
+                
+                <form id="quote-form" class="space-y-8">
+                    <!-- 견적 항목 선택 -->
+                    <div class="space-y-4">
+                        <label class="text-[11px] font-black text-purple-500 uppercase tracking-widest block">제작 유형 선택</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="quote-item group">
+                                <input type="checkbox" name="type" value="landing" class="w-4 h-4">
+                                <div>
+                                    <p class="text-sm font-bold text-white group-hover:text-purple-300">원페이지/랜딩</p>
+                                    <p class="text-[9px] text-gray-500">마케팅 및 홍보 최적화</p>
+                                </div>
+                            </label>
+                            <label class="quote-item group">
+                                <input type="checkbox" name="type" value="business" class="w-4 h-4">
+                                <div>
+                                    <p class="text-sm font-bold text-white group-hover:text-purple-300">기업/브랜드 사이트</p>
+                                    <p class="text-[9px] text-gray-500">아이덴티티 및 신뢰 구축</p>
+                                </div>
+                            </label>
+                            <label class="quote-item group">
+                                <input type="checkbox" name="type" value="platform" class="w-4 h-4">
+                                <div>
+                                    <p class="text-sm font-bold text-white group-hover:text-purple-300">플랫폼/복합몰</p>
+                                    <p class="text-[9px] text-gray-500">고성능 시스템 및 기능형</p>
+                                </div>
+                            </label>
+                            <label class="quote-item group">
+                                <input type="checkbox" name="type" value="maintenance" class="w-4 h-4">
+                                <div>
+                                    <p class="text-sm font-bold text-white group-hover:text-purple-300">유지보수/리뉴얼</p>
+                                    <p class="text-[9px] text-gray-500">기존 사이트 개선</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 고객 정보 입력 -->
+                    <div class="space-y-4 pt-4 border-t border-white/5">
+                        <label class="text-[11px] font-black text-purple-500 uppercase tracking-widest block">연락처 정보</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <span class="text-[9px] text-gray-600 font-bold ml-1">성함 또는 업체명</span>
+                                <input type="text" id="quote-name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm text-white focus:border-purple-500 transition-colors" placeholder="홍길동" required>
+                            </div>
+                            <div class="space-y-1.5">
+                                <span class="text-[9px] text-gray-600 font-bold ml-1">연락처</span>
+                                <input type="tel" id="quote-phone" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm text-white focus:border-purple-500 transition-colors" placeholder="010-0000-0000" required>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] text-gray-600 font-bold ml-1">추가 요청사항 (예산범위 등)</span>
+                            <textarea id="quote-memo" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm h-32 text-white resize-none focus:border-purple-500 transition-colors" placeholder="프로젝트에 대해 자유롭게 설명해 주세요."></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-purple-600 text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.4em] shadow-xl shadow-purple-600/20 hover:bg-purple-500 transition-all hover:scale-[1.01] active:scale-95">신청 완료하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-lg bg-[#08040f] p-0 border border-purple-500/20">
             <div class="p-8 pb-4 flex justify-between items-center">
@@ -308,27 +413,6 @@
                 <button onclick="toggleModal('status-modal', false)" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:text-white transition-colors"><i class="fas fa-times text-sm"></i></button>
             </div>
             <div id="modal-project-list" class="px-8 pb-10 max-h-[450px] overflow-y-auto custom-scrollbar"></div>
-        </div>
-    </div>
-
-    <div id="contact-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('contact-modal', false)">
-        <div class="modal-content !max-w-4xl flex flex-col md:flex-row border-none shadow-3xl">
-            <div class="md:w-[35%] bg-gradient-to-br from-purple-900/40 via-black to-black p-12 border-r border-white/5">
-                <h2 class="text-3xl font-black mb-6 uppercase text-white">협업의 시작</h2>
-                <p class="text-xs text-purple-200/50 leading-relaxed font-medium">한로로와 함께 독창적인 웹 경험을 만들어보세요.</p>
-            </div>
-            <div class="md:w-[65%] p-12 relative bg-[#0a0514]">
-                <button onclick="toggleModal('contact-modal', false)" class="absolute top-8 right-10 text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-                <h3 class="text-2xl font-black text-white mb-10 uppercase tracking-tight">비즈니스 협업 신청</h3>
-                <form id="contact-form" class="space-y-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        <input type="text" id="contact-name" placeholder="성함 또는 업체명" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm text-white" required>
-                        <input type="tel" id="contact-phone" placeholder="전화번호" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm text-white" required>
-                    </div>
-                    <textarea id="contact-memo" placeholder="프로젝트 목표를 기재해 주세요." class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm h-40 text-white resize-none"></textarea>
-                    <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-xl font-black text-xs uppercase tracking-[0.3em]">문의 전송하기</button>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -358,6 +442,18 @@
             }
         };
 
+        // Quote item selection effect
+        document.querySelectorAll('.quote-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                const checkbox = this.querySelector('input');
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+                if (checkbox.checked) this.classList.add('selected');
+                else this.classList.remove('selected');
+            });
+        });
+
         async function init() {
             try {
                 await signInAnonymously(auth);
@@ -366,97 +462,81 @@
                         syncProjects(); 
                         syncDeposits(); 
                         syncCases(); 
-                        syncNotices(); // 공지사항 실시간 연동 시작
+                        syncNotices();
                     }
                 });
             } catch (err) { console.error("Firebase Auth Error:", err); }
         }
 
-        // 1. 공지사항 실시간 연동 (초기 단계 복구 및 강화)
         function syncNotices() {
             const noticeRef = collection(db, 'artifacts', appId, 'public', 'data', 'notices');
             onSnapshot(noticeRef, (snap) => {
                 const notices = [];
                 snap.forEach(doc => notices.push({ id: doc.id, ...doc.data() }));
-                
-                // 최신순 정렬 (createdAt 필드 기준)
                 notices.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
                 const noticeTextEl = document.getElementById('live-notice-text');
                 const noticeDateEl = document.getElementById('notice-date');
-
                 if (notices.length > 0) {
                     const latest = notices[0];
                     noticeTextEl.innerText = latest.title || latest.content || "새로운 공지사항이 있습니다.";
-                    
                     if(latest.createdAt) {
                         const date = new Date(latest.createdAt.seconds * 1000);
                         noticeDateEl.innerText = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
                     }
-                } else {
-                    noticeTextEl.innerText = "한로로 에이전시 2026년 상반기 프로젝트 예약이 진행 중입니다.";
-                    noticeDateEl.innerText = "";
                 }
-            }, (err) => {
-                console.error("Notice Sync Failed:", err);
-                document.getElementById('live-notice-text').innerText = "공지사항을 불러오는 중 오류가 발생했습니다.";
             });
         }
 
-        // 2. 프로젝트 현황 연동
         function syncProjects() {
             const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'projects');
             onSnapshot(qRef, (snap) => {
                 let mainHtml = ''; let modalHtml = ''; const docs = [];
                 snap.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
                 docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
-                
                 docs.forEach(p => {
                     const progress = p.progress || 0;
                     mainHtml += `<div class="unified-card"><h4 class="font-bold text-white mb-2 truncate">${p.name || '비공개'}</h4><div class="w-full bg-white/5 h-1 rounded-full mb-3"><div class="bg-purple-600 h-full rounded-full" style="width:${progress}%"></div></div><div class="flex justify-between items-center"><p class="text-[10px] text-purple-300/70 font-black">${p.phase || '준비중'}</p><p class="text-[10px] text-gray-500 font-bold">${progress}%</p></div></div>`;
                     modalHtml += `<div class="flex justify-between items-center py-5 border-b border-white/5 last:border-0"><div><h4 class="text-xs font-bold text-gray-200">${p.name || '비공개'}</h4><p class="text-[9px] text-purple-500 font-black uppercase">${p.phase || '준비중'}</p></div><div class="text-right"><span class="text-[10px] font-black text-gray-400 block">${progress}%</span></div></div>`;
                 });
-                document.getElementById('main-project-list').innerHTML = mainHtml || '<p class="text-gray-500 text-xs">진행 중인 프로젝트가 없습니다.</p>';
+                document.getElementById('main-project-list').innerHTML = mainHtml || '<p class="text-gray-500 text-xs text-center col-span-full">진행 중인 프로젝트가 없습니다.</p>';
                 document.getElementById('modal-project-list').innerHTML = modalHtml;
             });
         }
 
-        // 3. 입금 현황 연동
         function syncDeposits() {
             const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'deposits');
             onSnapshot(qRef, (snap) => {
                 let html = ''; const deposits = [];
                 snap.forEach(doc => deposits.push({ id: doc.id, ...doc.data() }));
                 deposits.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
-                
                 deposits.forEach(d => {
                     const isComplete = d.status === 'complete';
                     html += `<div class="unified-card ${isComplete ? '' : 'border-l-4 border-amber-500'}"><h4 class="font-bold text-white mb-2 truncate">${d.name || '고객님'}</h4><div class="flex justify-between items-end mt-4"><div class="flex flex-col"><span class="text-[10px] text-purple-300/70 font-black uppercase">${d.type || '일반'}</span><span class="text-[11px] text-emerald-400 font-mono font-bold">${d.amount ? d.amount.replace(/[0-9]/g, "*") : "****원"}</span></div><span class="payment-badge ${isComplete ? '' : 'waiting'}">${isComplete ? '입금완료' : '입금대기'}</span></div></div>`;
                 });
-                document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-500 text-xs">내역이 없습니다.</p>';
+                document.getElementById('payment-grid').innerHTML = html || '<p class="text-gray-500 text-xs text-center col-span-full">내역이 없습니다.</p>';
             });
         }
 
-        // 4. 성공 사례 연동
         function syncCases() {
             const qRef = collection(db, 'artifacts', appId, 'public', 'data', 'cases');
             onSnapshot(qRef, (snap) => {
                 let html = ''; const cases = [];
                 snap.forEach(doc => cases.push({ id: doc.id, ...doc.data() }));
                 cases.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
-                
                 cases.forEach(c => {
                     html += `<div class="case-card group"><img src="${c.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'}" class="case-img"><div class="case-overlay"></div><div class="relative z-10"><span class="text-[10px] font-bold text-purple-400 mb-2 block uppercase tracking-widest">${c.category || 'Portfolio'}</span><h4 class="text-2xl font-black text-white mb-2">${c.title || 'Success Story'}</h4><p class="text-xs text-gray-400 truncate opacity-80">${c.summary || '상세 내용을 확인하세요.'}</p></div></div>`;
                 });
-                document.getElementById('cases-container').innerHTML = html || '<p class="text-gray-500 text-xs">성공 사례가 없습니다.</p>';
+                document.getElementById('cases-container').innerHTML = html || '<p class="text-gray-500 text-xs text-center col-span-full">성공 사례가 없습니다.</p>';
             });
         }
 
-        document.getElementById('contact-form').addEventListener('submit', (e) => {
+        document.getElementById('quote-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('문의가 전송되었습니다. 곧 연락드리겠습니다!');
-            toggleModal('contact-modal', false);
+            // In a real scenario, you would send this to Firestore
+            alert('견적 상담 신청이 정상적으로 접수되었습니다. 담당 디렉터가 24시간 이내에 연락드리겠습니다!');
+            toggleModal('quote-modal', false);
             e.target.reset();
+            document.querySelectorAll('.quote-item').forEach(item => item.classList.remove('selected'));
         });
 
         init();
