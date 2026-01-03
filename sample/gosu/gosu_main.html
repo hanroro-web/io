@@ -1,1 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포커고수 샘플 데모페이지 - 한로로 웹 에이전시</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+        :root {
+            --fb-yellow: #FFCA28;
+            --fb-orange: #F57C00;
+            --fb-red: #EF4444;
+            --fb-blue: #039BE5;
+            --fb-bg: #000000;
+            --fb-card: #121212;
+            --fb-border: #2C2C2E;
+            --fb-search-bg: #1A1C1E;
+        }
+
+        body {
+            font-family: 'Inter', 'Pretendard', sans-serif;
+            background-color: var(--fb-bg);
+            color: #E3E3E3;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section Video & Overlay */
+        .hero-gradient {
+            background: linear-gradient(to top, #000000 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+            z-index: 2;
+            transition: opacity 0.5s ease;
+        }
+        
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            object-fit: cover;
+        }
+
+        @media (min-aspect-ratio: 16/9) {
+            .video-background { height: 120%; top: -10%; }
+        }
+        @media (max-aspect-ratio: 16/9) {
+            .video-background { width: 120%; left: -10%; }
+        }
+
+        /* Full Screen Video Mode */
+        .video-container.fullscreen {
+            position: fixed;
+            z-index: 100;
+            background: #000;
+        }
+        .video-container.fullscreen .video-background {
+            pointer-events: auto;
+            width: 100% !important;
+            height: 100% !important;
+            top: 50% !important;
+            left: 50% !important;
+        }
+
+        /* Firebase Style Buttons */
+        .fb-btn-primary {
+            background-color: var(--fb-blue);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .fb-btn-primary:hover {
+            background-color: #0288D1;
+            box-shadow: 0 0 15px rgba(3, 155, 229, 0.4);
+        }
+
+        /* Search Bar Style */
+        .search-wrapper {
+            position: relative;
+            padding: 2px;
+            background: linear-gradient(to right, #EF4444, #FFCA28);
+            border-radius: 9999px;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.2), 0 0 25px rgba(255, 202, 40, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .search-wrapper:focus-within {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), 0 0 40px rgba(255, 202, 40, 0.3);
+            transform: scale(1.02);
+        }
+        .search-container {
+            background-color: rgba(26, 28, 30, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 9999px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0.65rem 1.5rem;
+        }
+
+        /* Dropdown Menu */
+        #top-menu {
+            transform: translateY(-100%);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            visibility: hidden;
+        }
+        #top-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .ott-btn {
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+        }
+        .ott-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Board Card Hover */
+        .board-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .board-card:hover {
+            transform: translateY(-8px);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 202, 40, 0.3);
+        }
+
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Profile Gradient */
+        .profile-border-gradient {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFCA28, #EF4444);
+            border-radius: 24px;
+            padding: 3px;
+            display: inline-block;
+        }
+        .profile-inner-box {
+            background: #121212;
+            width: 100%;
+            height: 100%;
+            border-radius: 21px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        /* Notice Specific Design */
+        .notice-list-card {
+            background: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .notice-list-card:hover {
+            background: #1a1a1a;
+            border-color: rgba(255, 202, 40, 0.3);
+            transform: translateX(10px);
+        }
+
+        /* TMT Banner Styling */
+        .tmt-banner {
+            background: linear-gradient(135deg, #0f0f10 0%, #1a1a1c 100%);
+            border: 1px solid rgba(255, 202, 40, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .tmt-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 202, 40, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* Footer Styling */
+        footer {
+            background: linear-gradient(to bottom, #000000, #0a0a0a);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Close Video Button */
+        #close-video {
+            display: none;
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 110;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.2s;
+        }
+        #close-video:hover {
+            background: rgba(239, 68, 68, 0.8);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]" onclick="toggleMenu()"></div>
+
+    <!-- Close Video Button (Visible in Fullscreen) -->
+    <button id="close-video" onclick="closeHeroVideo()">
+        <i class="fa-solid fa-xmark text-2xl"></i>
+    </button>
+
+    <!-- Top Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-[80] transition-all duration-300 bg-black/20 backdrop-blur-sm border-b border-white/5">
+        <div class="max-w-[1720px] mx-auto px-10 h-20 grid grid-cols-12 items-center">
+            <div class="col-span-3 flex items-center">
+                <div class="text-3xl font-black tracking-tighter flex items-center cursor-pointer group" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <span class="text-[#FFCA28] group-hover:drop-shadow-[0_0_8px_rgba(255,202,40,0.5)] transition-all">POKER</span>
+                    <span class="text-white ml-1">GOSU</span>
+                </div>
+            </div>
+
+            <div class="col-span-6 flex justify-center px-12">
+                <div class="search-wrapper">
+                    <div class="search-container">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm mr-4"></i>
+                        <input type="text" placeholder="전략, 라이브 다시보기, 커뮤니티 검색..." class="bg-transparent border-none outline-none w-full text-white text-[14px] font-medium placeholder:text-gray-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-3 flex items-center justify-end gap-6">
+                <button class="fb-btn-primary px-8 py-2.5 rounded-xl text-[14px] font-bold shrink-0 shadow-lg shadow-blue-500/20 active:scale-95 transition-transform">로그인</button>
+                <button onclick="toggleMenu()" class="p-3 text-white hover:bg-white/10 rounded-full transition-all" id="hamburger-btn">
+                    <i class="fa-solid fa-bars-staggered text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Dropdown Menu -->
+    <aside id="top-menu" class="fixed top-0 left-0 w-full bg-[#0a0a0a] border-b border-white/10 z-[70] pt-24 pb-12 shadow-2xl">
+        <div class="max-w-[1536px] mx-auto px-8 grid grid-cols-4 gap-12">
+            <div class="space-y-6">
+                <p class="text-[11px] text-[#FFCA28] uppercase font-black tracking-[0.3em]">Main Navigation</p>
+                <div class="flex flex-col gap-4">
+                    <a href="#" class="text-2xl font-bold hover:text-white transition-colors">홈</a>
+                    <a href="#" class="text-2xl font-bold hover:text-white transition-colors">커뮤니티</a>
+                    <a href="#" class="text-2xl font-bold hover:text-white transition-colors">전략 게시판</a>
+                    <a href="#" class="text-2xl font-bold hover:text-white transition-colors">포커룸</a>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <p class="text-[11px] text-gray-500 uppercase font-black tracking-[0.3em]">Resources</p>
+                <div class="flex flex-col gap-4 text-gray-400">
+                    <a href="#" class="text-lg font-bold hover:text-white transition-colors">뉴스 및 분석</a>
+                    <a href="#" class="text-lg font-bold hover:text-white transition-colors">라이브 토너먼트</a>
+                    <a href="#" class="text-lg font-bold hover:text-white transition-colors">플레이어 랭킹</a>
+                    <a href="#" class="text-lg font-bold hover:text-white transition-colors">핸드 리뷰</a>
+                </div>
+            </div>
+            <div class="space-y-6 col-span-2">
+                <p class="text-[11px] text-gray-500 uppercase font-black tracking-[0.3em]">Latest Featured</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="group bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-white/20 transition-all cursor-pointer">
+                        <div class="w-full h-24 bg-gray-800 rounded-lg mb-3 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1511193311914-0346f16bee97?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-all">
+                        </div>
+                        <h4 class="font-bold text-sm text-white line-clamp-1">WSOP 2026 메인 이벤트</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">Replay</p>
+                    </div>
+                    <div class="group bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-white/20 transition-all cursor-pointer">
+                        <div class="w-full h-24 bg-gray-800 rounded-lg mb-3 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1511193311914-0346f16bee97?auto=format&fit=crop&q=80&w=301" class="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-all">
+                        </div>
+                        <h4 class="font-bold text-sm text-white line-clamp-1">하이 스테이크 포커 리뷰</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">Strategy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Hero Section -->
+    <section class="relative w-full h-[90vh] flex items-center overflow-hidden bg-black">
+        <div id="hero-video-wrapper" class="video-container">
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://img.youtube.com/vi/coJpbqlnJNE/maxresdefault.jpg');"></div>
+            <iframe id="hero-iframe" class="video-background opacity-60" 
+                src="https://www.youtube.com/embed/coJpbqlnJNE?autoplay=1&mute=1&controls=0&loop=1&playlist=coJpbqlnJNE&start=0&enablejsapi=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen>
+            </iframe>
+            <div id="hero-overlay" class="absolute inset-0 hero-gradient"></div>
+        </div>
+
+        <div id="hero-content" class="relative max-w-[1536px] mx-auto px-8 w-full pt-24 z-10 transition-all duration-500">
+            <div class="max-w-3xl space-y-8">
+                <div class="flex items-center gap-3">
+                    <span class="bg-[#FFCA28] text-black text-xs font-black px-3 py-1 rounded tracking-tighter uppercase">Tournament</span>
+                    <span class="text-white/80 text-base font-medium tracking-wide italic">GOSU EXCLUSIVE LIVE</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tight drop-shadow-2xl">
+                    2025 가을 N-STARS<br>팀 토너먼트 <span class="text-[#FFCA28]">FINAL</span>
+                </h1>
+                <div class="flex items-center gap-5 text-base font-bold text-gray-200">
+                    <span class="text-red-500 font-black">● LIVE REPLAY</span>
+                    <span>2025</span>
+                    <span class="border-2 border-white/40 px-2 py-0.5 rounded text-xs">ALL</span>
+                    <span>엔스타즈 팀전 결승</span>
+                    <span class="bg-white/10 px-3 py-1 rounded text-xs font-black">Full HD</span>
+                </div>
+                <p class="text-xl text-gray-300 leading-relaxed max-w-2xl font-medium drop-shadow-lg">
+                    치열했던 예선을 뚫고 올라온 최정예 팀들의 진검승부. <br>
+                    팀의 명예를 건 마지막 결전의 순간을 포커고수에서 다시 확인하세요.
+                </p>
+                <div class="flex items-center gap-4 pt-6">
+                    <button onclick="playHeroVideo()" class="ott-btn bg-white text-black px-10 py-4 rounded-lg font-black text-lg flex items-center gap-4 shadow-2xl shadow-white/10">
+                        <i class="fa-solid fa-play text-2xl"></i> 풀버전 시청하기
+                    </button>
+                    <button class="ott-btn bg-white/10 text-white px-10 py-4 rounded-lg font-black text-lg flex items-center gap-4 border border-white/20 hover:bg-white/20">
+                        <i class="fa-solid fa-circle-info text-2xl"></i> 상세 정보
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="relative -mt-40 z-10 max-w-[1536px] mx-auto px-8 pb-32">
+        <div class="grid grid-cols-12 gap-10">
+            <!-- Sidebar -->
+            <div class="hidden xl:block col-span-3">
+                <div class="sticky top-28 space-y-8">
+                    <div class="bg-[#121212]/90 backdrop-blur-xl border border-white/10 p-10 rounded-3xl text-center shadow-2xl">
+                        <div class="mb-6 flex justify-center">
+                            <div class="profile-border-gradient shadow-2xl shadow-red-500/30 scale-110">
+                                <div class="profile-inner-box">F</div>
+                            </div>
+                        </div>
+                        <h3 class="font-black text-white text-2xl mb-1">포커고수_관리자</h3>
+                        <p class="text-[10px] text-gray-500 mb-8 font-mono tracking-[0.4em] uppercase">Status: High Roller</p>
+                        <button class="w-full bg-white text-black text-sm py-4 rounded-xl font-black transition-all hover:bg-[#FFCA28] active:scale-95 shadow-xl">마이 페이지</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-span-12 xl:col-span-9 space-y-24">
+                
+                <!-- 01 Section: Trending Replays -->
+                <section>
+                    <div class="flex items-center justify-between mb-8 px-2">
+                        <div class="flex items-center gap-4">
+                            <span class="text-[#FFCA28] font-black text-xl italic">01</span>
+                            <h2 class="text-3xl font-black text-white tracking-tight">최신 경기 분석 <span class="text-gray-500 ml-3 text-base font-bold tracking-normal opacity-60">N-STARS 추천 영상</span></h2>
+                        </div>
+                        <a href="#" class="text-sm text-[#FFCA28] font-black hover:underline tracking-widest uppercase">View All</a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="group bg-[#121212] border border-white/5 rounded-2xl overflow-hidden hover:border-white/30 transition-all cursor-pointer shadow-xl">
+                            <div class="relative h-52 bg-gray-800 overflow-hidden">
+                                <div class="absolute top-4 left-4 bg-red-600 text-[10px] font-black px-2 py-1 rounded-sm italic z-20">MUST WATCH</div>
+                                <img src="https://img.youtube.com/vi/coJpbqlnJNE/maxresdefault.jpg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-60">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"></div>
+                                <div class="absolute bottom-4 left-5 right-5 z-20">
+                                    <h4 class="text-lg font-black text-white line-clamp-1 group-hover:text-[#FFCA28] transition-colors">N-STARS 팀전 파이널 주요 장면</h4>
+                                </div>
+                            </div>
+                            <div class="p-5 flex items-center justify-between text-[11px] text-gray-500 font-black uppercase tracking-widest">
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-fire text-red-500"></i> Hot Replay</span>
+                                <span>Updated</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 02 Section: Discussion Boards -->
+                <section id="community-boards">
+                    <div class="flex items-center justify-between mb-10 px-2 border-b border-white/5 pb-6">
+                        <div class="flex items-center gap-4">
+                            <span class="text-[#FFCA28] font-black text-xl italic">02</span>
+                            <h2 class="text-3xl font-black text-white tracking-tight">커뮤니티 허브 <span class="text-gray-500 ml-3 text-base font-bold tracking-normal opacity-60">고수들의 실시간 토크</span></h2>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white transition-all"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="board-card bg-[#121212] border border-white/10 rounded-3xl p-6 cursor-pointer relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <i class="fa-solid fa-comments text-6xl text-white"></i>
+                            </div>
+                            <div class="relative z-10 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-blue-500/10 text-blue-400 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">Free Board</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-white mb-1">자유게시판</h3>
+                                    <p class="text-[12px] text-gray-500 font-medium">일상과 포커 토크</p>
+                                </div>
+                                <div class="space-y-2 pt-4 border-t border-white/5">
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• 오늘 방수 실화인가요?</div>
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• 뱅크롤 관리 팁 공유</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="board-card bg-[#121212] border border-white/10 rounded-3xl p-6 cursor-pointer relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <i class="fa-solid fa-spade text-6xl text-white"></i>
+                            </div>
+                            <div class="relative z-10 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-red-500/10 text-red-400 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">Hand Review</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-white mb-1">핸드게시판</h3>
+                                    <p class="text-[12px] text-gray-500 font-medium">정밀 분석과 토론</p>
+                                </div>
+                                <div class="space-y-2 pt-4 border-t border-white/5">
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• [6max] UTG vs BB 분석</div>
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• 폴드가 맞았을까요?</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="board-card bg-[#121212] border border-white/10 rounded-3xl p-6 cursor-pointer relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <i class="fa-solid fa-book-open text-6xl text-white"></i>
+                            </div>
+                            <div class="relative z-10 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-yellow-500/10 text-yellow-400 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">Strategy</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-white mb-1">전략/번역 게시판</h3>
+                                    <p class="text-[12px] text-gray-500 font-medium">이론적 깊이 탐구</p>
+                                </div>
+                                <div class="space-y-2 pt-4 border-t border-white/5">
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• 필 아이비 블러핑 철학</div>
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• MDA 활용 익스플로잇</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="board-card bg-[#121212] border border-white/10 rounded-3xl p-6 cursor-pointer relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <i class="fa-solid fa-gem text-6xl text-white"></i>
+                            </div>
+                            <div class="relative z-10 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-purple-500/10 text-purple-400 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">Grinding</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-white mb-1">그라인딩 게시판</h3>
+                                    <p class="text-[12px] text-gray-500 font-medium">수익 인증 및 목표 달성</p>
+                                </div>
+                                <div class="space-y-2 pt-4 border-t border-white/5">
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• 이번 달 위닝 그래프 인증</div>
+                                    <div class="text-[12px] text-gray-400 line-clamp-1 hover:text-white transition-colors">• 챌린지 10일차: 목표 근접</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tournament Promo Banner -->
+                <section id="tmt-promo-banner" class="px-2">
+                    <div class="tmt-banner rounded-[2rem] p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl relative group cursor-pointer border border-white/5 hover:border-[#FFCA28]/30 transition-all duration-500">
+                        <div class="space-y-6 relative z-10 text-center md:text-left">
+                            <div class="inline-flex items-center gap-2 bg-[#FFCA28] text-black px-3 py-1 rounded font-black text-[10px] uppercase tracking-tighter">Coming Soon 2026</div>
+                            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
+                                TMT 19 <br>
+                                <span class="text-[#FFCA28] drop-shadow-[0_0_15px_rgba(255,202,40,0.4)]">홀덤 토너먼트</span>
+                            </h2>
+                            <p class="text-gray-400 font-medium max-w-md">
+                                상금이 걸린 역대급 규모의 토너먼트. <br>
+                                전국의 강자들이 집결하는 단 하나의 전장을 놓치지 마세요.
+                            </p>
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
+                                <div class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                                    <p class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Prize Pool</p>
+                                    <p class="text-lg font-black text-white">₩ 500,000,000 + α</p>
+                                </div>
+                                <div class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                                    <p class="text-[9px] text-gray-500 font-black uppercase tracking-widest">Schedule</p>
+                                    <p class="text-lg font-black text-white">2026. 03. 15</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative z-10 shrink-0">
+                            <button class="bg-white text-black px-12 py-5 rounded-2xl font-black text-xl flex items-center gap-4 hover:bg-[#FFCA28] transition-all transform group-hover:scale-105 shadow-2xl">
+                                참가 신청하기 <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <!-- Background Decorative Element -->
+                        <div class="absolute -right-20 -bottom-20 opacity-10 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none">
+                            <i class="fa-solid fa-spade text-[20rem] text-white rotate-12"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 03 Section: Notice Board -->
+                <section id="notice-board">
+                    <div class="flex items-center justify-between mb-10 px-2 border-b border-white/5 pb-6">
+                        <div class="flex items-center gap-4">
+                            <span class="text-[#FFCA28] font-black text-xl italic">03</span>
+                            <h2 class="text-3xl font-black text-white tracking-tight">공지사항 <span class="text-gray-500 ml-3 text-base font-bold tracking-normal opacity-60">한로로 웹 에이전시 테스트 글 입니다.</span></h2>
+                        </div>
+                        <a href="#" class="text-sm text-gray-400 font-bold hover:text-white uppercase tracking-widest">More Details</a>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="notice-list-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer">
+                            <div class="flex items-center gap-6">
+                                <span class="bg-[#FFCA28] text-black text-[10px] font-black px-3 py-1 rounded uppercase shrink-0">Major</span>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold text-white group-hover:text-[#FFCA28] transition-colors">한로로 웹 에이전시 테스트 글 입니다.</h3>
+                                    <p class="text-sm text-gray-500 line-clamp-1">한로로 웹 에이전시 테스트 글 입니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6 shrink-0 text-gray-600 font-mono text-xs">2026.01.04</div>
+                        </div>
+                        <div class="notice-list-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer">
+                            <div class="flex items-center gap-6">
+                                <span class="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded uppercase shrink-0">Event</span>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold text-white">한로로 웹 에이전시 테스트 글 입니다.</h3>
+                                    <p class="text-sm text-gray-500 line-clamp-1">한로로 웹 에이전시 테스트 글 입니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6 shrink-0 text-gray-600 font-mono text-xs">2026.01.01</div>
+                        </div>
+                        <div class="notice-list-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer">
+                            <div class="flex items-center gap-6">
+                                <span class="bg-blue-500 text-white text-[10px] font-black px-3 py-1 rounded uppercase shrink-0">Update</span>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold text-white">한로로 웹 에이전시 테스트 글 입니다.</h3>
+                                    <p class="text-sm text-gray-500 line-clamp-1">한로로 웹 에이전시 테스트 글 입니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6 shrink-0 text-gray-600 font-mono text-xs">2025.12.28</div>
+                        </div>
+                        <div class="notice-list-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer">
+                            <div class="flex items-center gap-6">
+                                <span class="bg-gray-700 text-gray-300 text-[10px] font-black px-3 py-1 rounded uppercase shrink-0">Notice</span>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold text-white">한로로 웹 에이전시 테스트 글 입니다.</h3>
+                                    <p class="text-sm text-gray-500 line-clamp-1">한로로 웹 에이전시 테스트 글 입니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6 shrink-0 text-gray-600 font-mono text-xs">2025.12.20</div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="w-full pt-20 pb-12 px-8">
+        <div class="max-w-[1536px] mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/5">
+                <div class="md:col-span-4 space-y-6">
+                    <div class="text-3xl font-black tracking-tighter flex items-center">
+                        <span class="text-[#FFCA28]">POKER</span>
+                        <span class="text-white ml-1">GOSU</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed max-w-sm">
+                        포커고수는 대한민국 최고의 포커 커뮤니티로서 올바른 포커 문화 정착과 전략 공유를 위해 앞장서고 있습니다. 
+                    </p>
+                </div>
+                <div class="md:col-span-2 space-y-6">
+                    <h4 class="text-white font-bold text-sm uppercase tracking-widest">Platform</h4>
+                    <ul class="space-y-4 text-sm text-gray-500 font-medium">
+                        <li><a href="#" class="hover:text-white transition-colors">이용약관</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors text-[#FFCA28]">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-12 flex justify-between items-center">
+                <div class="text-[11px] text-gray-600 font-medium uppercase tracking-wide">
+                    &copy; 2026 POKERGOSU. ALL RIGHTS RESERVED.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hero Video Play Function
+        function playHeroVideo() {
+            const wrapper = document.getElementById('hero-video-wrapper');
+            const iframe = document.getElementById('hero-iframe');
+            const overlay = document.getElementById('hero-overlay');
+            const content = document.getElementById('hero-content');
+            const closeBtn = document.getElementById('close-video');
+            const navbar = document.getElementById('navbar');
+
+            // Add Fullscreen Class
+            wrapper.classList.add('fullscreen');
+            
+            // Hide UI elements
+            overlay.style.opacity = '0';
+            content.style.opacity = '0';
+            content.style.pointerEvents = 'none';
+            navbar.style.transform = 'translateY(-100%)';
+            
+            // Show close button
+            closeBtn.style.display = 'flex';
+            
+            // Unmute and Start
+            const currentSrc = iframe.src;
+            if (currentSrc.includes('mute=1')) {
+                iframe.src = currentSrc.replace('mute=1', 'mute=0').replace('controls=0', 'controls=1');
+            }
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeHeroVideo() {
+            const wrapper = document.getElementById('hero-video-wrapper');
+            const iframe = document.getElementById('hero-iframe');
+            const overlay = document.getElementById('hero-overlay');
+            const content = document.getElementById('hero-content');
+            const closeBtn = document.getElementById('close-video');
+            const navbar = document.getElementById('navbar');
+
+            wrapper.classList.remove('fullscreen');
+            overlay.style.opacity = '1';
+            content.style.opacity = '1';
+            content.style.pointerEvents = 'auto';
+            navbar.style.transform = 'translateY(0)';
+            closeBtn.style.display = 'none';
+
+            // Re-mute and hide controls
+            const currentSrc = iframe.src;
+            iframe.src = currentSrc.replace('mute=0', 'mute=1').replace('controls=1', 'controls=0');
+            
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('top-menu');
+            const overlay = document.getElementById('overlay');
+            const hamburgerBtnIcon = document.querySelector('#hamburger-btn i');
+            
+            menu.classList.toggle('open');
+            overlay.classList.toggle('active');
+            
+            if (menu.classList.contains('open')) {
+                hamburgerBtnIcon.classList.replace('fa-bars-staggered', 'fa-xmark');
+                document.body.style.overflow = 'hidden';
+            } else {
+                hamburgerBtnIcon.classList.replace('fa-xmark', 'fa-bars-staggered');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (nav && !document.getElementById('hero-video-wrapper').classList.contains('fullscreen')) {
+                if (window.scrollY > 30) {
+                    nav.classList.add('h-16', 'bg-black/95');
+                    nav.classList.remove('h-20', 'bg-black/20');
+                } else {
+                    nav.classList.add('h-20', 'bg-black/20');
+                    nav.classList.remove('h-16', 'bg-black/95');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
