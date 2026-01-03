@@ -76,10 +76,10 @@
             <div class="section-card">
                 <h3 class="text-gold font-bold mb-4">HERO SECTION</h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="hero-title-1" placeholder="Title Top">
-                    <input type="text" id="hero-title-2" placeholder="Title Gold">
-                    <textarea id="hero-desc" class="col-span-2" placeholder="Description"></textarea>
-                    <input type="text" id="hero-img" class="col-span-2" placeholder="Hero Image URL">
+                    <input type="text" id="hero-title-1" placeholder="상단 타이틀">
+                    <input type="text" id="hero-title-2" placeholder="골드 포인트 타이틀">
+                    <textarea id="hero-desc" class="col-span-2" placeholder="메인 설명 문구"></textarea>
+                    <input type="text" id="hero-img" class="col-span-2" placeholder="히어로 이미지 URL">
                 </div>
             </div>
 
@@ -110,7 +110,12 @@
             <div class="bg-zinc-900 rounded-xl overflow-hidden">
                 <table class="w-full text-left text-sm">
                     <thead class="bg-zinc-800 text-gray-500 uppercase tracking-widest font-bold">
-                        <tr><th class="p-4">구분</th><th class="p-4">제목</th><th class="p-4">날짜</th><th class="p-4 text-right">관리</th></tr>
+                        <tr>
+                            <th class="p-4">구분</th>
+                            <th class="p-4">제목</th>
+                            <th class="p-4">날짜</th>
+                            <th class="p-4 text-right">관리</th>
+                        </tr>
                     </thead>
                     <tbody id="notice-list-body" class="divide-y divide-white/5"></tbody>
                 </table>
@@ -133,19 +138,31 @@
 
     <!-- Post Modal -->
     <div id="post-modal-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-        <div class="bg-zinc-950 border border-white/10 w-full max-w-lg rounded-2xl p-8 space-y-6">
+        <div class="bg-zinc-950 border border-white/10 w-full max-w-lg rounded-2xl p-8 space-y-6 shadow-2xl">
             <h2 id="modal-title" class="text-xl font-bold text-gold">게시글 작성</h2>
             <form id="post-form" class="space-y-4">
                 <input type="hidden" id="edit-post-id">
                 <div class="grid grid-cols-2 gap-4">
-                    <select id="post-type" class="w-full"><option value="공지">공지사항</option><option value="언론">언론 보도</option></select>
-                    <input type="date" id="post-date" class="w-full">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">구분</label>
+                        <select id="post-type" class="w-full"><option value="공지">공지사항</option><option value="언론">언론 보도</option></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">날짜</label>
+                        <input type="date" id="post-date" class="w-full">
+                    </div>
                 </div>
-                <input type="text" id="post-title" class="w-full" placeholder="제목">
-                <textarea id="post-content" rows="4" class="w-full" placeholder="내용"></textarea>
-                <div class="flex gap-2">
-                    <button type="button" onclick="closePostModal()" class="flex-1 bg-zinc-800 py-3 rounded-lg">취소</button>
-                    <button type="submit" class="flex-1 bg-gold text-black font-bold py-3 rounded-lg">저장</button>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">제목</label>
+                    <input type="text" id="post-title" class="w-full" placeholder="제목을 입력하세요">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">내용</label>
+                    <textarea id="post-content" rows="6" class="w-full" placeholder="상세 내용을 입력하세요"></textarea>
+                </div>
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="closePostModal()" class="flex-1 bg-zinc-800 py-3 rounded-lg hover:bg-zinc-700 transition">취소</button>
+                    <button type="submit" class="flex-1 bg-gold text-black font-bold py-3 rounded-lg hover:bg-white transition">저장하기</button>
                 </div>
             </form>
         </div>
@@ -156,16 +173,20 @@
         const CONSULT_KEY = 'roro_inquiries';
 
         let mainData = {
-            hero: { t1: "TRUST & EXPERTISE", t2: "RORO LAW FIRM", desc: "...", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=2000" },
-            about: { text: "...", values: ["정직", "전문성", "비밀보장", "신속대응"] },
+            hero: { t1: "TRUST & EXPERTISE", t2: "RORO LAW FIRM", desc: "당신의 소중한 권리, 로로의 전문가들이 끝까지 지켜드립니다.", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=2000" },
+            about: { text: "법무법인 로로는 단순한 법률 대리인을 넘어 의뢰인의 삶을 이해하는 진정한 파트너를 지향합니다.", values: ["정직", "전문성", "비밀보장", "신속대응"] },
             lawyers: [{ name: "김로로", role: "대표 변호사", img: "" }],
-            services: [{ title: "형사 전문", desc: "내용" }],
+            services: [{ title: "형사 전문", desc: "풍부한 경험으로 승소를 이끕니다." }],
             notices: []
         };
 
         function init() {
             const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) mainData = JSON.parse(saved);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // 기존 데이터와 병합 (누락된 키 방지)
+                mainData = { ...mainData, ...parsed };
+            }
             renderAll();
             renderConsults();
         }
@@ -176,7 +197,9 @@
             document.getElementById('hero-desc').value = mainData.hero.desc;
             document.getElementById('hero-img').value = mainData.hero.img;
             document.getElementById('about-text').value = mainData.about.text;
-            mainData.about.values.forEach((v, i) => { if(document.getElementById(`val-${i+1}`)) document.getElementById(`val-${i+1}`).value = v; });
+            mainData.about.values.forEach((v, i) => { 
+                if(document.getElementById(`val-${i+1}`)) document.getElementById(`val-${i+1}`).value = v; 
+            });
             
             renderLawyers();
             renderNotices();
@@ -185,11 +208,13 @@
         function renderLawyers() {
             const list = document.getElementById('lawyer-list');
             list.innerHTML = mainData.lawyers.map((l, i) => `
-                <div class="flex gap-2 items-center">
+                <div class="flex gap-2 items-center bg-zinc-900/50 p-2 rounded-lg border border-white/5">
                     <input type="text" value="${l.name}" onchange="updateLawyer(${i}, 'name', this.value)" class="flex-1" placeholder="이름">
                     <input type="text" value="${l.role}" onchange="updateLawyer(${i}, 'role', this.value)" class="flex-1" placeholder="역할">
                     <input type="text" value="${l.img}" onchange="updateLawyer(${i}, 'img', this.value)" class="flex-1" placeholder="이미지 URL">
-                    <button onclick="removeLawyer(${i})" class="text-red-500">X</button>
+                    <button onclick="removeLawyer(${i})" class="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
                 </div>
             `).join('');
         }
@@ -207,70 +232,159 @@
             mainData.about.values = [1,2,3,4].map(i => document.getElementById(`val-${i}`).value);
             
             localStorage.setItem(STORAGE_KEY, JSON.stringify(mainData));
-            alert('저장되었습니다. 메인 페이지를 확인하세요!');
+            alert('콘텐츠 설정이 성공적으로 저장되었습니다.');
         }
+
+        // --- Notice Logic ---
 
         function renderNotices() {
             const list = document.getElementById('notice-list-body');
-            list.innerHTML = mainData.notices.map(post => `
-                <tr>
-                    <td class="p-4">${post.type}</td>
-                    <td class="p-4">${post.title}</td>
-                    <td class="p-4">${post.date}</td>
-                    <td class="p-4 text-right">
-                        <button onclick="deletePost(${post.id})" class="text-red-500">삭제</button>
+            if (mainData.notices.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-500">등록된 게시글이 없습니다.</td></tr>`;
+                return;
+            }
+            // 최신순 정렬
+            const sortedNotices = [...mainData.notices].sort((a, b) => new Date(b.date) - new Date(a.date));
+            list.innerHTML = sortedNotices.map(post => `
+                <tr class="hover:bg-white/5 transition">
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded text-[10px] font-bold ${post.type === '공지' ? 'bg-zinc-700 text-white' : 'bg-gold/20 text-gold'}">${post.type}</span>
+                    </td>
+                    <td class="p-4 font-medium">${post.title}</td>
+                    <td class="p-4 text-gray-500">${post.date}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editPost(${post.id})" class="text-gray-400 hover:text-white transition text-xs">수정</button>
+                        <button onclick="deletePost(${post.id})" class="text-red-500/70 hover:text-red-500 transition text-xs">삭제</button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function openPostModal() { 
-            document.getElementById('post-modal-overlay').classList.replace('hidden', 'flex');
+        function openPostModal(editId = null) {
+            const modal = document.getElementById('post-modal-overlay');
+            const form = document.getElementById('post-form');
+            const title = document.getElementById('modal-title');
+            
+            form.reset();
+            document.getElementById('edit-post-id').value = '';
             document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+
+            if (editId) {
+                const post = mainData.notices.find(p => p.id === editId);
+                if (post) {
+                    title.innerText = '게시글 수정';
+                    document.getElementById('edit-post-id').value = post.id;
+                    document.getElementById('post-type').value = post.type;
+                    document.getElementById('post-date').value = post.date;
+                    document.getElementById('post-title').value = post.title;
+                    document.getElementById('post-content').value = post.content || '';
+                }
+            } else {
+                title.innerText = '새 게시글 등록';
+            }
+
+            modal.classList.replace('hidden', 'flex');
         }
-        function closePostModal() { document.getElementById('post-modal-overlay').classList.replace('flex', 'hidden'); }
+
+        function closePostModal() {
+            document.getElementById('post-modal-overlay').classList.replace('flex', 'hidden');
+        }
 
         document.getElementById('post-form').onsubmit = (e) => {
             e.preventDefault();
-            const newPost = {
-                id: Date.now(),
+            const editId = document.getElementById('edit-post-id').value;
+            const postData = {
                 type: document.getElementById('post-type').value,
                 date: document.getElementById('post-date').value,
                 title: document.getElementById('post-title').value,
                 content: document.getElementById('post-content').value
             };
-            mainData.notices.push(newPost);
+
+            if (!postData.title || !postData.date) {
+                alert('제목과 날짜는 필수 입력 항목입니다.');
+                return;
+            }
+
+            if (editId) {
+                // 수정
+                const idx = mainData.notices.findIndex(p => p.id == editId);
+                if (idx !== -1) {
+                    mainData.notices[idx] = { ...mainData.notices[idx], ...postData };
+                }
+            } else {
+                // 신규
+                const newPost = {
+                    id: Date.now(),
+                    ...postData
+                };
+                mainData.notices.push(newPost);
+            }
+
             localStorage.setItem(STORAGE_KEY, JSON.stringify(mainData));
             renderNotices();
             closePostModal();
         };
 
-        function deletePost(id) { 
-            mainData.notices = mainData.notices.filter(p => p.id !== id); 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(mainData));
-            renderNotices(); 
+        function editPost(id) {
+            openPostModal(id);
         }
+
+        function deletePost(id) {
+            if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+                mainData.notices = mainData.notices.filter(p => p.id !== id);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(mainData));
+                renderNotices();
+            }
+        }
+
+        // --- Consultation Logic ---
 
         function renderConsults() {
             const inquiries = JSON.parse(localStorage.getItem(CONSULT_KEY) || '[]');
             const list = document.getElementById('consult-list-body');
-            list.innerHTML = inquiries.reverse().map(c => `
-                <tr><td class="p-4">${c.name}</td><td class="p-4">${c.tel}</td><td class="p-4">${c.date}</td><td class="p-4 text-gold">${c.status}</td></tr>
+            if (inquiries.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-500">접수된 상담 신청이 없습니다.</td></tr>`;
+                return;
+            }
+            list.innerHTML = [...inquiries].reverse().map(c => `
+                <tr class="hover:bg-white/5 transition">
+                    <td class="p-4 font-bold text-white">${c.name}</td>
+                    <td class="p-4">${c.tel}</td>
+                    <td class="p-4 text-gray-500">${c.date}</td>
+                    <td class="p-4 text-gold font-bold">${c.status || '대기 중'}</td>
+                </tr>
             `).join('');
         }
+
+        // --- UI Logic ---
 
         function switchTab(t) {
             document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
             document.getElementById('view-' + t).classList.remove('hidden');
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + t).classList.add('active');
+            document.querySelectorAll('.sidebar-item').forEach(i => {
+                if(i.id === 'tab-' + t) i.classList.add('active');
+                else {
+                    i.classList.remove('active');
+                    i.classList.add('hover:bg-white/5', 'text-gray-400');
+                }
+            });
+            const activeTab = document.getElementById('tab-' + t);
+            activeTab.classList.add('active');
+            activeTab.classList.remove('hover:bg-white/5', 'text-gray-400');
         }
 
-        function resetData() { if(confirm('리셋하시겠습니까?')) { localStorage.clear(); location.reload(); } }
+        function resetData() { 
+            if(confirm('모든 데이터가 초기화됩니다. 계속하시겠습니까?')) { 
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload(); 
+            } 
+        }
 
         window.onload = init;
         window.addEventListener('storage', (e) => {
             if (e.key === CONSULT_KEY) renderConsults();
+            if (e.key === STORAGE_KEY) init();
         });
     </script>
 </body>
