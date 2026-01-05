@@ -101,7 +101,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
@@ -329,9 +329,20 @@
             status.innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> SYSTEM ONLINE';
         };
 
+        // 재접속 시 로그아웃 되도록 세션 지속성 설정 변경
+        // browserSessionPersistence: 브라우저 탭을 닫으면 로그아웃됨
         onAuthStateChanged(auth, async (user) => {
-            if (user) { initRealtime(); } 
-            else { await signInAnonymously(auth); }
+            if (user) { 
+                initRealtime(); 
+            } else { 
+                try {
+                    // 새로고침이나 재접속 시 세션이 초기화되도록 설정 후 익명 로그인 실행
+                    await setPersistence(auth, browserSessionPersistence);
+                    await signInAnonymously(auth); 
+                } catch (error) {
+                    console.error("Auth Persistence Error:", error);
+                }
+            }
         });
     </script>
 </body>
