@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로로 관리자</title>
+    <title>로로 관리자 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -12,6 +12,7 @@
         .data-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; transition: all 0.2s; }
         .data-card:hover { border-color: #C5A059; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .status-badge { padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; }
     </style>
 </head>
 <body class="text-slate-800">
@@ -24,7 +25,7 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                 </div>
                 <h1 class="text-2xl font-bold">Admin Login</h1>
-                <p class="text-slate-400 text-sm mt-2">로로 법률 사무소 대시보드</p>
+                <p class="text-slate-400 text-sm mt-2">로로 법률 사무소 관리자 시스템</p>
             </div>
             <form id="login-form" class="space-y-4">
                 <div>
@@ -37,22 +38,25 @@
                 </div>
                 <button type="submit" class="w-full bg-[#C5A059] text-white py-3.5 rounded-xl font-bold hover:bg-[#A6823D] transition-colors mt-4">접속하기</button>
             </form>
-            <p class="text-center text-xs text-slate-400 mt-6">기본 계정: admin / 1234</p>
         </div>
     </div>
 
     <!-- Main Dashboard Structure -->
     <div id="admin-main" class="hidden min-h-screen flex">
         <!-- Sidebar -->
-        <aside class="w-64 bg-slate-900 text-white flex flex-col">
+        <aside class="w-64 bg-slate-900 text-white flex flex-col fixed h-full">
             <div class="p-8 border-b border-white/10">
                 <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 bg-[#C5A059] rounded-lg"></div>
                     <span class="font-bold tracking-tight text-lg">RORO Admin</span>
                 </div>
             </div>
-            <nav class="flex-1 p-4 space-y-2">
-                <button onclick="switchTab('diagnosis')" id="tab-btn-diagnosis" class="sidebar-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all active">
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button onclick="switchTab('inquiry')" id="tab-btn-inquiry" class="sidebar-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all active">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke-width="2"></path></svg>
+                    <span>상담 신청 내역</span>
+                </button>
+                <button onclick="switchTab('diagnosis')" id="tab-btn-diagnosis" class="sidebar-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all text-slate-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg>
                     <span>사고유형 진단 관리</span>
                 </button>
@@ -74,9 +78,37 @@
         </aside>
 
         <!-- Content Area -->
-        <main class="flex-1 p-8 overflow-y-auto max-h-screen">
+        <main class="flex-1 ml-64 p-8 overflow-y-auto min-h-screen">
+            <!-- Inquiry List Tab (Main) -->
+            <div id="tab-inquiry" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-900">상담 신청 내역</h2>
+                    <p class="text-slate-500 mt-2">고객이 남긴 실시간 상담 문의 내용을 통합 관리합니다.</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold">
+                            <tr>
+                                <th class="px-6 py-4 w-24">날짜</th>
+                                <th class="px-6 py-4 w-32">성함</th>
+                                <th class="px-6 py-4 w-40">연락처</th>
+                                <th class="px-6 py-4">상담 내용</th>
+                                <th class="px-6 py-4 w-24 text-right">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiry-list-body">
+                            <!-- 상담 내역이 여기에 렌더링됩니다 -->
+                        </tbody>
+                    </table>
+                    <div id="no-inquiry" class="hidden p-12 text-center text-slate-400">
+                        신청된 상담 내역이 없습니다.
+                    </div>
+                </div>
+            </div>
+
             <!-- Diagnosis Tab -->
-            <div id="tab-diagnosis" class="tab-content">
+            <div id="tab-diagnosis" class="tab-content hidden">
                 <div class="flex justify-between items-end mb-8">
                     <div>
                         <h2 class="text-3xl font-bold">사고유형 진단 관리</h2>
@@ -108,7 +140,7 @@
                     </div>
                     <button onclick="openModal('post')" class="bg-[#C5A059] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/20">+ 게시글 작성</button>
                 </div>
-                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold">
                             <tr>
@@ -132,9 +164,7 @@
                 <h3 id="modal-title" class="text-xl font-bold">데이터 수정</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-900"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"></path></svg></button>
             </div>
-            <div class="p-8 overflow-y-auto flex-1" id="modal-body">
-                <!-- Form content will be injected here -->
-            </div>
+            <div class="p-8 overflow-y-auto flex-1" id="modal-body"></div>
             <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
                 <button onclick="closeModal()" class="px-6 py-2 text-slate-500 font-bold text-sm">취소</button>
                 <button id="modal-save-btn" class="bg-[#C5A059] text-white px-8 py-2.5 rounded-xl font-bold text-sm">저장하기</button>
@@ -143,47 +173,39 @@
     </div>
 
     <script>
-        // --- Core State & Initial Data ---
-        const STORAGE_KEY_AUTH = 'roro_admin_auth';
-        const STORAGE_KEY_DIAG = 'roro_diag_data';
-        const STORAGE_KEY_LAWYERS = 'roro_lawyers_data';
-        const STORAGE_KEY_POSTS = 'roro_posts_data';
+        // --- Storage Keys ---
+        const KEYS = {
+            AUTH: 'roro_admin_auth',
+            DIAG: 'roro_diag_data',
+            LAWYERS: 'roro_lawyers_data',
+            POSTS: 'roro_posts_data',
+            INQUIRY: 'roro_inquiry_data'
+        };
 
-        const defaultDiag = [
-            { id: 1, q: "사고 당시 주행 상태는 어떠했습니까?", options: [{ text: "정상 주행", score: 0 }, { text: "과속 중", score: 5 }, { text: "신호 위반", score: 10 }] },
-            { id: 2, q: "피해 정도는 어느 정도입니까?", options: [{ text: "경미", score: 1 }, { text: "중상", score: 10 }] }
-        ];
-
-        const defaultLawyers = [
-            { id: 1, name: "김로로", position: "대표변호사", expertise: "교통사고 형사", bio: "15년 경력의 베테랑", img: "" }
-        ];
-
-        const defaultPosts = [
-            { id: 1, category: "공지", title: "시스템 점검 안내", date: "2024-01-01", content: "내용입니다." }
+        // --- Mock Initial Data for Demonstration ---
+        const defaultInquiries = [
+            { id: 1, name: "홍길동", phone: "010-1234-5678", content: "교통사고 합의금 관련 문의드립니다. 상대방 과실 100% 상황입니다.", date: "2024-05-20" },
+            { id: 2, name: "이영희", phone: "010-9876-5432", content: "음주운전 피해자입니다. 변호사 선임 비용과 절차가 궁금합니다.", date: "2024-05-21" }
         ];
 
         let state = {
-            diag: JSON.parse(localStorage.getItem(STORAGE_KEY_DIAG)) || defaultDiag,
-            lawyers: JSON.parse(localStorage.getItem(STORAGE_KEY_LAWYERS)) || defaultLawyers,
-            posts: JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS)) || defaultPosts
+            inquiry: JSON.parse(localStorage.getItem(KEYS.INQUIRY)) || defaultInquiries,
+            diag: JSON.parse(localStorage.getItem(KEYS.DIAG)) || [],
+            lawyers: JSON.parse(localStorage.getItem(KEYS.LAWYERS)) || [],
+            posts: JSON.parse(localStorage.getItem(KEYS.POSTS)) || []
         };
 
-        // --- Auth Logic ---
+        // --- Auth ---
         document.getElementById('login-form').onsubmit = (e) => {
             e.preventDefault();
-            const id = document.getElementById('admin-id').value;
-            const pw = document.getElementById('admin-pw').value;
-            if(id === 'admin' && pw === '1234') {
-                localStorage.setItem(STORAGE_KEY_AUTH, 'true');
+            if(document.getElementById('admin-id').value === 'admin' && document.getElementById('admin-pw').value === '1234') {
+                localStorage.setItem(KEYS.AUTH, 'true');
                 checkAuth();
-            } else {
-                alert('아이디 또는 비밀번호가 틀립니다.');
-            }
+            } else { alert('아이디 또는 비밀번호가 틀립니다.'); }
         };
 
         function checkAuth() {
-            const isAuth = localStorage.getItem(STORAGE_KEY_AUTH);
-            if(isAuth) {
+            if(localStorage.getItem(KEYS.AUTH)) {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('admin-main').classList.remove('hidden');
                 renderAll();
@@ -191,11 +213,11 @@
         }
 
         function logout() {
-            localStorage.removeItem(STORAGE_KEY_AUTH);
+            localStorage.removeItem(KEYS.AUTH);
             location.reload();
         }
 
-        // --- UI Switching ---
+        // --- Navigation ---
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
@@ -206,18 +228,31 @@
             document.getElementById(`tab-btn-${tab}`).classList.add('active', 'text-white');
         }
 
-        // --- CRUD Logic ---
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY_DIAG, JSON.stringify(state.diag));
-            localStorage.setItem(STORAGE_KEY_LAWYERS, JSON.stringify(state.lawyers));
-            localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(state.posts));
-            renderAll();
-        }
-
+        // --- Render Functions ---
         function renderAll() {
-            // Render Diagnosis
-            const diagList = document.getElementById('diagnosis-list');
-            diagList.innerHTML = state.diag.map((d, i) => `
+            // 1. Inquiry List (New)
+            const inquiryBody = document.getElementById('inquiry-list-body');
+            const noInquiry = document.getElementById('no-inquiry');
+            if (state.inquiry.length === 0) {
+                inquiryBody.innerHTML = '';
+                noInquiry.classList.remove('hidden');
+            } else {
+                noInquiry.classList.add('hidden');
+                inquiryBody.innerHTML = state.inquiry.slice().reverse().map(item => `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100 transition-colors">
+                        <td class="px-6 py-4 text-slate-400 text-xs">${item.date}</td>
+                        <td class="px-6 py-4 font-bold text-slate-700">${item.name}</td>
+                        <td class="px-6 py-4 text-slate-600">${item.phone}</td>
+                        <td class="px-6 py-4 text-slate-500 leading-relaxed max-w-md truncate">${item.content}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="deleteItem('inquiry', ${item.id})" class="text-red-400 hover:text-red-600 font-bold text-xs">삭제</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // 2. Diagnosis
+            document.getElementById('diagnosis-list').innerHTML = state.diag.map((d, i) => `
                 <div class="data-card p-6 flex justify-between items-center">
                     <div>
                         <span class="text-[10px] font-bold text-[#C5A059] uppercase tracking-widest">Step ${i+1}</span>
@@ -225,33 +260,31 @@
                         <p class="text-xs text-slate-400 mt-1">선택지: ${d.options.length}개</p>
                     </div>
                     <div class="flex space-x-2">
-                        <button onclick="editDiag(${d.id})" class="p-2 text-slate-400 hover:text-blue-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"></path></svg></button>
-                        <button onclick="deleteItem('diag', ${d.id})" class="p-2 text-slate-400 hover:text-red-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"></path></svg></button>
+                        <button onclick="editDiag(${d.id})" class="p-2 text-slate-400 hover:text-blue-500">수정</button>
+                        <button onclick="deleteItem('diag', ${d.id})" class="p-2 text-slate-400 hover:text-red-500">삭제</button>
                     </div>
                 </div>
             `).join('');
 
-            // Render Lawyers
-            const lawyerList = document.getElementById('lawyers-list');
-            lawyerList.innerHTML = state.lawyers.map(l => `
+            // 3. Lawyers
+            document.getElementById('lawyers-list').innerHTML = state.lawyers.map(l => `
                 <div class="data-card overflow-hidden">
-                    <div class="h-48 bg-slate-100 flex items-center justify-center relative overflow-hidden">
-                        ${l.img ? `<img src="${l.img}" class="w-full h-full object-cover">` : `<svg class="w-12 h-12 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                    <div class="h-48 bg-slate-100 flex items-center justify-center relative">
+                        ${l.img ? `<img src="${l.img}" class="w-full h-full object-cover">` : '<span class="text-slate-300">이미지 없음</span>'}
                     </div>
                     <div class="p-5">
                         <h4 class="font-bold text-lg">${l.name} ${l.position}</h4>
-                        <p class="text-xs text-[#C5A059] font-bold mb-3">${l.expertise}</p>
-                        <div class="flex border-t border-slate-100 pt-4 mt-2 justify-end space-x-2">
-                            <button onclick="editLawyer(${l.id})" class="text-xs font-bold text-blue-500 px-3 py-1">수정</button>
-                            <button onclick="deleteItem('lawyers', ${l.id})" class="text-xs font-bold text-red-500 px-3 py-1">삭제</button>
+                        <p class="text-xs text-[#C5A059] font-bold">${l.expertise}</p>
+                        <div class="flex border-t border-slate-100 pt-4 mt-4 justify-end space-x-2">
+                            <button onclick="editLawyer(${l.id})" class="text-xs font-bold text-blue-500">수정</button>
+                            <button onclick="deleteItem('lawyers', ${l.id})" class="text-xs font-bold text-red-500">삭제</button>
                         </div>
                     </div>
                 </div>
             `).join('');
 
-            // Render Posts
-            const postList = document.getElementById('posts-list');
-            postList.innerHTML = state.posts.map(p => `
+            // 4. Posts
+            document.getElementById('posts-list').innerHTML = state.posts.map(p => `
                 <tr class="hover:bg-slate-50 border-b border-slate-100">
                     <td class="px-6 py-4"><span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold text-slate-500">${p.category}</span></td>
                     <td class="px-6 py-4 font-bold text-slate-700">${p.title}</td>
@@ -264,14 +297,15 @@
             `).join('');
         }
 
-        // --- Deletion ---
+        // --- Actions ---
         function deleteItem(type, id) {
-            if(!confirm('정말로 삭제하시겠습니까?')) return;
+            if(!confirm('정말로 삭제하시겠습니까? 데이터는 복구할 수 없습니다.')) return;
             state[type] = state[type].filter(item => item.id !== id);
-            saveData();
+            localStorage.setItem(KEYS[type.toUpperCase()], JSON.stringify(state[type]));
+            renderAll();
         }
 
-        // --- Modals & Forms ---
+        // --- Modal Handling ---
         function openModal(type, existingData = null) {
             const modal = document.getElementById('admin-modal');
             const body = document.getElementById('modal-body');
@@ -284,104 +318,68 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">질문 내용</label>
-                            <input type="text" id="diag-q" class="w-full px-4 py-3 rounded-xl border border-slate-200" value="${existingData?.q || ''}" placeholder="예: 사고 당시 주행 상태는?">
+                            <input type="text" id="diag-q" class="w-full px-4 py-3 rounded-xl border border-slate-200" value="${existingData?.q || ''}">
                         </div>
                         <div id="diag-opts-container" class="space-y-3">
-                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">선택지 (텍스트 | 점수)</label>
-                            ${(existingData?.options || [{text: '', score: 0}, {text: '', score: 0}]).map((opt, i) => `
+                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">선택지 (내용 | 점수)</label>
+                            ${(existingData?.options || [{text: '', score: 0}]).map(opt => `
                                 <div class="flex gap-2">
-                                    <input type="text" class="diag-opt-text flex-1 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${opt.text}" placeholder="선택지 내용">
+                                    <input type="text" class="diag-opt-text flex-1 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${opt.text}">
                                     <input type="number" class="diag-opt-score w-20 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${opt.score}">
                                 </div>
                             `).join('')}
                         </div>
-                        <button onclick="addOptInput()" class="text-xs font-bold text-[#C5A059]">+ 선택지 추가</button>
                     </div>
                 `;
                 document.getElementById('modal-save-btn').onclick = () => saveDiagnosis(existingData?.id);
-            } 
+            }
             else if(type === 'lawyer') {
-                title.innerText = existingData ? '변호사 정보 수정' : '새 변호사 추가';
+                title.innerText = existingData ? '변호사 정보 수정' : '변호사 추가';
                 body.innerHTML = `
                     <div class="space-y-4">
                         <div class="flex flex-col items-center mb-6">
-                            <div id="img-preview" class="w-32 h-32 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center">
-                                ${existingData?.img ? `<img src="${existingData.img}" class="w-full h-full object-cover">` : '<svg class="w-8 h-8 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'}
-                            </div>
-                            <label class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer">
-                                이미지 업로드
-                                <input type="file" id="lawyer-img" class="hidden" onchange="handleImg(event)">
-                            </label>
+                            <input type="file" id="lawyer-img" class="mb-2" onchange="handleImg(event)">
                             <input type="hidden" id="lawyer-img-data" value="${existingData?.img || ''}">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">성함</label><input type="text" id="l-name" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.name || ''}"></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">직함</label><input type="text" id="l-pos" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.position || ''}"></div>
+                            <input type="text" id="l-name" placeholder="성함" class="px-4 py-2 border rounded" value="${existingData?.name || ''}">
+                            <input type="text" id="l-pos" placeholder="직함" class="px-4 py-2 border rounded" value="${existingData?.position || ''}">
                         </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">전문분야</label><input type="text" id="l-exp" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.expertise || ''}"></div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">주요경력</label><textarea id="l-bio" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm h-24">${existingData?.bio || ''}</textarea></div>
+                        <input type="text" id="l-exp" placeholder="전문분야" class="w-full px-4 py-2 border rounded" value="${existingData?.expertise || ''}">
+                        <textarea id="l-bio" placeholder="주요경력" class="w-full px-4 py-2 border rounded h-32">${existingData?.bio || ''}</textarea>
                     </div>
                 `;
                 document.getElementById('modal-save-btn').onclick = () => saveLawyer(existingData?.id);
             }
             else if(type === 'post') {
-                title.innerText = existingData ? '게시글 수정' : '새 게시글 작성';
+                title.innerText = existingData ? '게시글 수정' : '게시글 작성';
                 body.innerHTML = `
                     <div class="space-y-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">카테고리</label>
-                            <select id="p-cat" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm">
-                                <option ${existingData?.category === '공지' ? 'selected' : ''}>공지</option>
-                                <option ${existingData?.category === '언론' ? 'selected' : ''}>언론</option>
-                                <option ${existingData?.category === '일반' ? 'selected' : ''}>일반</option>
-                            </select>
-                        </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">제목</label><input type="text" id="p-title" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.title || ''}"></div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">본문 내용</label><textarea id="p-content" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm h-48">${existingData?.content || ''}</textarea></div>
+                        <select id="p-cat" class="w-full px-4 py-2 border rounded">
+                            <option ${existingData?.category === '공지' ? 'selected' : ''}>공지</option>
+                            <option ${existingData?.category === '언론' ? 'selected' : ''}>언론</option>
+                            <option ${existingData?.category === '일반' ? 'selected' : ''}>일반</option>
+                        </select>
+                        <input type="text" id="p-title" placeholder="제목" class="w-full px-4 py-2 border rounded" value="${existingData?.title || ''}">
+                        <textarea id="p-content" placeholder="내용" class="w-full px-4 py-2 border rounded h-48">${existingData?.content || ''}</textarea>
                     </div>
                 `;
                 document.getElementById('modal-save-btn').onclick = () => savePost(existingData?.id);
             }
         }
 
-        function closeModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        }
+        function closeModal() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-        // --- Field Helpers ---
-        function addOptInput() {
-            const container = document.getElementById('diag-opts-container');
-            const div = document.createElement('div');
-            div.className = "flex gap-2";
-            div.innerHTML = `<input type="text" class="diag-opt-text flex-1 px-4 py-2 rounded-lg border border-slate-200 text-sm" placeholder="선택지 내용"><input type="number" class="diag-opt-score w-20 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="0">`;
-            container.appendChild(div);
-        }
-
-        function handleImg(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                document.getElementById('img-preview').innerHTML = `<img src="${event.target.result}" class="w-full h-full object-cover">`;
-                document.getElementById('lawyer-img-data').value = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // --- Save Actions ---
+        // --- Save Logics ---
         function saveDiagnosis(id) {
             const q = document.getElementById('diag-q').value;
             const texts = document.querySelectorAll('.diag-opt-text');
             const scores = document.querySelectorAll('.diag-opt-score');
             const options = Array.from(texts).map((t, i) => ({ text: t.value, score: parseInt(scores[i].value) }));
-            
-            if(id) {
-                const idx = state.diag.findIndex(d => d.id === id);
-                state.diag[idx] = { id, q, options };
-            } else {
-                state.diag.push({ id: Date.now(), q, options });
-            }
-            saveData();
-            closeModal();
+            const data = { id: id || Date.now(), q, options };
+            if(id) { state.diag[state.diag.findIndex(d => d.id === id)] = data; } else { state.diag.push(data); }
+            localStorage.setItem(KEYS.DIAG, JSON.stringify(state.diag));
+            renderAll(); closeModal();
         }
 
         function saveLawyer(id) {
@@ -393,14 +391,9 @@
                 bio: document.getElementById('l-bio').value,
                 img: document.getElementById('lawyer-img-data').value
             };
-            if(id) {
-                const idx = state.lawyers.findIndex(l => l.id === id);
-                state.lawyers[idx] = data;
-            } else {
-                state.lawyers.push(data);
-            }
-            saveData();
-            closeModal();
+            if(id) { state.lawyers[state.lawyers.findIndex(l => l.id === id)] = data; } else { state.lawyers.push(data); }
+            localStorage.setItem(KEYS.LAWYERS, JSON.stringify(state.lawyers));
+            renderAll(); closeModal();
         }
 
         function savePost(id) {
@@ -411,22 +404,23 @@
                 content: document.getElementById('p-content').value,
                 date: new Date().toISOString().split('T')[0]
             };
-            if(id) {
-                const idx = state.posts.findIndex(p => p.id === id);
-                state.posts[idx] = data;
-            } else {
-                state.posts.push(data);
-            }
-            saveData();
-            closeModal();
+            if(id) { state.posts[state.posts.findIndex(p => p.id === id)] = data; } else { state.posts.push(data); }
+            localStorage.setItem(KEYS.POSTS, JSON.stringify(state.posts));
+            renderAll(); closeModal();
         }
 
-        // --- Edit Shorthands ---
+        function handleImg(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => { document.getElementById('lawyer-img-data').value = event.target.result; };
+            reader.readAsDataURL(file);
+        }
+
+        // Shorthands
         function editDiag(id) { openModal('diagnosis', state.diag.find(d => d.id === id)); }
         function editLawyer(id) { openModal('lawyer', state.lawyers.find(l => l.id === id)); }
         function editPost(id) { openModal('post', state.posts.find(p => p.id === id)); }
 
-        // Start
         window.onload = checkAuth;
     </script>
 </body>
