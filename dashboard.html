@@ -12,7 +12,7 @@
         
         /* 로그인 오버레이 */
         #login-overlay { position: fixed; inset: 0; z-index: 2000; background: #05020a; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
-        #login-overlay.hidden { opacity: 0; pointer-events: none; }
+        #login-overlay.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
         
         .sidebar { background: #0c051a; border-right: 1px solid rgba(138, 79, 255, 0.1); }
         .card { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.1); border-radius: 1rem; transition: all 0.2s; }
@@ -40,25 +40,27 @@
 </head>
 <body class="min-h-screen flex overflow-hidden">
 
-    <!-- 로그인 화면 -->
+    <!-- 로그인 오버레이 (최상단) -->
     <div id="login-overlay">
         <div class="text-center p-8 max-w-sm w-full">
             <div class="flex justify-center mb-6 text-5xl text-purple-500">
-                <i class="fas fa-magic"></i>
+                <i class="fas fa-shield-halved"></i>
             </div>
-            <h1 class="text-3xl font-black tracking-tighter mb-2 uppercase">HANRORO CMS</h1>
-            <p class="text-gray-500 text-sm mb-8">관리자 계정으로 로그인해 주세요.</p>
+            <h1 class="text-3xl font-black tracking-tighter mb-2 uppercase">ADMIN ACCESS</h1>
+            <p class="text-gray-500 text-sm mb-8">한로로 CMS 관리자 계정으로 접속하세요.</p>
             
-            <form id="login-form" class="space-y-3 text-left">
+            <form id="login-form" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Admin ID</label>
-                    <input type="text" id="admin-id" class="input-field" placeholder="아이디 입력" required>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">ID</label>
+                    <input type="text" id="login-id" class="input-field" placeholder="hanroro" required autocomplete="username">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Password</label>
-                    <input type="password" id="admin-pw" class="input-field" placeholder="비밀번호 입력" required>
+                    <input type="password" id="login-pw" class="input-field" placeholder="••••••••" required autocomplete="current-password">
                 </div>
-                <button type="submit" id="login-btn" class="btn-primary w-full py-4 text-lg mt-4">로그인하기</button>
+                <button type="submit" id="login-btn" class="btn-primary w-full py-4 text-lg mt-6">
+                    <i class="fas fa-sign-in-alt mr-2"></i>로그인
+                </button>
             </form>
         </div>
     </div>
@@ -67,7 +69,7 @@
         <i class="fas fa-spinner fa-spin mr-1"></i> CONNECTING...
     </div>
 
-    <!-- 사이드바 -->
+    <!-- 메인 대시보드 레이아웃 -->
     <aside class="sidebar w-64 flex-shrink-0 flex flex-col">
         <div class="p-6 flex-grow">
             <div class="flex items-center space-x-2 mb-10">
@@ -92,7 +94,6 @@
                 </div>
             </nav>
         </div>
-        <!-- 로그아웃 섹션 -->
         <div class="p-6 border-t border-white/5">
             <button onclick="window.handleLogout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-400/10 transition-colors">
                 <i class="fas fa-sign-out-alt w-5"></i><span>로그아웃</span>
@@ -118,6 +119,7 @@
         <div id="tab-notices" class="tab-content"><div id="notice-list" class="grid gap-4"></div></div>
     </main>
 
+    <!-- CRUD 모달 -->
     <div id="crud-modal" class="modal">
         <div class="modal-body">
             <h2 id="modal-title" class="text-xl font-black mb-6">데이터 등록</h2>
@@ -133,8 +135,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, setPersistence, browserSessionPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
@@ -147,278 +149,166 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        // 관리자 정보 (클라이언트 측 검증용)
-        const ADMIN_INFO = { id: 'hanroro', pw: 'gksfhfh00@@' };
+        // 요청하신 계정 정보
+        const VALID_ID = "hanroro";
+        const VALID_PW = "gksfhfh00@@";
 
         let currentTab = 'projects';
         let editingId = null;
         let unsubscribers = [];
-        let isSessionActive = false;
 
         const config = {
             projects: {
                 collection: 'projects',
                 title: '프로젝트 관리',
-                desc: '실시간으로 프로젝트 진행 상태를 업데이트합니다.',
+                desc: '진행중인 프로젝트의 상태를 관리합니다.',
                 fields: [
-                    { id: 'name', label: '프로젝트명', type: 'text', placeholder: '예: 한로로 공식 웹사이트' },
-                    { id: 'phase', label: '현재 단계', type: 'text', placeholder: '예: 디자인 검토 중' },
-                    { id: 'progress', label: '진행률 (%)', type: 'number', placeholder: '0-100' }
+                    { id: 'name', label: '프로젝트명', type: 'text' },
+                    { id: 'phase', label: '단계', type: 'text' },
+                    { id: 'progress', label: '진행률(%)', type: 'number' }
                 ],
-                render: (id, d) => `
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="font-bold text-lg">${d.name}</h4>
-                                <p class="text-xs text-purple-400 mt-1">${d.phase}</p>
-                            </div>
-                            <div class="text-2xl font-black text-purple-500">${d.progress}%</div>
-                        </div>
-                        <div class="flex gap-3 border-t border-white/5 pt-4">
-                            <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="text-xs font-bold text-gray-500 hover:text-white">수정</button>
-                            <button onclick="window.deleteItem('${id}')" class="text-xs font-bold text-gray-500 hover:text-red-500">삭제</button>
-                        </div>
-                    </div>`
+                render: (id, d) => `<div class="card p-6"><div class="flex justify-between items-start mb-4"><div><h4 class="font-bold text-lg">${d.name}</h4><p class="text-xs text-purple-400 mt-1">${d.phase}</p></div><div class="text-2xl font-black text-purple-500">${d.progress}%</div></div><div class="flex gap-3 border-t border-white/5 pt-4"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="text-xs font-bold text-gray-500 hover:text-white">수정</button><button onclick="window.deleteItem('${id}')" class="text-xs font-bold text-gray-500 hover:text-red-500">삭제</button></div></div>`
             },
             payments: {
                 collection: 'deposits',
                 title: '입금 현황',
-                desc: '실시간 입금 확인 내역을 관리합니다.',
+                desc: '정산 및 입금 내역을 관리합니다.',
                 fields: [
                     { id: 'name', label: '입금자명', type: 'text' },
-                    { id: 'type', label: '항목', type: 'text', placeholder: '예: 홈페이지 잔금' },
+                    { id: 'type', label: '항목', type: 'text' },
                     { id: 'amount', label: '금액', type: 'number' },
                     { id: 'status', label: '상태', type: 'select', options: [{v:'waiting', l:'확인 중'}, {v:'complete', l:'입금 완료'}] }
                 ],
-                render: (id, d) => `
-                    <div class="card p-5 flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold">${d.name}</h4>
-                            <p class="text-[10px] text-gray-500 mt-1 uppercase">${d.type}</p>
-                        </div>
-                        <div class="flex items-center gap-6">
-                            <div class="text-right">
-                                <div class="font-black text-white">₩${Number(d.amount).toLocaleString()}</div>
-                                <span class="text-[10px] font-bold ${d.status === 'complete' ? 'text-emerald-500' : 'text-amber-500'}">
-                                    ${d.status === 'complete' ? '입금 완료' : '입금 확인 중'}
-                                </span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600 hover:text-white"><i class="fas fa-edit"></i></button>
-                                <button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    </div>`
+                render: (id, d) => `<div class="card p-5 flex justify-between items-center"><div><h4 class="font-bold">${d.name}</h4><p class="text-[10px] text-gray-500 mt-1 uppercase">${d.type}</p></div><div class="flex items-center gap-6"><div class="text-right"><div class="font-black text-white">₩${Number(d.amount).toLocaleString()}</div><span class="text-[10px] font-bold ${d.status === 'complete' ? 'text-emerald-500' : 'text-amber-500'}">${d.status === 'complete' ? '완료' : '확인 중'}</span></div><div class="flex gap-2"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600"><i class="fas fa-edit"></i></button><button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600"><i class="fas fa-trash"></i></button></div></div></div>`
             },
-            notices: {
-                collection: 'settings',
-                title: '공지사항 관리',
-                desc: '메인 페이지 하단 띠 배너에 표시될 내용을 관리합니다.',
-                fields: [{ id: 'content', label: '공지 문구', type: 'text', placeholder: '이벤트 내용을 입력하세요' }],
-                render: (id, d) => `
-                    <div class="card p-6 flex justify-between items-center">
-                        <p class="text-sm text-gray-300 font-medium">${d.content}</p>
-                        <div class="flex gap-2">
-                            <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600 hover:text-white"><i class="fas fa-edit"></i></button>
-                            <button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>`
-            },
-            quotes: {
-                collection: 'quotes',
-                title: '견적 신청 내역',
-                desc: '홈페이지에서 신청된 프로젝트 견적 문의 목록입니다.',
-                render: (id, d) => `
-                    <div class="card p-6">
-                        <div class="flex justify-between mb-4">
-                            <h4 class="font-bold text-white">${d.name} <span class="text-[10px] text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded ml-2">${d.phone || d.contact || '연락처 없음'}</span></h4>
-                            <button onclick="window.deleteItem('${id}')" class="text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 leading-relaxed">
-                            <div class="mb-2"><span class="text-gray-500 font-bold">TYPE:</span> ${d.type || '미지정'} / <span class="text-gray-500 font-bold">BUDGET:</span> ${d.budget || '협의'}</div>
-                            <div class="whitespace-pre-wrap">${d.memo || '내용 없음'}</div>
-                        </div>
-                    </div>`
-            },
-            consultations: {
-                collection: 'consultations',
-                title: '상담 신청 내역',
-                desc: '홈페이지 하단 혹은 모달을 통해 접수된 간단 상담 문의입니다.',
-                render: (id, d) => `
-                    <div class="card p-6">
-                        <div class="flex justify-between mb-4">
-                            <div>
-                                <h4 class="font-bold text-white">${d.name || '익명 고객'}</h4>
-                                <p class="text-[11px] text-emerald-400 font-bold mt-1"><i class="fas fa-phone-alt mr-1"></i> ${d.phone || d.contact || '연락처 미기재'}</p>
-                            </div>
-                            <button onclick="window.deleteItem('${id}')" class="text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 leading-relaxed">
-                            <div class="mb-1 text-gray-300 font-bold">${d.subject || '상담 요청'}</div>
-                            <div class="whitespace-pre-wrap">${d.memo || '신청 내용이 없습니다.'}</div>
-                        </div>
-                    </div>`
+            quotes: { collection: 'quotes', title: '견적 신청', desc: '신청된 견적 문의 내역입니다.', render: (id, d) => `<div class="card p-6"><div class="flex justify-between mb-4"><h4 class="font-bold text-white">${d.name} <span class="text-[10px] text-purple-400 ml-2">${d.phone || d.contact || ''}</span></h4><button onclick="window.deleteItem('${id}')" class="text-gray-600"><i class="fas fa-trash"></i></button></div><div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 whitespace-pre-wrap">${d.memo || '내용 없음'}</div></div>` },
+            consultations: { collection: 'consultations', title: '상담 내역', desc: '간편 상담 신청 내역입니다.', render: (id, d) => `<div class="card p-6"><div class="flex justify-between mb-4"><div><h4 class="font-bold text-white">${d.name || '익명'}</h4><p class="text-[11px] text-emerald-400 font-bold mt-1">${d.phone || d.contact || ''}</p></div><button onclick="window.deleteItem('${id}')" class="text-gray-600"><i class="fas fa-trash"></i></button></div><div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400">${d.memo || '내용 없음'}</div></div>` },
+            notices: { collection: 'settings', title: '공지사항', desc: '배너 공지사항을 관리합니다.', fields: [{ id: 'content', label: '공지 문구', type: 'text' }], render: (id, d) => `<div class="card p-6 flex justify-between items-center"><p class="text-sm text-gray-300">${d.content}</p><div class="flex gap-2"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600"><i class="fas fa-edit"></i></button><button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600"><i class="fas fa-trash"></i></button></div></div>` }
+        };
+
+        // 로그인 기능
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('login-id').value;
+            const pw = document.getElementById('login-pw').value;
+            const btn = document.getElementById('login-btn');
+
+            if (id === VALID_ID && pw === VALID_PW) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>접속 중...';
+                
+                try {
+                    // ID/PW가 맞으면 Firebase 익명 인증으로 세션 생성
+                    await signInAnonymously(auth);
+                    // 브라우저 세션에 로그인 상태 기록
+                    sessionStorage.setItem('h_admin_auth', 'true');
+                } catch (err) {
+                    alert('인증 오류: ' + err.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>로그인';
+                }
+            } else {
+                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
             }
         };
 
+        // 로그아웃 기능
+        window.handleLogout = async () => {
+            if (!confirm('로그아웃 하시겠습니까?')) return;
+            sessionStorage.removeItem('h_admin_auth');
+            await signOut(auth);
+            location.reload(); // 상태 초기화를 위해 새로고침
+        };
+
+        // 인증 상태 감시
+        onAuthStateChanged(auth, (user) => {
+            const isAuthorized = sessionStorage.getItem('h_admin_auth') === 'true';
+            
+            if (user && isAuthorized) {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('auth-status-bar').className = 'status-online';
+                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> ONLINE';
+                initRealtime();
+            } else {
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('auth-status-bar').className = 'status-loading';
+                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-lock mr-1"></i> LOCKED';
+                unsubscribers.forEach(u => u());
+            }
+        });
+
+        // 탭 전환
         window.switchTab = (tabId) => {
             currentTab = tabId;
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`tab-${tabId}`).classList.add('active');
             document.getElementById(`nav-${tabId}`).classList.add('active');
-            
-            const info = config[tabId] || { title: '관리', desc: '데이터를 확인합니다.' };
-            document.getElementById('page-title').innerText = info.title;
-            document.getElementById('page-desc').innerText = info.desc;
-            document.getElementById('add-btn').style.visibility = (tabId === 'quotes' || tabId === 'consultations') ? 'hidden' : 'visible';
+            document.getElementById('page-title').innerText = config[tabId].title;
+            document.getElementById('page-desc').innerText = config[tabId].desc;
+            document.getElementById('add-btn').style.display = (tabId === 'quotes' || tabId === 'consultations') ? 'none' : 'flex';
         };
 
-        const openModal = (isEdit = false, data = null) => {
-            const modal = document.getElementById('crud-modal');
-            const formFields = document.getElementById('form-fields');
-            const title = document.getElementById('modal-title');
-            
-            formFields.innerHTML = '';
-            editingId = isEdit ? data.id : null;
-            title.innerText = isEdit ? '데이터 수정' : '새로운 데이터 등록';
-
-            const fields = config[currentTab]?.fields || [];
-            fields.forEach(f => {
-                let html = `<div><label class="block text-[11px] font-bold text-purple-400 uppercase mb-2 ml-1">${f.label}</label>`;
-                if (f.type === 'select') {
-                    html += `<select name="${f.id}" class="input-field">` + f.options.map(o => `<option value="${o.v}" ${data && data[f.id] === o.v ? 'selected' : ''}>${o.l}</option>`).join('') + `</select>`;
-                } else if (f.type === 'textarea') {
-                    html += `<textarea name="${f.id}" class="input-field h-32" placeholder="${f.placeholder || ''}">${data ? data[f.id] : ''}</textarea>`;
-                } else {
-                    html += `<input type="${f.type}" name="${f.id}" value="${data ? data[f.id] : ''}" class="input-field" placeholder="${f.placeholder || ''}" required>`;
-                }
-                html += `</div>`;
-                formFields.innerHTML += html;
-            });
-            modal.classList.add('active');
-        };
-
-        window.closeModal = () => {
-            document.getElementById('crud-modal').classList.remove('active');
-            document.getElementById('crud-form').reset();
-        };
-
-        window.openEdit = (id, jsonStr) => {
-            const data = JSON.parse(decodeURIComponent(jsonStr));
-            openModal(true, { id, ...data });
-        };
-
-        window.deleteItem = async (id) => {
-            if (!confirm('정말 삭제하시겠습니까?')) return;
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, id));
-            } catch (e) { alert('삭제 실패: ' + e.message); }
-        };
-
-        // 로그아웃 처리
-        window.handleLogout = async () => {
-            if (!confirm('로그아웃 하시겠습니까?')) return;
-            try {
-                unsubscribers.forEach(unsub => unsub());
-                unsubscribers = [];
-                isSessionActive = false;
-                sessionStorage.removeItem('admin_session');
-                await signOut(auth);
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('auth-status-bar').className = 'status-loading';
-                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-lock mr-1"></i> LOGGED OUT';
-            } catch (err) {
-                alert('로그아웃 실패: ' + err.message);
-            }
-        };
-
-        // 로그인 폼 처리
-        document.getElementById('login-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const idInput = document.getElementById('admin-id').value;
-            const pwInput = document.getElementById('admin-pw').value;
-            const btn = document.getElementById('login-btn');
-
-            if (idInput === ADMIN_INFO.id && pwInput === ADMIN_INFO.pw) {
-                btn.disabled = true; btn.innerText = "접속 중...";
-                try {
-                    await setPersistence(auth, browserSessionPersistence);
-                    await signInAnonymously(auth);
-                    isSessionActive = true;
-                    sessionStorage.setItem('admin_session', 'active');
-                } catch (err) {
-                    alert('인증 서버 연결 실패: ' + err.message);
-                    btn.disabled = false; btn.innerText = "로그인하기";
-                }
-            } else {
-                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
-            }
-        };
-
-        document.getElementById('crud-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true; btn.innerText = "처리 중...";
-            
-            const formData = new FormData(e.target);
-            const payload = { updatedAt: serverTimestamp() };
-            formData.forEach((value, key) => payload[key] = value);
-
-            try {
-                const colRef = collection(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection);
-                if (editingId) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, editingId), payload);
-                } else {
-                    await addDoc(colRef, { ...payload, createdAt: serverTimestamp() });
-                }
-                closeModal();
-            } catch (err) {
-                alert('저장 실패: ' + err.message);
-            } finally {
-                btn.disabled = false; btn.innerText = "저장하기";
-            }
-        };
-
-        document.getElementById('add-btn').onclick = () => openModal();
-
+        // 실시간 데이터 로드
         const initRealtime = () => {
-            const listMappings = { projects: 'project-list', payments: 'payment-list', quotes: 'quote-list', consultations: 'consultation-list', notices: 'notice-list' };
-            Object.keys(config).forEach(tabKey => {
-                const colRef = collection(db, 'artifacts', appId, 'public', 'data', config[tabKey].collection);
-                const unsub = onSnapshot(colRef, (snap) => {
-                    const listEl = document.getElementById(listMappings[tabKey]);
-                    if (!listEl) return;
+            const mappings = { projects: 'project-list', payments: 'payment-list', quotes: 'quote-list', consultations: 'consultation-list', notices: 'notice-list' };
+            
+            Object.keys(config).forEach(key => {
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', config[key].collection);
+                const q = query(colRef, orderBy('createdAt', 'desc'));
+                
+                const unsub = onSnapshot(q, (snap) => {
+                    const el = document.getElementById(mappings[key]);
+                    if (!el) return;
                     
-                    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
-
-                    if (docs.length === 0) {
-                        listEl.innerHTML = `<div class="col-span-full py-20 text-center text-gray-600 text-sm">등록된 내역이 없습니다.</div>`;
-                    } else {
-                        listEl.innerHTML = docs.map(d => config[tabKey].render(d.id, d)).join('');
+                    if (snap.empty) {
+                        el.innerHTML = '<div class="col-span-full py-20 text-center text-gray-600">내역이 없습니다.</div>';
+                        return;
                     }
-                }, (err) => console.error(`${tabKey} error:`, err));
+                    
+                    el.innerHTML = snap.docs.map(d => config[key].render(d.id, d.data())).join('');
+                });
                 unsubscribers.push(unsub);
             });
-            const status = document.getElementById('auth-status-bar');
-            status.className = 'status-online';
-            status.innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> SYSTEM ONLINE';
         };
 
-        onAuthStateChanged(auth, (user) => {
-            const hasSession = sessionStorage.getItem('admin_session') === 'active';
-            
-            if (user && hasSession) { 
-                document.getElementById('login-overlay').classList.add('hidden');
-                initRealtime(); 
-            } else { 
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('login-btn').disabled = false;
-                document.getElementById('login-btn').innerText = "로그인하기";
-                document.getElementById('login-form').reset();
+        // 모달 제어
+        const openModal = (isEdit = false, data = null) => {
+            const fieldsEl = document.getElementById('form-fields');
+            fieldsEl.innerHTML = '';
+            editingId = isEdit ? data.id : null;
+            document.getElementById('modal-title').innerText = isEdit ? '정보 수정' : '새로운 등록';
+
+            const fields = config[currentTab].fields || [];
+            fields.forEach(f => {
+                let input = `<input type="${f.type}" name="${f.id}" value="${data ? data[f.id] : ''}" class="input-field" required>`;
+                if (f.type === 'select') {
+                    input = `<select name="${f.id}" class="input-field">${f.options.map(o => `<option value="${o.v}" ${data && data[f.id] === o.v ? 'selected' : ''}>${o.l}</option>`).join('')}</select>`;
+                }
+                fieldsEl.innerHTML += `<div><label class="block text-[11px] font-bold text-purple-400 mb-2 uppercase">${f.label}</label>${input}</div>`;
+            });
+            document.getElementById('crud-modal').classList.add('active');
+        };
+
+        window.closeModal = () => document.getElementById('crud-modal').classList.remove('active');
+        window.openEdit = (id, json) => openModal(true, { id, ...JSON.parse(decodeURIComponent(json)) });
+        window.deleteItem = async (id) => { if (confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, id)); };
+
+        document.getElementById('add-btn').onclick = () => openModal();
+        document.getElementById('crud-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = { updatedAt: serverTimestamp() };
+            formData.forEach((v, k) => data[k] = v);
+
+            if (editingId) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, editingId), data);
+            } else {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection), { ...data, createdAt: serverTimestamp() });
             }
-        });
+            closeModal();
+        };
+
     </script>
 </body>
 </html>
