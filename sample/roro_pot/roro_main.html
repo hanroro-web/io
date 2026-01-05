@@ -202,9 +202,32 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Toast Message */
+        #toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900" oncontextmenu="return false">
+
+    <!-- Toast Notification -->
+    <div id="toast">메시지 내용</div>
 
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay">
@@ -457,7 +480,6 @@
                     <h2 id="result-title" class="text-2xl font-bold mb-4">분석 결과</h2>
                     <p id="result-desc" class="text-gray-500 text-sm leading-relaxed mb-8"></p>
                     
-                    <!-- Added Consult Button for Step 10 Completion -->
                     <button onclick="openConsult()" class="w-full btn-gold py-5 rounded-xl font-bold text-base shadow-xl mb-3 flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-width="2"></path></svg>
                         <span>변호사와 즉시 상담하기</span>
@@ -482,11 +504,11 @@
         <div class="bg-white w-full max-w-lg rounded-[2rem] p-10 relative">
             <button onclick="closeConsult()" class="absolute top-6 right-6 p-2 text-gray-300 hover:text-gray-900"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"></path></svg></button>
             <h2 class="text-2xl font-bold text-center mb-8">비공개 무료 상담</h2>
-            <form class="space-y-4">
-                <input type="text" placeholder="성함" class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 text-sm outline-none">
-                <input type="tel" placeholder="연락처" class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 text-sm outline-none">
-                <textarea placeholder="문의내용" class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 text-sm h-32 outline-none resize-none focus:border-[#C5A059]"></textarea>
-                <button type="button" onclick="closeConsult()" class="w-full btn-gold py-4 rounded-xl font-bold text-sm shadow-xl mt-4">신청하기</button>
+            <form id="modal-consult-form" class="space-y-4">
+                <input type="text" id="modal-name" placeholder="성함" class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 text-sm outline-none" required>
+                <input type="tel" id="modal-phone" placeholder="연락처" class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 text-sm outline-none" required>
+                <textarea id="modal-content" placeholder="문의내용" class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 text-sm h-32 outline-none resize-none focus:border-[#C5A059]" required></textarea>
+                <button type="submit" class="w-full btn-gold py-4 rounded-xl font-bold text-sm shadow-xl mt-4">신청하기</button>
             </form>
         </div>
     </div>
@@ -495,16 +517,71 @@
     <div class="sticky-bottom-bar flex justify-center">
         <div class="max-w-7xl w-full flex items-center justify-between gap-3 px-4">
             <div class="hidden lg:block text-white"><p class="text-xs font-bold">실시간 상담 채널</p></div>
-            <form class="flex flex-1 items-center space-x-2 w-full md:w-auto">
-                <input type="text" placeholder="성함" class="sticky-input flex-1 md:w-32">
-                <input type="tel" placeholder="연락처" class="sticky-input flex-1 md:w-48">
-                <button type="button" onclick="openConsult()" class="btn-gold px-5 py-2 rounded-md font-bold text-xs">빠른신청</button>
+            <form id="sticky-consult-form" class="flex flex-1 items-center space-x-2 w-full md:w-auto">
+                <input type="text" id="sticky-name" placeholder="성함" class="sticky-input flex-1 md:w-32" required>
+                <input type="tel" id="sticky-phone" placeholder="연락처" class="sticky-input flex-1 md:w-48" required>
+                <button type="submit" class="btn-gold px-5 py-2 rounded-md font-bold text-xs">빠른신청</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Diagnosis Data
+        // Storage Keys
+        const STORAGE_KEYS = {
+            CONSULT_HISTORY: 'roro_consult_history',
+            DIAGNOSIS_RESULT: 'roro_last_diagnosis',
+            READ_POSTS: 'roro_read_posts'
+        };
+
+        // UI Helpers
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // --- Local Storage Logic ---
+
+        // 1. Consultation Persistence
+        function saveConsultation(data) {
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONSULT_HISTORY) || '[]');
+            history.push({ ...data, date: new Date().toISOString() });
+            localStorage.setItem(STORAGE_KEYS.CONSULT_HISTORY, JSON.stringify(history));
+            showToast("상담 신청이 완료되었습니다. 내역이 저장되었습니다.");
+        }
+
+        // 2. Diagnosis Persistence
+        function saveDiagnosis(title, desc, score) {
+            const result = { title, desc, score, timestamp: new Date().toISOString() };
+            localStorage.setItem(STORAGE_KEYS.DIAGNOSIS_RESULT, JSON.stringify(result));
+        }
+
+        function loadLastDiagnosis() {
+            const saved = localStorage.getItem(STORAGE_KEYS.DIAGNOSIS_RESULT);
+            if (saved) {
+                const data = JSON.parse(saved);
+                // If user visits diagnosis page, we can show they have a previous result
+                console.log("마지막 진단 기록 발견:", data);
+            }
+        }
+
+        // 3. Post Read Tracking
+        function markPostAsRead(postId) {
+            let readPosts = JSON.parse(localStorage.getItem(STORAGE_KEYS.READ_POSTS) || '[]');
+            if (!readPosts.includes(postId)) {
+                readPosts.push(postId);
+                localStorage.setItem(STORAGE_KEYS.READ_POSTS, JSON.stringify(readPosts));
+            }
+        }
+
+        function isPostRead(postId) {
+            const readPosts = JSON.parse(localStorage.getItem(STORAGE_KEYS.READ_POSTS) || '[]');
+            return readPosts.includes(postId);
+        }
+
+        // --- Original Logic with Storage Integrated ---
+
         const diagSteps = [
             { q: "사고 당시 주행 상태는 어떠했습니까?", options: [{ text: "정상 주행 (신호 준수)", score: 0 }, { text: "과속 또는 차선 변경 중", score: 2 }, { text: "신호 위반 또는 중앙선 침범", score: 8 }] },
             { q: "상대방의 피해 정도는 어느 정도입니까?", options: [{ text: "단순 차량 파손 (대물)", score: 1 }, { text: "경미한 부상 (전치 2-3주)", score: 4 }, { text: "사망 또는 중상해", score: 20 }] },
@@ -562,6 +639,9 @@
             
             document.getElementById('result-title').innerText = title;
             document.getElementById('result-desc').innerText = desc;
+            
+            // Save to Local Storage
+            saveDiagnosis(title, desc, totalScore);
         }
 
         function resetDiagnosis() {
@@ -571,7 +651,6 @@
             renderStep();
         }
 
-        // Board Data
         const posts = [
             { id: 1, category: "공지", title: "설 연휴 휴무 및 비상 연락망 안내", date: "2024.01.20", content: "로로 법률 사무소입니다. 설 연휴 기간 동안 휴무이나 긴급 상담은 010-XXXX-XXXX로 가능합니다." },
             { id: 2, category: "보도", title: "안양교통사고 전문 변호사, '음주운전 뺑소니' 무죄 판결", date: "2024.01.15", content: "김로로 대표변호사가 최근 화제가 된 음주운전 사건에서 증거 불충분으로 무죄를 이끌어냈습니다." },
@@ -579,18 +658,28 @@
         ];
 
         function renderPostList() {
-            document.getElementById('post-list-container').innerHTML = posts.map(post => `
+            document.getElementById('post-list-container').innerHTML = posts.map(post => {
+                const readTag = isPostRead(post.id) ? '<span class="ml-2 text-[9px] bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">읽음</span>' : '';
+                return `
                 <div class="flex items-center py-6 border-b border-gray-100 px-4 cursor-pointer hover:bg-gray-50 transition-all group" onclick="showPostDetail(${post.id})">
                     <span class="text-[#C5A059] font-bold text-[10px] w-24">[${post.category}]</span>
-                    <h3 class="flex-1 font-bold text-sm group-hover:text-[#C5A059] transition-colors">${post.title}</h3>
+                    <h3 class="flex-1 font-bold text-sm group-hover:text-[#C5A059] transition-colors flex items-center">
+                        ${post.title}
+                        ${readTag}
+                    </h3>
                     <span class="text-[11px] text-gray-400">${post.date}</span>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function showPostDetail(id) {
             const p = posts.find(x => x.id === id);
             if (!p) return;
+            
+            // Mark as read in Local Storage
+            markPostAsRead(id);
+            renderPostList(); // Update UI to show "Read" tag
+
             document.getElementById('detail-content').innerHTML = `
                 <div class="border-b border-gray-100 pb-8 mb-8">
                     <span class="text-[#C5A059] font-bold text-xs uppercase tracking-widest">${p.category}</span>
@@ -608,7 +697,6 @@
             document.getElementById('board-detail-view').classList.add('hidden');
         }
 
-        // Common UI Logic
         function showPage(pageId) {
             document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
             document.getElementById(pageId === 'main' ? 'main-content' : pageId + '-page').classList.add('active');
@@ -645,9 +733,36 @@
             document.body.style.overflow = 'auto'; 
         }
 
+        // Form Submit Handlers
+        document.getElementById('modal-consult-form').onsubmit = function(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('modal-name').value,
+                phone: document.getElementById('modal-phone').value,
+                content: document.getElementById('modal-content').value,
+                source: 'Modal'
+            };
+            saveConsultation(data);
+            this.reset();
+            closeConsult();
+        };
+
+        document.getElementById('sticky-consult-form').onsubmit = function(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('sticky-name').value,
+                phone: document.getElementById('sticky-phone').value,
+                content: '빠른 신청',
+                source: 'StickyBar'
+            };
+            saveConsultation(data);
+            this.reset();
+        };
+
         window.onload = function() {
             renderPostList();
             renderStep();
+            loadLastDiagnosis();
         };
     </script>
 </body>
