@@ -1,1 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>법무법인 민율 - 관리자 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --gold-primary: #C5A059;
+            --slate-deep: #0F172A;
+        }
 
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #f8fafc;
+        }
+
+        .sidebar { background-color: var(--slate-deep); }
+
+        .active-menu {
+            background-color: rgba(197, 160, 89, 0.2);
+            border-left: 4px solid var(--gold-primary);
+            color: var(--gold-primary);
+        }
+
+        .text-gold { color: var(--gold-primary); }
+        .bg-gold { background-color: var(--gold-primary); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        #loginOverlay {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <!-- 로그인 오버레이 (세션 체크용) -->
+    <div id="loginOverlay" class="fixed inset-0 bg-slate-900/90 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md p-10 shadow-2xl text-center">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tighter text-slate-900 mb-2 font-serif">MINYUL <span class="text-gold">ADMIN</span></h1>
+                <p class="text-sm text-gray-500">관리자 계정으로 로그인하세요.</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div class="text-left">
+                    <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">아이디</label>
+                    <input type="text" id="adminId" required class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-2 focus:ring-gold-primary/50 transition" placeholder="admin">
+                </div>
+                <div class="text-left">
+                    <label class="block text-xs font-bold text-gray-500 mb-1 ml-1">비밀번호</label>
+                    <input type="password" id="adminPw" required class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-2 focus:ring-gold-primary/50 transition" placeholder="••••••••">
+                </div>
+                <div id="loginError" class="text-red-500 text-xs font-bold hidden pt-2">아이디 또는 비밀번호가 일치하지 않습니다.</div>
+                <button type="submit" class="w-full bg-gold text-white py-4 rounded-xl font-bold shadow-lg hover:bg-gold-dark transition mt-4">로그인</button>
+            </form>
+            <p class="mt-8 text-[11px] text-gray-400">© 2024 MINYUL Law Firm. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- 사이드바 내비게이션 -->
+    <aside id="mainSidebar" class="sidebar w-64 text-white flex-shrink-0 hidden md:flex flex-col opacity-0 transition-opacity duration-300">
+        <div class="p-6">
+            <h1 class="text-xl font-bold tracking-tighter text-white">MINYUL <span class="text-gold">ADMIN</span></h1>
+        </div>
+        <nav class="flex-1 mt-4">
+            <button onclick="showSection('consultations')" class="w-full flex items-center px-6 py-4 hover:bg-slate-800 transition active-menu text-left" id="menu-consultations">
+                <i class="fa-solid fa-headset w-6 text-center mr-3"></i>
+                상담신청 관리
+            </button>
+            <button onclick="showSection('attorneys')" class="w-full flex items-center px-6 py-4 hover:bg-slate-800 transition text-left" id="menu-attorneys">
+                <i class="fa-solid fa-user-tie w-6 text-center mr-3"></i>
+                구성원(변호사) 관리
+            </button>
+            <button onclick="showSection('board')" class="w-full flex items-center px-6 py-4 hover:bg-slate-800 transition text-left" id="menu-board">
+                <i class="fa-solid fa-clipboard-list w-6 text-center mr-3"></i>
+                게시판 관리
+            </button>
+        </nav>
+        <div class="p-6 border-t border-slate-700 space-y-4">
+            <a href="#" class="flex items-center text-sm text-gray-400 hover:text-white transition">
+                <i class="fa-solid fa-house mr-2"></i> 홈페이지 바로가기
+            </a>
+            <button onclick="handleLogout()" class="w-full flex items-center text-sm text-red-400 hover:text-red-300 transition font-bold">
+                <i class="fa-solid fa-right-from-bracket mr-2"></i> 로그아웃
+            </button>
+        </div>
+    </aside>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main id="mainContent" class="flex-1 flex flex-col min-w-0 opacity-0 transition-opacity duration-300">
+        <!-- 헤더 -->
+        <header class="h-16 bg-white border-b flex items-center justify-between px-8">
+            <h2 id="section-title" class="text-lg font-bold text-slate-800 text-left">상담신청 관리</h2>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-[11px] text-gray-400 font-bold uppercase">Administrator</p>
+                    <p class="text-sm text-slate-700 font-bold">관리자 01</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 border shadow-sm">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- 섹션: 상담신청 관리 -->
+        <section id="section-consultations" class="p-8 space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-800">실시간 상담 예약 현황</h3>
+                <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-bold italic">Today 3</span>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">접수일시</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">신청자</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">연락처</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">분야</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">상태</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-6 py-5 text-sm text-gray-500">2024-11-06 10:20</td>
+                            <td class="px-6 py-5 text-sm font-bold text-slate-900">김철수</td>
+                            <td class="px-6 py-5 text-sm text-gray-600">010-1234-5678</td>
+                            <td class="px-6 py-5 text-sm text-gray-600">형사전문</td>
+                            <td class="px-6 py-5 text-sm">
+                                <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[11px] font-bold">대기중</span>
+                            </td>
+                            <td class="px-6 py-5 text-sm">
+                                <button class="text-gold hover:underline font-bold">상세보기</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-5 text-sm text-gray-500">2024-11-05 15:45</td>
+                            <td class="px-6 py-5 text-sm font-bold text-slate-900">이지혜</td>
+                            <td class="px-6 py-5 text-sm text-gray-600">010-9876-5432</td>
+                            <td class="px-6 py-5 text-sm text-gray-600">이혼/가사</td>
+                            <td class="px-6 py-5 text-sm">
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[11px] font-bold">상담완료</span>
+                            </td>
+                            <td class="px-6 py-5 text-sm">
+                                <button class="text-gold hover:underline font-bold">상세보기</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 섹션: 구성원 관리 -->
+        <section id="section-attorneys" class="p-8 space-y-6 hidden text-left">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-800">변호사 구성원 관리</h3>
+                <button onclick="toggleModal('attorneyModal')" class="bg-gold text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md hover:bg-gold-dark transition flex items-center">
+                    <i class="fa-solid fa-plus mr-2"></i> 새 구성원 추가
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Attorney Card Sample -->
+                <div class="bg-white p-6 rounded-2xl border shadow-sm flex items-center space-x-5 hover:shadow-md transition">
+                    <div class="w-20 h-24 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center text-gold text-3xl border">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-slate-900 text-lg leading-tight">홍길동 변호사</h4>
+                        <p class="text-xs text-gold font-bold mb-3">대표변호사 / 형사전문</p>
+                        <div class="flex space-x-3">
+                            <button class="text-xs text-blue-500 hover:underline font-bold">수정</button>
+                            <button class="text-xs text-red-400 hover:underline font-bold">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션: 게시판 관리 -->
+        <section id="section-board" class="p-8 space-y-6 hidden">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-800">공지사항 및 언론보도</h3>
+                <button onclick="toggleModal('postModal')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md hover:bg-slate-800 transition flex items-center">
+                    <i class="fa-solid fa-pen mr-2"></i> 새 글 쓰기
+                </button>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <div class="flex border-b bg-gray-50/50">
+                    <button class="px-8 py-4 text-sm font-bold border-b-2 border-gold text-gold">전체보기</button>
+                    <button class="px-8 py-4 text-sm font-medium text-gray-400 hover:text-slate-600 transition">공지사항</button>
+                    <button class="px-8 py-4 text-sm font-medium text-gray-400 hover:text-slate-600 transition">언론보도</button>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50/80 border-b">
+                        <tr>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">구분</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">제목</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-left">작성일</th>
+                            <th class="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-6 py-5 text-sm"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded text-[10px] font-bold">공지</span></td>
+                            <td class="px-6 py-5 text-sm text-slate-900 font-bold">프리미엄 법률 컨설팅 서비스 확대 안내</td>
+                            <td class="px-6 py-5 text-sm text-gray-400">2024.11.05</td>
+                            <td class="px-6 py-5 text-sm text-right space-x-4">
+                                <button class="text-blue-500 hover:underline font-bold">수정</button>
+                                <button class="text-red-400 hover:underline font-bold">삭제</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- 모달: 구성원 추가 -->
+    <div id="attorneyModal" class="fixed inset-0 bg-black/60 hidden z-[150] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+                <h4 class="font-bold text-slate-800">새 구성원 등록</h4>
+                <button onclick="toggleModal('attorneyModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-8 space-y-6 custom-scrollbar overflow-y-auto max-h-[80vh]">
+                <div class="flex flex-col items-center">
+                    <label class="block text-xs font-bold text-gray-500 mb-3 w-full text-left uppercase tracking-tighter">Profile Photo</label>
+                    <div class="relative group w-36 h-48">
+                        <div id="imagePreview" class="w-full h-full rounded-2xl bg-gray-50 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-200 group-hover:border-gold-primary transition cursor-pointer" onclick="document.getElementById('attorneyPhoto').click()">
+                            <div class="text-center text-gray-400">
+                                <i class="fa-solid fa-camera-retro text-3xl mb-2"></i>
+                                <p class="text-[10px] font-bold">UPLOAD</p>
+                            </div>
+                        </div>
+                        <input type="file" id="attorneyPhoto" class="hidden" accept="image/*" onchange="previewFile()">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-left">
+                        <label class="block text-xs font-bold text-gray-400 mb-1 ml-1">성함</label>
+                        <input type="text" class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary text-sm" placeholder="홍길동">
+                    </div>
+                    <div class="text-left">
+                        <label class="block text-xs font-bold text-gray-400 mb-1 ml-1">직책</label>
+                        <input type="text" class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary text-sm" placeholder="대표변호사">
+                    </div>
+                </div>
+                <div class="text-left">
+                    <label class="block text-xs font-bold text-gray-400 mb-1 ml-1">전문분야</label>
+                    <input type="text" class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary text-sm" placeholder="형사, 가사, 민사">
+                </div>
+                <div class="text-left">
+                    <label class="block text-xs font-bold text-gray-400 mb-1 ml-1">약력/경력</label>
+                    <textarea class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary h-28 resize-none text-sm" placeholder="경력 사항을 입력하세요"></textarea>
+                </div>
+                <button class="w-full bg-gold text-white py-4 rounded-xl font-bold shadow-lg hover:bg-gold-dark transition">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달: 게시글 작성 -->
+    <div id="postModal" class="fixed inset-0 bg-black/60 hidden z-[150] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl text-left">
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+                <h4 class="font-bold text-slate-800">게시글 작성</h4>
+                <button onclick="toggleModal('postModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-8 space-y-5">
+                <div class="flex space-x-4">
+                    <div class="w-1/3">
+                        <label class="block text-xs font-bold text-gray-400 mb-1 ml-1 text-left">분류</label>
+                        <select class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary text-sm appearance-none bg-white">
+                            <option>공지사항</option>
+                            <option>언론보도</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-gray-400 mb-1 ml-1 text-left">제목</label>
+                        <input type="text" class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary text-sm" placeholder="제목을 입력하세요">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1 ml-1 text-left">상세 내용</label>
+                    <textarea class="w-full px-4 py-3 border rounded-xl outline-none focus:ring-1 focus:ring-gold-primary h-72 resize-none text-sm" placeholder="내용을 입력하세요"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button onclick="toggleModal('postModal')" class="px-6 py-2.5 border rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50">취소</button>
+                    <button class="px-8 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 shadow-md transition">게시글 등록</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 관리자 정보 (임시)
+        const ADMIN_INFO = {
+            id: 'admin',
+            pw: '1234'
+        };
+
+        // 초기 세션 체크
+        function checkSession() {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            const overlay = document.getElementById('loginOverlay');
+            const sidebar = document.getElementById('mainSidebar');
+            const content = document.getElementById('mainContent');
+
+            if (isLoggedIn === 'true') {
+                overlay.classList.add('hidden');
+                sidebar.classList.remove('hidden');
+                sidebar.classList.remove('opacity-0');
+                content.classList.remove('opacity-0');
+                showSection('consultations');
+            } else {
+                overlay.classList.remove('hidden');
+                sidebar.classList.add('hidden');
+                sidebar.classList.add('opacity-0');
+                content.classList.add('opacity-0');
+            }
+        }
+
+        // 로그인 처리
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const idInput = document.getElementById('adminId').value;
+            const pwInput = document.getElementById('adminPw').value;
+            const errorMsg = document.getElementById('loginError');
+
+            if (idInput === ADMIN_INFO.id && pwInput === ADMIN_INFO.pw) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                errorMsg.classList.add('hidden');
+                checkSession();
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        });
+
+        // 로그아웃 처리
+        function handleLogout() {
+            if(confirm('로그아웃 하시겠습니까?')) {
+                sessionStorage.removeItem('isLoggedIn');
+                location.reload();
+            }
+        }
+
+        // 섹션 전환 로직
+        function showSection(sectionId) {
+            const sections = ['consultations', 'attorneys', 'board'];
+            sections.forEach(s => {
+                document.getElementById('section-' + s).classList.add('hidden');
+                document.getElementById('menu-' + s).classList.remove('active-menu');
+            });
+
+            document.getElementById('section-' + sectionId).classList.remove('hidden');
+            document.getElementById('menu-' + sectionId).classList.add('active-menu');
+
+            const titles = {
+                'consultations': '상담신청 관리',
+                'attorneys': '구성원(변호사) 관리',
+                'board': '게시판 관리'
+            };
+            document.getElementById('section-title').innerText = titles[sectionId];
+        }
+
+        // 모달 토글
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden');
+        }
+
+        // 이미지 미리보기
+        function previewFile() {
+            const preview = document.getElementById('imagePreview');
+            const file = document.getElementById('attorneyPhoto').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                preview.innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
+                preview.classList.remove('border-dashed');
+                preview.classList.add('border-solid', 'border-gold-primary');
+            }
+
+            if (file) reader.readAsDataURL(file);
+        }
+
+        // 페이지 로드 시 실행
+        window.onload = checkSession;
+    </script>
+</body>
+</html>
