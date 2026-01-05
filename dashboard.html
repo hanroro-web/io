@@ -42,7 +42,7 @@
 
     <!-- 사이드바 -->
     <aside class="sidebar w-64 flex-shrink-0 flex flex-col">
-        <div class="p-6">
+        <div class="p-6 flex-grow">
             <div class="flex items-center space-x-2 mb-10">
                 <i class="fas fa-magic text-purple-500"></i>
                 <span class="text-xl font-black tracking-tighter uppercase">HANRORO CMS</span>
@@ -64,6 +64,12 @@
                     <i class="fas fa-bullhorn w-5"></i><span>공지사항 관리</span>
                 </div>
             </nav>
+        </div>
+        <!-- 로그아웃 섹션 -->
+        <div class="p-6 border-t border-white/5">
+            <button onclick="window.handleLogout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-400/10 transition-colors">
+                <i class="fas fa-sign-out-alt w-5"></i><span>로그아웃</span>
+            </button>
         </div>
     </aside>
 
@@ -101,7 +107,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, setPersistence, browserSessionPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
@@ -278,6 +284,17 @@
             } catch (e) { alert('삭제 실패: ' + e.message); }
         };
 
+        // 로그아웃 처리 함수
+        window.handleLogout = async () => {
+            if (!confirm('로그아웃 하시겠습니까?')) return;
+            try {
+                await signOut(auth);
+                location.reload(); // 세션 완전 초기화를 위해 페이지 새로고침
+            } catch (err) {
+                alert('로그아웃 실패: ' + err.message);
+            }
+        };
+
         document.getElementById('crud-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -329,14 +346,11 @@
             status.innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> SYSTEM ONLINE';
         };
 
-        // 재접속 시 로그아웃 되도록 세션 지속성 설정 변경
-        // browserSessionPersistence: 브라우저 탭을 닫으면 로그아웃됨
         onAuthStateChanged(auth, async (user) => {
             if (user) { 
                 initRealtime(); 
             } else { 
                 try {
-                    // 새로고침이나 재접속 시 세션이 초기화되도록 설정 후 익명 로그인 실행
                     await setPersistence(auth, browserSessionPersistence);
                     await signInAnonymously(auth); 
                 } catch (error) {
