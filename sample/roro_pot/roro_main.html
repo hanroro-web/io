@@ -333,7 +333,7 @@
             </div>
         </section>
 
-        <!-- Procedure Section (New) -->
+        <!-- Procedure Section -->
         <section id="procedure" class="py-24 bg-white">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center mb-16">
@@ -413,7 +413,7 @@
         </section>
     </main>
 
-    <!-- Page: Board (Restored) -->
+    <!-- Page: Board -->
     <section id="board-page" class="page-section pt-32 pb-24 bg-white min-h-screen">
         <div class="max-w-5xl mx-auto px-6">
             <div id="board-list-view">
@@ -435,7 +435,7 @@
         </div>
     </section>
 
-    <!-- Page: Diagnosis (Restored) -->
+    <!-- Page: Diagnosis -->
     <section id="diagnosis-page" class="page-section pt-32 pb-24 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-12">
@@ -456,6 +456,13 @@
                     <h3 class="text-sm font-bold text-[#C5A059] mb-2">진단 결과 분석 보고</h3>
                     <h2 id="result-title" class="text-2xl font-bold mb-4">분석 결과</h2>
                     <p id="result-desc" class="text-gray-500 text-sm leading-relaxed mb-8"></p>
+                    
+                    <!-- Added Consult Button for Step 10 Completion -->
+                    <button onclick="openConsult()" class="w-full btn-gold py-5 rounded-xl font-bold text-base shadow-xl mb-3 flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-width="2"></path></svg>
+                        <span>변호사와 즉시 상담하기</span>
+                    </button>
+                    
                     <button onclick="resetDiagnosis()" class="w-full bg-gray-200 text-gray-600 py-4 rounded-xl font-bold text-sm hover:bg-gray-300">다시 진단하기</button>
                 </div>
             </div>
@@ -497,7 +504,7 @@
     </div>
 
     <script>
-        // Restored Diagnosis Data
+        // Diagnosis Data
         const diagSteps = [
             { q: "사고 당시 주행 상태는 어떠했습니까?", options: [{ text: "정상 주행 (신호 준수)", score: 0 }, { text: "과속 또는 차선 변경 중", score: 2 }, { text: "신호 위반 또는 중앙선 침범", score: 8 }] },
             { q: "상대방의 피해 정도는 어느 정도입니까?", options: [{ text: "단순 차량 파손 (대물)", score: 1 }, { text: "경미한 부상 (전치 2-3주)", score: 4 }, { text: "사망 또는 중상해", score: 20 }] },
@@ -564,7 +571,7 @@
             renderStep();
         }
 
-        // Restored Board Data
+        // Board Data
         const posts = [
             { id: 1, category: "공지", title: "설 연휴 휴무 및 비상 연락망 안내", date: "2024.01.20", content: "로로 법률 사무소입니다. 설 연휴 기간 동안 휴무이나 긴급 상담은 010-XXXX-XXXX로 가능합니다." },
             { id: 2, category: "보도", title: "안양교통사고 전문 변호사, '음주운전 뺑소니' 무죄 판결", date: "2024.01.15", content: "김로로 대표변호사가 최근 화제가 된 음주운전 사건에서 증거 불충분으로 무죄를 이끌어냈습니다." },
