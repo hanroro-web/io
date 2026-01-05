@@ -10,6 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         body { font-family: 'Pretendard', sans-serif; background: #05020a; color: #fff; margin: 0; padding: 0; }
         
+        /* 로그인 오버레이 */
+        #login-overlay { position: fixed; inset: 0; z-index: 2000; background: #05020a; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        #login-overlay.hidden { opacity: 0; pointer-events: none; }
+        
         .sidebar { background: #0c051a; border-right: 1px solid rgba(138, 79, 255, 0.1); }
         .card { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.1); border-radius: 1rem; transition: all 0.2s; }
         .card:hover { border-color: rgba(138, 79, 255, 0.3); }
@@ -35,6 +39,29 @@
     </style>
 </head>
 <body class="min-h-screen flex overflow-hidden">
+
+    <!-- 로그인 화면 -->
+    <div id="login-overlay">
+        <div class="text-center p-8 max-w-sm w-full">
+            <div class="flex justify-center mb-6 text-5xl text-purple-500">
+                <i class="fas fa-magic"></i>
+            </div>
+            <h1 class="text-3xl font-black tracking-tighter mb-2 uppercase">HANRORO CMS</h1>
+            <p class="text-gray-500 text-sm mb-8">관리자 계정으로 로그인해 주세요.</p>
+            
+            <form id="login-form" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Admin ID</label>
+                    <input type="text" id="admin-id" class="input-field" placeholder="아이디 입력" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Password</label>
+                    <input type="password" id="admin-pw" class="input-field" placeholder="비밀번호 입력" required>
+                </div>
+                <button type="submit" id="login-btn" class="btn-primary w-full py-4 text-lg mt-4">로그인하기</button>
+            </form>
+        </div>
+    </div>
 
     <div id="auth-status-bar" class="status-loading">
         <i class="fas fa-spinner fa-spin mr-1"></i> CONNECTING...
@@ -120,8 +147,13 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
+        // 관리자 정보 (클라이언트 측 검증용)
+        const ADMIN_INFO = { id: 'hanroro', pw: 'gksfhfh00@@' };
+
         let currentTab = 'projects';
         let editingId = null;
+        let unsubscribers = [];
+        let isSessionActive = false;
 
         const config = {
             projects: {
@@ -284,14 +316,43 @@
             } catch (e) { alert('삭제 실패: ' + e.message); }
         };
 
-        // 로그아웃 처리 함수
+        // 로그아웃 처리
         window.handleLogout = async () => {
             if (!confirm('로그아웃 하시겠습니까?')) return;
             try {
+                unsubscribers.forEach(unsub => unsub());
+                unsubscribers = [];
+                isSessionActive = false;
+                sessionStorage.removeItem('admin_session');
                 await signOut(auth);
-                location.reload(); // 세션 완전 초기화를 위해 페이지 새로고침
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('auth-status-bar').className = 'status-loading';
+                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-lock mr-1"></i> LOGGED OUT';
             } catch (err) {
                 alert('로그아웃 실패: ' + err.message);
+            }
+        };
+
+        // 로그인 폼 처리
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const idInput = document.getElementById('admin-id').value;
+            const pwInput = document.getElementById('admin-pw').value;
+            const btn = document.getElementById('login-btn');
+
+            if (idInput === ADMIN_INFO.id && pwInput === ADMIN_INFO.pw) {
+                btn.disabled = true; btn.innerText = "접속 중...";
+                try {
+                    await setPersistence(auth, browserSessionPersistence);
+                    await signInAnonymously(auth);
+                    isSessionActive = true;
+                    sessionStorage.setItem('admin_session', 'active');
+                } catch (err) {
+                    alert('인증 서버 연결 실패: ' + err.message);
+                    btn.disabled = false; btn.innerText = "로그인하기";
+                }
+            } else {
+                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
             }
         };
 
@@ -325,12 +386,11 @@
             const listMappings = { projects: 'project-list', payments: 'payment-list', quotes: 'quote-list', consultations: 'consultation-list', notices: 'notice-list' };
             Object.keys(config).forEach(tabKey => {
                 const colRef = collection(db, 'artifacts', appId, 'public', 'data', config[tabKey].collection);
-                onSnapshot(colRef, (snap) => {
+                const unsub = onSnapshot(colRef, (snap) => {
                     const listEl = document.getElementById(listMappings[tabKey]);
                     if (!listEl) return;
                     
                     const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    // 정렬: 최신순
                     docs.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
 
                     if (docs.length === 0) {
@@ -339,23 +399,24 @@
                         listEl.innerHTML = docs.map(d => config[tabKey].render(d.id, d)).join('');
                     }
                 }, (err) => console.error(`${tabKey} error:`, err));
+                unsubscribers.push(unsub);
             });
-            // 접속 완료 표시
             const status = document.getElementById('auth-status-bar');
             status.className = 'status-online';
             status.innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> SYSTEM ONLINE';
         };
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) { 
+        onAuthStateChanged(auth, (user) => {
+            const hasSession = sessionStorage.getItem('admin_session') === 'active';
+            
+            if (user && hasSession) { 
+                document.getElementById('login-overlay').classList.add('hidden');
                 initRealtime(); 
             } else { 
-                try {
-                    await setPersistence(auth, browserSessionPersistence);
-                    await signInAnonymously(auth); 
-                } catch (error) {
-                    console.error("Auth Persistence Error:", error);
-                }
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('login-btn').disabled = false;
+                document.getElementById('login-btn').innerText = "로그인하기";
+                document.getElementById('login-form').reset();
             }
         });
     </script>
