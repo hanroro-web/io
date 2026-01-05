@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>법무법인 로로 </title>
+    <title>법무법인 로로</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600;700&display=swap');
-        
+        /* 돋움 및 현대적 산세리프 폰트 설정 */
         :root {
             --gold-primary: #C5A059;
             --gold-dark: #A68446;
@@ -17,8 +16,18 @@
             --black-footer: #111111;
         }
 
-        body { font-family: 'Pretendard', sans-serif; scroll-behavior: smooth; }
-        .serif { font-family: 'Noto Serif KR', serif; }
+        /* 돋움체를 기본으로 하며, 없을 경우 맑은 고딕이나 시스템 산세리프를 사용합니다. */
+        body { 
+            font-family: 'Dotum', '돋움', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; 
+            scroll-behavior: smooth; 
+            letter-spacing: -0.025em;
+        }
+        
+        /* 제목 등 강조가 필요한 부분도 돋움체 계열로 유지 */
+        .serif, h1, h2, h3, h4 { 
+            font-family: 'Dotum', '돋움', 'Apple SD Gothic Neo', sans-serif;
+            font-weight: bold;
+        }
         
         .hero-gradient {
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
@@ -59,7 +68,6 @@
             transform: translateY(0);
         }
 
-        /* 게시판 모달 애니메이션 */
         #board-modal {
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
@@ -131,9 +139,12 @@
             border: 1px solid rgba(197, 160, 89, 0.2);
         }
         .attorney-mockup i {
-            font-size: 5rem;
+            font-size: 3rem;
             color: var(--gold-primary);
             opacity: 0.6;
+        }
+        @media (min-width: 768px) {
+            .attorney-mockup i { font-size: 5rem; }
         }
 
         .footer-black {
@@ -236,45 +247,46 @@
                 <p class="text-gray-500 max-w-xl mx-auto">각 분야 최고의 전문가들이 의뢰인을 위해 원팀(One-Team)으로 움직입니다.</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- grid-cols-2 (모바일), lg:grid-cols-4 (PC) 설정 -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                 <div class="group cursor-pointer">
-                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                    <div class="attorney-mockup rounded-xl mb-4 md:mb-6 transition duration-500">
                          <i class="fa-solid fa-user-tie"></i>
                     </div>
                     <div class="text-center">
-                        <h4 class="text-xl font-bold mb-1">홍길동 변호사</h4>
-                        <p class="text-gold text-sm font-semibold mb-3">대표변호사 / 형사전문</p>
-                        <p class="text-xs text-gray-500 leading-relaxed px-4">사법연수원 35기<br>전) 서울중앙지검 검사</p>
+                        <h4 class="text-lg md:text-xl font-bold mb-1">홍길동 변호사</h4>
+                        <p class="text-gold text-[10px] md:text-sm font-semibold mb-2 md:mb-3 uppercase tracking-tighter">대표변호사 / 형사전문</p>
+                        <p class="text-[10px] md:text-xs text-gray-500 leading-relaxed px-2 md:px-4 text-center">사법연수원 35기<br>전) 서울중앙지검 검사</p>
                     </div>
                 </div>
                 <div class="group cursor-pointer">
-                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                    <div class="attorney-mockup rounded-xl mb-4 md:mb-6 transition duration-500">
                          <i class="fa-solid fa-user-shield"></i>
                     </div>
                     <div class="text-center">
-                        <h4 class="text-xl font-bold mb-1">이서연 변호사</h4>
-                        <p class="text-gold text-sm font-semibold mb-3">파트너 변호사 / 가사전문</p>
-                        <p class="text-xs text-gray-500 leading-relaxed px-4">서울대학교 법과대학 졸업<br>대한변협 등록 가사전문변호사</p>
+                        <h4 class="text-lg md:text-xl font-bold mb-1">이서연 변호사</h4>
+                        <p class="text-gold text-[10px] md:text-sm font-semibold mb-2 md:mb-3 uppercase tracking-tighter">파트너 변호사 / 가사전문</p>
+                        <p class="text-[10px] md:text-xs text-gray-500 leading-relaxed px-2 md:px-4 text-center">서울대학교 법대 졸업<br>변협 등록 가사전문</p>
                     </div>
                 </div>
                 <div class="group cursor-pointer">
-                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                    <div class="attorney-mockup rounded-xl mb-4 md:mb-6 transition duration-500">
                          <i class="fa-solid fa-scale-balanced"></i>
                     </div>
                     <div class="text-center">
-                        <h4 class="text-xl font-bold mb-1">박민준 변호사</h4>
-                        <p class="text-gold text-sm font-semibold mb-3">파트너 변호사 / 기업법무</p>
-                        <p class="text-xs text-gray-500 leading-relaxed px-4">뉴욕주 변호사 자격 보유<br>전) 대형로펌 기업법무팀</p>
+                        <h4 class="text-lg md:text-xl font-bold mb-1">박민준 변호사</h4>
+                        <p class="text-gold text-[10px] md:text-sm font-semibold mb-2 md:mb-3 uppercase tracking-tighter">파트너 변호사 / 기업법무</p>
+                        <p class="text-[10px] md:text-xs text-gray-500 leading-relaxed px-2 md:px-4 text-center">뉴욕주 변호사 자격<br>전) 대형로펌 기업팀</p>
                     </div>
                 </div>
                 <div class="group cursor-pointer">
-                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                    <div class="attorney-mockup rounded-xl mb-4 md:mb-6 transition duration-500">
                          <i class="fa-solid fa-landmark"></i>
                     </div>
                     <div class="text-center">
-                        <h4 class="text-xl font-bold mb-1">최지우 변호사</h4>
-                        <p class="text-gold text-sm font-semibold mb-3">변호사 / 부동산·민사</p>
-                        <p class="text-xs text-gray-500 leading-relaxed px-4">성균관대학교 로스쿨 졸업<br>부동산 자산운용사 자문위원</p>
+                        <h4 class="text-lg md:text-xl font-bold mb-1">최지우 변호사</h4>
+                        <p class="text-gold text-[10px] md:text-sm font-semibold mb-2 md:mb-3 uppercase tracking-tighter">변호사 / 부동산·민사</p>
+                        <p class="text-[10px] md:text-xs text-gray-500 leading-relaxed px-2 md:px-4 text-center">성균관대 로스쿨 졸업<br>부동산 자산운용 자문</p>
                     </div>
                 </div>
             </div>
@@ -429,7 +441,7 @@
                     <p>대표전화: <span class="text-white font-bold">02-1234-5678</span></p>
                     <p>이메일: info@loro.com</p>
                 </div>
-                <div class="pt-12 text-[10px] tracking-widest opacity-40">
+                <div class="pt-12 text-[10px] tracking-widest opacity-40 text-center">
                     COPYRIGHT © 2024 LAWFIRM LORO. ALL RIGHTS RESERVED.
                 </div>
             </div>
