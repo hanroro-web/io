@@ -20,13 +20,16 @@
             scroll-behavior: smooth; 
             -webkit-font-smoothing: antialiased; 
             overflow-x: hidden;
+            /* 기본 드래그 방지 스타일 */
             -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             user-select: none;
             margin: 0;
             padding: 0;
         }
         
-        img { -webkit-user-drag: none; user-drag: none; }
+        img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
 
         .glass-nav { background: rgba(5, 2, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .hero-gradient { background: radial-gradient(circle at 50% 50%, #150b2e 0%, #05020a 100%); }
@@ -145,7 +148,6 @@
             box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
         }
 
-        /* 공지사항 게시판 스타일 */
         .notice-board-section {
             background: rgba(138, 79, 255, 0.03);
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -189,7 +191,8 @@
         input, textarea, select { -webkit-user-select: text !important; user-select: text !important; }
     </style>
 </head>
-<body>
+<!-- oncontextmenu, onselectstart, ondragstart 속성을 추가하여 방지 기능을 강화함 -->
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 glass-nav">
@@ -282,7 +285,7 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 포트폴리오 카드 1 -->
+                <!-- Portfolio Card 1 -->
                 <div class="unified-card !p-8 flex flex-col h-full group">
                     <div class="flex items-center justify-between mb-6">
                         <div class="w-12 h-12 rounded-2xl bg-purple-600/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
@@ -298,7 +301,7 @@
                         <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">GSAP</span>
                     </div>
                 </div>
-                <!-- 포트폴리오 카드 2 -->
+                <!-- Portfolio Card 2 -->
                 <div class="unified-card !p-8 flex flex-col h-full border-purple-500/20 bg-purple-500/5 group">
                     <div class="flex items-center justify-between mb-6">
                         <div class="w-12 h-12 rounded-2xl bg-purple-600/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
@@ -314,7 +317,7 @@
                         <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">API</span>
                     </div>
                 </div>
-                <!-- 포트폴리오 카드 3 -->
+                <!-- Portfolio Card 3 -->
                 <div class="unified-card !p-8 flex flex-col h-full group">
                     <div class="flex items-center justify-between mb-6">
                         <div class="w-12 h-12 rounded-2xl bg-purple-600/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
@@ -334,7 +337,7 @@
         </div>
     </section>
 
-    <!-- 실시간 공지사항 게시판 -->
+    <!-- Notice Board -->
     <div class="notice-board-section">
         <div class="notice-board-container">
             <span class="notice-label">Notice</span>
@@ -364,30 +367,10 @@
             <div>
                 <h5 class="text-white font-bold text-sm mb-6 uppercase tracking-widest">사업자 정보</h5>
                 <ul class="space-y-4 text-xs text-gray-500 font-bold">
-                    <li>
-                        <div class="flex items-center mb-1">
-                            <i class="fas fa-id-card text-purple-500 mr-2 shrink-0"></i>
-                            상호명: 한로로(Hanroro) - 55디자이너스
-                        </div>
-                    </li>
-                    <li>
-                        <div class="flex items-center mb-1">
-                            <i class="fas fa-file-invoice text-gray-600 mr-2 shrink-0"></i>
-                            사업자번호: 540-40-00028
-                        </div>
-                    </li>
-                    <li>
-                        <div class="flex items-center mb-1">
-                            <i class="fas fa-shopping-cart text-gray-600 mr-2 shrink-0"></i>
-                            통신판매업: 제 2015-안양만안-00105호
-                        </div>
-                    </li>
-                    <li>
-                        <div class="flex items-center mb-1">
-                            <i class="fas fa-user-tie text-gray-600 mr-2 shrink-0"></i>
-                            대표자: 김상우
-                        </div>
-                    </li>
+                    <li><div class="flex items-center mb-1"><i class="fas fa-id-card text-purple-500 mr-2 shrink-0"></i>상호명: 한로로(Hanroro) - 55디자이너스</div></li>
+                    <li><div class="flex items-center mb-1"><i class="fas fa-file-invoice text-gray-600 mr-2 shrink-0"></i>사업자번호: 540-40-00028</div></li>
+                    <li><div class="flex items-center mb-1"><i class="fas fa-shopping-cart text-gray-600 mr-2 shrink-0"></i>통신판매업: 제 2015-안양만안-00105호</div></li>
+                    <li><div class="flex items-center mb-1"><i class="fas fa-user-tie text-gray-600 mr-2 shrink-0"></i>대표자: 김상우</div></li>
                 </ul>
             </div>
             <div>
@@ -400,7 +383,7 @@
         </div>
     </footer>
 
-    <!-- Quote Modal -->
+    <!-- Modals -->
     <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
         <div class="modal-content p-8">
             <h3 class="text-xl font-black text-white mb-6 uppercase tracking-tight">견적 상담 신청</h3>
@@ -441,7 +424,6 @@
         </div>
     </div>
 
-    <!-- Payment Modal -->
     <div id="payment-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('payment-modal', false)">
         <div class="modal-content p-8">
             <h3 class="text-xl font-black text-white mb-6 uppercase tracking-tight">견적 결제 (입금 확인)</h3>
@@ -468,9 +450,7 @@
                     <label>상품 선택</label>
                     <div id="pay-options" class="space-y-2">
                         <div class="pay-item selected" onclick="selectPay(this, '1. 한로로 + 구글 호스팅', 1350000)">
-                            <div class="pay-icon-box">
-                                <i class="fab fa-google text-lg"></i>
-                            </div>
+                            <div class="pay-icon-box"><i class="fab fa-google text-lg"></i></div>
                             <div class="flex-grow text-left">
                                 <h4 class="text-white font-bold text-xs">1. 한로로 + 구글 호스팅</h4>
                                 <p class="text-[9px] text-gray-500">Google Cloud 최고급 인프라 적용</p>
@@ -478,9 +458,7 @@
                             <div class="text-purple-400 font-black text-xs shrink-0">₩1,350,000</div>
                         </div>
                         <div class="pay-item" onclick="selectPay(this, '2. 한로로 + 일반 호스팅', 1450000)">
-                            <div class="pay-icon-box">
-                                <i class="fas fa-server text-lg"></i>
-                            </div>
+                            <div class="pay-icon-box"><i class="fas fa-server text-lg"></i></div>
                             <div class="flex-grow text-left">
                                 <h4 class="text-white font-bold text-xs">2. 한로로 + 일반 호스팅</h4>
                                 <p class="text-[9px] text-gray-500">안정적이고 효율적인 매니지드 서버</p>
@@ -489,23 +467,18 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="total-summary flex justify-between items-center">
                     <div>
                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Total Price</span>
                         <span id="display-selected-type" class="text-[11px] text-purple-400 font-bold">1. 한로로 + 구글 호스팅</span>
                     </div>
-                    <div class="text-right">
-                        <span id="display-total-price" class="text-xl font-black text-white">₩1,350,000</span>
-                    </div>
+                    <div class="text-right"><span id="display-total-price" class="text-xl font-black text-white">₩1,350,000</span></div>
                 </div>
-
                 <button type="submit" class="submit-payment-btn w-full text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest mt-6">입금 확인 요청하기</button>
             </form>
         </div>
     </div>
 
-    <!-- Status Modal -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-lg bg-[#08040f] p-8">
             <h3 class="text-lg font-black text-white uppercase mb-6">프로젝트 라이브</h3>
@@ -515,7 +488,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", authDomain: "hanroro-web.firebaseapp.com", projectId: "hanroro-web", appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" };
@@ -524,8 +497,19 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        let selectedPayData = { type: '1. 한로로 + 구글 호스팅', amount: 1350000 };
+        // 소스 보기 및 키보드 단축키 차단 스크립트
+        document.onkeydown = function(e) {
+            // F12 차단
+            if (e.keyCode == 123) return false;
+            // Ctrl+Shift+I, J, C 차단
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;
+            // Ctrl+U (소스 보기) 차단
+            if (e.ctrlKey && e.keyCode == 85) return false;
+            // Ctrl+S (저장) 차단
+            if (e.ctrlKey && e.keyCode == 83) return false;
+        };
 
+        let selectedPayData = { type: '1. 한로로 + 구글 호스팅', amount: 1350000 };
         const maskName = (name) => name && name.length > 1 ? name[0] + "*".repeat(name.length - 1) : "익명";
         
         window.toggleModal = (id, show) => {
@@ -544,34 +528,25 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // 프로젝트 실시간 동기화 (최대 6개)
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
                     let html = '';
-                    let count = 0;
                     snap.forEach(d => {
-                        if(count >= 6) return; // 6개 제한
                         const p = d.data();
                         html += `<div class="unified-card"><h4 class="font-bold text-white text-sm mb-2">${p.name}</h4><div class="flex justify-between text-[9px] text-purple-400 mb-1"><span>${p.phase}</span><span>${p.progress}%</span></div><div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress}%"></div></div></div>`;
-                        count++;
                     });
                     document.getElementById('main-project-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 text-xs py-10">진행 중인 프로젝트가 없습니다.</p>';
                     document.getElementById('modal-project-list').innerHTML = html;
                 });
 
-                // 입금 현황 실시간 동기화 (최대 6개)
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), (snap) => {
                     let html = '';
-                    let count = 0;
                     snap.forEach(d => {
-                        if(count >= 6) return; // 6개 제한
                         const data = d.data();
                         html += `<div class="unified-card"><h4 class="font-bold text-white text-sm mb-2">${maskName(data.name)}</h4><div class="flex justify-between items-center"><span class="text-[9px] text-purple-300 font-black uppercase">${data.type || '서비스'}</span><span class="payment-badge ${data.status === 'complete' ? '' : 'waiting'}">${data.status === 'complete' ? '입금완료' : '확인중'}</span></div></div>`;
-                        count++;
                     });
                     document.getElementById('payment-grid').innerHTML = html || '<p class="col-span-full text-center text-gray-700 text-xs py-10">입금 내역이 없습니다.</p>';
                 });
 
-                // 상담 신청 폼
                 document.getElementById('quote-form').onsubmit = async (e) => {
                     e.preventDefault();
                     const btn = e.target.querySelector('button');
@@ -592,7 +567,6 @@
                     btn.disabled = false; btn.innerText = "상담 신청 완료하기";
                 };
 
-                // 입금 확인 폼
                 document.getElementById('payment-form').onsubmit = async (e) => {
                     e.preventDefault();
                     const btn = e.target.querySelector('button');
@@ -612,7 +586,6 @@
                     } catch (err) { alert('오류 발생'); }
                     btn.disabled = false; btn.innerText = "입금 확인 요청하기";
                 };
-
             } else { signInAnonymously(auth); }
         });
     </script>
