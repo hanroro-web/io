@@ -52,10 +52,12 @@
             <form id="login-form" class="space-y-4 text-left">
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">ID</label>
-                    <input type="text" id="login-id" class="input-field" placeholder="hanroro" required autocomplete="username">
+                    <!-- placeholder에서 hanroro 문구 제거 -->
+                    <input type="text" id="login-id" class="input-field" placeholder="아이디 입력" required autocomplete="username">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Password</label>
+                    <!-- placeholder에서 실제 비밀번호를 유추할 수 없도록 수정 -->
                     <input type="password" id="login-pw" class="input-field" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 <button type="submit" id="login-btn" class="btn-primary w-full py-4 text-lg mt-6">
@@ -149,13 +151,61 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        // 요청하신 계정 정보
+        // 관리자 인증 정보
         const VALID_ID = "hanroro";
         const VALID_PW = "gksfhfh00@@";
 
         let currentTab = 'projects';
         let editingId = null;
         let unsubscribers = [];
+
+        // 로그인 핸들러
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('login-id').value;
+            const pw = document.getElementById('login-pw').value;
+            const btn = document.getElementById('login-btn');
+
+            if (id === VALID_ID && pw === VALID_PW) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>접속 중...';
+                
+                try {
+                    await signInAnonymously(auth);
+                    sessionStorage.setItem('h_admin_auth', 'true');
+                } catch (err) {
+                    alert('인증 오류: ' + err.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>로그인';
+                }
+            } else {
+                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+            }
+        };
+
+        // 로그아웃 핸들러
+        window.handleLogout = async () => {
+            if (!confirm('로그아웃 하시겠습니까?')) return;
+            sessionStorage.removeItem('h_admin_auth');
+            await signOut(auth);
+            location.reload();
+        };
+
+        // 인증 상태 모니터링
+        onAuthStateChanged(auth, (user) => {
+            const isAuthorized = sessionStorage.getItem('h_admin_auth') === 'true';
+            if (user && isAuthorized) {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('auth-status-bar').className = 'status-online';
+                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> ONLINE';
+                initRealtime();
+            } else {
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('auth-status-bar').className = 'status-loading';
+                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-lock mr-1"></i> LOCKED';
+                unsubscribers.forEach(u => u());
+            }
+        });
 
         const config = {
             projects: {
@@ -186,58 +236,6 @@
             notices: { collection: 'settings', title: '공지사항', desc: '배너 공지사항을 관리합니다.', fields: [{ id: 'content', label: '공지 문구', type: 'text' }], render: (id, d) => `<div class="card p-6 flex justify-between items-center"><p class="text-sm text-gray-300">${d.content}</p><div class="flex gap-2"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600"><i class="fas fa-edit"></i></button><button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600"><i class="fas fa-trash"></i></button></div></div>` }
         };
 
-        // 로그인 기능
-        document.getElementById('login-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('login-id').value;
-            const pw = document.getElementById('login-pw').value;
-            const btn = document.getElementById('login-btn');
-
-            if (id === VALID_ID && pw === VALID_PW) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>접속 중...';
-                
-                try {
-                    // ID/PW가 맞으면 Firebase 익명 인증으로 세션 생성
-                    await signInAnonymously(auth);
-                    // 브라우저 세션에 로그인 상태 기록
-                    sessionStorage.setItem('h_admin_auth', 'true');
-                } catch (err) {
-                    alert('인증 오류: ' + err.message);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>로그인';
-                }
-            } else {
-                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
-            }
-        };
-
-        // 로그아웃 기능
-        window.handleLogout = async () => {
-            if (!confirm('로그아웃 하시겠습니까?')) return;
-            sessionStorage.removeItem('h_admin_auth');
-            await signOut(auth);
-            location.reload(); // 상태 초기화를 위해 새로고침
-        };
-
-        // 인증 상태 감시
-        onAuthStateChanged(auth, (user) => {
-            const isAuthorized = sessionStorage.getItem('h_admin_auth') === 'true';
-            
-            if (user && isAuthorized) {
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('auth-status-bar').className = 'status-online';
-                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-circle text-[8px] mr-1"></i> ONLINE';
-                initRealtime();
-            } else {
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('auth-status-bar').className = 'status-loading';
-                document.getElementById('auth-status-bar').innerHTML = '<i class="fas fa-lock mr-1"></i> LOCKED';
-                unsubscribers.forEach(u => u());
-            }
-        });
-
-        // 탭 전환
         window.switchTab = (tabId) => {
             currentTab = tabId;
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -249,36 +247,26 @@
             document.getElementById('add-btn').style.display = (tabId === 'quotes' || tabId === 'consultations') ? 'none' : 'flex';
         };
 
-        // 실시간 데이터 로드
         const initRealtime = () => {
             const mappings = { projects: 'project-list', payments: 'payment-list', quotes: 'quote-list', consultations: 'consultation-list', notices: 'notice-list' };
-            
             Object.keys(config).forEach(key => {
                 const colRef = collection(db, 'artifacts', appId, 'public', 'data', config[key].collection);
                 const q = query(colRef, orderBy('createdAt', 'desc'));
-                
                 const unsub = onSnapshot(q, (snap) => {
                     const el = document.getElementById(mappings[key]);
                     if (!el) return;
-                    
-                    if (snap.empty) {
-                        el.innerHTML = '<div class="col-span-full py-20 text-center text-gray-600">내역이 없습니다.</div>';
-                        return;
-                    }
-                    
+                    if (snap.empty) { el.innerHTML = '<div class="col-span-full py-20 text-center text-gray-600">내역이 없습니다.</div>'; return; }
                     el.innerHTML = snap.docs.map(d => config[key].render(d.id, d.data())).join('');
                 });
                 unsubscribers.push(unsub);
             });
         };
 
-        // 모달 제어
         const openModal = (isEdit = false, data = null) => {
             const fieldsEl = document.getElementById('form-fields');
             fieldsEl.innerHTML = '';
             editingId = isEdit ? data.id : null;
             document.getElementById('modal-title').innerText = isEdit ? '정보 수정' : '새로운 등록';
-
             const fields = config[currentTab].fields || [];
             fields.forEach(f => {
                 let input = `<input type="${f.type}" name="${f.id}" value="${data ? data[f.id] : ''}" class="input-field" required>`;
@@ -300,7 +288,6 @@
             const formData = new FormData(e.target);
             const data = { updatedAt: serverTimestamp() };
             formData.forEach((v, k) => data[k] = v);
-
             if (editingId) {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, editingId), data);
             } else {
@@ -308,7 +295,6 @@
             }
             closeModal();
         };
-
     </script>
 </body>
 </html>
