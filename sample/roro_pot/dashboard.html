@@ -160,24 +160,52 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="card p-6">
                     <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">전체 진단 건수</p>
-                    <h3 class="text-2xl font-bold text-slate-800">1,402건</h3>
+                    <h3 class="text-2xl font-bold text-slate-800" id="stat-total-diagnosis">1,402건</h3>
                 </div>
                 <div class="card p-6">
                     <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">상담 대기</p>
-                    <h3 class="text-2xl font-bold text-rose-500">12건</h3>
+                    <h3 class="text-2xl font-bold text-rose-500" id="stat-pending-consult">12건</h3>
                 </div>
                 <div class="card p-6">
                     <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">활동 변호사</p>
                     <h3 class="text-2xl font-bold text-slate-800">8명</h3>
                 </div>
                 <div class="card p-6">
-                    <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">이달의 보도</p>
-                    <h3 class="text-2xl font-bold text-slate-800">5건</h3>
+                    <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">공지/보도 총수</p>
+                    <h3 class="text-2xl font-bold text-slate-800" id="stat-total-news">0건</h3>
                 </div>
             </div>
-            <div class="card p-8 text-center py-20">
-                <svg class="w-16 h-16 text-slate-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg>
-                <h2 class="text-lg font-bold text-slate-400">관리 기능을 선택해 주세요.</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- LocalStorage Test Card -->
+                <div class="card p-6 border-t-4 border-t-[#C5A059]">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-slate-800">로컬 스토리지 작동 테스트</h2>
+                        <span class="text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded font-bold uppercase">System Active</span>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                        이 영역은 브라우저의 로컬 스토리지를 테스트하기 위한 공간입니다. 아래 버튼을 눌러 임시 데이터를 저장하거나 삭제하여 데이터 영속성을 확인할 수 있습니다.
+                    </p>
+                    <div class="flex gap-2">
+                        <button onclick="testStorageSave()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-black transition-colors">테스트 데이터 저장</button>
+                        <button onclick="testStorageClear()" class="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors">스토리지 초기화</button>
+                    </div>
+                    <div id="storage-log" class="mt-4 p-3 bg-slate-50 rounded-lg text-[10px] text-slate-400 font-mono h-20 overflow-y-auto">
+                        > 시스템 대기 중...
+                    </div>
+                </div>
+
+                <!-- Recent Activity Mock -->
+                <div class="card p-6">
+                    <h2 class="font-bold text-slate-800 mb-4">최근 관리자 활동</h2>
+                    <div class="space-y-4" id="activity-list">
+                        <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                            <p class="text-xs text-slate-600">시스템이 정상적으로 로드되었습니다.</p>
+                            <span class="text-[10px] text-slate-300 ml-auto">방금 전</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -202,68 +230,8 @@
                                 <th class="px-6 py-4"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <!-- Entry 1 -->
-                            <tr class="diag-row cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleDiagDetail(this)">
-                                <td class="px-6 py-4 text-sm font-bold">홍길동</td>
-                                <td class="px-6 py-4 text-sm text-slate-600">010-1234-5678</td>
-                                <td class="px-6 py-4"><span class="status-badge bg-rose-50 text-rose-600">음주운전/사고</span></td>
-                                <td class="px-6 py-4"><span class="text-[10px] font-bold text-orange-400">상담 필요</span></td>
-                                <td class="px-6 py-4 text-xs text-slate-400">2024.01.06 14:20</td>
-                                <td class="px-6 py-4 text-right">
-                                    <svg class="w-4 h-4 text-slate-300 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"></path></svg>
-                                </td>
-                            </tr>
-                            <tr class="diag-detail">
-                                <td colspan="6" class="px-8 py-6 bg-slate-50/50">
-                                    <div class="grid grid-cols-2 gap-8">
-                                        <div>
-                                            <h4 class="text-[10px] font-bold text-[#C5A059] uppercase mb-3">자가 진단 질문 답변</h4>
-                                            <ul class="space-y-3 text-xs text-slate-600">
-                                                <li class="flex justify-between border-b border-slate-200 pb-1"><span>1. 사고 당시 혈중알코올농도는?</span> <span class="font-bold text-slate-800">0.08% (면허취소)</span></li>
-                                                <li class="flex justify-between border-b border-slate-200 pb-1"><span>2. 사고 유형은?</span> <span class="font-bold text-slate-800">대물사고 (가로등 충돌)</span></li>
-                                                <li class="flex justify-between border-b border-slate-200 pb-1"><span>3. 과거 동종 전과가 있습니까?</span> <span class="font-bold text-slate-800">없음 (초범)</span></li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-[10px] font-bold text-[#C5A059] uppercase mb-3">진단 결과 상세 요약</h4>
-                                            <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs leading-relaxed text-slate-600">
-                                                귀하의 사례는 혈중알코올농도가 높으나 초범이며 인명 피해가 없는 점이 유리합니다. 하지만 대물 사고가 발생했으므로 도로교통법 위반에 따른 벌금형 가능성이 높으며, 면허 취소에 대한 행정처분 구제 절차가 즉시 필요합니다. 변호인 의견서를 통해 반성 및 재발 방지 의지를 소명할 것을 권장합니다.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Entry 2 -->
-                            <tr class="diag-row cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleDiagDetail(this)">
-                                <td class="px-6 py-4 text-sm font-bold">이영희</td>
-                                <td class="px-6 py-4 text-sm text-slate-600">010-5555-4444</td>
-                                <td class="px-6 py-4"><span class="status-badge bg-blue-50 text-blue-600">교통사고 민사</span></td>
-                                <td class="px-6 py-4"><span class="text-[10px] font-bold text-green-400">검토 완료</span></td>
-                                <td class="px-6 py-4 text-xs text-slate-400">2024.01.06 11:05</td>
-                                <td class="px-6 py-4 text-right">
-                                    <svg class="w-4 h-4 text-slate-300 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"></path></svg>
-                                </td>
-                            </tr>
-                            <tr class="diag-detail">
-                                <td colspan="6" class="px-8 py-6 bg-slate-50/50">
-                                    <div class="grid grid-cols-2 gap-8">
-                                        <div>
-                                            <h4 class="text-[10px] font-bold text-[#C5A059] uppercase mb-3">자가 진단 질문 답변</h4>
-                                            <ul class="space-y-3 text-xs text-slate-600">
-                                                <li class="flex justify-between border-b border-slate-200 pb-1"><span>1. 사고 상황은?</span> <span class="font-bold text-slate-800">후방 추돌 사고</span></li>
-                                                <li class="flex justify-between border-b border-slate-200 pb-1"><span>2. 과실 비율 분쟁인가요?</span> <span class="font-bold text-slate-800">예 (상대측 90% 주장)</span></li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-[10px] font-bold text-[#C5A059] uppercase mb-3">진단 결과 상세 요약</h4>
-                                            <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs leading-relaxed text-slate-600">
-                                                후방 추돌의 경우 원칙적으로 추돌 차량의 100% 과실이나, 앞차의 급제동 사유 여부를 확인해야 합니다. 블랙박스 분석 결과 앞차의 정당한 사유 없는 급제동이 확인될 시 10~20% 과실 상계가 가능합니다. 보험사 합의 전 소송 실익을 먼저 판단해야 합니다.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody class="divide-y divide-slate-100" id="diagnosis-tbody">
+                            <!-- JS에서 렌더링 -->
                         </tbody>
                     </table>
                 </div>
@@ -276,21 +244,18 @@
                 <h2 class="text-xl font-bold text-slate-800">변호사 구성원 관리</h2>
                 <button class="btn-gold px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-gold-primary/20">+ 새 변호사 등록</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="lawyers-grid">
+                <!-- Mock 데이터 -->
                 <div class="card p-6 flex flex-col items-center">
                     <div class="relative group w-32 h-40 bg-slate-100 rounded-xl mb-4 overflow-hidden border border-slate-200">
                         <div class="absolute inset-0 flex items-center justify-center text-slate-300">
                             <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         </div>
-                        <input type="file" id="lawyer-img-1" class="hidden">
-                        <label for="lawyer-img-1" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                            <span class="text-white text-[10px] font-bold border border-white px-2 py-1 rounded">이미지 교체</span>
-                        </label>
                     </div>
                     <h4 class="font-bold text-slate-800 mb-1 text-base">김로로 변호사</h4>
                     <p class="text-xs text-[#C5A059] font-bold mb-4">대표 변호사 / 형사 전문</p>
                     <div class="w-full flex gap-2">
-                        <button class="flex-1 py-2 text-xs font-bold border border-slate-200 rounded-lg hover:bg-slate-50">상세 정보 수정</button>
+                        <button class="flex-1 py-2 text-xs font-bold border border-slate-200 rounded-lg hover:bg-slate-50">수정</button>
                         <button class="flex-1 py-2 text-xs font-bold border border-rose-100 text-rose-500 rounded-lg hover:bg-rose-50">삭제</button>
                     </div>
                 </div>
@@ -304,30 +269,30 @@
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="md:col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">대표 이미지 업로드</label>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">대표 이미지</label>
                             <div class="relative w-full aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center group hover:border-[#C5A059] transition-colors cursor-pointer overflow-hidden">
-                                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewThumbnail(this)">
+                                <input type="file" id="news-img-input" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewThumbnail(this)">
                                 <div id="preview-placeholder" class="text-center">
                                     <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"></path></svg>
-                                    <p class="text-[10px] text-slate-400 font-bold">클릭하여 업로드</p>
+                                    <p class="text-[10px] text-slate-400 font-bold">이미지 선택</p>
                                 </div>
                                 <img id="image-preview-target" class="hidden absolute inset-0 w-full h-full object-cover">
                             </div>
                         </div>
                         <div class="md:col-span-3 space-y-4">
                             <div class="flex gap-4">
-                                <select class="w-32 border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#C5A059]">
+                                <select id="news-type" class="w-32 border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#C5A059]">
                                     <option>공지사항</option>
                                     <option>언론보도</option>
                                     <option>성공사례</option>
                                 </select>
-                                <input type="text" placeholder="제목을 입력하세요" class="flex-1 border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#C5A059]">
+                                <input type="text" id="news-title" placeholder="제목을 입력하세요" class="flex-1 border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#C5A059]">
                             </div>
-                            <textarea placeholder="내용을 입력하세요" rows="4" class="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#C5A059]"></textarea>
+                            <textarea id="news-content" placeholder="내용을 입력하세요" rows="4" class="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-[#C5A059]"></textarea>
                         </div>
                     </div>
                     <div class="flex justify-end pt-4 border-t border-slate-100">
-                        <button class="btn-gold px-12 py-3 rounded-xl font-bold text-sm shadow-lg shadow-gold-primary/20">게시물 등록하기</button>
+                        <button onclick="saveNewsPost()" class="btn-gold px-12 py-3 rounded-xl font-bold text-sm shadow-lg shadow-gold-primary/20">게시물 등록하기</button>
                     </div>
                 </div>
             </div>
@@ -343,25 +308,8 @@
                             <th class="px-6 py-4"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="w-16 h-10 bg-slate-100 rounded border border-slate-200 overflow-hidden flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-xs font-bold text-[#C5A059]">언론보도</td>
-                            <td class="px-6 py-4 text-sm font-medium">로로 법률 사무소, 2024 한국소비자만족지수 1위 수상</td>
-                            <td class="px-6 py-4 text-xs text-slate-400">2024.01.02</td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="p-2 hover:bg-white rounded-lg border border-transparent hover:border-slate-200">
-                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"></path></svg>
-                                </button>
-                                <button class="p-2 hover:bg-rose-50 rounded-lg text-rose-300 hover:text-rose-500">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"></path></svg>
-                                </button>
-                            </td>
-                        </tr>
+                    <tbody class="divide-y divide-slate-100" id="news-tbody">
+                        <!-- JS에서 렌더링 -->
                     </tbody>
                 </table>
             </div>
@@ -369,24 +317,8 @@
 
         <!-- View: 무료 법률 상담 관리 -->
         <section id="view-consulting" class="view-section p-8">
-            <div class="grid grid-cols-1 gap-6">
-                <div class="card p-6 border-l-4 border-l-orange-400">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="status-badge bg-orange-100 text-orange-600 mb-2 inline-block">답변 대기</span>
-                            <h3 class="text-lg font-bold text-slate-800">홍길동 <span class="text-sm font-normal text-slate-400">| 010-1234-5678</span></h3>
-                        </div>
-                        <p class="text-xs text-slate-400">신청일: 2024.01.06 16:45</p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl mb-4">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">상담 내용</p>
-                        <p class="text-sm text-slate-600 leading-relaxed">주차 뺑소니 사고 관련 상담 요청드립니다...</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="btn-gold px-6 py-2 rounded-lg text-xs font-bold">답변 등록</button>
-                        <button class="px-6 py-2 rounded-lg text-xs font-bold border border-slate-200 text-slate-500 hover:bg-slate-50">삭제</button>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 gap-6" id="consult-list">
+                <!-- Mock 데이터 -->
             </div>
         </section>
     </div>
@@ -400,31 +332,72 @@
             <h2 class="text-xl font-bold mb-2">관리자 로그인</h2>
             <p class="text-xs text-slate-400 mb-8">서비스 관리를 위해 로그인이 필요합니다.</p>
             <div class="space-y-4">
-                <input type="text" placeholder="아이디" class="w-full bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-sm outline-none focus:border-[#C5A059]">
-                <input type="password" placeholder="비밀번호" class="w-full bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-sm outline-none focus:border-[#C5A059]">
+                <input type="text" id="login-id" placeholder="아이디" class="w-full bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-sm outline-none focus:border-[#C5A059]">
+                <input type="password" id="login-pw" placeholder="비밀번호" class="w-full bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-sm outline-none focus:border-[#C5A059]">
                 <button onclick="handleLogin()" class="w-full btn-gold py-4 rounded-xl font-bold text-sm shadow-xl">로그인</button>
             </div>
         </div>
     </div>
 
     <script>
-        let isLoggedIn = true; 
+        // --- State Management ---
+        let appState = {
+            isLoggedIn: true,
+            news: JSON.parse(localStorage.getItem('roro_news')) || [],
+            diagnosis: [
+                { id: 1, name: '홍길동', phone: '010-1234-5678', type: '음주운전/사고', status: '상담 필요', date: '2024.01.06 14:20', details: ['0.08% (면허취소)', '대물사고', '초범'] },
+                { id: 2, name: '이영희', phone: '010-5555-4444', type: '교통사고 민사', status: '검토 완료', date: '2024.01.06 11:05', details: ['후방 추돌', '과실 분쟁', '블랙박스 확보'] }
+            ]
+        };
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+        // --- Initialization ---
+        window.onload = function() {
+            renderAll();
+            updateStats();
+            logStorage("> 시스템 초기화 완료 (LocalStorage 체크됨)");
+        };
+
+        function logStorage(msg) {
+            const log = document.getElementById('storage-log');
+            log.innerHTML += `<div>${msg}</div>`;
+            log.scrollTop = log.scrollHeight;
         }
 
-        function toggleDiagDetail(row) {
-            const allRows = document.querySelectorAll('.diag-row');
-            const isAlreadyExpanded = row.classList.contains('expanded');
-            
-            allRows.forEach(r => r.classList.remove('expanded'));
-            
-            if (!isAlreadyExpanded) {
-                row.classList.add('expanded');
-            }
+        // --- Dashboard Main & Storage Test ---
+        function updateStats() {
+            document.getElementById('stat-total-diagnosis').innerText = appState.diagnosis.length + 1390 + "건"; // Mock 가산
+            document.getElementById('stat-total-news').innerText = appState.news.length + "건";
         }
 
+        function testStorageSave() {
+            const testData = { timestamp: new Date().toLocaleString(), msg: "테스트 저장 데이터" };
+            localStorage.setItem('roro_test_key', JSON.stringify(testData));
+            logStorage(`> [저장] roro_test_key: ${testData.timestamp}`);
+            addActivity("로컬 스토리지 테스트 데이터를 저장했습니다.");
+        }
+
+        function testStorageClear() {
+            localStorage.removeItem('roro_test_key');
+            localStorage.removeItem('roro_news');
+            appState.news = [];
+            renderAll();
+            updateStats();
+            logStorage("> [삭제] 모든 테스트/게시물 데이터가 초기화되었습니다.");
+        }
+
+        function addActivity(text) {
+            const list = document.getElementById('activity-list');
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-3 pb-3 border-b border-slate-100 fade-in";
+            div.innerHTML = `
+                <div class="w-2 h-2 rounded-full bg-[#C5A059]"></div>
+                <p class="text-xs text-slate-600">${text}</p>
+                <span class="text-[10px] text-slate-300 ml-auto">방금 전</span>
+            `;
+            list.prepend(div);
+        }
+
+        // --- News Management ---
         function previewThumbnail(input) {
             const file = input.files[0];
             if (file) {
@@ -440,17 +413,128 @@
             }
         }
 
+        function saveNewsPost() {
+            const type = document.getElementById('news-type').value;
+            const title = document.getElementById('news-title').value;
+            const content = document.getElementById('news-content').value;
+            const img = document.getElementById('image-preview-target').src;
+
+            if(!title || !content) {
+                alert("제목과 내용을 모두 입력해 주세요.");
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                type, title, content, 
+                img: img.startsWith('data') ? img : null,
+                date: new Date().toLocaleDateString()
+            };
+
+            appState.news.unshift(newPost);
+            localStorage.setItem('roro_news', JSON.stringify(appState.news));
+            
+            // UI 초기화
+            document.getElementById('news-title').value = '';
+            document.getElementById('news-content').value = '';
+            document.getElementById('image-preview-target').classList.add('hidden');
+            document.getElementById('preview-placeholder').classList.remove('hidden');
+            
+            renderAll();
+            updateStats();
+            addActivity(`새로운 ${type} 게시물을 등록했습니다.`);
+            alert("게시물이 등록되었습니다.");
+        }
+
+        // --- Rendering Logic ---
+        function renderAll() {
+            renderDiagnosis();
+            renderNews();
+        }
+
+        function renderDiagnosis() {
+            const tbody = document.getElementById('diagnosis-tbody');
+            tbody.innerHTML = appState.diagnosis.map(d => `
+                <tr class="diag-row cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleDiagDetail(this)">
+                    <td class="px-6 py-4 text-sm font-bold">${d.name}</td>
+                    <td class="px-6 py-4 text-sm text-slate-600">${d.phone}</td>
+                    <td class="px-6 py-4"><span class="status-badge ${d.type.includes('음주') ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'}">${d.type}</span></td>
+                    <td class="px-6 py-4"><span class="text-[10px] font-bold ${d.status === '상담 필요' ? 'text-orange-400' : 'text-green-400'}">${d.status}</span></td>
+                    <td class="px-6 py-4 text-xs text-slate-400">${d.date}</td>
+                    <td class="px-6 py-4 text-right">
+                        <svg class="w-4 h-4 text-slate-300 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"></path></svg>
+                    </td>
+                </tr>
+                <tr class="diag-detail">
+                    <td colspan="6" class="px-8 py-6 bg-slate-50/50">
+                        <div class="grid grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="text-[10px] font-bold text-[#C5A059] uppercase mb-3">자가 진단 질문 답변</h4>
+                                <ul class="space-y-2 text-xs text-slate-600">
+                                    ${d.details.map((detail, idx) => `<li>${idx+1}. ${detail}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs text-slate-600">
+                                관리자용 상세 메모 영역입니다. 상담 완료 후 상태를 변경해 주세요.
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderNews() {
+            const tbody = document.getElementById('news-tbody');
+            if (appState.news.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-20 text-center text-slate-400 text-xs">등록된 게시물이 없습니다.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = appState.news.map(n => `
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="w-16 h-10 bg-slate-100 rounded border border-slate-200 overflow-hidden flex items-center justify-center">
+                            ${n.img ? `<img src="${n.img}" class="w-full h-full object-cover">` : `<svg class="w-4 h-4 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-bold text-[#C5A059]">${n.type}</td>
+                    <td class="px-6 py-4 text-sm font-medium truncate max-w-xs">${n.title}</td>
+                    <td class="px-6 py-4 text-xs text-slate-400">${n.date}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="deleteNews(${n.id})" class="p-2 hover:bg-rose-50 rounded-lg text-rose-300 hover:text-rose-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"></path></svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteNews(id) {
+            if(confirm("이 게시물을 삭제하시겠습니까?")) {
+                appState.news = appState.news.filter(n => n.id !== id);
+                localStorage.setItem('roro_news', JSON.stringify(appState.news));
+                renderAll();
+                updateStats();
+                addActivity("게시물을 삭제했습니다.");
+            }
+        }
+
+        // --- Sidebar & Auth ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function toggleDiagDetail(row) {
+            const isAlreadyExpanded = row.classList.contains('expanded');
+            document.querySelectorAll('.diag-row').forEach(r => r.classList.remove('expanded'));
+            if (!isAlreadyExpanded) row.classList.add('expanded');
+        }
+
         function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(section => {
-                section.classList.remove('active');
-            });
+            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
-
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             document.getElementById('link-' + viewId).classList.add('active');
-
+            
             const titles = {
                 'dashboard': '대시보드 홈',
                 'diagnosis': '사고유형 진단 내역',
@@ -459,27 +543,18 @@
                 'consulting': '무료 법률 상담 관리'
             };
             document.getElementById('view-title').innerText = titles[viewId];
-
-            if(window.innerWidth < 1024) {
-                document.getElementById('sidebar').classList.remove('open');
-            }
+            if(window.innerWidth < 1024) document.getElementById('sidebar').classList.remove('open');
         }
 
         function handleLogout() {
             if(confirm("정말 로그아웃 하시겠습니까?")) {
-                isLoggedIn = false;
                 document.getElementById('login-modal').classList.remove('hidden');
             }
         }
 
         function handleLogin() {
-            isLoggedIn = true;
             document.getElementById('login-modal').classList.add('hidden');
-            alert("로그인 되었습니다.");
-        }
-
-        if(!isLoggedIn) {
-            document.getElementById('login-modal').classList.remove('hidden');
+            addActivity("관리자가 로그인했습니다.");
         }
     </script>
 </body>
