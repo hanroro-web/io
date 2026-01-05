@@ -3,492 +3,431 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 대시보드 | 로로 법률 사무소</title>
+    <title>로로 관리자</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --gold-primary: #C5A059;
-            --gold-dark: #A6823D;
-            --dark-bg: #1A1A1A;
-            --sidebar-width: 260px;
-        }
-        body {
-            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            margin: 0;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        /* Auth Protected Blur */
-        body.logged-out .sidebar, 
-        body.logged-out .main-content {
-            filter: blur(10px);
-            pointer-events: none;
-        }
-
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--dark-bg);
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 50;
-            transition: all 0.3s ease;
-        }
-        .main-content {
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
-            transition: all 0.3s ease;
-        }
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            color: rgba(255,255,255,0.6);
-            cursor: pointer;
-            transition: all 0.2s;
-            border-left: 4px solid transparent;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: white;
-            background: rgba(197, 160, 89, 0.1);
-            border-left-color: var(--gold-primary);
-        }
-        .btn-gold {
-            background: var(--gold-primary);
-            color: white;
-        }
-        .btn-gold:hover {
-            background: var(--gold-dark);
-        }
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            border: 1px solid #e2e8f0;
-        }
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 99px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .view-section {
-            display: none;
-        }
-        .view-section.active {
-            display: block;
-        }
-        
-        .diag-detail {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background-color: #fcfcfd;
-        }
-        .diag-row.expanded + .diag-detail {
-            max-height: 500px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        @media (max-width: 1024px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', 'Apple SD Gothic Neo', sans-serif; background-color: #f8fafc; }
+        .sidebar-link.active { background-color: #C5A059; color: white; }
+        .data-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+        .data-card:hover { border-color: #C5A059; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
     </style>
 </head>
-<body class="logged-out" oncontextmenu="return false">
+<body class="text-slate-800">
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="p-8 border-b border-white/5">
-            <div class="flex items-center space-x-2">
-                <svg class="w-6 h-6 text-[#C5A059]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v17M12 21a2 2 0 1 1 0-4 2 2 0 0 1 0 4ZM3 7h18M7 7c0 4 1 6 5 6s5-2 5-6"></path></svg>
-                <span class="text-white font-bold tracking-tighter text-lg">로로 <span class="text-[#C5A059]">관리자</span></span>
+    <!-- Login Section -->
+    <div id="login-section" class="fixed inset-0 z-[1000] bg-slate-900 flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-md rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="inline-flex p-3 bg-amber-50 rounded-xl mb-4 text-[#C5A059]">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h1 class="text-2xl font-bold">Admin Login</h1>
+                <p class="text-slate-400 text-sm mt-2">로로 법률 사무소 대시보드</p>
             </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Username</label>
+                    <input type="text" id="admin-id" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-[#C5A059]" placeholder="admin" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Password</label>
+                    <input type="password" id="admin-pw" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-[#C5A059]" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-[#C5A059] text-white py-3.5 rounded-xl font-bold hover:bg-[#A6823D] transition-colors mt-4">접속하기</button>
+            </form>
+            <p class="text-center text-xs text-slate-400 mt-6">기본 계정: admin / 1234</p>
         </div>
-        
-        <nav class="mt-8 space-y-1">
-            <div onclick="showView('dashboard')" class="nav-link active" id="link-dashboard">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-width="2"></path></svg>
-                대시보드 홈
-            </div>
-            <div onclick="showView('diagnosis')" class="nav-link" id="link-diagnosis">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2"></path></svg>
-                사고유형 진단 내역
-            </div>
-            <div onclick="showView('lawyers')" class="nav-link" id="link-lawyers">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"></path></svg>
-                변호사 관리
-            </div>
-            <div onclick="showView('news')" class="nav-link" id="link-news">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" stroke-width="2"></path><path d="M7 8h4m-4 4h8m-8 4h8" stroke-width="2"></path></svg>
-                공지/언론보도
-            </div>
-            <div onclick="showView('consulting')" class="nav-link" id="link-consulting">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke-width="2"></path></svg>
-                무료 법률 상담 관리
-            </div>
-        </nav>
-
-        <div class="absolute bottom-0 w-full p-6 border-t border-white/5">
-            <button onclick="handleLogout()" class="flex items-center text-white/40 hover:text-white transition-colors text-sm font-medium w-full">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2"></path></svg>
-                로그아웃
-            </button>
-        </div>
-    </aside>
-
-    <!-- Content Area -->
-    <div class="main-content">
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-40">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-width="2"></path></svg>
-                </button>
-                <h1 id="view-title" class="text-sm font-bold text-slate-800 uppercase tracking-wide">대시보드 홈</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold text-slate-900">김로로 관리자</p>
-                    <p class="text-[10px] text-slate-400">대표 변호사</p>
-                </div>
-                <div class="w-10 h-10 bg-slate-100 rounded-full border border-slate-200 flex items-center justify-center">
-                    <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                </div>
-            </div>
-        </header>
-
-        <!-- View: Dashboard Home -->
-        <section id="view-dashboard" class="view-section active p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="card p-6">
-                    <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">전체 진단 건수</p>
-                    <h3 class="text-2xl font-bold text-slate-800" id="stat-total-diagnosis">1,402건</h3>
-                </div>
-                <div class="card p-6">
-                    <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">상담 대기</p>
-                    <h3 class="text-2xl font-bold text-rose-500" id="stat-pending-consult">12건</h3>
-                </div>
-                <div class="card p-6">
-                    <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">활동 변호사</p>
-                    <h3 class="text-2xl font-bold text-slate-800">8명</h3>
-                </div>
-                <div class="card p-6">
-                    <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">공지/보도 총수</p>
-                    <h3 class="text-2xl font-bold text-slate-800" id="stat-total-news">0건</h3>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="card p-6 border-t-4 border-t-[#C5A059]">
-                    <h2 class="font-bold text-slate-800 mb-4">로컬 스토리지 작동 테스트</h2>
-                    <p class="text-xs text-slate-500 leading-relaxed mb-6">데이터 영속성 테스트를 위한 버튼입니다.</p>
-                    <div class="flex gap-2">
-                        <button onclick="testStorageSave()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl text-xs font-bold">저장</button>
-                        <button onclick="testStorageClear()" class="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl text-xs font-bold">초기화</button>
-                    </div>
-                    <div id="storage-log" class="mt-4 p-3 bg-slate-50 rounded-lg text-[10px] text-slate-400 font-mono h-20 overflow-y-auto">> 시스템 대기 중...</div>
-                </div>
-
-                <div class="card p-6">
-                    <h2 class="font-bold text-slate-800 mb-4">최근 관리자 활동</h2>
-                    <div class="space-y-4" id="activity-list">
-                        <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
-                            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                            <p class="text-xs text-slate-600">시스템이 정상적으로 로드되었습니다.</p>
-                            <span class="text-[10px] text-slate-300 ml-auto">방금 전</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- View: 사고유형 진단 내역 -->
-        <section id="view-diagnosis" class="view-section p-8">
-            <div class="card overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50 border-b border-slate-100">
-                        <tr>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">성함</th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">연락처</th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">진단 유형</th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">상태</th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">날짜</th>
-                            <th class="px-6 py-4"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100" id="diagnosis-tbody"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- View: 변호사 관리 (Added to fix null error) -->
-        <section id="view-lawyers" class="view-section p-8">
-            <div class="card p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-bold text-slate-800">활동 변호사 관리</h2>
-                    <button class="btn-gold px-4 py-2 rounded-lg text-xs font-bold">신규 등록</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="border border-slate-100 rounded-xl p-4 flex items-center gap-4">
-                        <div class="w-12 h-12 bg-slate-100 rounded-full flex-shrink-0"></div>
-                        <div>
-                            <p class="text-sm font-bold">김로로 변호사</p>
-                            <p class="text-[10px] text-slate-400">형사 전문 / 대표 변호사</p>
-                        </div>
-                        <span class="ml-auto status-badge bg-green-50 text-green-600">활동 중</span>
-                    </div>
-                    <!-- Mock items -->
-                </div>
-            </div>
-        </section>
-
-        <!-- View: 공지/언론보도 -->
-        <section id="view-news" class="view-section p-8">
-            <div class="card p-6 mb-8">
-                <h2 class="font-bold text-slate-800 mb-6">새 게시물 추가</h2>
-                <div class="grid grid-cols-4 gap-6">
-                    <div class="col-span-1">
-                        <div class="w-full aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center cursor-pointer relative overflow-hidden" onclick="document.getElementById('news-img-input').click()">
-                            <input type="file" id="news-img-input" class="hidden" onchange="previewThumbnail(this)">
-                            <p id="preview-placeholder" class="text-[10px] text-slate-400 font-bold">이미지 선택</p>
-                            <img id="image-preview-target" class="hidden absolute inset-0 w-full h-full object-cover">
-                        </div>
-                    </div>
-                    <div class="col-span-3 space-y-4">
-                        <div class="flex gap-4">
-                            <select id="news-type" class="w-32 border border-slate-200 rounded-lg px-4 py-3 text-sm"><option>공지사항</option><option>언론보도</option></select>
-                            <input type="text" id="news-title" placeholder="제목" class="flex-1 border border-slate-200 rounded-lg px-4 py-3 text-sm">
-                        </div>
-                        <textarea id="news-content" placeholder="내용" rows="3" class="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm"></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-end mt-4"><button onclick="saveNewsPost()" class="btn-gold px-8 py-3 rounded-xl font-bold text-sm">등록하기</button></div>
-            </div>
-            <div class="card overflow-hidden">
-                <table class="w-full text-left">
-                    <tbody class="divide-y divide-slate-100" id="news-tbody"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- View: 무료 법률 상담 관리 (Added to fix null error) -->
-        <section id="view-consulting" class="view-section p-8">
-            <div class="card p-6">
-                <h2 class="font-bold text-slate-800 mb-6">상담 요청 내역</h2>
-                <div class="text-center py-20">
-                    <p class="text-slate-300 text-sm">상담 요청 데이터가 없습니다.</p>
-                </div>
-            </div>
-        </section>
     </div>
 
-    <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center px-6">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-10 text-center shadow-2xl">
-            <div class="w-16 h-16 bg-[#C5A059]/10 rounded-full flex items-center justify-center mx-auto mb-6 text-[#C5A059]">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2"></path></svg>
+    <!-- Main Dashboard Structure -->
+    <div id="admin-main" class="hidden min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col">
+            <div class="p-8 border-b border-white/10">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-[#C5A059] rounded-lg"></div>
+                    <span class="font-bold tracking-tight text-lg">RORO Admin</span>
+                </div>
             </div>
-            <h2 class="text-xl font-bold mb-2">관리자 로그인</h2>
-            <p class="text-xs text-slate-400 mb-8">id: admin / pw: 1234</p>
-            <div class="space-y-4">
-                <input type="text" id="login-id" placeholder="아이디" class="w-full bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-sm outline-none focus:border-[#C5A059]">
-                <input type="password" id="login-pw" placeholder="비밀번호" class="w-full bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-sm outline-none focus:border-[#C5A059]" onkeyup="if(event.key === 'Enter') handleLogin()">
-                <div id="login-error" class="hidden text-rose-500 text-[10px] font-bold">정보가 일치하지 않습니다.</div>
-                <button onclick="handleLogin()" class="w-full btn-gold py-4 rounded-xl font-bold text-sm shadow-xl">로그인</button>
+            <nav class="flex-1 p-4 space-y-2">
+                <button onclick="switchTab('diagnosis')" id="tab-btn-diagnosis" class="sidebar-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all active">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg>
+                    <span>사고유형 진단 관리</span>
+                </button>
+                <button onclick="switchTab('lawyers')" id="tab-btn-lawyers" class="sidebar-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"></path></svg>
+                    <span>변호사 관리</span>
+                </button>
+                <button onclick="switchTab('posts')" id="tab-btn-posts" class="sidebar-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm transition-all text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" stroke-width="2"></path></svg>
+                    <span>공지/게시판 관리</span>
+                </button>
+            </nav>
+            <div class="p-4 border-t border-white/10">
+                <button onclick="logout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2"></path></svg>
+                    <span>로그아웃</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="flex-1 p-8 overflow-y-auto max-h-screen">
+            <!-- Diagnosis Tab -->
+            <div id="tab-diagnosis" class="tab-content">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">사고유형 진단 관리</h2>
+                        <p class="text-slate-400 text-sm mt-1">10단계 자가진단 로직을 커스텀합니다.</p>
+                    </div>
+                    <button onclick="openModal('diagnosis')" class="bg-[#C5A059] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/20">+ 단계 추가</button>
+                </div>
+                <div id="diagnosis-list" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <!-- Lawyers Tab -->
+            <div id="tab-lawyers" class="tab-content hidden">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">변호사 관리</h2>
+                        <p class="text-slate-400 text-sm mt-1">전문가 프로필 및 이미지를 관리합니다.</p>
+                    </div>
+                    <button onclick="openModal('lawyer')" class="bg-[#C5A059] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/20">+ 변호사 추가</button>
+                </div>
+                <div id="lawyers-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Posts Tab -->
+            <div id="tab-posts" class="tab-content hidden">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">공지/게시판 관리</h2>
+                        <p class="text-slate-400 text-sm mt-1">공지, 보도자료, 일반 게시판 통합 관리.</p>
+                    </div>
+                    <button onclick="openModal('post')" class="bg-[#C5A059] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/20">+ 게시글 작성</button>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold">
+                            <tr>
+                                <th class="px-6 py-4">카테고리</th>
+                                <th class="px-6 py-4">제목</th>
+                                <th class="px-6 py-4">작성일</th>
+                                <th class="px-6 py-4 text-right">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="posts-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="admin-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-6 modal-overlay">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 id="modal-title" class="text-xl font-bold">데이터 수정</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-900"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"></path></svg></button>
+            </div>
+            <div class="p-8 overflow-y-auto flex-1" id="modal-body">
+                <!-- Form content will be injected here -->
+            </div>
+            <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-6 py-2 text-slate-500 font-bold text-sm">취소</button>
+                <button id="modal-save-btn" class="bg-[#C5A059] text-white px-8 py-2.5 rounded-xl font-bold text-sm">저장하기</button>
             </div>
         </div>
     </div>
 
     <script>
-        const AUTH_ID = "admin";
-        const AUTH_PW = "1234";
+        // --- Core State & Initial Data ---
+        const STORAGE_KEY_AUTH = 'roro_admin_auth';
+        const STORAGE_KEY_DIAG = 'roro_diag_data';
+        const STORAGE_KEY_LAWYERS = 'roro_lawyers_data';
+        const STORAGE_KEY_POSTS = 'roro_posts_data';
 
-        let appState = {
-            isLoggedIn: false,
-            news: JSON.parse(localStorage.getItem('roro_news')) || [],
-            diagnosis: [
-                { id: 1, name: '홍길동', phone: '010-1234-5678', type: '음주운전', status: '상담 필요', date: '2024.01.06 14:20', details: ['0.08% (면허취소)', '초범'] },
-                { id: 2, name: '이영희', phone: '010-5555-4444', type: '교통사고', status: '검토 완료', date: '2024.01.06 11:05', details: ['후방 추돌', '과실 분쟁'] }
-            ]
+        const defaultDiag = [
+            { id: 1, q: "사고 당시 주행 상태는 어떠했습니까?", options: [{ text: "정상 주행", score: 0 }, { text: "과속 중", score: 5 }, { text: "신호 위반", score: 10 }] },
+            { id: 2, q: "피해 정도는 어느 정도입니까?", options: [{ text: "경미", score: 1 }, { text: "중상", score: 10 }] }
+        ];
+
+        const defaultLawyers = [
+            { id: 1, name: "김로로", position: "대표변호사", expertise: "교통사고 형사", bio: "15년 경력의 베테랑", img: "" }
+        ];
+
+        const defaultPosts = [
+            { id: 1, category: "공지", title: "시스템 점검 안내", date: "2024-01-01", content: "내용입니다." }
+        ];
+
+        let state = {
+            diag: JSON.parse(localStorage.getItem(STORAGE_KEY_DIAG)) || defaultDiag,
+            lawyers: JSON.parse(localStorage.getItem(STORAGE_KEY_LAWYERS)) || defaultLawyers,
+            posts: JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS)) || defaultPosts
         };
 
-        window.onload = function() {
-            // Check session
-            if(sessionStorage.getItem('roro_auth') === 'true') {
-                proceedLogin();
-            }
-            renderAll();
-            updateStats();
-        };
-
-        function handleLogin() {
-            const idInput = document.getElementById('login-id').value;
-            const pwInput = document.getElementById('login-pw').value;
-            const errorMsg = document.getElementById('login-error');
-
-            if(idInput === AUTH_ID && pwInput === AUTH_PW) {
-                sessionStorage.setItem('roro_auth', 'true');
-                proceedLogin();
-                addActivity("관리자 계정으로 로그인했습니다.");
+        // --- Auth Logic ---
+        document.getElementById('login-form').onsubmit = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('admin-id').value;
+            const pw = document.getElementById('admin-pw').value;
+            if(id === 'admin' && pw === '1234') {
+                localStorage.setItem(STORAGE_KEY_AUTH, 'true');
+                checkAuth();
             } else {
-                errorMsg.classList.remove('hidden');
+                alert('아이디 또는 비밀번호가 틀립니다.');
+            }
+        };
+
+        function checkAuth() {
+            const isAuth = localStorage.getItem(STORAGE_KEY_AUTH);
+            if(isAuth) {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-main').classList.remove('hidden');
+                renderAll();
             }
         }
 
-        function proceedLogin() {
-            appState.isLoggedIn = true;
-            document.body.classList.remove('logged-out');
-            document.getElementById('login-modal').classList.add('hidden');
+        function logout() {
+            localStorage.removeItem(STORAGE_KEY_AUTH);
+            location.reload();
         }
 
-        function handleLogout() {
-            if(confirm("로그아웃 하시겠습니까?")) {
-                sessionStorage.removeItem('roro_auth');
-                location.reload();
-            }
-        }
-
-        function logStorage(msg) {
-            const log = document.getElementById('storage-log');
-            if(log) {
-                log.innerHTML += `<div>${msg}</div>`;
-                log.scrollTop = log.scrollHeight;
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('stat-total-diagnosis').innerText = appState.diagnosis.length + 1390 + "건";
-            document.getElementById('stat-total-news').innerText = appState.news.length + "건";
-        }
-
-        function testStorageSave() {
-            localStorage.setItem('roro_test_ping', Date.now());
-            logStorage(`> [저장] Ping: ${Date.now()}`);
-            addActivity("로컬 스토리지 테스트 완료");
-        }
-
-        function testStorageClear() {
-            localStorage.clear();
-            appState.news = [];
-            renderAll();
-            updateStats();
-            logStorage("> [삭제] 데이터 초기화 완료");
-        }
-
-        function addActivity(text) {
-            const list = document.getElementById('activity-list');
-            if(!list) return;
-            const div = document.createElement('div');
-            div.className = "flex items-center gap-3 pb-3 border-b border-slate-100";
-            div.innerHTML = `<div class="w-2 h-2 rounded-full bg-[#C5A059]"></div><p class="text-xs text-slate-600">${text}</p><span class="text-[10px] text-slate-300 ml-auto">방금 전</span>`;
-            list.prepend(div);
-        }
-
-        function previewThumbnail(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const preview = document.getElementById('image-preview-target');
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                    document.getElementById('preview-placeholder').classList.add('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveNewsPost() {
-            const type = document.getElementById('news-type').value;
-            const title = document.getElementById('news-title').value;
-            const content = document.getElementById('news-content').value;
-            const img = document.getElementById('image-preview-target').src;
-
-            if(!title) return alert("제목을 입력하세요.");
-
-            appState.news.unshift({
-                id: Date.now(), type, title, content, 
-                img: img.startsWith('data') ? img : null,
-                date: new Date().toLocaleDateString()
+        // --- UI Switching ---
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.querySelectorAll('.sidebar-link').forEach(btn => {
+                btn.classList.remove('active', 'text-white');
+                btn.classList.add('text-slate-400');
             });
-            
-            localStorage.setItem('roro_news', JSON.stringify(appState.news));
+            document.getElementById(`tab-btn-${tab}`).classList.add('active', 'text-white');
+        }
+
+        // --- CRUD Logic ---
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY_DIAG, JSON.stringify(state.diag));
+            localStorage.setItem(STORAGE_KEY_LAWYERS, JSON.stringify(state.lawyers));
+            localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(state.posts));
             renderAll();
-            updateStats();
-            alert("등록되었습니다.");
         }
 
         function renderAll() {
-            renderDiagnosis();
-            renderNews();
-        }
+            // Render Diagnosis
+            const diagList = document.getElementById('diagnosis-list');
+            diagList.innerHTML = state.diag.map((d, i) => `
+                <div class="data-card p-6 flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-bold text-[#C5A059] uppercase tracking-widest">Step ${i+1}</span>
+                        <h4 class="font-bold text-lg">${d.q}</h4>
+                        <p class="text-xs text-slate-400 mt-1">선택지: ${d.options.length}개</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="editDiag(${d.id})" class="p-2 text-slate-400 hover:text-blue-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2"></path></svg></button>
+                        <button onclick="deleteItem('diag', ${d.id})" class="p-2 text-slate-400 hover:text-red-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"></path></svg></button>
+                    </div>
+                </div>
+            `).join('');
 
-        function renderDiagnosis() {
-            const tbody = document.getElementById('diagnosis-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = appState.diagnosis.map(d => `
-                <tr class="diag-row cursor-pointer" onclick="this.classList.toggle('expanded')">
-                    <td class="px-6 py-4 text-sm font-bold">${d.name}</td>
-                    <td class="px-6 py-4 text-sm text-slate-600">${d.phone}</td>
-                    <td class="px-6 py-4"><span class="status-badge bg-blue-50 text-blue-600">${d.type}</span></td>
-                    <td class="px-6 py-4 text-[10px] font-bold text-orange-400">${d.status}</td>
-                    <td class="px-6 py-4 text-xs text-slate-400">${d.date}</td>
-                    <td class="px-6 py-4 text-right">▼</td>
+            // Render Lawyers
+            const lawyerList = document.getElementById('lawyers-list');
+            lawyerList.innerHTML = state.lawyers.map(l => `
+                <div class="data-card overflow-hidden">
+                    <div class="h-48 bg-slate-100 flex items-center justify-center relative overflow-hidden">
+                        ${l.img ? `<img src="${l.img}" class="w-full h-full object-cover">` : `<svg class="w-12 h-12 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                    </div>
+                    <div class="p-5">
+                        <h4 class="font-bold text-lg">${l.name} ${l.position}</h4>
+                        <p class="text-xs text-[#C5A059] font-bold mb-3">${l.expertise}</p>
+                        <div class="flex border-t border-slate-100 pt-4 mt-2 justify-end space-x-2">
+                            <button onclick="editLawyer(${l.id})" class="text-xs font-bold text-blue-500 px-3 py-1">수정</button>
+                            <button onclick="deleteItem('lawyers', ${l.id})" class="text-xs font-bold text-red-500 px-3 py-1">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Posts
+            const postList = document.getElementById('posts-list');
+            postList.innerHTML = state.posts.map(p => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="px-6 py-4"><span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold text-slate-500">${p.category}</span></td>
+                    <td class="px-6 py-4 font-bold text-slate-700">${p.title}</td>
+                    <td class="px-6 py-4 text-slate-400 text-xs">${p.date}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="editPost(${p.id})" class="text-blue-500 mr-3">수정</button>
+                        <button onclick="deleteItem('posts', ${p.id})" class="text-red-500">삭제</button>
+                    </td>
                 </tr>
-                <tr class="diag-detail"><td colspan="6" class="px-8 py-4 bg-slate-50 text-xs">${d.details.join(' / ')}</td></tr>
             `).join('');
         }
 
-        function renderNews() {
-            const tbody = document.getElementById('news-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = appState.news.map(n => `
-                <tr>
-                    <td class="px-6 py-4 w-20"><div class="w-12 h-8 bg-slate-100 rounded overflow-hidden">${n.img ? `<img src="${n.img}" class="w-full h-full object-cover">` : ''}</div></td>
-                    <td class="px-6 py-4 text-xs font-bold text-[#C5A059]">${n.type}</td>
-                    <td class="px-6 py-4 text-sm">${n.title}</td>
-                    <td class="px-6 py-4 text-right"><button onclick="deleteNews(${n.id})" class="text-rose-300 hover:text-rose-500">삭제</button></td>
-                </tr>
-            `).join('');
+        // --- Deletion ---
+        function deleteItem(type, id) {
+            if(!confirm('정말로 삭제하시겠습니까?')) return;
+            state[type] = state[type].filter(item => item.id !== id);
+            saveData();
         }
 
-        function deleteNews(id) {
-            appState.news = appState.news.filter(n => n.id !== id);
-            localStorage.setItem('roro_news', JSON.stringify(appState.news));
-            renderAll();
-            updateStats();
-        }
-
-        function showView(viewId) {
-            const section = document.getElementById('view-' + viewId);
-            if(!section) {
-                console.warn('View section not found: view-' + viewId);
-                return;
-            }
-
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            section.classList.add('active');
+        // --- Modals & Forms ---
+        function openModal(type, existingData = null) {
+            const modal = document.getElementById('admin-modal');
+            const body = document.getElementById('modal-body');
+            const title = document.getElementById('modal-title');
+            modal.classList.remove('hidden');
             
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const activeLink = document.getElementById('link-' + viewId);
-            if(activeLink) activeLink.classList.add('active');
-
-            // Update title
-            const titles = {
-                'dashboard': '대시보드 홈',
-                'diagnosis': '사고유형 진단 내역',
-                'lawyers': '변호사 관리',
-                'news': '공지/언론보도',
-                'consulting': '무료 법률 상담 관리'
-            };
-            document.getElementById('view-title').innerText = titles[viewId] || '관리 시스템';
+            if(type === 'diagnosis') {
+                title.innerText = existingData ? '진단 단계 수정' : '새 진단 단계 추가';
+                body.innerHTML = `
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">질문 내용</label>
+                            <input type="text" id="diag-q" class="w-full px-4 py-3 rounded-xl border border-slate-200" value="${existingData?.q || ''}" placeholder="예: 사고 당시 주행 상태는?">
+                        </div>
+                        <div id="diag-opts-container" class="space-y-3">
+                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">선택지 (텍스트 | 점수)</label>
+                            ${(existingData?.options || [{text: '', score: 0}, {text: '', score: 0}]).map((opt, i) => `
+                                <div class="flex gap-2">
+                                    <input type="text" class="diag-opt-text flex-1 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${opt.text}" placeholder="선택지 내용">
+                                    <input type="number" class="diag-opt-score w-20 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${opt.score}">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button onclick="addOptInput()" class="text-xs font-bold text-[#C5A059]">+ 선택지 추가</button>
+                    </div>
+                `;
+                document.getElementById('modal-save-btn').onclick = () => saveDiagnosis(existingData?.id);
+            } 
+            else if(type === 'lawyer') {
+                title.innerText = existingData ? '변호사 정보 수정' : '새 변호사 추가';
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex flex-col items-center mb-6">
+                            <div id="img-preview" class="w-32 h-32 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center">
+                                ${existingData?.img ? `<img src="${existingData.img}" class="w-full h-full object-cover">` : '<svg class="w-8 h-8 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'}
+                            </div>
+                            <label class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer">
+                                이미지 업로드
+                                <input type="file" id="lawyer-img" class="hidden" onchange="handleImg(event)">
+                            </label>
+                            <input type="hidden" id="lawyer-img-data" value="${existingData?.img || ''}">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">성함</label><input type="text" id="l-name" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.name || ''}"></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">직함</label><input type="text" id="l-pos" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.position || ''}"></div>
+                        </div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">전문분야</label><input type="text" id="l-exp" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.expertise || ''}"></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">주요경력</label><textarea id="l-bio" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm h-24">${existingData?.bio || ''}</textarea></div>
+                    </div>
+                `;
+                document.getElementById('modal-save-btn').onclick = () => saveLawyer(existingData?.id);
+            }
+            else if(type === 'post') {
+                title.innerText = existingData ? '게시글 수정' : '새 게시글 작성';
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">카테고리</label>
+                            <select id="p-cat" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm">
+                                <option ${existingData?.category === '공지' ? 'selected' : ''}>공지</option>
+                                <option ${existingData?.category === '언론' ? 'selected' : ''}>언론</option>
+                                <option ${existingData?.category === '일반' ? 'selected' : ''}>일반</option>
+                            </select>
+                        </div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">제목</label><input type="text" id="p-title" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm" value="${existingData?.title || ''}"></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">본문 내용</label><textarea id="p-content" class="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm h-48">${existingData?.content || ''}</textarea></div>
+                    </div>
+                `;
+                document.getElementById('modal-save-btn').onclick = () => savePost(existingData?.id);
+            }
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function closeModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        // --- Field Helpers ---
+        function addOptInput() {
+            const container = document.getElementById('diag-opts-container');
+            const div = document.createElement('div');
+            div.className = "flex gap-2";
+            div.innerHTML = `<input type="text" class="diag-opt-text flex-1 px-4 py-2 rounded-lg border border-slate-200 text-sm" placeholder="선택지 내용"><input type="number" class="diag-opt-score w-20 px-4 py-2 rounded-lg border border-slate-200 text-sm" value="0">`;
+            container.appendChild(div);
+        }
+
+        function handleImg(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                document.getElementById('img-preview').innerHTML = `<img src="${event.target.result}" class="w-full h-full object-cover">`;
+                document.getElementById('lawyer-img-data').value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- Save Actions ---
+        function saveDiagnosis(id) {
+            const q = document.getElementById('diag-q').value;
+            const texts = document.querySelectorAll('.diag-opt-text');
+            const scores = document.querySelectorAll('.diag-opt-score');
+            const options = Array.from(texts).map((t, i) => ({ text: t.value, score: parseInt(scores[i].value) }));
+            
+            if(id) {
+                const idx = state.diag.findIndex(d => d.id === id);
+                state.diag[idx] = { id, q, options };
+            } else {
+                state.diag.push({ id: Date.now(), q, options });
+            }
+            saveData();
+            closeModal();
+        }
+
+        function saveLawyer(id) {
+            const data = {
+                id: id || Date.now(),
+                name: document.getElementById('l-name').value,
+                position: document.getElementById('l-pos').value,
+                expertise: document.getElementById('l-exp').value,
+                bio: document.getElementById('l-bio').value,
+                img: document.getElementById('lawyer-img-data').value
+            };
+            if(id) {
+                const idx = state.lawyers.findIndex(l => l.id === id);
+                state.lawyers[idx] = data;
+            } else {
+                state.lawyers.push(data);
+            }
+            saveData();
+            closeModal();
+        }
+
+        function savePost(id) {
+            const data = {
+                id: id || Date.now(),
+                category: document.getElementById('p-cat').value,
+                title: document.getElementById('p-title').value,
+                content: document.getElementById('p-content').value,
+                date: new Date().toISOString().split('T')[0]
+            };
+            if(id) {
+                const idx = state.posts.findIndex(p => p.id === id);
+                state.posts[idx] = data;
+            } else {
+                state.posts.push(data);
+            }
+            saveData();
+            closeModal();
+        }
+
+        // --- Edit Shorthands ---
+        function editDiag(id) { openModal('diagnosis', state.diag.find(d => d.id === id)); }
+        function editLawyer(id) { openModal('lawyer', state.lawyers.find(l => l.id === id)); }
+        function editPost(id) { openModal('post', state.posts.find(p => p.id === id)); }
+
+        // Start
+        window.onload = checkAuth;
     </script>
 </body>
 </html>
