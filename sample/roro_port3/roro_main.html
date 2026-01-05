@@ -1,1 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>법무법인 로로 </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --gold-primary: #C5A059;
+            --gold-dark: #A68446;
+            --gold-light: #E2C286;
+            --slate-deep: #0F172A;
+            --black-footer: #111111;
+        }
 
+        body { font-family: 'Pretendard', sans-serif; scroll-behavior: smooth; }
+        .serif { font-family: 'Noto Serif KR', serif; }
+        
+        .hero-gradient {
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
+                        url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mouse-scroll {
+            width: 26px;
+            height: 42px;
+            border: 2px solid white;
+            border-radius: 15px;
+            position: relative;
+            margin: 0 auto;
+        }
+        .mouse-wheel {
+            width: 4px;
+            height: 8px;
+            background: var(--gold-primary);
+            border-radius: 2px;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scroll-anim 2s infinite;
+        }
+        @keyframes scroll-anim {
+            0% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 15px); }
+        }
+
+        #full-menu {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(-100%);
+        }
+        #full-menu.open {
+            transform: translateY(0);
+        }
+
+        /* 게시판 모달 애니메이션 */
+        #board-modal {
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #board-modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid var(--gold-primary);
+            color: var(--gold-primary);
+            font-weight: 700;
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #C5A059 0%, #A68446 100%);
+            color: white;
+        }
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #E2C286 0%, #C5A059 100%);
+        }
+
+        .fixed-consult-bar {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 50;
+            width: 320px;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 1280px) {
+            .fixed-consult-bar { width: 400px; }
+        }
+
+        .consult-header {
+            background: var(--gold-primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .text-gold { color: var(--gold-primary); }
+        .bg-gold { background-color: var(--gold-primary); }
+        .border-gold { border-color: var(--gold-primary); }
+        
+        .attorney-mockup {
+            aspect-ratio: 3/4;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(197, 160, 89, 0.2);
+        }
+        .attorney-mockup i {
+            font-size: 5rem;
+            color: var(--gold-primary);
+            opacity: 0.6;
+        }
+
+        .footer-black {
+            background-color: var(--black-footer);
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 overflow-x-hidden">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-[60] bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative h-20 flex items-center justify-between">
+            <div class="w-10"></div>
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center space-x-2">
+                <span class="text-2xl font-bold tracking-tighter text-slate-900 serif">법무법인 <span class="text-gold">로로</span></span>
+            </div>
+            <button onclick="toggleMenu()" class="w-10 h-10 flex flex-col justify-center items-center group">
+                <span id="bar1" class="w-6 h-0.5 bg-slate-900 mb-1.5 transition-all"></span>
+                <span id="bar2" class="w-6 h-0.5 bg-slate-900 mb-1.5 transition-all"></span>
+                <span id="bar3" class="w-6 h-0.5 bg-slate-900 transition-all"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Dropdown Menu -->
+    <div id="full-menu" class="fixed top-0 left-0 w-full h-[50vh] bg-slate-900 z-[55] flex flex-col items-center justify-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 text-center">
+            <a href="#about" onclick="toggleMenu()" class="text-white text-2xl font-bold serif hover:text-gold transition">로펌소개</a>
+            <a href="#attorneys" onclick="toggleMenu()" class="text-white text-2xl font-bold serif hover:text-gold transition">변호사 소개</a>
+            <a href="#specialty" onclick="toggleMenu()" class="text-white text-2xl font-bold serif hover:text-gold transition">전문분야</a>
+            <button onclick="openBoard()" class="text-white text-2xl font-bold serif hover:text-gold transition">공지/언론보도</button>
+        </div>
+        <div class="absolute bottom-8 text-gray-500 text-sm text-center px-4">
+            서울특별시 서초구 서초대로 123 | 상담예약: 02-1234-5678
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient h-screen flex flex-col items-center justify-center text-white pt-20 relative text-center">
+        <div class="max-w-7xl mx-auto px-4 z-10">
+            <h2 class="text-gold font-semibold tracking-widest mb-4 uppercase text-sm">Premium Legal Experts</h2>
+            <h1 class="text-4xl md:text-6xl font-bold mb-8 serif leading-tight">
+                품격 있는 변론,<br>
+                로로가 당신의 승리를 완성합니다
+            </h1>
+            <div class="w-20 h-1 bg-gold mx-auto mb-10"></div>
+            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto font-light">
+                최고의 전문성과 깊이 있는 통찰력으로<br>
+                당신이 직면한 법률적 난제를 명쾌하게 해결합니다.
+            </p>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-center opacity-70">
+            <div class="mouse-scroll">
+                <div class="mouse-wheel"></div>
+            </div>
+            <p class="text-[10px] mt-2 font-medium tracking-widest uppercase text-white/50">Scroll Down</p>
+        </div>
+    </section>
+
+    <!-- SECTION 1: 로펌 핵심 가치 -->
+    <section id="about" class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="text-left">
+                    <h3 class="text-gold font-bold mb-4">Loro Integrity</h3>
+                    <h2 class="text-4xl font-bold serif leading-tight mb-6">데이터와 실력으로<br>증명하는 압도적 결과</h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">법무법인 로로는 단순한 법률 자문을 넘어, 의뢰인의 삶을 지키는 최후의 보루가 되고자 합니다. 수만 건의 판례 분석과 유기적인 협업 시스템을 통해 승소라는 최선의 결과를 도출합니다.</p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="p-6 bg-gray-50 rounded-lg border-l-4 border-gold text-left">
+                            <div class="text-3xl font-bold text-slate-900 mb-1">92%</div>
+                            <div class="text-sm text-gray-500 font-medium uppercase tracking-tighter">형사/가사 승소율</div>
+                        </div>
+                        <div class="p-6 bg-gray-50 rounded-lg border-l-4 border-gold text-left">
+                            <div class="text-3xl font-bold text-slate-900 mb-1">15,000+</div>
+                            <div class="text-sm text-gray-500 font-medium uppercase tracking-tighter">누적 법률상담</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="rounded-2xl overflow-hidden shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="로펌 이미지" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-gold p-8 rounded-2xl text-white shadow-xl hidden md:block text-left">
+                        <p class="text-sm font-medium opacity-80 mb-2 text-left">Since 2008</p>
+                        <p class="text-2xl font-bold serif italic text-left">"변화의 중심에서<br>의뢰인을 지킵니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: 변호사 소개 -->
+    <section id="attorneys" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold serif mb-4">구성원 변호사</h2>
+                <div class="w-16 h-1 bg-gold mx-auto mb-6"></div>
+                <p class="text-gray-500 max-w-xl mx-auto">각 분야 최고의 전문가들이 의뢰인을 위해 원팀(One-Team)으로 움직입니다.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="group cursor-pointer">
+                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                         <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-bold mb-1">홍길동 변호사</h4>
+                        <p class="text-gold text-sm font-semibold mb-3">대표변호사 / 형사전문</p>
+                        <p class="text-xs text-gray-500 leading-relaxed px-4">사법연수원 35기<br>전) 서울중앙지검 검사</p>
+                    </div>
+                </div>
+                <div class="group cursor-pointer">
+                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                         <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-bold mb-1">이서연 변호사</h4>
+                        <p class="text-gold text-sm font-semibold mb-3">파트너 변호사 / 가사전문</p>
+                        <p class="text-xs text-gray-500 leading-relaxed px-4">서울대학교 법과대학 졸업<br>대한변협 등록 가사전문변호사</p>
+                    </div>
+                </div>
+                <div class="group cursor-pointer">
+                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                         <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-bold mb-1">박민준 변호사</h4>
+                        <p class="text-gold text-sm font-semibold mb-3">파트너 변호사 / 기업법무</p>
+                        <p class="text-xs text-gray-500 leading-relaxed px-4">뉴욕주 변호사 자격 보유<br>전) 대형로펌 기업법무팀</p>
+                    </div>
+                </div>
+                <div class="group cursor-pointer">
+                    <div class="attorney-mockup rounded-xl mb-6 transition duration-500">
+                         <i class="fa-solid fa-landmark"></i>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-bold mb-1">최지우 변호사</h4>
+                        <p class="text-gold text-sm font-semibold mb-3">변호사 / 부동산·민사</p>
+                        <p class="text-xs text-gray-500 leading-relaxed px-4">성균관대학교 로스쿨 졸업<br>부동산 자산운용사 자문위원</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: 전문분야 -->
+    <section id="specialty" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold serif mb-4">전문 분야</h2>
+                <div class="w-16 h-1 bg-gold mx-auto"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                <div class="p-8 border border-gray-100 bg-gray-50 rounded-xl hover-lift shadow-sm">
+                    <div class="w-12 h-12 bg-slate-900 text-gold flex items-center justify-center rounded-lg mb-6 border border-gold/30">
+                        <i class="fa-solid fa-gavel text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">형사 전문 센터</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm text-left">성범죄, 경제범죄, 음주운전 등 긴박한 상황에서 의뢰인의 권익을 최우선으로 보호합니다.</p>
+                </div>
+                <div class="p-8 border border-gray-100 bg-gray-50 rounded-xl hover-lift shadow-sm">
+                    <div class="w-12 h-12 bg-slate-900 text-gold flex items-center justify-center rounded-lg mb-6 border border-gold/30">
+                        <i class="fa-solid fa-house-chimney text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">가사/상속 센터</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm text-left">이혼, 재산분할, 유산 상속 등 가족 간의 문제를 법률적 혜안과 진심으로 대합니다.</p>
+                </div>
+                <div class="p-8 border border-gray-100 bg-gray-50 rounded-xl hover-lift shadow-sm">
+                    <div class="w-12 h-12 bg-slate-900 text-gold flex items-center justify-center rounded-lg mb-6 border border-gold/30">
+                        <i class="fa-solid fa-building text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">기업/부동산 센터</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm text-left">기업 자문, 부동산 PF, 대형 소송 등 고도의 전문성을 요하는 비즈니스 법률을 선도합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 전체화면 게시판 모달 -->
+    <div id="board-modal" class="fixed inset-0 bg-white z-[100] invisible opacity-0 flex flex-col overflow-y-auto">
+        <div class="max-w-5xl mx-auto w-full px-6 py-20 relative text-left">
+            <button onclick="closeBoard()" class="absolute top-10 right-6 text-slate-900 text-3xl hover:text-gold transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold serif mb-4">로로 소식</h2>
+                <div class="flex space-x-6 border-b border-gray-200">
+                    <button onclick="switchTab('notice')" id="btn-notice" class="pb-3 px-2 tab-active transition-all text-lg font-bold">공지사항</button>
+                    <button onclick="switchTab('press')" id="btn-press" class="pb-3 px-2 text-gray-400 hover:text-gold transition-all text-lg font-bold">언론보도</button>
+                </div>
+            </div>
+
+            <div id="content-notice" class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-xl">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-100">
+                        <tr>
+                            <th class="px-8 py-5 text-sm font-bold text-gray-500 w-20 text-center uppercase tracking-widest">No</th>
+                            <th class="px-8 py-5 text-sm font-bold text-gray-500 text-left uppercase tracking-widest">Title</th>
+                            <th class="px-8 py-5 text-sm font-bold text-gray-500 w-40 text-center uppercase tracking-widest">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="hover:bg-gray-50 transition cursor-pointer">
+                            <td class="px-8 py-6 text-sm text-gray-400 text-center">03</td>
+                            <td class="px-8 py-6 text-base font-bold text-slate-800">[공지] 프리미엄 법률 컨설팅 서비스 확대 안내</td>
+                            <td class="px-8 py-6 text-sm text-gray-400 text-center">2024.11.05</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition cursor-pointer">
+                            <td class="px-8 py-6 text-sm text-gray-400 text-center">02</td>
+                            <td class="px-8 py-6 text-base font-medium text-slate-700">추석 연휴 휴무 및 긴급 상담 안내</td>
+                            <td class="px-8 py-6 text-sm text-gray-400 text-center">2024.09.10</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition cursor-pointer">
+                            <td class="px-8 py-6 text-sm text-gray-400 text-center">01</td>
+                            <td class="px-8 py-6 text-base font-medium text-slate-700">법무법인 로로 홈페이지 리뉴얼 오픈 공지</td>
+                            <td class="px-8 py-6 text-sm text-gray-400 text-center">2024.08.01</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-12 text-center text-gray-400 text-sm italic">
+                법무법인 로로는 정직한 소통과 전문적인 정보 공유를 약속드립니다.
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side Fixed Consultation Bar -->
+    <div id="consultBar" class="fixed-consult-bar hidden lg:block border-gold/20">
+        <div class="consult-header">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-crown"></i>
+                <span class="font-bold text-sm tracking-tight">VIP 비공개 상담신청</span>
+            </div>
+            <button onclick="toggleBar()" class="hover:opacity-70 transition">
+                <i id="toggleIcon" class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+        <div id="barBody" class="p-5 text-left">
+            <form id="consultForm" onsubmit="handleSubmit(event)" class="space-y-3">
+                <div class="flex space-x-2">
+                    <input type="text" required class="w-1/2 px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gold-primary outline-none" placeholder="성함">
+                    <input type="tel" required class="w-1/2 px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gold-primary outline-none" placeholder="연락처">
+                </div>
+                <div>
+                    <select class="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gold-primary outline-none">
+                        <option>상담분야 선택</option>
+                        <option>형사전문</option>
+                        <option>이혼/가사</option>
+                        <option>부동산/기업</option>
+                        <option>민사/손해배상</option>
+                    </select>
+                </div>
+                <textarea class="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gold-primary outline-none h-20 resize-none" placeholder="상담 내용을 간략히 남겨주세요"></textarea>
+                <button type="submit" class="w-full btn-gold text-sm font-bold py-3 rounded-md transition shadow-md">변호사 직접 상담 예약</button>
+            </form>
+            <div id="successMsg" class="hidden text-center py-4">
+                <i class="fa-solid fa-circle-check text-gold text-3xl mb-2"></i>
+                <p class="text-sm font-bold">상담 신청이 완료되었습니다</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                <span class="text-[11px] text-gray-400">긴급 법률 지원</span>
+                <a href="tel:02-1234-5678" class="text-gold font-bold text-sm">02-1234-5678</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-black py-20 text-center">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col items-center mb-12">
+                <span class="text-2xl font-bold tracking-tighter text-white serif mb-8">법무법인 <span class="text-gold">로로</span></span>
+                <div class="flex flex-wrap justify-center space-x-8 text-sm font-medium mb-10">
+                    <a href="#about" class="hover:text-gold transition">로펌소개</a>
+                    <a href="#attorneys" class="hover:text-gold transition">변호사소개</a>
+                    <a href="#" class="text-white font-bold">개인정보처리방침</a>
+                    <a href="#">오시는 길</a>
+                </div>
+                <div class="w-20 h-px bg-white/10 mb-10"></div>
+            </div>
+            
+            <div class="text-xs md:text-sm space-y-4 leading-relaxed max-w-4xl mx-auto opacity-80">
+                <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 mb-4">
+                    <p>상호명: 법무법인 로로</p>
+                    <p>대표변호사: 홍길동</p>
+                    <p>사업자등록번호: 123-45-67890</p>
+                </div>
+                <p>주소: 서울특별시 서초구 서초대로 123, 로로빌딩 4층</p>
+                <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
+                    <p>대표전화: <span class="text-white font-bold">02-1234-5678</span></p>
+                    <p>이메일: info@loro.com</p>
+                </div>
+                <div class="pt-12 text-[10px] tracking-widest opacity-40">
+                    COPYRIGHT © 2024 LAWFIRM LORO. ALL RIGHTS RESERVED.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let menuOpen = false;
+        function toggleMenu() {
+            const menu = document.getElementById('full-menu');
+            const b1 = document.getElementById('bar1');
+            const b2 = document.getElementById('bar2');
+            const b3 = document.getElementById('bar3');
+            menuOpen = !menuOpen;
+            
+            if (menuOpen) {
+                menu.classList.add('open');
+                b1.style.transform = 'translateY(8px) rotate(45deg)';
+                b1.style.backgroundColor = 'white';
+                b2.style.opacity = '0';
+                b3.style.transform = 'translateY(-8px) rotate(-45deg)';
+                b3.style.backgroundColor = 'white';
+                document.body.style.overflow = 'hidden';
+            } else {
+                menu.classList.remove('open');
+                b1.style.transform = 'none';
+                b1.style.backgroundColor = '#0F172A';
+                b2.style.opacity = '1';
+                b3.style.transform = 'none';
+                b3.style.backgroundColor = '#0F172A';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function openBoard() {
+            if(menuOpen) toggleMenu();
+            const modal = document.getElementById('board-modal');
+            modal.classList.add('open');
+            modal.classList.remove('invisible', 'opacity-0');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBoard() {
+            const modal = document.getElementById('board-modal');
+            modal.classList.remove('open');
+            modal.classList.add('invisible', 'opacity-0');
+            document.body.style.overflow = 'auto';
+        }
+
+        let isExpanded = true;
+        function toggleBar() {
+            const body = document.getElementById('barBody');
+            const icon = document.getElementById('toggleIcon');
+            isExpanded = !isExpanded;
+            body.classList.toggle('hidden');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        }
+
+        function switchTab(tab) {
+            const btnNotice = document.getElementById('btn-notice');
+            const btnPress = document.getElementById('btn-press');
+
+            if (tab === 'notice') {
+                btnNotice.classList.add('tab-active');
+                btnPress.classList.remove('tab-active');
+                btnPress.classList.add('text-gray-400');
+            } else {
+                btnPress.classList.add('tab-active');
+                btnPress.classList.remove('text-gray-400');
+                btnNotice.classList.remove('tab-active');
+                btnNotice.classList.add('text-gray-400');
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            document.getElementById('consultForm').classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
