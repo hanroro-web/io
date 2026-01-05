@@ -52,12 +52,10 @@
             <form id="login-form" class="space-y-4 text-left">
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">ID</label>
-                    <!-- placeholder에서 hanroro 문구 제거 -->
                     <input type="text" id="login-id" class="input-field" placeholder="아이디 입력" required autocomplete="username">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Password</label>
-                    <!-- placeholder에서 실제 비밀번호를 유추할 수 없도록 수정 -->
                     <input type="password" id="login-pw" class="input-field" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 <button type="submit" id="login-btn" class="btn-primary w-full py-4 text-lg mt-6">
@@ -217,7 +215,23 @@
                     { id: 'phase', label: '단계', type: 'text' },
                     { id: 'progress', label: '진행률(%)', type: 'number' }
                 ],
-                render: (id, d) => `<div class="card p-6"><div class="flex justify-between items-start mb-4"><div><h4 class="font-bold text-lg">${d.name}</h4><p class="text-xs text-purple-400 mt-1">${d.phase}</p></div><div class="text-2xl font-black text-purple-500">${d.progress}%</div></div><div class="flex gap-3 border-t border-white/5 pt-4"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="text-xs font-bold text-gray-500 hover:text-white">수정</button><button onclick="window.deleteItem('${id}')" class="text-xs font-bold text-gray-500 hover:text-red-500">삭제</button></div></div>`
+                render: (id, d) => `
+                    <div class="card p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-bold text-lg">${d.name || '제목 없음'}</h4>
+                                <p class="text-xs text-purple-400 mt-1 uppercase tracking-wider font-bold">${d.phase || '준비중'}</p>
+                            </div>
+                            <div class="text-2xl font-black text-purple-500">${d.progress || 0}%</div>
+                        </div>
+                        <div class="w-full bg-white/5 rounded-full h-1.5 mb-6">
+                            <div class="bg-purple-500 h-1.5 rounded-full" style="width: ${d.progress || 0}%"></div>
+                        </div>
+                        <div class="flex gap-3 border-t border-white/5 pt-4">
+                            <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="text-xs font-bold text-gray-500 hover:text-white transition-colors">수정</button>
+                            <button onclick="window.deleteItem('${id}')" class="text-xs font-bold text-gray-500 hover:text-red-500 transition-colors">삭제</button>
+                        </div>
+                    </div>`
             },
             payments: {
                 collection: 'deposits',
@@ -229,7 +243,23 @@
                     { id: 'amount', label: '금액', type: 'number' },
                     { id: 'status', label: '상태', type: 'select', options: [{v:'waiting', l:'확인 중'}, {v:'complete', l:'입금 완료'}] }
                 ],
-                render: (id, d) => `<div class="card p-5 flex justify-between items-center"><div><h4 class="font-bold">${d.name}</h4><p class="text-[10px] text-gray-500 mt-1 uppercase">${d.type}</p></div><div class="flex items-center gap-6"><div class="text-right"><div class="font-black text-white">₩${Number(d.amount).toLocaleString()}</div><span class="text-[10px] font-bold ${d.status === 'complete' ? 'text-emerald-500' : 'text-amber-500'}">${d.status === 'complete' ? '완료' : '확인 중'}</span></div><div class="flex gap-2"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600"><i class="fas fa-edit"></i></button><button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600"><i class="fas fa-trash"></i></button></div></div></div>`
+                render: (id, d) => `
+                    <div class="card p-5 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold">${d.name}</h4>
+                            <p class="text-[10px] text-gray-500 mt-1 uppercase">${d.type}</p>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <div class="text-right">
+                                <div class="font-black text-white">₩${Number(d.amount).toLocaleString()}</div>
+                                <span class="text-[10px] font-bold ${d.status === 'complete' ? 'text-emerald-500' : 'text-amber-500'}">${d.status === 'complete' ? '완료' : '확인 중'}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600 hover:text-white"><i class="fas fa-edit"></i></button>
+                                <button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>`
             },
             quotes: { collection: 'quotes', title: '견적 신청', desc: '신청된 견적 문의 내역입니다.', render: (id, d) => `<div class="card p-6"><div class="flex justify-between mb-4"><h4 class="font-bold text-white">${d.name} <span class="text-[10px] text-purple-400 ml-2">${d.phone || d.contact || ''}</span></h4><button onclick="window.deleteItem('${id}')" class="text-gray-600"><i class="fas fa-trash"></i></button></div><div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 whitespace-pre-wrap">${d.memo || '내용 없음'}</div></div>` },
             consultations: { collection: 'consultations', title: '상담 내역', desc: '간편 상담 신청 내역입니다.', render: (id, d) => `<div class="card p-6"><div class="flex justify-between mb-4"><div><h4 class="font-bold text-white">${d.name || '익명'}</h4><p class="text-[11px] text-emerald-400 font-bold mt-1">${d.phone || d.contact || ''}</p></div><button onclick="window.deleteItem('${id}')" class="text-gray-600"><i class="fas fa-trash"></i></button></div><div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400">${d.memo || '내용 없음'}</div></div>` },
@@ -257,7 +287,7 @@
                     if (!el) return;
                     if (snap.empty) { el.innerHTML = '<div class="col-span-full py-20 text-center text-gray-600">내역이 없습니다.</div>'; return; }
                     el.innerHTML = snap.docs.map(d => config[key].render(d.id, d.data())).join('');
-                });
+                }, (err) => console.error("데이터 로드 에러:", err));
                 unsubscribers.push(unsub);
             });
         };
@@ -267,11 +297,15 @@
             fieldsEl.innerHTML = '';
             editingId = isEdit ? data.id : null;
             document.getElementById('modal-title').innerText = isEdit ? '정보 수정' : '새로운 등록';
+            
             const fields = config[currentTab].fields || [];
             fields.forEach(f => {
-                let input = `<input type="${f.type}" name="${f.id}" value="${data ? data[f.id] : ''}" class="input-field" required>`;
+                let val = data ? data[f.id] : '';
+                let input = `<input type="${f.type}" name="${f.id}" value="${val}" class="input-field" required>`;
                 if (f.type === 'select') {
-                    input = `<select name="${f.id}" class="input-field">${f.options.map(o => `<option value="${o.v}" ${data && data[f.id] === o.v ? 'selected' : ''}>${o.l}</option>`).join('')}</select>`;
+                    input = `<select name="${f.id}" class="input-field">
+                        ${f.options.map(o => `<option value="${o.v}" ${val === o.v ? 'selected' : ''}>${o.l}</option>`).join('')}
+                    </select>`;
                 }
                 fieldsEl.innerHTML += `<div><label class="block text-[11px] font-bold text-purple-400 mb-2 uppercase">${f.label}</label>${input}</div>`;
             });
@@ -280,20 +314,43 @@
 
         window.closeModal = () => document.getElementById('crud-modal').classList.remove('active');
         window.openEdit = (id, json) => openModal(true, { id, ...JSON.parse(decodeURIComponent(json)) });
-        window.deleteItem = async (id) => { if (confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, id)); };
+        window.deleteItem = async (id) => { 
+            if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, id));
+                } catch (e) {
+                    alert('삭제 실패: ' + e.message);
+                }
+            }
+        };
 
         document.getElementById('add-btn').onclick = () => openModal();
         document.getElementById('crud-form').onsubmit = async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
             const data = { updatedAt: serverTimestamp() };
-            formData.forEach((v, k) => data[k] = v);
-            if (editingId) {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, editingId), data);
-            } else {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection), { ...data, createdAt: serverTimestamp() });
+            formData.forEach((v, k) => {
+                // 숫자형 필드 처리
+                if (k === 'progress' || k === 'amount') {
+                    data[k] = Number(v);
+                } else {
+                    data[k] = v;
+                }
+            });
+
+            try {
+                if (editingId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, editingId), data);
+                } else {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection), { 
+                        ...data, 
+                        createdAt: serverTimestamp() 
+                    });
+                }
+                closeModal();
+            } catch (err) {
+                alert('데이터 저장 실패: ' + err.message);
             }
-            closeModal();
         };
     </script>
 </body>
