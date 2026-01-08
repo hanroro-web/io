@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뷰티 릴스 - BEAUTY REELS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            margin: 0;
+            background: #000;
+            overflow-x: hidden;
+        }
+
+        /* 인스타그램 공식 브랜드 컬러 그라데이션 배경 */
+        .insta-bg {
+            background: radial-gradient(circle at 33% 100%, #fed373 4%, #f15245 30%, #d92e7f 62%, #9b36b7 85%, #515ecf);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 릴스 카드 스타일 */
+        .reels-card-container {
+            position: relative;
+            padding: 3px; 
+            border-radius: 1.7rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .reels-card {
+            position: relative;
+            aspect-ratio: 9 / 16;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: #111;
+            z-index: 1;
+        }
+
+        .reels-card-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.7rem;
+            padding: 3px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .reels-card-container:hover {
+            transform: translateY(-10px);
+        }
+
+        .reels-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 30%, transparent 100%);
+        }
+
+        /* 인스타그램 버튼 스타일 */
+        .custom-btn {
+            background: linear-gradient(45deg, #f09433, #dc2743, #cc2366);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 800;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(220, 39, 67, 0.3);
+        }
+
+        /* 고정 미니 팝업창 스타일 */
+        .sticky-popup {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            padding: 12px 12px 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: slideUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { bottom: -100px; opacity: 0; }
+            to { bottom: 24px; opacity: 1; }
+        }
+
+        .popup-btn {
+            background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .popup-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* 프로필 스토리 서클 */
+        .story-circle {
+            padding: 2px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border-radius: 50%;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        .story-img {
+            border: 2px solid #1a1a1a;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+        }
+
+        /* 예약 고객 프로필 전용 스타일 */
+        .reserve-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+            gap: 6px;
+        }
+        .reserve-name {
+            font-size: 10px;
+            font-weight: 800;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .visual-section {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3rem;
+            overflow: hidden;
+            margin-top: 4rem;
+        }
+
+        .nav-link {
+            position: relative;
+            font-weight: 700;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+        }
+        .nav-link:hover { color: white; }
+
+        /* 팝업 모달 스타일 */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 2rem 2rem;
+            z-index: 1101;
+            transition: top 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active + .modal-content { top: 0; }
+
+        .booking-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .booking-card:hover { border-color: #fed373; transform: scale(1.02); }
+    </style>
+</head>
+<body class="insta-bg min-h-screen text-white relative">
+
+    <!-- 고정 미니 팝업 (CTA) -->
+    <div class="sticky-popup">
+        <div class="flex flex-col">
+            <span class="text-[10px] font-black text-[#fed373] tracking-widest uppercase mb-0.5">Limited Time</span>
+            <span class="text-sm font-bold text-white tracking-tight">지금 안하면 후회!</span>
+        </div>
+        <button onclick="openModal('booking')" class="popup-btn shadow-lg">
+            [인생뷰티 예약]
+        </button>
+    </div>
+
+    <!-- 팝업 모달: 메이크업 아티스트 -->
+    <div id="artist-overlay" class="modal-overlay" onclick="closeModal('artist')"></div>
+    <div id="artist-modal" class="modal-content p-8 no-scrollbar">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-black italic">MAKEUP ARTISTS</h2>
+            <button onclick="closeModal('artist')" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="space-y-6">
+            <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 hover:border-[#fed373]/50 transition-all cursor-pointer group">
+                <div class="story-circle"><img class="story-img" src="https://i.pravatar.cc/150?u=a1" alt="artist"></div>
+                <div>
+                    <h4 class="font-bold text-lg group-hover:text-[#fed373]">Senior Artist 제인</h4>
+                    <p class="text-sm text-white/50">웨딩 & 화보 메이크업 전문가 (경력 12년)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 hover:border-[#fed373]/50 transition-all cursor-pointer group">
+                <div class="story-circle"><img class="story-img" src="https://i.pravatar.cc/150?u=a2" alt="artist"></div>
+                <div>
+                    <h4 class="font-bold text-lg group-hover:text-[#fed373]">Main Artist 소희</h4>
+                    <p class="text-sm text-white/50">데일리 & 퍼스널컬러 메이크업 (경력 8년)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 팝업 모달: 지금 예약 -->
+    <div id="booking-overlay" class="modal-overlay" onclick="closeModal('booking')"></div>
+    <div id="booking-modal" class="modal-content p-8 no-scrollbar">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-black italic">BOOKING NOW</h2>
+            <button onclick="closeModal('booking')" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+            <div class="booking-card group" onclick="alert('메이크업 예약 페이지로 이동합니다.')">
+                <h3 class="text-2xl font-black mb-1">MAKEUP RESERVATION</h3>
+                <p class="text-sm text-white/40 italic">인생 최고의 순간을 디자인해드립니다.</p>
+            </div>
+            <div class="booking-card group" onclick="alert('헤어 스타일링 예약 페이지로 이동합니다.')">
+                <h3 class="text-2xl font-black mb-1">HAIR STYLING</h3>
+                <p class="text-sm text-white/40 italic">트렌디한 감각의 맞춤 헤어 디자인.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 네비게이션 -->
+    <nav class="fixed w-full z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2 text-2xl font-black tracking-tighter italic uppercase cursor-pointer" onclick="window.location.reload()">
+                <svg class="w-8 h-8 text-[#fed373]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3a2 2 0 0 1 2 2c0 1.1-.9 2-2 2h-1l-3 4.5c1 1 1 2.5 0 3.5l3 4.5h1a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2c0-.3.1-.6.2-.9l-3.2-4.8c-.8.4-1.8.4-2.6 0l-3.2 4.8c.1.3.2.6.2.9a2 2 0 0 1-2 2 2 2 0 0 1-2-2c0-1.1.9-2 2-2h1l3-4.5c-1-1-1-2.5 0-3.5l-3-4.5h-1a2 2 0 0 1-2-2c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 .3-.1.6-.2.9l3.2 4.8c.8-.4 1.8-.4 2.6 0L16.8 3.9c-.1-.3-.2-.6-.2-.9a2 2 0 0 1 2-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+                Beauty Reels
+            </div>
+            <div class="hidden lg:flex items-center gap-12 absolute left-1/2 transform -translate-x-1/2">
+                <a onclick="openModal('artist')" class="nav-link">메이크업 아티스트</a>
+                <a onclick="openModal('booking')" class="nav-link">예약안내</a>
+            </div>
+            <button onclick="openModal('booking')" class="bg-gradient-to-r from-[#f09433] to-[#cc2366] text-white px-7 py-2.5 rounded-full text-sm font-black active:scale-95 transition-all">지금 예약</button>
+        </div>
+    </nav>
+
+    <main class="relative pt-48 pb-40 px-6 z-10">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="flex flex-col lg:flex-row items-center lg:items-end justify-between gap-12 mb-24">
+                <div class="max-w-xl text-left">
+                    <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-6">
+                        <p class="text-[10px] font-black tracking-[0.3em] text-white uppercase italic">Trendsetter's Choice</p>
+                    </div>
+                    <h1 class="text-6xl lg:text-7xl font-black text-white leading-[1.0] mb-10 tracking-tighter">
+                        당신만을 위한 <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#fed373] via-[#f15245] to-[#d92e7f]">인생 뷰티</span> 찾기
+                    </h1>
+                    <div class="flex flex-wrap gap-5">
+                        <a href="#" class="custom-btn">인스타그램 팔로우</a>
+                        <a onclick="openModal('booking')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full font-bold transition-all cursor-pointer">인생뷰티 예약</a>
+                    </div>
+                </div>
+
+                <!-- 실시간 예약 현황 위젯 -->
+                <div class="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2.5rem] p-7 shadow-2xl w-full lg:w-[500px]">
+                    <div class="flex items-center justify-between mb-6 px-2">
+                        <span class="text-[11px] font-black text-white tracking-[0.2em] uppercase">Today's List</span>
+                        <div class="flex items-center gap-2"><span class="w-2 h-2 bg-[#fed373] rounded-full animate-pulse"></span><span class="text-[11px] font-bold text-[#fed373]">LIVE 예약</span></div>
+                    </div>
+                    <div class="flex items-start gap-5 overflow-x-auto no-scrollbar py-2">
+                        <div class="reserve-profile"><div class="story-circle"><img class="story-img" src="https://i.pravatar.cc/150?u=r1"></div><span class="reserve-name">김*나</span></div>
+                        <div class="reserve-profile"><div class="story-circle"><img class="story-img" src="https://i.pravatar.cc/150?u=r2"></div><span class="reserve-name">박*우</span></div>
+                        <div class="reserve-profile"><div class="story-circle"><img class="story-img" src="https://i.pravatar.cc/150?u=r3"></div><span class="reserve-name">최*지</span></div>
+                        <div class="reserve-profile"><div class="story-circle"><img class="story-img" src="https://i.pravatar.cc/150?u=r4"></div><span class="reserve-name">이*준</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 첫 번째 섹션: 메인 릴스 (4개) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-32">
+                <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f80d77d2?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-lg font-black">슬릭 허쉬컷</h3></div></div></div>
+                <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-lg font-black">네츄럴 빌드펌</h3></div></div></div>
+                <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1620331311520-246422ff83f9?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-lg font-black">딥 발레아쥬</h3></div></div></div>
+                <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-lg font-black">사이드 파트</h3></div></div></div>
+            </div>
+
+            <!-- 브랜딩 비주얼 -->
+            <section class="visual-section w-full max-w-7xl flex flex-col md:flex-row items-stretch min-h-[550px] mb-32">
+                <div class="flex-1 p-12 lg:p-24 flex flex-col justify-center">
+                    <span class="text-[#fed373] font-black tracking-[0.2em] text-xs mb-4 uppercase">New Look Book 2026</span>
+                    <h2 class="text-5xl lg:text-7xl font-black mb-8 leading-[1.0] tracking-tighter">당신을 위해<br>설계된 스타일</h2>
+                    <p class="text-white/70 text-lg mb-12">당신만의 분위기를 극대화하는 프리미엄 디자인.</p>
+                    <a onclick="openModal('booking')" class="font-black text-white hover:text-[#fed373] cursor-pointer">상담 예약하기 →</a>
+                </div>
+                <div class="flex-1 overflow-hidden relative">
+                    <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover">
+                </div>
+            </section>
+
+            <!-- 확장된 릴스 후기 섹션 (8개 이상) -->
+            <div class="mb-32">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-black text-white tracking-tighter">다양한 릴스 후기</h2>
+                    <p class="text-white/40 mt-4 font-bold uppercase tracking-widest text-xs">Real Customers, Real Styles</p>
+                    <div class="w-20 h-1 bg-gradient-to-r from-[#f09433] to-[#cc2366] mx-auto mt-6 rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+                    <!-- 1 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1596462502278-27bfad4023c6?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">글로우 리뷰</h3></div></div></div>
+                    <!-- 2 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">웨딩 헤어</h3></div></div></div>
+                    <!-- 3 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1583000355340-972170c06180?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">태슬컷 후기</h3></div></div></div>
+                    <!-- 4 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">아이돌 메컵</h3></div></div></div>
+                    <!-- 5 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1526045612212-70caf35c14df?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">젤리펌 스타일</h3></div></div></div>
+                    <!-- 6 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1519415510236-85592ac75366?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">리프컷 완성</h3></div></div></div>
+                    <!-- 7 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1595152230535-09a22a304e90?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">남성 가르마펌</h3></div></div></div>
+                    <!-- 8 -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1457972851104-4fd469440bf9?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">음영 메이크업</h3></div></div></div>
+                    <!-- 9 (추가) -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1503910395308-7df7833e3d2a?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">히피펌 감성</h3></div></div></div>
+                    <!-- 10 (추가) -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">면접 프리패스</h3></div></div></div>
+                    <!-- 11 (추가) -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1515377666659-8182980203c9?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">파티 퀸 메컵</h3></div></div></div>
+                    <!-- 12 (추가) -->
+                    <div class="reels-card-container"><div class="reels-card"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover"><div class="reels-overlay absolute inset-0"></div><div class="absolute bottom-6 left-5 z-10"><h3 class="text-md font-bold">숏컷 정석</h3></div></div></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-black/80 border-t border-white/10 py-16 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center">
+            <div class="flex items-center gap-3 text-2xl font-black tracking-tighter italic uppercase mb-6">
+                <svg class="w-8 h-8 text-[#fed373]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3a2 2 0 0 1 2 2c0 1.1-.9 2-2 2h-1l-3 4.5c1 1 1 2.5 0 3.5l3 4.5h1a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2c0-.3.1-.6.2-.9l-3.2-4.8c-.8.4-1.8.4-2.6 0l-3.2 4.8c.1.3.2.6.2.9a2 2 0 0 1-2 2 2 2 0 0 1-2-2c0-1.1.9-2 2-2h1l3-4.5c-1-1-1-2.5 0-3.5l-3-4.5h-1a2 2 0 0 1-2-2c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 .3-.1.6-.2.9l3.2 4.8c.8-.4 1.8-.4 2.6 0L16.8 3.9c-.1-.3-.2-.6-.2-.9a2 2 0 0 1 2-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+                Beauty Reels
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-6 mb-8 text-sm font-bold text-white/60">
+                <a href="#" class="hover:text-white transition-colors">서비스 이용약관</a>
+                <a href="#" class="hover:text-white transition-colors">개인정보 처리방침</a>
+                <a href="#" class="hover:text-white transition-colors">파트너 문의</a>
+                <a href="#" class="hover:text-white transition-colors">오시는 길</a>
+            </div>
+
+            <p class="text-white/30 text-[11px] font-medium leading-loose max-w-lg">
+                상호명: (주)인생뷰티 | 대표자: 홍길동 | 사업자등록번호: 000-00-00000<br>
+                서울특별시 강남구 테헤란로 123 뷰티타워 7층<br>
+                © 2026 BEAUTY REELS. TRENDSETTER'S CHOICE. ALL RIGHTS RESERVED.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function openModal(type) {
+            document.getElementById(type + '-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeModal(type) {
+            document.getElementById(type + '-overlay').classList.remove('active');
+            document.body.style.overflow = ''; 
+        }
+    </script>
+</body>
+</html>
