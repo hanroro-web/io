@@ -20,6 +20,30 @@
             background: radial-gradient(circle at 33% 100%, #fed373 4%, #f15245 30%, #d92e7f 62%, #9b36b7 85%, #515ecf);
             background-attachment: fixed;
             background-size: cover;
+            position: relative;
+        }
+
+        /* 배경 가위 아이콘 패턴 애니메이션 */
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .bg-icon {
+            position: absolute;
+            color: white;
+            animation: float-around 20s linear infinite;
+        }
+
+        @keyframes float-around {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(10vw, 15vh) rotate(120deg); }
+            66% { transform: translate(-5vw, 25vh) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
 
         /* 상단 네비게이션: 투명 유지 및 블러 효과 */
@@ -52,7 +76,7 @@
         /* 릴스 카드 컨테이너 및 네온 효과 */
         .reels-card-container {
             position: relative;
-            padding: 4px; /* 테두리 공간 확보 */
+            padding: 4px; 
             border-radius: 1.7rem;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
@@ -60,14 +84,12 @@
             z-index: 1;
         }
 
-        /* 네온 테두리 가상 요소 */
         .reels-card-container::before {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: 1.7rem;
-            padding: 3px; /* 테두리 두께 */
-            /* 인스타그램 스타일의 화려한 그라데이션 */
+            padding: 3px; 
             background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888, #f09433);
             background-size: 300% 300%;
             -webkit-mask: 
@@ -75,7 +97,7 @@
                 linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
-            opacity: 0; /* 기본 상태에서는 숨김 */
+            opacity: 0; 
             transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
         }
 
@@ -89,14 +111,12 @@
             z-index: 2;
         }
 
-        /* PC 호버 시 강렬한 네온 효과 */
         @media (hover: hover) {
             .reels-card-container:hover {
                 transform: translateY(-12px) scale(1.05);
             }
             .reels-card-container:hover::before {
-                opacity: 1; /* 테두리 노출 */
-                /* 강력한 네온 글로우(빛 번짐) 효과 */
+                opacity: 1; 
                 box-shadow: 0 0 20px rgba(220, 39, 67, 0.8), 
                             0 0 40px rgba(188, 24, 136, 0.5),
                             0 0 60px rgba(240, 148, 51, 0.3);
@@ -107,17 +127,11 @@
             }
         }
 
-        /* 터치 기기 대응 (Active 상태) */
         .reels-card-container:active {
             transform: scale(0.95);
             transition: all 0.1s;
         }
-        .reels-card-container:active::before {
-            opacity: 1;
-            box-shadow: 0 0 25px rgba(254, 211, 115, 1);
-        }
 
-        /* 테두리 그라데이션이 흐르는 애니메이션 */
         @keyframes gradient-flow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -128,7 +142,6 @@
             background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 30%, transparent 100%);
         }
 
-        /* 고정 미니 팝업창 */
         .sticky-popup {
             position: fixed;
             bottom: 16px;
@@ -160,7 +173,6 @@
             white-space: nowrap;
         }
 
-        /* 목업 프로필 아이콘 스타일 */
         .story-circle {
             padding: 2px;
             background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
@@ -251,7 +263,6 @@
             transition: 0.3s;
         }
 
-        /* 라이브 인원 배지 애니메이션 */
         .live-badge {
             animation: pulse-border 2s infinite;
         }
@@ -261,7 +272,6 @@
             100% { border-color: rgba(255, 255, 255, 0.1); }
         }
 
-        /* 프로필 겹치기 스타일 (목업 형태) */
         .avatar-group {
             display: flex;
             align-items: center;
@@ -284,6 +294,15 @@
     </style>
 </head>
 <body class="insta-bg min-h-screen text-white relative">
+
+    <!-- 배경 애니메이션 아이콘 패턴 -->
+    <div class="bg-pattern">
+        <!-- 가위 아이콘들 (다양한 크기와 위치) -->
+        <svg class="bg-icon w-20 h-20" style="top: 10%; left: 5%; animation-duration: 25s; opacity: 0.2;" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2c0 1.1-.9 2-2 2h-1l-3 4.5c1 1 1 2.5 0 3.5l3 4.5h1a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2c0-.3.1-.6.2-.9l-3.2-4.8c-.8.4-1.8.4-2.6 0l-3.2 4.8c.1.3.2.6.2.9a2 2 0 0 1-2 2 2 2 0 0 1-2-2c0-1.1.9-2 2-2h1l3-4.5c-1-1-1-2.5 0-3.5l-3-4.5h-1a2 2 0 0 1-2-2c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 .3-.1.6-.2.9l3.2 4.8c.8-.4 1.8-.4 2.6 0L16.8 3.9c-.1-.3-.2-.6-.2-.9a2 2 0 0 1 2-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <svg class="bg-icon w-32 h-32" style="top: 40%; left: 80%; animation-duration: 35s; opacity: 0.1;" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2c0 1.1-.9 2-2 2h-1l-3 4.5c1 1 1 2.5 0 3.5l3 4.5h1a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2c0-.3.1-.6.2-.9l-3.2-4.8c-.8.4-1.8.4-2.6 0l-3.2 4.8c.1.3.2.6.2.9a2 2 0 0 1-2 2 2 2 0 0 1-2-2c0-1.1.9-2 2-2h1l3-4.5c-1-1-1-2.5 0-3.5l-3-4.5h-1a2 2 0 0 1-2-2c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 .3-.1.6-.2.9l3.2 4.8c.8-.4 1.8-.4 2.6 0L16.8 3.9c-.1-.3-.2-.6-.2-.9a2 2 0 0 1 2-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <svg class="bg-icon w-16 h-16" style="top: 70%; left: 15%; animation-duration: 20s; opacity: 0.2;" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2c0 1.1-.9 2-2 2h-1l-3 4.5c1 1 1 2.5 0 3.5l3 4.5h1a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2c0-.3.1-.6.2-.9l-3.2-4.8c-.8.4-1.8.4-2.6 0l-3.2 4.8c.1.3.2.6.2.9a2 2 0 0 1-2 2 2 2 0 0 1-2-2c0-1.1.9-2 2-2h1l3-4.5c-1-1-1-2.5 0-3.5l-3-4.5h-1a2 2 0 0 1-2-2c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 .3-.1.6-.2.9l3.2 4.8c.8-.4 1.8-.4 2.6 0L16.8 3.9c-.1-.3-.2-.6-.2-.9a2 2 0 0 1 2-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <svg class="bg-icon w-24 h-24" style="top: 25%; left: 45%; animation-duration: 30s; opacity: 0.15;" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2c0 1.1-.9 2-2 2h-1l-3 4.5c1 1 1 2.5 0 3.5l3 4.5h1a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2c0-.3.1-.6.2-.9l-3.2-4.8c-.8.4-1.8.4-2.6 0l-3.2 4.8c.1.3.2.6.2.9a2 2 0 0 1-2 2 2 2 0 0 1-2-2c0-1.1.9-2 2-2h1l3-4.5c-1-1-1-2.5 0-3.5l-3-4.5h-1a2 2 0 0 1-2-2c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 .3-.1.6-.2.9l3.2 4.8c.8-.4 1.8-.4 2.6 0L16.8 3.9c-.1-.3-.2-.6-.2-.9a2 2 0 0 1 2-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+    </div>
 
     <!-- 고정 미니 팝업 (CTA) -->
     <div class="sticky-popup">
@@ -357,7 +376,7 @@
             </button>
         </div>
         <div class="grid grid-cols-1 gap-3 lg:gap-4">
-            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 group cursor-pointer" onclick="alert('예약 페이지로 이동합니다.')">
+            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 group cursor-pointer">
                 <h3 class="text-lg lg:text-2xl font-black mb-1">MAKEUP RESERVATION</h3>
                 <p class="text-xs lg:text-sm text-white/40 italic">인생 최고의 순간을 디자인해드립니다.</p>
             </div>
