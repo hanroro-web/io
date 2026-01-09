@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로로 법무법인 - 샘플 06번</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600;700&display=swap');
+
+        :root {
+            --roro-navy: #0f172a;
+            --roro-orange: #f97316;
+            --roro-light-gray: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            color: #1e293b;
+            word-break: keep-all;
+            padding-bottom: 80px; /* 상담바 공간 확보 */
+        }
+
+        .serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+
+        /* Custom Colors */
+        .text-roro-navy { color: var(--roro-navy); }
+        .bg-roro-navy { background-color: var(--roro-navy); }
+        .text-roro-orange { color: var(--roro-orange); }
+        .bg-roro-orange { background-color: var(--roro-orange); }
+
+        /* Navigation Hover */
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            cursor: pointer;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--roro-orange);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--roro-orange);
+        }
+
+        /* Hero Section */
+        .hero-bg {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+                        url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .btn-glow {
+            box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Page Transition Animation */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .page-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Icon Mockup Styles */
+        .profile-icon-mockup {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #f1f5f9;
+        }
+        .profile-icon-mockup i {
+            color: #94a3b8;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+        .group:hover .profile-icon-mockup i {
+            color: var(--roro-orange);
+            transform: scale(1.1) translateY(-5px);
+        }
+        .profile-icon-mockup::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 120%;
+            height: 40%;
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.03) 0%, transparent 70%);
+            transform: rotate(-5deg);
+        }
+
+        /* Fixed Contact Bar Animation */
+        .contact-bar {
+            animation: slideUp 0.8s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Top Info Bar -->
+    <div class="bg-roro-navy text-white text-[11px] py-2.5 px-6 hidden md:block border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center opacity-80">
+            <div class="flex gap-6">
+                <span><i data-lucide="phone" class="w-3 h-3 inline mr-1"></i> 대표번호: 02-588-1234</span>
+                <span><i data-lucide="clock" class="w-3 h-3 inline mr-1"></i> 24시간 긴급 법률 대응 시스템 가동중</span>
+            </div>
+            <div class="flex gap-4">
+                <a onclick="showPage('main')" class="cursor-pointer hover:text-roro-orange">메인으로</a>
+                <span class="opacity-30">|</span>
+                <a href="#map-section" class="hover:text-roro-orange">오시는 길</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center h-20 md:h-24">
+            <!-- Logo -->
+            <a onclick="showPage('main')" class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-12 h-12 bg-roro-navy flex items-center justify-center rounded-xl group-hover:rotate-6 transition-transform duration-300">
+                    <span class="text-roro-orange font-black text-2xl serif">RR</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-black tracking-tight text-roro-navy leading-none">로로 <span class="text-roro-orange">법무법인</span></span>
+                    <span class="text-[9px] text-gray-400 tracking-[0.3em] uppercase mt-1 font-bold">Law Firm RORO</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex gap-10">
+                <a onclick="showPage('lawyers')" class="nav-link text-gray-700 font-bold" data-page="lawyers">변호사 소개</a>
+                <a onclick="showPage('news')" class="nav-link text-gray-700 font-bold" data-page="news">공지/언론사례</a>
+                <a onclick="showPage('specialties')" class="nav-link text-gray-700 font-bold" data-page="specialties">전문 분야</a>
+                <a onclick="showPage('diagnosis')" class="nav-link text-gray-700 font-bold text-roro-orange" data-page="diagnosis">교통사고 진단</a>
+            </nav>
+
+            <!-- CTA Button -->
+            <div class="hidden md:block">
+                <button class="bg-roro-orange text-white px-8 py-3.5 rounded-xl text-sm font-bold btn-glow flex items-center gap-2">
+                    <i data-lucide="phone-call" class="w-4 h-4"></i>
+                    무료 전화상담
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-roro-navy" onclick="toggleMenu()">
+                <i data-lucide="menu" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-roro-navy z-[60] hidden flex-col p-8 text-white">
+        <div class="flex justify-between items-center">
+             <span class="text-2xl font-bold serif text-roro-orange">RORO</span>
+            <button onclick="toggleMenu()"><i data-lucide="x" class="w-8 h-8 text-white"></i></button>
+        </div>
+        <nav class="flex flex-col gap-6 mt-16 text-2xl font-bold">
+            <a onclick="showPage('lawyers'); toggleMenu();">변호사 소개</a>
+            <a onclick="showPage('news'); toggleMenu();">공지/언론사례</a>
+            <a onclick="showPage('specialties'); toggleMenu();">전문 분야</a>
+            <a onclick="showPage('diagnosis'); toggleMenu();" class="text-roro-orange">교통사고 진단</a>
+        </nav>
+    </div>
+
+    <!-- MAIN PAGE -->
+    <main id="page-main" class="page-content active">
+        <!-- Hero Section -->
+        <section class="hero-bg min-h-[85vh] flex items-center relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-6 w-full py-20 flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-4xl md:text-7xl text-white font-extrabold serif leading-[1.2] mb-8">
+                        당신의 일상을 <br class="hidden md:block">
+                        <span class="text-roro-orange italic">신뢰</span>로 되찾아드립니다.
+                    </h1>
+                    <p class="text-white/70 text-lg md:text-xl max-w-xl mb-12 font-medium leading-relaxed">
+                        로로 법무법인은 결과로 말합니다. <br>
+                        수천 건의 데이터와 치밀한 법리 해석으로 <br class="hidden md:block">
+                        어떤 분쟁에서도 흔들리지 않는 승리를 약속합니다.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button class="bg-roro-orange text-white px-10 py-5 rounded-2xl text-lg font-bold btn-glow">
+                            비공개 1:1 상담신청
+                        </button>
+                        <button onclick="showPage('specialties')" class="bg-white/5 backdrop-blur-sm border border-white/20 text-white px-10 py-5 rounded-2xl text-lg font-bold hover:bg-white hover:text-roro-navy transition-all">
+                            주요 분쟁 해결사례
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Floating Card -->
+                <div class="w-full max-w-sm bg-white p-8 rounded-[2rem] shadow-2xl relative">
+                    <div class="absolute -top-4 -left-4 bg-roro-orange text-white px-6 py-2 rounded-xl text-xs font-bold animate-bounce">
+                        실시간 상담 접수중
+                    </div>
+                    <h3 class="text-xl font-bold text-roro-navy mb-6 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="text-roro-orange"></i>
+                        법률 분쟁 원스톱 해결
+                    </h3>
+                    <div class="space-y-4">
+                        <div onclick="showPage('diagnosis')" class="p-4 bg-gray-50 rounded-xl hover:bg-orange-50 transition-colors cursor-pointer border border-transparent hover:border-roro-orange/20">
+                            <h4 class="font-bold text-sm mb-1 text-roro-navy">교통사고/사망사고 분쟁</h4>
+                            <p class="text-xs text-gray-500">과실 비율, 휴업 손해, 사망 위자료 산정</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-xl hover:bg-orange-50 transition-colors cursor-pointer border border-transparent hover:border-roro-orange/20">
+                            <h4 class="font-bold text-sm mb-1 text-roro-navy">이혼 및 재산분할 분쟁</h4>
+                            <p class="text-xs text-gray-500">양육권 확보, 특유재산 분할 기여도 입증</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-xl hover:bg-orange-50 transition-colors cursor-pointer border border-transparent hover:border-roro-orange/20">
+                            <h4 class="font-bold text-sm mb-1 text-roro-navy">부동산/임대차 분쟁</h4>
+                            <p class="text-xs text-gray-500">권리금 보호, 명도 소송, 전세 사기 대응</p>
+                        </div>
+                    </div>
+                    <button class="w-full mt-6 bg-roro-navy text-white py-4 rounded-xl font-bold hover:bg-black transition-colors">
+                        전체 상담 리스트 보기
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brief Case Study -->
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-black text-roro-navy serif mb-6">분쟁의 끝을 승리로 마무리합니다</h2>
+                    <p class="text-gray-500 max-w-2xl mx-auto">의뢰인이 마주한 가장 복잡한 문제들을 로로 법무법인의 전문 변호사들이 해결해온 실제 기록입니다.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Case 1 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 group hover:shadow-xl transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded">민사/부동산</span>
+                            <span class="text-roro-orange font-bold text-sm italic">승소</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-roro-orange transition-colors">전세사기 보증금 반환 분쟁</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">다세대 주택 임대인의 잠적 후 보증금 3억 원을 돌려받지 못한 의뢰인. 로로만의 빠른 채권 가압류 및 민사 소송을 통해 95% 이상의 채권을 확보했습니다.</p>
+                    </div>
+                    <!-- Case 2 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 group hover:shadow-xl transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded">형사전문</span>
+                            <span class="text-roro-orange font-bold text-sm italic">기소유예</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-roro-orange transition-colors">음주운전 재범 긴급 방어</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">과거 전력이 있는 의뢰인의 음주운전 사고. 로로 형사 전담팀이 현장 조사를 통해 참작 사유를 입증하고 구속 위기에서 벌금형 및 기소유예를 이끌어냈습니다.</p>
+                    </div>
+                    <!-- Case 3 -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 group hover:shadow-xl transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="px-3 py-1 bg-orange-50 text-roro-orange text-[10px] font-bold rounded">가사/상속</span>
+                            <span class="text-roro-orange font-bold text-sm italic">조정성립</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 group-hover:text-roro-orange transition-colors">황혼이혼 재산분할 분쟁</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">30년 혼인 생활 후 재산 기여도 입증이 어려운 상황. 가사 전담팀이 생활 기록과 금융 데이터를 분석하여 50:50의 공정한 분할 승소를 달성했습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- LAWYERS PAGE -->
+    <main id="page-lawyers" class="page-content py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <span class="text-roro-orange font-bold tracking-widest text-sm uppercase mb-4 block">Our Professionals</span>
+                <h2 class="text-4xl md:text-5xl font-black text-roro-navy serif mb-6">실력으로 신뢰를 증명하는 전문가들</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">판검사 출신 베테랑부터 분야별 전문 변호사까지, <br>개인의 초상보다 전문 법률 서비스의 가치를 최우선으로 합니다.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Lawyer 1 (Icon Mockup: Criminal/Scale) -->
+                <div class="group">
+                    <div class="aspect-[3/4] profile-icon-mockup rounded-[2rem] mb-8 shadow-sm">
+                        <i data-lucide="scale" class="w-24 h-24"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-roro-navy/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+                            <p class="text-white text-sm italic leading-relaxed">"법리는 냉철하게, 전략은 치밀하게. 형사 사건의 골든타임을 지켜드립니다."</p>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left px-4">
+                        <span class="text-roro-orange font-bold text-sm">Managing Partner</span>
+                        <h3 class="text-2xl font-black text-roro-navy mt-1">김로로 대표변호사</h3>
+                        <div class="h-1 w-12 bg-roro-orange my-4 mx-auto md:mx-0"></div>
+                        <ul class="text-gray-500 text-sm space-y-1 font-medium">
+                            <li>• 전 서울중앙지검 부장검사</li>
+                            <li>• 제45회 사법시험 합격 / 사법연수원 35기</li>
+                            <li>• 대한변호사협회 형사법 전문 등록</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Lawyer 2 (Icon Mockup: Family/Shield) -->
+                <div class="group">
+                    <div class="aspect-[3/4] profile-icon-mockup rounded-[2rem] mb-8 shadow-sm">
+                        <i data-lucide="shield-check" class="w-24 h-24"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-roro-navy/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+                            <p class="text-white text-sm italic leading-relaxed">"가족의 평온을 되찾아드리는 따뜻한 법률 전문가가 되어드리겠습니다."</p>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left px-4">
+                        <span class="text-roro-orange font-bold text-sm">Partner Lawyer</span>
+                        <h3 class="text-2xl font-black text-roro-navy mt-1">이지혜 변호사</h3>
+                        <div class="h-1 w-12 bg-roro-orange my-4 mx-auto md:mx-0"></div>
+                        <ul class="text-gray-500 text-sm space-y-1 font-medium">
+                            <li>• 전 서울가정법원 판사</li>
+                            <li>• 대한변호사협회 가사법/이혼 전문 등록</li>
+                            <li>• 주요 방송사 법률 자문위원 활동 중</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Lawyer 3 (Icon Mockup: Property/Building) -->
+                <div class="group">
+                    <div class="aspect-[3/4] profile-icon-mockup rounded-[2rem] mb-8 shadow-sm">
+                        <i data-lucide="building-2" class="w-24 h-24"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-roro-navy/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+                            <p class="text-white text-sm italic leading-relaxed">"부동산 분쟁은 정확한 권리 분석이 승소의 유일한 열쇠입니다."</p>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left px-4">
+                        <span class="text-roro-orange font-bold text-sm">Partner Lawyer</span>
+                        <h3 class="text-2xl font-black text-roro-navy mt-1">박정우 변호사</h3>
+                        <div class="h-1 w-12 bg-roro-orange my-4 mx-auto md:mx-0"></div>
+                        <ul class="text-gray-500 text-sm space-y-1 font-medium">
+                            <li>• 부동산·PF 금융 전문 변호사</li>
+                            <li>• 대형 건설사 사내변호사 출신</li>
+                            <li>• 복합 재건축·재개발 분쟁 전담팀장</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- NEWS/MEDIA PAGE -->
+    <main id="page-news" class="page-content py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl md:text-5xl font-black text-roro-navy serif mb-12">공지/언론사례</h2>
+            <div class="space-y-6">
+                <div class="bg-white p-8 rounded-3xl shadow-sm flex flex-col md:flex-row gap-8 items-center group cursor-pointer hover:shadow-lg transition-all border border-gray-100">
+                    <div class="w-full md:w-64 h-40 bg-gray-200 rounded-2xl overflow-hidden shrink-0">
+                        <img src="https://images.unsplash.com/photo-1589216532372-1c2a367900d9?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="언론 사례">
+                    </div>
+                    <div>
+                        <span class="text-roro-orange text-xs font-bold">[MBC 방송출연]</span>
+                        <h3 class="text-xl font-bold text-roro-navy mt-2 group-hover:text-roro-orange transition-colors">최근 급증하는 전세사기 수법과 법적 대응책에 관하여 김로로 대표변호사 인터뷰</h3>
+                        <p class="text-gray-500 text-sm mt-4">2025.01.05 | 법률뉴스룸</p>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm flex flex-col md:flex-row gap-8 items-center group cursor-pointer hover:shadow-lg transition-all border border-gray-100">
+                    <div class="w-full md:w-64 h-40 bg-roro-navy rounded-2xl overflow-hidden shrink-0 flex items-center justify-center">
+                         <span class="text-roro-orange font-black text-3xl serif opacity-50">RORO</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-400 text-xs font-bold">[공지사항]</span>
+                        <h3 class="text-xl font-bold text-roro-navy mt-2 group-hover:text-roro-orange transition-colors">로로 법무법인 2025년 설 연휴 법률상담센터 정상 운영 안내</h3>
+                        <p class="text-gray-500 text-sm mt-4">2025.01.02 | 관리팀</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SPECIALTIES PAGE -->
+    <main id="page-specialties" class="page-content py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-black text-roro-navy serif mb-12">전문 분야</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="scale" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">형사전문</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="heart-off" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">이혼/가사</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="building-2" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">부동산/건설</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="car-front" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">교통사고</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="briefcase" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">기업/상사</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="user-minus" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">성범죄대응</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="coins" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">회생/파산</h4>
+                </div>
+                <div class="p-10 bg-gray-50 rounded-[3rem] border border-transparent hover:border-roro-orange hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                    <i data-lucide="users" class="w-12 h-12 text-roro-orange mx-auto mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold">상속/유언</h4>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- DIAGNOSIS PAGE -->
+    <main id="page-diagnosis" class="page-content py-24 bg-roro-navy text-white min-h-[70vh] flex items-center">
+        <div class="max-w-4xl mx-auto px-6 w-full text-center">
+            <h2 class="text-4xl md:text-5xl font-black serif mb-6">교통사고 3분 진단 서비스</h2>
+            <p class="text-white/60 mb-12">복잡한 교통사고 과실 및 합의금, 로로의 데이터로 미리 계산해 보세요.</p>
+            
+            <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-12 rounded-[3rem] text-left">
+                <div id="diag-step-1">
+                    <p class="text-roro-orange font-bold mb-2">Q1. 사고의 유형을 선택해주세요.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <button onclick="nextStep()" class="p-5 border border-white/20 rounded-2xl hover:bg-roro-orange hover:border-roro-orange transition-all text-left">차량 vs 차량 사고</button>
+                        <button onclick="nextStep()" class="p-5 border border-white/20 rounded-2xl hover:bg-roro-orange hover:border-roro-orange transition-all text-left">차량 vs 보행자 사고</button>
+                        <button onclick="nextStep()" class="p-5 border border-white/20 rounded-2xl hover:bg-roro-orange hover:border-roro-orange transition-all text-left">음주운전 연루 사고</button>
+                        <button onclick="nextStep()" class="p-5 border border-white/20 rounded-2xl hover:bg-roro-orange hover:border-roro-orange transition-all text-left">교차로 꼬리물기 사고</button>
+                    </div>
+                </div>
+                <div id="diag-step-2" class="hidden">
+                    <p class="text-roro-orange font-bold mb-2">진단 준비 완료</p>
+                    <h3 class="text-2xl font-bold mb-6">상세 데이터를 분석하기 위해 연락처를 입력해주세요.</h3>
+                    <input type="text" placeholder="성함" class="w-full bg-white/10 border border-white/20 p-4 rounded-xl mb-4 text-white placeholder:text-white/30 outline-none focus:border-roro-orange transition-colors">
+                    <input type="text" placeholder="휴대폰 번호 (- 제외)" class="w-full bg-white/10 border border-white/20 p-4 rounded-xl mb-8 text-white placeholder:text-white/30 outline-none focus:border-roro-orange transition-colors">
+                    <button class="w-full bg-roro-orange py-5 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors">결과 무료로 받아보기</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Map & Contact Section -->
+    <section id="map-section" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <!-- Map Area -->
+                <div class="w-full lg:w-3/5 h-[400px] md:h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl border border-gray-100">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.176472481608!2d127.01168127635677!3d37.491950028882774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca13876063991%3A0xc6c768997a08b688!2z7ISc7LSI7Jet!5e0!3m2!1sko!2skr!4v1715654000000!5m2!1sko!2skr" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+
+                <!-- Info Area -->
+                <div class="w-full lg:w-2/5">
+                    <h2 class="text-3xl md:text-4xl font-black text-roro-navy serif mb-8 leading-tight">
+                        언제든 방문하여 <br>
+                        <span class="text-roro-orange">최선의 대안</span>을 찾으십시오.
+                    </h2>
+                    
+                    <div class="space-y-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-roro-orange flex-shrink-0">
+                                <i data-lucide="map-pin"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-roro-navy mb-1">상세 주소</h4>
+                                <p class="text-gray-500 text-sm leading-relaxed">서울특별시 서초구 서초중앙로 00, 로로빌딩 7층 (서초역 7번 출구 도보 3분)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-roro-orange flex-shrink-0">
+                                <i data-lucide="bus"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-roro-navy mb-1">대중교통 안내</h4>
+                                <p class="text-gray-500 text-sm leading-relaxed">
+                                    <span class="inline-block px-1.5 py-0.5 bg-green-500 text-white text-[10px] rounded mr-1">2호선</span> 서초역 7번 출구 <br>
+                                    <span class="inline-block px-1.5 py-0.5 bg-orange-500 text-white text-[10px] rounded mr-1">3호선</span> 교대역 10번 출구
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-roro-orange flex-shrink-0">
+                                <i data-lucide="car"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-roro-navy mb-1">주차 안내</h4>
+                                <p class="text-gray-500 text-sm leading-relaxed">로로빌딩 내 무료 발렛 주차 서비스 제공 (방문 고객 전용)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 p-6 bg-roro-navy rounded-2xl text-white flex justify-between items-center group cursor-pointer hover:bg-black transition-colors">
+                        <div>
+                            <p class="font-bold">네이버 지도로 길찾기</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-roro-navy text-gray-400 py-20 px-6 border-t border-white/5 pb-32 md:pb-24">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-16">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 bg-roro-orange rounded flex items-center justify-center font-black text-white">RR</div>
+                    <span class="text-2xl font-bold text-white">로로 법무법인</span>
+                </div>
+                <div class="space-y-3 text-sm leading-loose">
+                    <p>대표변호사: 김로로 | 사업자등록번호: 000-00-00000</p>
+                    <p>서울특별시 서초구 서초중앙로 00, 로로빌딩 7층</p>
+                    <p>긴급상담: 02.588.1234 | E-MAIL: legal@rorolaw.com</p>
+                </div>
+            </div>
+            <div class="flex gap-20">
+                <div>
+                    <h4 class="text-white font-bold mb-6">사이트 정보</h4>
+                    <ul class="space-y-3 text-xs">
+                        <li><a onclick="showPage('lawyers')" class="hover:text-roro-orange cursor-pointer">변호사 소개</a></li>
+                        <li><a onclick="showPage('specialties')" class="hover:text-roro-orange cursor-pointer">전문분야</a></li>
+                        <li><a href="#" class="hover:text-roro-orange">승소사례</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-6">고객 지원</h4>
+                    <ul class="space-y-3 text-xs">
+                        <li><a href="#" class="hover:text-roro-orange">개인정보처리방침</a></li>
+                        <li><a href="#" class="hover:text-roro-orange">이용약관</a></li>
+                        <li><a href="#map-section" class="hover:text-roro-orange font-bold text-roro-orange">오시는 길</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 text-[10px] text-center md:text-left flex justify-between items-center">
+            <p>&copy; 2025 Law Firm RORO. All Rights Reserved.</p>
+            <p class="hidden md:block">Trust & Victory Since 2010</p>
+        </div>
+    </footer>
+
+    <!-- FIXED CONTACT BAR (New) -->
+    <div class="fixed bottom-0 left-0 w-full bg-roro-navy/95 backdrop-blur-xl border-t border-white/10 z-[100] contact-bar">
+        <div class="max-w-7xl mx-auto px-4 py-3 md:py-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
+            <!-- Title -->
+            <div class="hidden lg:flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 bg-roro-orange/20 rounded-full flex items-center justify-center">
+                    <i data-lucide="message-square" class="text-roro-orange w-5 h-5"></i>
+                </div>
+                <div>
+                    <p class="text-white text-xs font-bold leading-none mb-1">빠른 법률 상담 접수</p>
+                    <p class="text-white/50 text-[10px]">전문 변호사가 즉시 검토합니다</p>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="flex flex-1 w-full gap-2 md:gap-3">
+                <input type="text" id="quick-name" placeholder="성함" 
+                    class="flex-[0.3] md:flex-none md:w-32 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-roro-orange focus:outline-none transition-all">
+                <input type="text" id="quick-phone" placeholder="연락처 (- 제외)" 
+                    class="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-roro-orange focus:outline-none transition-all">
+                <button onclick="handleQuickContact()" 
+                    class="bg-roro-orange text-white px-6 md:px-10 py-3 rounded-xl text-sm font-bold btn-glow whitespace-nowrap">
+                    상담 신청
+                </button>
+            </div>
+
+            <!-- Urgent Call (Desktop) -->
+            <div class="hidden md:flex items-center gap-4 border-l border-white/10 pl-6 shrink-0">
+                <div class="text-right">
+                    <p class="text-white/50 text-[10px]">24시 긴급상담</p>
+                    <p class="text-white font-black text-lg">02-588-1234</p>
+                </div>
+                <a href="tel:025881234" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-roro-orange transition-colors">
+                    <i data-lucide="phone" class="w-5 h-5 text-white"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Buttons (Adjusted Position) -->
+    <div class="fixed bottom-24 right-8 flex flex-col gap-3 z-50">
+        <button class="w-14 h-14 bg-[#fae100] text-[#3c1e1e] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+            <i data-lucide="message-square"></i>
+        </button>
+    </div>
+
+    <!-- Success Toast (Hidden) -->
+    <div id="success-toast" class="fixed top-10 left-1/2 -translate-x-1/2 bg-white text-roro-navy px-8 py-4 rounded-2xl shadow-2xl border border-gray-100 z-[200] transform translate-y-[-150%] transition-transform duration-500 flex items-center gap-3">
+        <div class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+            <i data-lucide="check" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <p class="font-bold text-sm">상담 신청 완료</p>
+            <p class="text-xs text-gray-500">담당 변호사가 곧 연락드리겠습니다.</p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Page Navigation System
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Logic
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        }
+
+        // Diagnosis Step Logic
+        function nextStep() {
+            document.getElementById('diag-step-1').classList.add('hidden');
+            document.getElementById('diag-step-2').classList.remove('hidden');
+        }
+
+        // Quick Contact Logic
+        function handleQuickContact() {
+            const name = document.getElementById('quick-name').value;
+            const phone = document.getElementById('quick-phone').value;
+
+            if(!name || !phone) {
+                // 간단한 피드백 (진동 효과 등은 CSS로 추가 가능)
+                alert("성함과 연락처를 모두 입력해주세요.");
+                return;
+            }
+
+            // 토스트 알림 표시
+            const toast = document.getElementById('success-toast');
+            toast.style.transform = 'translate(-50%, 0)';
+            
+            // 입력창 초기화
+            document.getElementById('quick-name').value = '';
+            document.getElementById('quick-phone').value = '';
+
+            setTimeout(() => {
+                toast.style.transform = 'translate(-50%, -150%)';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
