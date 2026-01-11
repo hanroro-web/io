@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로로 법률 사무소</title>
+    <title>로로 법률 사무소 - 교통사고 전문 법률 서비스</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -319,6 +319,15 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* --- Mobile Center Logic --- */
+        @media (max-width: 767px) {
+            .mobile-center { text-align: center !important; }
+            .mobile-flex-center { display: flex; flex-direction: column; align-items: center !important; text-align: center !important; }
+            .mobile-grid-center { display: flex; flex-direction: column; align-items: center !important; }
+            .mobile-hidden { display: none !important; }
+            .mobile-p-center { margin-left: auto; margin-right: auto; }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -327,29 +336,30 @@
     <div id="modal-overlay" onclick="closeModal(event)">
         <div id="modal-content" class="shadow-2xl" onclick="event.stopPropagation()">
             <div class="p-8">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
+                <div class="flex justify-between items-start mb-6 mobile-flex-center">
+                    <div class="mobile-center">
                         <h4 class="text-[#C5A059] font-bold tracking-widest mb-1 uppercase text-[10px]">Consultation</h4>
                         <h3 class="text-2xl font-bold serif">무료 법률 상담 신청</h3>
                     </div>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 mobile-hidden">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
                 <form class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5 ml-1">성함</label>
-                        <input type="text" placeholder="성함을 입력해주세요" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:border-[#C5A059] transition-all text-sm">
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5 ml-1 mobile-center">성함</label>
+                        <input type="text" placeholder="성함을 입력해주세요" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:border-[#C5A059] transition-all text-sm text-center md:text-left">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5 ml-1">연락처</label>
-                        <input type="tel" placeholder="연락처를 입력해주세요 (- 제외)" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:border-[#C5A059] transition-all text-sm">
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5 ml-1 mobile-center">연락처</label>
+                        <input type="tel" placeholder="연락처를 입력해주세요 (- 제외)" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:border-[#C5A059] transition-all text-sm text-center md:text-left">
                     </div>
-                    <div class="flex items-start space-x-2 py-2">
+                    <div class="flex items-start space-x-2 py-2 mobile-flex-center">
                         <input type="checkbox" id="privacy-agree" class="mt-1 accent-[#C5A059]">
                         <label for="privacy-agree" class="text-[11px] text-gray-400 leading-tight">개인정보 수집 및 이용에 동의합니다.</label>
                     </div>
                     <button type="button" class="btn-gold w-full py-4 rounded-xl font-bold text-sm shadow-lg mt-4 active:scale-95 transition-transform">상담 신청하기</button>
+                    <button type="button" onclick="closeModal()" class="w-full py-2 text-xs text-gray-400 md:hidden font-bold">닫기</button>
                 </form>
             </div>
         </div>
@@ -359,7 +369,7 @@
     <div id="mobile-menu-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md">
         <div id="mobile-menu-content" class="bg-[#1A1A1A] w-full shadow-2xl overflow-hidden rounded-b-[4rem] border-b border-[#C5A059]/30">
             <div class="max-w-7xl mx-auto px-6 py-12 text-white">
-                <div class="flex justify-between items-center mb-10 px-4">
+                <div class="flex justify-between items-center mb-10 px-4 mobile-flex-center">
                     <div class="text-[10px] font-bold serif uppercase tracking-[0.4em] text-[#C5A059]">DIRECTORY</div>
                     <button onclick="toggleMenu()" class="p-2 text-white/50 hover:text-white transition-all">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -389,14 +399,14 @@
                     </a>
                 </nav>
 
-                <div class="mt-12 flex flex-col md:flex-row justify-between items-center px-4 space-y-4 md:space-y-0">
-                    <div class="flex items-center space-x-6">
-                        <div>
+                <div class="mt-12 flex flex-col md:flex-row justify-between items-center px-4 space-y-8 md:space-y-0 text-center md:text-left">
+                    <div class="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-6">
+                        <div class="mobile-center">
                             <p class="text-[9px] text-white/30 uppercase tracking-widest mb-1">Emergency</p>
                             <p class="text-lg font-bold text-[#C5A059]">02-1234-5678</p>
                         </div>
                         <div class="w-px h-8 bg-white/10 hidden md:block"></div>
-                        <div>
+                        <div class="mobile-center">
                             <p class="text-[9px] text-white/30 uppercase tracking-widest mb-1">Consultation</p>
                             <p class="text-sm font-medium">평일 09:00 - 20:00</p>
                         </div>
@@ -429,26 +439,26 @@
         <!-- Hero Section -->
         <section id="home" class="hero-bg relative min-h-screen flex items-center pt-20 pb-10">
             <div class="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-12 items-center">
-                <div class="diag-card p-8 md:p-10 text-center">
+                <div class="diag-card p-8 md:p-10 text-center order-2 lg:order-1">
                     <div class="step-indicator"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
                     <div class="flex flex-col h-full overflow-hidden">
                         <h3 class="text-[11px] font-bold text-[#C5A059] mb-2 uppercase tracking-tight">Direct Diagnosis</h3>
                         <h2 class="text-xl md:text-2xl font-bold mb-6 serif">사고 유형을 선택해주세요.</h2>
                         <div class="space-y-2.5 overflow-y-auto">
-                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-gray-100 hover:border-[#C5A059] text-left text-sm font-medium">01. 음주운전 사고 (위험운전치사상)</button>
-                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-gray-100 hover:border-[#C5A059] text-left text-sm font-medium">02. 뺑소니 (특가법상 도주치상)</button>
-                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-[#C5A059] bg-[#C5A059]/5 text-[#C5A059] text-left text-sm font-bold">03. 12대 중대과실 (신호위반 등)</button>
-                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-gray-100 hover:border-[#C5A059] text-left text-sm font-medium">04. 어린이 보호구역 사고 (민식이법)</button>
+                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-gray-100 hover:border-[#C5A059] text-center md:text-left text-sm font-medium">01. 음주운전 사고 (위험운전치사상)</button>
+                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-gray-100 hover:border-[#C5A059] text-center md:text-left text-sm font-medium">02. 뺑소니 (특가법상 도주치상)</button>
+                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-[#C5A059] bg-[#C5A059]/5 text-[#C5A059] text-center md:text-left text-sm font-bold">03. 12대 중대과실 (신호위반 등)</button>
+                            <button onclick="startDiagnosis()" class="w-full p-3.5 rounded-xl border border-gray-100 hover:border-[#C5A059] text-center md:text-left text-sm font-medium">04. 어린이 보호구역 사고 (민식이법)</button>
                         </div>
                     </div>
                 </div>
-                <div class="text-white text-left">
+                <div class="text-white text-center lg:text-left order-1 lg:order-2">
                     <h4 class="text-[#C5A059] font-bold tracking-widest mb-4 uppercase text-xs">Specialized in Traffic Accidents</h4>
                     <h1 class="text-4xl md:text-6xl font-bold serif leading-tight mb-6">당신의 일상.<br>로로가 지킵니다.</h1>
-                    <p class="text-white/70 mb-8 text-sm md:text-base leading-relaxed">교통사고 형사 합의부터 보험금 산정까지,<br>누적 3,500건 이상의 승소 데이터로 당신의 권리를 증명합니다.</p>
-                    <div class="flex space-x-3">
-                        <button onclick="openModal()" class="btn-gold px-10 py-3.5 rounded font-bold text-sm shadow-xl">무료 법률 상담</button>
-                        <button class="bg-white/10 hover:bg-white/20 px-10 py-3.5 rounded font-bold text-sm border border-white/20" onclick="scrollAndClose('cases')">사례 보기</button>
+                    <p class="text-white/70 mb-8 text-sm md:text-base leading-relaxed mobile-p-center max-w-sm md:max-w-none">교통사고 형사 합의부터 보험금 산정까지,<br>누적 3,500건 이상의 승소 데이터로 당신의 권리를 증명합니다.</p>
+                    <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 items-center lg:items-start">
+                        <button onclick="openModal()" class="btn-gold w-full md:w-auto px-10 py-3.5 rounded font-bold text-sm shadow-xl">무료 법률 상담</button>
+                        <button class="bg-white/10 hover:bg-white/20 w-full md:w-auto px-10 py-3.5 rounded font-bold text-sm border border-white/20" onclick="scrollAndClose('cases')">사례 보기</button>
                     </div>
                 </div>
             </div>
@@ -462,40 +472,41 @@
                     <h2 class="text-3xl md:text-4xl font-bold serif">로로의 전문가 그룹</h2>
                 </div>
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="lawyer-card group">
-                        <div class="aspect-[3/4] profile-icon-box">
+                    <div class="lawyer-card group mobile-flex-center">
+                        <div class="aspect-[3/4] profile-icon-box w-full">
                             <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <div class="p-8">
+                        <div class="p-8 mobile-center">
                             <h4 class="text-xl font-bold serif text-gray-900">김로로 대표변호사</h4>
                             <p class="text-[#C5A059] text-xs font-bold mb-4">교통사고 형사전문</p>
-                            <ul class="text-gray-500 text-[11px] space-y-2">
+                            <ul class="text-gray-500 text-[11px] space-y-2 mobile-center">
                                 <li>• 전) 서울중앙지방검찰청 검사</li>
                                 <li>• 대한변협 인증 교통사고 전문변호사</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="lawyer-card group">
-                        <div class="aspect-[3/4] profile-icon-box">
+                    <!-- Repeat for others -->
+                    <div class="lawyer-card group mobile-flex-center">
+                        <div class="aspect-[3/4] profile-icon-box w-full">
                             <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <div class="p-8">
+                        <div class="p-8 mobile-center">
                             <h4 class="text-xl font-bold serif text-gray-900">이안양 수석변호사</h4>
                             <p class="text-[#C5A059] text-xs font-bold mb-4">손해배상 전담</p>
-                            <ul class="text-gray-500 text-[11px] space-y-2">
+                            <ul class="text-gray-500 text-[11px] space-y-2 mobile-center">
                                 <li>• 보험금 산정 및 민사 소송 특화</li>
                                 <li>• 국토교통부 법률 자문위원</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="lawyer-card group">
-                        <div class="aspect-[3/4] profile-icon-box">
+                    <div class="lawyer-card group mobile-flex-center">
+                        <div class="aspect-[3/4] profile-icon-box w-full">
                             <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <div class="p-8">
+                        <div class="p-8 mobile-center">
                             <h4 class="text-xl font-bold serif text-gray-900">최만안 소속변호사</h4>
                             <p class="text-[#C5A059] text-xs font-bold mb-4">음주/행정 전담</p>
-                            <ul class="text-gray-500 text-[11px] space-y-2">
+                            <ul class="text-gray-500 text-[11px] space-y-2 mobile-center">
                                 <li>• 면허 취소 행정심판 전문가</li>
                                 <li>• 형사 합의 및 공판 대응 전담</li>
                             </ul>
@@ -508,33 +519,33 @@
         <!-- Success Cases Section -->
         <section id="cases" class="py-24 bg-white">
             <div class="max-w-7xl mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 text-center md:text-left">
                     <div>
                         <h4 class="text-[#C5A059] font-bold tracking-widest mb-3 uppercase text-[10px]">Success Stories</h4>
                         <h2 class="text-3xl font-bold serif">승소 사례 데이터</h2>
                     </div>
-                    <button class="text-gray-400 text-xs font-bold hover:text-[#C5A059] transition-all flex items-center mt-4 md:mt-0">VIEW ALL <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+                    <button class="text-gray-400 text-xs font-bold hover:text-[#C5A059] transition-all flex items-center mt-6 md:mt-0">VIEW ALL <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="case-card p-6">
+                    <div class="case-card p-6 mobile-flex-center">
                         <span class="text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-3 py-1 rounded-full mb-4 inline-block">음주운전 3회</span>
-                        <h5 class="font-bold serif text-sm mb-3">집행유예 중 재범, 벌금형 선고 및 면허 구제</h5>
-                        <p class="text-gray-400 text-[11px] leading-relaxed">최근 강화된 기준에도 불구하고 의뢰인의 특수한 사정을 소명하여 이례적인 선처를 이끌어냄.</p>
+                        <h5 class="font-bold serif text-sm mb-3">집행유예 중 재범, 벌금형 선고</h5>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">최근 강화된 기준에도 특수 사정을 소명하여 선처를 이끌어냄.</p>
                     </div>
-                    <div class="case-card p-6">
+                    <div class="case-card p-6 mobile-flex-center">
                         <span class="text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-3 py-1 rounded-full mb-4 inline-block">교통사고 사망</span>
-                        <h5 class="font-bold serif text-sm mb-3">무단횡단자 사망 사고, 무죄 판결 확정</h5>
-                        <p class="text-gray-400 text-[11px] leading-relaxed">블랙박스 정밀 분석과 도로 공학적 소명을 통해 예견 가능성 없음을 입증하여 무죄 판결.</p>
+                        <h5 class="font-bold serif text-sm mb-3">무단횡단자 사고, 무죄 판결</h5>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">도로 공학적 소명을 통해 예견 가능성 없음을 입증하여 무죄.</p>
                     </div>
-                    <div class="case-card p-6">
+                    <div class="case-card p-6 mobile-flex-center">
                         <span class="text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-3 py-1 rounded-full mb-4 inline-block">손해배상</span>
-                        <h5 class="font-bold serif text-sm mb-3">하반신 마비 중상해, 배상금 8.5억 승소</h5>
-                        <p class="text-gray-400 text-[11px] leading-relaxed">향후 개호비 및 일실수입 산정에 있어 과실 비율을 최소화하여 보험사 제시액의 3배 보상.</p>
+                        <h5 class="font-bold serif text-sm mb-3">하반신 마비, 배상금 8.5억 승소</h5>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">보험사 제시액의 3배 이상 보상금을 확보한 유의미한 사례.</p>
                     </div>
-                    <div class="case-card p-6">
+                    <div class="case-card p-6 mobile-flex-center">
                         <span class="text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-3 py-1 rounded-full mb-4 inline-block">민식이법</span>
-                        <h5 class="font-bold serif text-sm mb-3">스쿨존 내 어린이 상해, 혐의없음 처분</h5>
-                        <p class="text-gray-400 text-[11px] leading-relaxed">제한속도 준수와 전방 주시 의무 이행을 과학적으로 증명하여 경찰 단계에서 불송치 결정.</p>
+                        <h5 class="font-bold serif text-sm mb-3">스쿨존 상해, 혐의없음 처분</h5>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">조사 단계부터 적극 대응하여 경찰 불송치 결정 이끌어냄.</p>
                     </div>
                 </div>
             </div>
@@ -548,25 +559,25 @@
                     <h2 class="text-3xl md:text-4xl font-bold serif">사건 처리 프로세스</h2>
                 </div>
                 <div class="grid md:grid-cols-4 gap-4">
-                    <div class="process-step">
-                        <div class="step-number">01</div>
+                    <div class="process-step mobile-flex-center">
+                        <div class="step-number mobile-p-center left-auto md:left-[20px]">01</div>
                         <h5 class="font-bold serif mb-3">증거 보전 및 분석</h5>
-                        <p class="text-gray-400 text-[11px]">사고 즉시 현장 CCTV 및 블랙박스 확보, 차량 파손 부위 정밀 분석.</p>
+                        <p class="text-gray-400 text-[11px]">CCTV 및 블랙박스 확보, 차량 파손 부위 정밀 분석.</p>
                     </div>
-                    <div class="process-step">
-                        <div class="step-number">02</div>
+                    <div class="process-step mobile-flex-center">
+                        <div class="step-number mobile-p-center left-auto md:left-[20px]">02</div>
                         <h5 class="font-bold serif mb-3">전담팀 구성</h5>
-                        <p class="text-gray-400 text-[11px]">사건 성격에 맞는 전문 변호사 및 손해사정사 전담팀 배치.</p>
+                        <p class="text-gray-400 text-[11px]">전문 변호사 및 손해사정사 최적의 전담팀 배치.</p>
                     </div>
-                    <div class="process-step">
-                        <div class="step-number">03</div>
+                    <div class="process-step mobile-flex-center">
+                        <div class="step-number mobile-p-center left-auto md:left-[20px]">03</div>
                         <h5 class="font-bold serif mb-3">법률 대응 시나리오</h5>
-                        <p class="text-gray-400 text-[11px]">조사 단계부터 공판까지 단계별 맞춤 전략 수립 및 합의 대행.</p>
+                        <p class="text-gray-400 text-[11px]">조사 단계부터 공판까지 단계별 맞춤 전략 수립.</p>
                     </div>
-                    <div class="process-step">
-                        <div class="step-number">04</div>
+                    <div class="process-step mobile-flex-center">
+                        <div class="step-number mobile-p-center left-auto md:left-[20px]">04</div>
                         <h5 class="font-bold serif mb-3">최종 결과 도출</h5>
-                        <p class="text-gray-400 text-[11px]">형사 처벌 최소화 및 민사 배상액 극대화를 통한 사건 종결.</p>
+                        <p class="text-gray-400 text-[11px]">처벌 최소화 및 배상액 극대화를 통한 사건 종결.</p>
                     </div>
                 </div>
             </div>
@@ -576,7 +587,7 @@
         <section id="contact" class="py-24 bg-white">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div>
+                    <div class="mobile-center">
                         <h4 class="text-[#C5A059] font-bold tracking-widest mb-3 uppercase text-[10px]">Location</h4>
                         <h2 class="text-3xl font-bold serif mb-6">오시는 길</h2>
                         <div class="space-y-6">
@@ -586,7 +597,7 @@
                             </div>
                             <div>
                                 <h6 class="text-xs font-bold text-gray-400 mb-1">PARKING</h6>
-                                <p class="text-sm font-medium">빌딩 내 지하 주차장 이용 가능 (무료 주차 지원)</p>
+                                <p class="text-sm font-medium">빌딩 내 지하 주차장 이용 가능 (무료 지원)</p>
                             </div>
                             <div>
                                 <h6 class="text-xs font-bold text-gray-400 mb-1">SUBWAY</h6>
@@ -594,11 +605,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="h-[400px] bg-gray-100 rounded-[2rem] overflow-hidden relative border border-gray-100">
-                        <!-- Placeholder for Map -->
+                    <div class="h-[300px] md:h-[400px] bg-gray-100 rounded-[2rem] overflow-hidden relative border border-gray-100">
                         <div class="absolute inset-0 flex items-center justify-center flex-col text-gray-300">
                             <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                            <span class="text-xs font-bold uppercase tracking-widest">Map Component</span>
+                            <span class="text-xs font-bold uppercase tracking-widest">Map View</span>
                         </div>
                     </div>
                 </div>
@@ -606,14 +616,14 @@
         </section>
     </div>
 
-    <!-- Diagnostic View Section (10 Steps) -->
+    <!-- Diagnostic View Section -->
     <div id="diagnostic-view" class="pt-32 pb-24 px-6">
-        <div class="max-w-2xl mx-auto">
+        <div class="max-w-2xl mx-auto mobile-center">
             <div id="diag-header" class="mb-12">
-                <div class="flex justify-between items-end mb-4">
-                    <div>
+                <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-6 space-y-2 md:space-y-0">
+                    <div class="mobile-center">
                         <h4 class="text-[#C5A059] font-bold tracking-widest mb-1 uppercase text-[10px]">Step-by-Step Analysis</h4>
-                        <h2 class="text-3xl font-bold serif">사고 유형 정밀 진단</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold serif">사고 유형 정밀 진단</h2>
                     </div>
                     <span id="step-counter" class="text-[#C5A059] font-bold text-lg">1 / 10</span>
                 </div>
@@ -621,13 +631,13 @@
                     <div id="diag-progress-inner" class="diag-progress-inner"></div>
                 </div>
             </div>
-            <div id="diag-content" class="fade-in-up"></div>
-            <div class="mt-12 flex justify-between items-center border-t border-gray-100 pt-8">
+            <div id="diag-content" class="fade-in-up mobile-grid-center"></div>
+            <div class="mt-12 flex flex-col md:flex-row justify-between items-center border-t border-gray-100 pt-8 space-y-4 md:space-y-0">
                 <button id="diag-prev-btn" onclick="prevStep()" class="text-gray-400 font-bold text-sm hover:text-gray-900 transition-colors hidden flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     이전 단계
                 </button>
-                <button onclick="showMainSection()" class="text-gray-300 font-bold text-xs ml-auto hover:text-red-500 transition-colors uppercase tracking-widest">진단 중단</button>
+                <button onclick="showMainSection()" class="text-gray-300 font-bold text-xs hover:text-red-500 transition-colors uppercase tracking-widest">진단 중단</button>
             </div>
         </div>
     </div>
@@ -642,35 +652,35 @@
                 </div>
                 <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                     <table class="board-table">
-                        <thead>
+                        <thead class="hidden md:table-header-group">
                             <tr>
-                                <th class="w-20 hidden md:table-cell">No.</th>
+                                <th class="w-20">No.</th>
                                 <th>제목</th>
-                                <th class="w-32 hidden md:table-cell">작성일</th>
+                                <th class="w-32">작성일</th>
                             </tr>
                         </thead>
                         <tbody id="board-body">
                             <tr class="board-row" onclick="showPost(1)">
                                 <td class="hidden md:table-cell text-gray-400">03</td>
-                                <td>
+                                <td class="text-center md:text-left">
                                     <span class="tag-notice mb-1 inline-block">공지</span><br>
-                                    <span class="font-bold serif">로로 법률 사무소, 2024년 '올해의 교통사고 전문 로펌' 선정</span>
+                                    <span class="font-bold serif">로로 법률 사무소, 2024년 '올해의 로펌' 선정</span>
                                 </td>
                                 <td class="hidden md:table-cell text-gray-400">2024.03.15</td>
                             </tr>
                             <tr class="board-row" onclick="showPost(2)">
                                 <td class="hidden md:table-cell text-gray-400">02</td>
-                                <td>
+                                <td class="text-center md:text-left">
                                     <span class="tag-media mb-1 inline-block">언론</span><br>
-                                    <span class="font-bold serif">[인터뷰] 김로로 대표변호사, "강화된 음주운전 처벌 기준과 대응법"</span>
+                                    <span class="font-bold serif">[인터뷰] 강화된 음주운전 처벌 기준과 대응법</span>
                                 </td>
                                 <td class="hidden md:table-cell text-gray-400">2024.02.28</td>
                             </tr>
                             <tr class="board-row" onclick="showPost(3)">
                                 <td class="hidden md:table-cell text-gray-400">01</td>
-                                <td>
+                                <td class="text-center md:text-left">
                                     <span class="tag-notice mb-1 inline-block">공지</span><br>
-                                    <span class="font-bold serif">비대면 무료 법률 진단 서비스 공식 런칭 안내</span>
+                                    <span class="font-bold serif">비대면 무료 법률 진단 서비스 공식 런칭</span>
                                 </td>
                                 <td class="hidden md:table-cell text-gray-400">2024.01.10</td>
                             </tr>
@@ -679,30 +689,30 @@
                 </div>
             </div>
 
-            <div id="board-detail" class="bg-white rounded-[3rem] p-10 md:p-16 shadow-xl border border-gray-100">
-                <button onclick="hidePost()" class="mb-10 text-gray-400 hover:text-gray-900 transition-all flex items-center font-bold text-xs uppercase tracking-widest">
+            <div id="board-detail" class="bg-white rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 shadow-xl border border-gray-100">
+                <button onclick="hidePost()" class="mb-10 text-gray-400 hover:text-gray-900 transition-all flex items-center font-bold text-xs uppercase tracking-widest mx-auto md:mx-0">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg> BACK TO LIST
                 </button>
-                <div id="post-content"></div>
+                <div id="post-content" class="mobile-center"></div>
             </div>
         </div>
     </div>
 
     <!-- Sticky Bottom Bar -->
     <div class="sticky-bottom-bar flex justify-center">
-        <form class="flex items-center space-x-2 w-full max-w-lg">
-            <input type="text" placeholder="성함" class="sticky-input flex-1">
-            <input type="tel" placeholder="연락처" class="sticky-input flex-1">
-            <button type="button" onclick="openModal()" class="btn-gold px-6 py-2 rounded-lg font-bold text-xs whitespace-nowrap">상담 신청</button>
+        <form class="flex flex-row items-center space-x-2 w-full max-w-lg">
+            <input type="text" placeholder="성함" class="sticky-input flex-1 min-w-0">
+            <input type="tel" placeholder="연락처" class="sticky-input flex-1 min-w-0">
+            <button type="button" onclick="openModal()" class="btn-gold px-4 md:px-6 py-2 rounded-lg font-bold text-[10px] md:text-xs whitespace-nowrap">상담 신청</button>
         </form>
     </div>
 
     <!-- Footer -->
     <footer class="py-16 bg-[#1A1A1A] text-white">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
-            <div class="md:col-span-2">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 text-center md:text-left">
+            <div class="md:col-span-2 mobile-flex-center">
                 <div class="text-2xl font-bold serif mb-6 tracking-tighter">로로 <span class="text-[#C5A059]">법률 사무소</span></div>
-                <p class="text-white/40 text-[11px] leading-relaxed mb-8">당신의 억울함을 풀고 정당한 권리를 찾아드리는 교통사고 전문 로펌입니다.<br>최고의 전문가들이 당신의 곁에서 끝까지 함께하겠습니다.</p>
+                <p class="text-white/40 text-[11px] leading-relaxed mb-8 max-w-xs md:max-w-none">당신의 억울함을 풀고 정당한 권리를 찾아드리는 교통사고 전문 로펌입니다. 최고의 전문가들이 당신의 곁에서 끝까지 함께하겠습니다.</p>
                 <div class="text-white/20 text-[10px]">© 2024 LORO LAW FIRM. ALL RIGHTS RESERVED.</div>
             </div>
             <div>
@@ -721,7 +731,6 @@
     </footer>
 
     <script>
-        // --- 10-Step Diagnostic Data ---
         const diagQuestions = [
             { q: "사고 발생 시점이 언제인가요?", a: ["24시간 이내 (긴급)", "1주일 이내", "1개월 이내", "과거 사건 (상담 필요)"] },
             { q: "사고의 주요 성격은 무엇인가요?", a: ["음주/무면허", "뺑소니 (도주치상)", "어린이보호구역 (민식이법)", "12대 중과실 위반"] },
@@ -737,7 +746,6 @@
 
         let currentDiagStep = 0;
 
-        // Header and Scroll Logic
         window.addEventListener('scroll', function() {
             const header = document.getElementById('main-header');
             const isDiagView = document.getElementById('diagnostic-view').style.display === 'block';
@@ -785,7 +793,6 @@
             window.dispatchEvent(new Event('scroll'));
         }
 
-        // --- Diagnostic Functions ---
         function startDiagnosis() {
             document.getElementById('main-section').style.display = 'none';
             document.getElementById('board-section').style.display = 'none';
@@ -807,16 +814,16 @@
             counter.innerText = `${currentDiagStep + 1} / 10`;
             const options = stepData.a.map(ans => `
                 <button class="diag-option-btn group" onclick="nextStep()">
-                    <span>${ans}</span>
-                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 text-[#C5A059] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    <span class="text-center md:text-left w-full">${ans}</span>
+                    <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 text-[#C5A059] transition-all hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                 </button>
             `).join('');
             content.classList.remove('fade-in-up');
             void content.offsetWidth; 
             content.classList.add('fade-in-up');
             content.innerHTML = `
-                <h3 class="text-2xl font-bold mb-8 text-gray-800 serif leading-snug">${stepData.q}</h3>
-                <div class="flex flex-col">${options}</div>
+                <h3 class="text-xl md:text-2xl font-bold mb-8 text-gray-800 serif leading-snug">${stepData.q}</h3>
+                <div class="flex flex-col w-full">${options}</div>
             `;
             document.getElementById('diag-prev-btn').style.display = currentDiagStep > 0 ? 'flex' : 'none';
         }
@@ -844,15 +851,14 @@
             content.innerHTML = `
                 <div class="text-center py-12 fade-in-up">
                     <div class="w-20 h-20 bg-[#C5A059]/10 rounded-full flex items-center justify-center mx-auto mb-8"><svg class="w-10 h-10 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
-                    <h2 class="text-3xl font-bold serif mb-6">진단 완료</h2>
-                    <p class="text-gray-500 mb-12">귀하의 사례를 정밀 분석 중입니다. 즉시 변호사와 상담하여 최선의 해결책을 확인하세요.</p>
+                    <h2 class="text-2xl md:text-3xl font-bold serif mb-6">진단 완료</h2>
+                    <p class="text-gray-500 mb-12 text-sm max-w-xs mx-auto">귀하의 사례를 정밀 분석 중입니다. 즉시 변호사와 상담하여 최선의 해결책을 확인하세요.</p>
                     <button onclick="openModal()" class="btn-gold px-12 py-5 rounded-2xl font-bold shadow-xl text-lg w-full mb-4">상담 결과 확인하기</button>
-                    <button onclick="showMainSection()" class="text-gray-400 font-bold text-sm">홈으로</button>
+                    <button onclick="showMainSection()" class="text-gray-400 font-bold text-sm">홈으로 돌아가기</button>
                 </div>
             `;
         }
 
-        // --- Board Functions ---
         function showPost(id) {
             document.getElementById('board-list').style.display = 'none';
             const detail = document.getElementById('board-detail');
@@ -867,9 +873,9 @@
 
             const post = posts[id];
             content.innerHTML = `
-                <h2 class="text-3xl font-bold serif mb-4 leading-tight">${post.title}</h2>
+                <h2 class="text-2xl md:text-3xl font-bold serif mb-4 leading-tight">${post.title}</h2>
                 <div class="text-gray-400 text-xs mb-10 pb-10 border-b border-gray-100">${post.date} | ADMIN</div>
-                <div class="text-gray-600 leading-relaxed text-base">${post.body}</div>
+                <div class="text-gray-600 leading-relaxed text-sm md:text-base">${post.body}</div>
             `;
             window.scrollTo(0,0);
         }
