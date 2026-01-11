@@ -231,14 +231,14 @@
 
         .lawyer-card {
             overflow: hidden;
-            border-radius: 2rem;
+            border-radius: 1.5rem;
             background: white;
             border: 1px solid #f0f0f0;
             transition: all 0.4s ease;
         }
         .lawyer-card:hover {
             border-color: var(--gold-primary);
-            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1);
         }
 
         .profile-icon-box {
@@ -248,6 +248,7 @@
             justify-content: center;
             color: #e2e8f0;
             transition: all 0.4s ease;
+            aspect-ratio: 16/10; /* PC에서도 높이를 줄여 더 컴팩트하게 변경 */
         }
         .lawyer-card:hover .profile-icon-box {
             background-color: #f1f5f9;
@@ -329,16 +330,14 @@
             .mobile-hidden { display: none !important; }
             .mobile-p-center { margin-left: auto; margin-right: auto; }
 
-            /* 변호사 소개 모바일 축소 */
-            .lawyer-card { border-radius: 1.5rem; }
-            .lawyer-card .profile-icon-box { aspect-ratio: 1/1 !important; } /* 높이 축소 */
-            .lawyer-card .profile-icon-box svg { width: 4rem; height: 4rem; } /* 아이콘 축소 */
-            .lawyer-card .p-8 { padding: 1.5rem !important; } /* 내부 여백 축소 */
-            .lawyer-card h4 { font-size: 1.1rem !important; margin-bottom: 0.25rem; }
-            .lawyer-card p { font-size: 0.75rem !important; }
-            .lawyer-card ul { margin-top: 0.5rem; }
+            /* 변호사 소개 섹션 사이즈 축소 */
+            .lawyer-card .profile-icon-box { aspect-ratio: 16/9 !important; } 
+            .lawyer-card .profile-icon-box svg { width: 3.5rem; height: 3.5rem; } 
+            .lawyer-card .p-8 { padding: 1.25rem !important; } 
+            .lawyer-card h4 { font-size: 1rem !important; margin-bottom: 0.15rem; }
+            .lawyer-card p { font-size: 0.7rem !important; margin-bottom: 0.5rem !important; }
+            .lawyer-card ul { margin-top: 0.25rem; font-size: 0.65rem !important; }
 
-            /* 게시판 모바일 레이아웃 최적화 */
             .mobile-board-list-item {
                 display: flex;
                 flex-direction: column;
@@ -500,48 +499,48 @@
             </div>
         </section>
 
-        <!-- Lawyers Section -->
-        <section id="lawyers" class="py-24 bg-gray-50">
+        <!-- Lawyers Section (Optimized size) -->
+        <section id="lawyers" class="py-16 md:py-24 bg-gray-50">
             <div class="max-w-7xl mx-auto px-6">
-                <div class="text-center mb-16">
+                <div class="text-center mb-10 md:mb-16">
                     <h4 class="text-[#C5A059] font-bold tracking-widest mb-3 uppercase text-[10px]">Professional Team</h4>
-                    <h2 class="text-3xl md:text-4xl font-bold serif">로로의 전문가 그룹</h2>
+                    <h2 class="text-2xl md:text-4xl font-bold serif">로로의 전문가 그룹</h2>
                 </div>
-                <div class="grid md:grid-cols-3 gap-8">
+                <div class="grid md:grid-cols-3 gap-6 md:gap-8">
                     <div class="lawyer-card group mobile-flex-center">
-                        <div class="aspect-[3/4] profile-icon-box w-full">
-                            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        <div class="profile-icon-box w-full">
+                            <svg class="w-20 h-20 md:w-28 md:h-28" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <div class="p-8 mobile-center">
-                            <h4 class="text-xl font-bold serif text-gray-900">김로로 대표변호사</h4>
-                            <p class="text-[#C5A059] text-xs font-bold mb-4">교통사고 형사전문</p>
-                            <ul class="text-gray-500 text-[11px] space-y-2 mobile-center">
+                        <div class="p-6 md:p-8 mobile-center">
+                            <h4 class="text-lg md:text-xl font-bold serif text-gray-900">김로로 대표변호사</h4>
+                            <p class="text-[#C5A059] text-xs font-bold mb-3 md:mb-4">교통사고 형사전문</p>
+                            <ul class="text-gray-500 text-[10px] md:text-[11px] space-y-1.5 mobile-center">
                                 <li>• 전) 서울중앙지방검찰청 검사</li>
                                 <li>• 대한변협 인증 교통사고 전문변호사</li>
                             </ul>
                         </div>
                     </div>
                     <div class="lawyer-card group mobile-flex-center">
-                        <div class="aspect-[3/4] profile-icon-box w-full">
-                            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        <div class="profile-icon-box w-full">
+                            <svg class="w-20 h-20 md:w-28 md:h-28" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <div class="p-8 mobile-center">
-                            <h4 class="text-xl font-bold serif text-gray-900">이안양 수석변호사</h4>
-                            <p class="text-[#C5A059] text-xs font-bold mb-4">손해배상 전담</p>
-                            <ul class="text-gray-500 text-[11px] space-y-2 mobile-center">
+                        <div class="p-6 md:p-8 mobile-center">
+                            <h4 class="text-lg md:text-xl font-bold serif text-gray-900">이안양 수석변호사</h4>
+                            <p class="text-[#C5A059] text-xs font-bold mb-3 md:mb-4">손해배상 전담</p>
+                            <ul class="text-gray-500 text-[10px] md:text-[11px] space-y-1.5 mobile-center">
                                 <li>• 보험금 산정 및 민사 소송 특화</li>
                                 <li>• 국토교통부 법률 자문위원</li>
                             </ul>
                         </div>
                     </div>
                     <div class="lawyer-card group mobile-flex-center">
-                        <div class="aspect-[3/4] profile-icon-box w-full">
-                            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        <div class="profile-icon-box w-full">
+                            <svg class="w-20 h-20 md:w-28 md:h-28" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <div class="p-8 mobile-center">
-                            <h4 class="text-xl font-bold serif text-gray-900">최만안 소속변호사</h4>
-                            <p class="text-[#C5A059] text-xs font-bold mb-4">음주/행정 전담</p>
-                            <ul class="text-gray-500 text-[11px] space-y-2 mobile-center">
+                        <div class="p-6 md:p-8 mobile-center">
+                            <h4 class="text-lg md:text-xl font-bold serif text-gray-900">최만안 소속변호사</h4>
+                            <p class="text-[#C5A059] text-xs font-bold mb-3 md:mb-4">음주/행정 전담</p>
+                            <ul class="text-gray-500 text-[10px] md:text-[11px] space-y-1.5 mobile-center">
                                 <li>• 면허 취소 행정심판 전문가</li>
                                 <li>• 형사 합의 및 공판 대응 전담</li>
                             </ul>
@@ -723,7 +722,7 @@
                         </tbody>
                     </table>
 
-                    <!-- Mobile List View (제목 왼쪽 아이콘 + 날짜 하단 배치) -->
+                    <!-- Mobile List View -->
                     <div id="board-body-mobile" class="md:hidden divide-y divide-gray-50">
                         <div class="mobile-board-list-item" onclick="showPost(1)">
                             <div class="mobile-board-title-row">
@@ -960,3 +959,4 @@
     </script>
 </body>
 </html>
+    
