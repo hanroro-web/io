@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로로 법률 사무소 - 교통사고 전문 법률 서비스</title>
+    <title>로로 법률 사무소</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -308,8 +308,9 @@
         }
         .board-row { cursor: pointer; }
         .board-row:hover { background-color: #f9f9f9; }
-        .tag-notice { background: var(--gold-primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
-        .tag-media { background: #444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        
+        .tag-notice { background: var(--gold-primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; white-space: nowrap; }
+        .tag-media { background: #444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; white-space: nowrap; }
         
         #board-detail {
             display: none;
@@ -320,13 +321,48 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Mobile Center Logic --- */
+        /* --- Mobile Optimization Logic --- */
         @media (max-width: 767px) {
             .mobile-center { text-align: center !important; }
             .mobile-flex-center { display: flex; flex-direction: column; align-items: center !important; text-align: center !important; }
             .mobile-grid-center { display: flex; flex-direction: column; align-items: center !important; }
             .mobile-hidden { display: none !important; }
             .mobile-p-center { margin-left: auto; margin-right: auto; }
+
+            /* 변호사 소개 모바일 축소 */
+            .lawyer-card { border-radius: 1.5rem; }
+            .lawyer-card .profile-icon-box { aspect-ratio: 1/1 !important; } /* 높이 축소 */
+            .lawyer-card .profile-icon-box svg { width: 4rem; height: 4rem; } /* 아이콘 축소 */
+            .lawyer-card .p-8 { padding: 1.5rem !important; } /* 내부 여백 축소 */
+            .lawyer-card h4 { font-size: 1.1rem !important; margin-bottom: 0.25rem; }
+            .lawyer-card p { font-size: 0.75rem !important; }
+            .lawyer-card ul { margin-top: 0.5rem; }
+
+            /* 게시판 모바일 레이아웃 최적화 */
+            .mobile-board-list-item {
+                display: flex;
+                flex-direction: column;
+                padding: 1.25rem;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .mobile-board-title-row {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+            .mobile-board-title {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #333;
+                line-height: 1.4;
+                text-align: left;
+            }
+            .mobile-board-date {
+                font-size: 0.75rem;
+                color: #999;
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
@@ -485,7 +521,6 @@
                             </ul>
                         </div>
                     </div>
-                    <!-- Repeat for others -->
                     <div class="lawyer-card group mobile-flex-center">
                         <div class="aspect-[3/4] profile-icon-box w-full">
                             <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
@@ -651,41 +686,67 @@
                     <h2 class="text-3xl md:text-4xl font-bold serif">공지 및 언론 보도</h2>
                 </div>
                 <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-                    <table class="board-table">
+                    <!-- PC Table View -->
+                    <table class="board-table hidden md:table">
                         <thead class="hidden md:table-header-group">
                             <tr>
-                                <th class="w-20">No.</th>
+                                <th class="w-20 text-center">No.</th>
                                 <th>제목</th>
-                                <th class="w-32">작성일</th>
+                                <th class="w-32 text-right px-8">작성일</th>
                             </tr>
                         </thead>
-                        <tbody id="board-body">
+                        <tbody id="board-body-pc">
                             <tr class="board-row" onclick="showPost(1)">
-                                <td class="hidden md:table-cell text-gray-400">03</td>
-                                <td class="text-center md:text-left">
-                                    <span class="tag-notice mb-1 inline-block">공지</span><br>
+                                <td class="text-center text-gray-400 text-xs">03</td>
+                                <td class="py-5">
+                                    <span class="tag-notice mr-2">공지</span>
                                     <span class="font-bold serif">로로 법률 사무소, 2024년 '올해의 로펌' 선정</span>
                                 </td>
-                                <td class="hidden md:table-cell text-gray-400">2024.03.15</td>
+                                <td class="text-right text-gray-400 text-xs px-8">2024.03.15</td>
                             </tr>
                             <tr class="board-row" onclick="showPost(2)">
-                                <td class="hidden md:table-cell text-gray-400">02</td>
-                                <td class="text-center md:text-left">
-                                    <span class="tag-media mb-1 inline-block">언론</span><br>
+                                <td class="text-center text-gray-400 text-xs">02</td>
+                                <td class="py-5">
+                                    <span class="tag-media mr-2">언론</span>
                                     <span class="font-bold serif">[인터뷰] 강화된 음주운전 처벌 기준과 대응법</span>
                                 </td>
-                                <td class="hidden md:table-cell text-gray-400">2024.02.28</td>
+                                <td class="text-right text-gray-400 text-xs px-8">2024.02.28</td>
                             </tr>
                             <tr class="board-row" onclick="showPost(3)">
-                                <td class="hidden md:table-cell text-gray-400">01</td>
-                                <td class="text-center md:text-left">
-                                    <span class="tag-notice mb-1 inline-block">공지</span><br>
+                                <td class="text-center text-gray-400 text-xs">01</td>
+                                <td class="py-5">
+                                    <span class="tag-notice mr-2">공지</span>
                                     <span class="font-bold serif">비대면 무료 법률 진단 서비스 공식 런칭</span>
                                 </td>
-                                <td class="hidden md:table-cell text-gray-400">2024.01.10</td>
+                                <td class="text-right text-gray-400 text-xs px-8">2024.01.10</td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- Mobile List View (제목 왼쪽 아이콘 + 날짜 하단 배치) -->
+                    <div id="board-body-mobile" class="md:hidden divide-y divide-gray-50">
+                        <div class="mobile-board-list-item" onclick="showPost(1)">
+                            <div class="mobile-board-title-row">
+                                <span class="tag-notice">공지</span>
+                                <span class="mobile-board-title">로로 법률 사무소, 2024년 '올해의 로펌' 선정</span>
+                            </div>
+                            <span class="mobile-board-date">2024.03.15</span>
+                        </div>
+                        <div class="mobile-board-list-item" onclick="showPost(2)">
+                            <div class="mobile-board-title-row">
+                                <span class="tag-media">언론</span>
+                                <span class="mobile-board-title">[인터뷰] 강화된 음주운전 처벌 기준과 대응법</span>
+                            </div>
+                            <span class="mobile-board-date">2024.02.28</span>
+                        </div>
+                        <div class="mobile-board-list-item" onclick="showPost(3)">
+                            <div class="mobile-board-title-row">
+                                <span class="tag-notice">공지</span>
+                                <span class="mobile-board-title">비대면 무료 법률 진단 서비스 공식 런칭</span>
+                            </div>
+                            <span class="mobile-board-date">2024.01.10</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
