@@ -116,6 +116,10 @@
 
         /* 햄버거 메뉴 및 모바일 대응 */
         #mobile-menu-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
             display: none;
         }
 
@@ -142,8 +146,11 @@
         @media (max-width: 1024px) {
             body { padding-right: 0; }
             .fixed-sidebar { display: none; }
-            #main-header { width: 100%; }
+            #main-header { width: 100%; position: relative; }
             #mobile-menu-toggle { display: block; }
+            .header-content-wrapper { flex-direction: column; align-items: center; text-align: center; width: 100%; }
+            #logo-decoration-mobile { display: flex !important; }
+            #header-diagnosis-btn-mobile { display: inline-block !important; }
         }
 
         .btn-gold {
@@ -273,6 +280,18 @@
             display: block;
             animation: modal-up 0.5s ease;
         }
+        
+        /* 게시판 스타일 복구 */
+        .board-item {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 24px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .board-item:hover {
+            padding-left: 10px;
+            background: rgba(255,126,0,0.02);
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900" oncontextmenu="return false" onselectstart="return false">
@@ -334,8 +353,8 @@
 
     <!-- 헤더 -->
     <header class="fixed left-0 top-0 z-40 flex w-full justify-center transition-all" id="main-header">
-        <div class="w-full max-w-7xl px-4 md:px-12">
-            <div class="flex items-center justify-between lg:grid lg:grid-cols-3">
+        <div class="w-full max-w-7xl px-4 md:px-12 relative">
+            <div class="header-content-wrapper flex items-center justify-between lg:grid lg:grid-cols-3">
                 <div class="flex flex-col items-center justify-center lg:col-start-2">
                     <div class="flex items-center space-x-2 cursor-pointer" onclick="showMainSection()">
                         <svg class="w-8 h-8 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -343,12 +362,24 @@
                         </svg>
                         <div class="text-xl md:text-2xl font-bold serif tracking-tighter text-white" id="logo-text">로로 <span class="text-[#FF7E00]">소송 로펌</span></div>
                     </div>
+                    
+                    <!-- 데스크탑 전용 장식 -->
                     <div class="hidden lg:block w-full text-center">
                         <div class="mouse-icon-wrap" id="logo-decoration">
                             <div class="mouse-icon"><div class="mouse-wheel"></div></div>
                         </div>
                         <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full hover:bg-[#FF7E00] hover:text-white transition-all bg-transparent backdrop-blur-md shadow-lg" id="header-diagnosis-btn">
                             자가진단 시작
+                        </button>
+                    </div>
+
+                    <!-- 모바일/태블릿 전용 장식 -->
+                    <div class="hidden w-full text-center mt-4" id="logo-decoration-mobile">
+                        <div class="mouse-icon-wrap mb-4">
+                            <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+                        </div>
+                        <button onclick="showDiagnosisSection()" class="hidden text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg" id="header-diagnosis-btn-mobile">
+                            소송 자가진단 하기
                         </button>
                     </div>
                 </div>
@@ -521,124 +552,176 @@
         </footer>
     </div>
 
-    <!-- 소송 자가진단 -->
+    <!-- 소송 자가진단 섹션 (전체 5단계 복구) -->
     <div id="full-diagnosis" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-xl mx-auto fade-in-up">
             <div class="text-center mb-12">
                 <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">자가진단</span>
                 <h2 class="text-3xl font-bold serif mb-4 text-white">소송 가능성 자가진단</h2>
+                <p class="text-white/40 text-[11px]">답변 내용을 바탕으로 소송 실익을 1차 분석합니다.</p>
             </div>
             <div class="bg-[#1A1A1A] p-10 rounded-[40px] border border-white/5 shadow-2xl min-h-[420px] flex flex-col justify-center text-white">
+                
+                <!-- 질문 1 -->
                 <div id="diag-1" class="diag-item active">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 01. 사건 분류</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">현재 겪고 계신 법률 갈등의 분야는 무엇입니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 01. 사건 유형</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">현재 갈등 상황의 종류를 선택해주세요.</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">민사 (손해배상, 부동산 등)</button>
-                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">형사 (피의자 방어, 피해 고소)</button>
-                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">가사/이혼 (재산분할 등)</button>
+                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">금전/부동산 민사소송</button>
+                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">사기/폭행/범죄 형사소송</button>
+                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">이혼/상속/가사소송</button>
                     </div>
                 </div>
+
+                <!-- 질문 2 -->
                 <div id="diag-2" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 증거 확인</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">입증할 수 있는 핵심적인 증거(문서, 녹취, 사진 등)가 있습니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 소멸 시효</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">사건이 발생한 지 얼마나 지났습니까?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">명확한 증거가 충분히 있음</button>
-                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">증거가 있으나 보완이 필요함</button>
-                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">현재 증거가 없거나 수집 중임</button>
+                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">1년 미만</button>
+                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">1년 이상 ~ 3년 미만</button>
+                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">3년 이상 (시효 검토 필요)</button>
                     </div>
                 </div>
+
+                <!-- 질문 3 -->
                 <div id="diag-3" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 03. 긴급도 판단</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">사건 해결이 얼마나 시급한 상황입니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 03. 객관적 증거</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">주장을 뒷받침할 자료가 있습니까?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">매우 시급 (고소 임박, 소장 수령 등)</button>
-                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">시급 (상대방과 갈등 심화)</button>
-                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">준비 중 (장기적인 대응 계획)</button>
+                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">계약서, 문자, 녹취 등 충분함</button>
+                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">주변인 증언 위주 (보완 필요)</button>
+                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">현재는 증거가 부족함</button>
                     </div>
                 </div>
+
+                <!-- 질문 4 -->
                 <div id="diag-4" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">분석 직전 단계</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">전문 변호사의 정밀 분석 리포트를 받아보시겠습니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 04. 소송 실익</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">분쟁 금액 또는 피해 정도가 어느 정도입니까?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(5)" class="w-full p-6 bg-[#FF7E00] border border-[#FF7E00] rounded-3xl text-left text-xs font-bold text-white shadow-lg">예, 분석 결과를 확인하겠습니다</button>
-                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">간이 진단만 받겠습니다</button>
+                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">3,000만원 이상의 고액 사건</button>
+                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">소액 심판 대상 (3,000만원 이하)</button>
+                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">금전 외 권리/명예 회복 목적</button>
                     </div>
                 </div>
-                <div id="diag-5" class="diag-item text-center">
-                    <div class="py-12 flex flex-col items-center">
-                        <div class="w-16 h-16 border-4 border-[#FF7E00] border-t-transparent rounded-full animate-spin mb-8"></div>
-                        <h3 class="text-xl font-bold serif mb-4">데이터 분석 중</h3>
-                        <p class="text-white/40 text-[11px]">로로의 승소 데이터베이스와 매칭 중입니다...</p>
+
+                <!-- 질문 5 -->
+                <div id="diag-5" class="diag-item">
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 05. 상대방 상태</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">상대방의 소재나 재산 상태를 알고 계십니까?</h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">정확히 파악하고 있음</button>
+                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">일부 알고 있음 (주민번호 등)</button>
+                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">전혀 모름 (사실조회 필요)</button>
                     </div>
                 </div>
-                <div id="diag-result" class="diag-item">
-                    <div class="bg-[#FF7E00]/10 p-8 rounded-3xl border border-[#FF7E00]/30 mb-8 text-center">
-                        <h4 class="text-sm font-bold text-[#FF7E00] mb-2">진단 결과: [전문 조력 강력 권장]</h4>
-                        <p class="text-white/60 text-[11px] leading-relaxed">입력하신 내용을 바탕으로 분석한 결과, 법리적 쟁점이 뚜렷하여 승소 가능성이 높은 사건입니다. 골든타임을 놓치지 않도록 전문 변호사와 심층 상담을 진행해 보시기 바랍니다.</p>
+
+                <!-- 진단 완료 결과 -->
+                <div id="diag-6" class="diag-item">
+                    <div class="text-center mb-10">
+                        <div class="w-20 h-20 bg-[#FF7E00]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 text-[#FF7E00]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold serif mb-4">진단 결과: 분석 완료</h3>
+                        <p class="text-white/60 text-xs leading-relaxed">선택하신 답변을 종합할 때, 소송 제기 시 승소 가능성이 있는 것으로 보입니다. 다만 구체적인 법리 해석은 증거 자료 대조가 필요하므로 전문 변호사와의 상담을 권장드립니다.</p>
                     </div>
-                    <button onclick="openModal()" class="w-full btn-gold py-5 rounded-3xl font-bold text-xs shadow-2xl">변호사와 비밀 상담 예약하기</button>
-                    <button onclick="showMainSection()" class="w-full mt-4 py-3 text-white/20 text-[10px] font-bold tracking-widest uppercase">홈으로 돌아가기</button>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="openModal()" class="w-full btn-gold py-5 rounded-3xl font-bold text-xs shadow-xl">변호사 무료상담 예약하기</button>
+                        <button onclick="showMainSection()" class="w-full py-5 text-white/40 text-xs font-bold">홈으로 돌아가기</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 공지/언론사례 게시판 -->
+    <!-- 공지/언론사례 게시판 섹션 (게시물 상세 복구) -->
     <div id="board-section" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-4xl mx-auto fade-in-up">
             <div id="board-list-view">
-                <h2 class="text-3xl font-bold serif text-white mb-12">공지 및 언론보도</h2>
-                <div class="space-y-4">
-                    <div onclick="viewPost(1)" class="p-8 bg-[#1A1A1A] rounded-[30px] flex justify-between items-center group cursor-pointer border border-white/5 hover:border-[#FF7E00]/30 transition-all">
-                        <div class="flex-1">
-                            <span class="text-[9px] font-bold text-[#FF7E00] mb-2 block uppercase tracking-widest">언론보도</span>
-                            <h4 class="text-sm font-bold serif text-white group-hover:text-[#FF7E00] transition-colors">로로 법률사무소, '2025 소비자 법률 서비스 만족도' 1위 선정</h4>
-                            <p class="text-[10px] text-white/30 mt-2">2025.01.10 | 경제투데이</p>
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">NEWS & NOTICE</span>
+                        <h2 class="text-3xl font-bold serif text-white">공지 및 언론보도</h2>
+                    </div>
+                    <button onclick="showMainSection()" class="text-white/40 text-[10px] font-bold border-b border-white/20 pb-1">목록 닫기</button>
+                </div>
+                
+                <div class="space-y-1">
+                    <div onclick="showPost('post-1')" class="board-item group flex items-center justify-between">
+                        <div class="flex-1 pr-8">
+                            <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[언론보도]</span>
+                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">로로 법률사무소, '2025 소비자 만족 브랜드 대상' 민사 전문 부문 수상</h4>
                         </div>
-                        <svg class="w-5 h-5 text-white/10 group-hover:text-[#FF7E00] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <span class="text-white/20 text-[11px] font-mono">2025.11.15</span>
                     </div>
 
-                    <div onclick="viewPost(2)" class="p-8 bg-[#1A1A1A] rounded-[30px] flex justify-between items-center group cursor-pointer border border-white/5 hover:border-[#FF7E00]/30 transition-all">
-                        <div class="flex-1">
-                            <span class="text-[9px] font-bold text-blue-400 mb-2 block uppercase tracking-widest">공지사항</span>
-                            <h4 class="text-sm font-bold serif text-white group-hover:text-[#FF7E00] transition-colors">[안내] 설 연휴 기간 법률 상담 예약 및 운영 시간 안내</h4>
-                            <p class="text-[10px] text-white/30 mt-2">2025.01.05 | 운영팀</p>
+                    <div onclick="showPost('post-2')" class="board-item group flex items-center justify-between">
+                        <div class="flex-1 pr-8">
+                            <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[공지사항]</span>
+                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">사무소 이전 안내 (서초대로 123 법조빌딩 7층)</h4>
                         </div>
-                        <svg class="w-5 h-5 text-white/10 group-hover:text-[#FF7E00] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <span class="text-white/20 text-[11px] font-mono">2025.10.30</span>
+                    </div>
+
+                    <div onclick="showPost('post-3')" class="board-item group flex items-center justify-between">
+                        <div class="flex-1 pr-8">
+                            <span class="text-white/40 text-[10px] font-bold mb-2 block">[승소사례]</span>
+                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">보이스피싱 가담 혐의 피의자, 무죄 판결 이끌어내</h4>
+                        </div>
+                        <span class="text-white/20 text-[11px] font-mono">2025.10.12</span>
+                    </div>
+
+                    <div onclick="showPost('post-4')" class="board-item group flex items-center justify-between">
+                        <div class="flex-1 pr-8">
+                            <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[언론보도]</span>
+                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">김로로 변호사 인터뷰 - "전세 사기 대응의 핵심은 선제적 가압류"</h4>
+                        </div>
+                        <span class="text-white/20 text-[11px] font-mono">2025.09.28</span>
                     </div>
                 </div>
             </div>
 
-            <div id="board-detail-view" class="hidden">
-                <button onclick="closePost()" class="text-white/30 mb-10 text-[10px] font-bold uppercase tracking-widest flex items-center hover:text-[#FF7E00] transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg> 목록으로
+            <!-- 게시글 상세 내용 컨테이너 -->
+            <div id="post-view-container" class="hidden">
+                <button onclick="backToBoard()" class="text-white/40 text-[10px] mb-8 flex items-center group">
+                    <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    뒤로가기
                 </button>
                 
-                <!-- 게시물 1 내용 -->
-                <div id="post-content-1" class="post-content-container bg-[#1A1A1A] p-12 rounded-[40px] text-white border border-white/5">
-                    <span class="text-[10px] font-bold text-[#FF7E00] block mb-4">NEWS / 언론보도</span>
-                    <h3 class="text-2xl font-bold serif mb-6">로로 법률사무소, '2025 소비자 법률 서비스 만족도' 1위 선정</h3>
-                    <div class="w-full h-[1px] bg-white/5 mb-8"></div>
-                    <div class="text-sm text-white/60 leading-relaxed space-y-4">
-                        <p>로로 법률사무소가 지난 10일 발표된 '2025 대한민국 소비자 만족도 조사'에서 법률 서비스 부문 1위를 수상했습니다.</p>
-                        <p>이번 수상은 수천 건의 승소 데이터를 기반으로 한 체계적인 소송 전략과 의뢰인 중심의 맞춤형 법률 서비스를 제공해 온 결과로 평가받고 있습니다.</p>
-                        <p>김로로 대표변호사는 "앞으로도 의뢰인의 권익 보호를 최우선 가치로 삼아, 최상의 결과를 만들어내는 강력한 법률 파트너가 되겠다"고 소감을 밝혔습니다.</p>
+                <div id="post-1" class="post-content-container text-white">
+                    <h3 class="text-2xl font-bold serif mb-6">로로 법률사무소, '2025 소비자 만족 브랜드 대상' 수상</h3>
+                    <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.11.15 | WRITER: ADMIN</div>
+                    <div class="text-white/60 text-sm leading-relaxed space-y-4">
+                        <p>로로 법률사무소가 지난 15일 열린 '2025 소비자 만족 브랜드 대상'에서 법률 서비스(민사소송) 부문 대상을 수상하였습니다.</p>
+                        <p>의뢰인 개개인의 사정을 깊이 공감하고, 철저한 판례 분석을 통해 최선의 결과를 도출해온 노력을 인정받은 결과입니다. 앞으로도 변함없이 정직하고 실력 있는 법률 파트너가 되겠습니다.</p>
                     </div>
                 </div>
 
-                <!-- 게시물 2 내용 (추가됨) -->
-                <div id="post-content-2" class="post-content-container bg-[#1A1A1A] p-12 rounded-[40px] text-white border border-white/5">
-                    <span class="text-[10px] font-bold text-blue-400 block mb-4">NOTICE / 공지사항</span>
-                    <h3 class="text-2xl font-bold serif mb-6">[안내] 설 연휴 기간 법률 상담 예약 및 운영 시간 안내</h3>
-                    <div class="w-full h-[1px] bg-white/5 mb-8"></div>
-                    <div class="text-sm text-white/60 leading-relaxed space-y-4">
-                        <p>안녕하세요. 로로 법률사무소입니다. 다가오는 설 연휴 기간의 운영 일정을 안내드리오니 상담 예약 시 참고해주시기 바랍니다.</p>
-                        <ul class="list-disc list-inside space-y-2">
-                            <li>연휴 기간: 2025년 1월 28일(화) ~ 1월 30일(목)</li>
-                            <li>정상 근무: 2025년 1월 31일(금)부터</li>
-                        </ul>
-                        <p>연휴 기간 중에도 홈페이지를 통한 '무료 법률 상담 신청'과 '소송 자가진단' 서비스는 24시간 정상 운영됩니다. 접수된 상담 내역은 연휴 종료 후 담당 변호사가 확인하여 순차적으로 연락드릴 예정입니다.</p>
-                        <p>가족과 함께 따뜻하고 평안한 명절 보내시길 기원합니다. 감사합니다.</p>
+                <div id="post-2" class="post-content-container text-white">
+                    <h3 class="text-2xl font-bold serif mb-6">사무소 이전 안내</h3>
+                    <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.10.30 | WRITER: ADMIN</div>
+                    <div class="text-white/60 text-sm leading-relaxed space-y-4">
+                        <p>의뢰인 여러분께 더 쾌적한 상담 환경을 제공하기 위해 사무실을 이전하게 되었습니다.</p>
+                        <p>기존 서초구 00동에서 <b>서초구 서초대로 123, 법조빌딩 7층</b>으로 확장 이전하였으니, 방문 시 착오 없으시길 바랍니다. 감사합니다.</p>
+                    </div>
+                </div>
+
+                <div id="post-3" class="post-content-container text-white">
+                    <h3 class="text-2xl font-bold serif mb-6">보이스피싱 무죄 판결 승소 사례</h3>
+                    <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.10.12 | WRITER: LAWYER PARK</div>
+                    <div class="text-white/60 text-sm leading-relaxed space-y-4">
+                        <p>아르바이트 공고를 보고 단순 배달 업무인 줄 알고 가담했다가 보이스피싱 수거책으로 기소된 의뢰인에 대하여 '무죄' 판결을 받아냈습니다.</p>
+                        <p>의뢰인이 불법성을 인지하지 못했다는 점을 입증하는 정황 증거와 메신저 대화 내용을 치밀하게 분석하여 재판부를 설득한 핵심적인 승리였습니다.</p>
+                    </div>
+                </div>
+
+                <div id="post-4" class="post-content-container text-white">
+                    <h3 class="text-2xl font-bold serif mb-6">전세 사기 대응법 인터뷰 보도</h3>
+                    <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.09.28 | WRITER: ADMIN</div>
+                    <div class="text-white/60 text-sm leading-relaxed space-y-4">
+                        <p>김로로 대표변호사가 최근 급증하는 전세 사기 관련하여 경제 뉴스 인터뷰를 진행하였습니다.</p>
+                        <p>김 변호사는 인터뷰에서 "임대인의 보증금 반환 의사가 없음을 확인하는 즉시 가압류와 소송 절차를 밟는 선제적 대응이 가장 중요하다"고 강조하였습니다.</p>
                     </div>
                 </div>
             </div>
@@ -703,22 +786,22 @@
             document.getElementById('main-section').classList.add('hidden');
             document.getElementById('full-diagnosis').classList.add('hidden');
             document.getElementById('board-section').classList.remove('hidden');
-            closePost();
+            backToBoard(); // 리스트 뷰가 먼저 나오도록
             updateSidebarMenu('공지/언론사례');
             window.scrollTo(0,0);
         }
 
-        function viewPost(id) {
+        /* 게시판 본문 보기 */
+        function showPost(postId) {
             document.getElementById('board-list-view').classList.add('hidden');
-            document.getElementById('board-detail-view').classList.remove('hidden');
-            document.querySelectorAll('.post-content-container').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById('post-content-' + id);
-            if(target) target.classList.add('active');
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            document.getElementById('post-view-container').classList.remove('hidden');
+            document.querySelectorAll('.post-content-container').forEach(p => p.classList.remove('active'));
+            document.getElementById(postId).classList.add('active');
+            window.scrollTo(0,0);
         }
-        function closePost() {
-            document.getElementById('board-detail-view').classList.add('hidden');
+        function backToBoard() {
             document.getElementById('board-list-view').classList.remove('hidden');
+            document.getElementById('post-view-container').classList.add('hidden');
         }
 
         function updateSidebarMenu(text) {
@@ -746,12 +829,6 @@
             document.querySelectorAll('.diag-item').forEach(i => i.classList.remove('active'));
             const target = document.getElementById('diag-' + step);
             if(target) target.classList.add('active');
-            if(step === 5) {
-                setTimeout(() => {
-                    document.getElementById('diag-5').classList.remove('active');
-                    document.getElementById('diag-result').classList.add('active');
-                }, 2000);
-            }
         }
         
         window.addEventListener('scroll', function() {
