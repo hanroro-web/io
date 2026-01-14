@@ -170,6 +170,15 @@
 
         .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 
+        /* Toss Icon Style */
+        .toss-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+            vertical-align: middle;
+            fill: #3182f6;
+        }
+
         @media (max-width: 1024px) {
             .giant-wand-wrapper { display: none; }
         }
@@ -498,6 +507,8 @@
             <form id="hosting-form" class="space-y-5 sm:space-y-6">
                 <div class="space-y-3">
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Hosting Plan Select</label>
+                    
+                    <!-- Google Hosting Option -->
                     <label class="block relative mb-2">
                         <input type="radio" name="hosting-plan" value="google" class="hidden option-radio" checked>
                         <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
@@ -506,13 +517,15 @@
                                     <i class="fas fa-cloud text-base sm:text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">Google Cloud</p>
-                                    <h4 class="text-xs sm:text-sm font-bold text-white">한로로 구글호스팅</h4>
+                                    <h4 class="text-xs sm:text-sm font-bold text-white mb-0.5">한로로 구글호스팅</h4>
+                                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-widest">Google Cloud</p>
                                 </div>
                             </div>
                             <span class="text-xs sm:text-sm font-black text-white">1,350,000원</span>
                         </div>
                     </label>
+
+                    <!-- General Hosting Option -->
                     <label class="block relative">
                         <input type="radio" name="hosting-plan" value="general" class="hidden option-radio">
                         <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
@@ -521,8 +534,8 @@
                                     <i class="fas fa-server text-base sm:text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">Premium Server</p>
-                                    <h4 class="text-xs sm:text-sm font-bold text-white">한로로 일반호스팅</h4>
+                                    <h4 class="text-xs sm:text-sm font-bold text-white mb-0.5">한로로 일반호스팅</h4>
+                                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-widest">Premium Server</p>
                                 </div>
                             </div>
                             <span class="text-xs sm:text-sm font-black text-white">1,450,000원</span>
@@ -534,10 +547,18 @@
                     <div><input type="text" id="h-name" class="custom-input !py-3" placeholder="성함" required></div>
                     <div><input type="tel" id="h-phone" class="custom-input !py-3" placeholder="010-0000-0000" required></div>
                 </div>
+                
+                <!-- Deposit Info with Toss Icon -->
                 <div class="p-5 sm:p-6 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-center">
-                    <h4 class="text-base sm:text-lg font-black text-white tracking-tight mb-0.5">토스뱅크 1001-2586-0977</h4>
+                    <div class="flex items-center justify-center mb-1">
+                        <svg class="toss-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.44 2.1c-.24-.13-.54-.13-.78 0L3.13 6.9c-.31.17-.5.5-.5.86v8.48c0 .36.19.69.5.86l8.53 4.8c.24.13.54.13.78 0l8.53-4.8c.31-.17.5-.5.5-.86V7.76c0-.36-.19-.69-.5-.86l-8.53-4.8zM4.13 7.82L12 3.4l7.87 4.42L12 12.24 4.13 7.82zm7.12 12.06v-6.9l-7.12-4v6.9l7.12 4zm1.5 0l7.12-4v-6.9l-7.12 4v6.9z" fill-rule="evenodd"/>
+                        </svg>
+                        <h4 class="text-base sm:text-lg font-black text-white tracking-tight">토스뱅크 1001-2586-0977</h4>
+                    </div>
                     <p class="text-[10px] text-gray-400">예금주: 김상우</p>
                 </div>
+                
                 <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-[0.2em]">결제 정보 제출하기</button>
             </form>
         </div>
@@ -560,7 +581,7 @@
         
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
-            authDomain: "hanroro-web.firebaseapp.com", 
+            authDomain: "hanroro-web.firebaseapp.app", 
             projectId: "hanroro-web", 
             appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
         };
@@ -610,23 +631,41 @@
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
-                        
-                        // Status mapping logic
                         const rawStatus = (data.status || '').toLowerCase();
                         const isComplete = rawStatus.includes('완료');
-                        
-                        // Display text logic: '입금완료' for completed, '입금전' for anything else (like '대기')
                         const statusText = isComplete ? '입금완료' : '입금전';
                         
+                        // 서비스 타입 한글화 및 아이콘 설정
+                        let displayType = '서비스';
+                        let planIcon = 'fa-rocket';
+                        const typeStr = (data.type || '').toLowerCase();
+                        
+                        if (typeStr.includes('google') || typeStr.includes('구글')) {
+                            displayType = '구글호스팅';
+                            planIcon = 'fa-cloud';
+                        } else if (typeStr.includes('server') || typeStr.includes('premium') || typeStr.includes('일반')) {
+                            displayType = '일반호스팅';
+                            planIcon = 'fa-server';
+                        } else if (typeStr.includes('hosting')) {
+                            displayType = '호스팅';
+                            planIcon = 'fa-globe';
+                        }
+                        
                         html += `<div class="unified-card group hover:border-purple-500/30 transition-all">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${data.type || 'Hosting'}</span>
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10">
+                                    <i class="fas ${planIcon} text-purple-400 text-[10px]"></i>
+                                    <span class="text-[9px] font-black text-purple-300 uppercase tracking-tighter">${displayType}</span>
+                                </div>
                                 <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40'} uppercase tracking-tighter">${statusText}</span>
                             </div>
-                            <h4 class="font-bold text-white text-xs mt-1">${anonymizeName(data.name)}</h4>
+                            <div class="space-y-1">
+                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">CLIENT</span>
+                                <h4 class="font-bold text-white text-xs">${anonymizeName(data.name)}</h4>
+                            </div>
                         </div>`;
                     });
-                    if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">No Deposit Data</p>';
+                    if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">데이터가 없습니다</p>';
                     document.getElementById('deposit-list').innerHTML = html;
                 });
 
@@ -679,7 +718,7 @@
                     const phone = document.getElementById('h-phone').value;
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
-                            name, phone, plan, status: '대기', type: plan === 'google' ? 'Google Cloud' : 'Premium Server', createdAt: serverTimestamp()
+                            name, phone, plan, status: '대기', type: plan === 'google' ? '구글호스팅' : '일반호스팅', createdAt: serverTimestamp()
                         });
                         alert('결제 정보가 제출되었습니다.');
                         e.target.reset();
