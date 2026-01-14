@@ -183,7 +183,7 @@
             .giant-wand-wrapper { display: none; }
         }
 
-        /* Mobile Version Font Size Adjustments */
+        /* Mobile Version Optimization */
         @media (max-width: 768px) {
             .portfolio-outer-wrapper { height: 500vh; }
             .portfolio-title-group {
@@ -224,6 +224,29 @@
             footer .flex-wrap { justify-content: flex-start; gap: 0.75rem; }
             footer span { font-size: 8.5px !important; opacity: 0.8; }
             footer p { font-size: 8.5px !important; }
+
+            /* --- POPUP(MODAL) FONT SIZE REDUCTION FOR MOBILE --- */
+            .modal-content { padding: 1.25rem !important; border-radius: 24px !important; }
+            .modal-content h3 { font-size: 1.45rem !important; margin-bottom: 0.25rem !important; }
+            .modal-content .inline-flex { font-size: 8px !important; padding: 2px 8px !important; }
+            .modal-content label { font-size: 8px !important; letter-spacing: 0.1em !important; }
+            .modal-content .custom-input { font-size: 12px !important; padding: 10px 14px !important; }
+            .modal-content .custom-input::placeholder { font-size: 11px !important; }
+            .modal-content button[type="submit"] { font-size: 11px !important; padding-top: 1rem !important; padding-bottom: 1rem !important; border-radius: 14px !important; }
+            
+            /* Option Cards inside Hosting Modal */
+            .option-card { padding: 0.75rem !important; border-radius: 16px !important; }
+            .option-card h4 { font-size: 11px !important; }
+            .option-card p { font-size: 8px !important; }
+            .option-card span { font-size: 11px !important; }
+            .option-card .w-9, .option-card .w-10 { width: 34px !important; height: 34px !important; }
+            .option-card i { font-size: 14px !important; }
+            
+            /* Deposit/Bank Info Box */
+            .modal-content .p-5 { padding: 1rem !important; border-radius: 16px !important; }
+            .modal-content .toss-icon { width: 16px !important; height: 16px !important; }
+            .modal-content .text-base { font-size: 13px !important; }
+            .modal-content .text-\[10px\] { font-size: 8px !important; }
         }
 
         img { -webkit-user-drag: none; pointer-events: none; }
