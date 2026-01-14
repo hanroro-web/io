@@ -183,6 +183,7 @@
             .giant-wand-wrapper { display: none; }
         }
 
+        /* Mobile Version Font Size Adjustments */
         @media (max-width: 768px) {
             .portfolio-outer-wrapper { height: 500vh; }
             .portfolio-title-group {
@@ -200,16 +201,29 @@
             }
             .portfolio-card { 
                 flex: 0 0 82vw; 
-                height: 440px; 
-                padding: 2rem; 
+                height: 420px; 
+                padding: 1.75rem; 
                 margin-right: 5vw; 
             }
-            h1 { font-size: 2.5rem !important; line-height: 1.2 !important; }
-            p { font-size: 0.95rem !important; line-height: 1.6 !important; letter-spacing: -0.01em; }
-            .portfolio-card h4 { font-size: 1.6rem !important; }
-            .portfolio-card p { font-size: 0.85rem !important; }
-            footer .flex-wrap { justify-content: flex-start; gap: 1rem; }
-            footer span { font-size: 9px; opacity: 0.8; }
+            
+            /* Typography Scaling for Mobile */
+            h1 { font-size: 2.15rem !important; line-height: 1.2 !important; letter-spacing: -0.02em; }
+            h3 { font-size: 1.85rem !important; }
+            h4 { font-size: 1.35rem !important; }
+            p { font-size: 0.88rem !important; line-height: 1.6 !important; letter-spacing: -0.01em; color: #94a3b8; }
+            
+            .portfolio-card h4 { font-size: 1.5rem !important; margin-bottom: 0.5rem !important; }
+            .portfolio-card p { font-size: 0.82rem !important; line-height: 1.5 !important; }
+            .portfolio-card .card-number { font-size: 80px !important; top: -10px !important; }
+
+            .bottom-floating-bar h4 { font-size: 11px !important; }
+            .bottom-floating-bar p { font-size: 9px !important; }
+            
+            .notice-bar-container #notice-text { font-size: 11px !important; }
+
+            footer .flex-wrap { justify-content: flex-start; gap: 0.75rem; }
+            footer span { font-size: 8.5px !important; opacity: 0.8; }
+            footer p { font-size: 8.5px !important; }
         }
 
         img { -webkit-user-drag: none; pointer-events: none; }
@@ -635,7 +649,6 @@
                         const isComplete = rawStatus.includes('완료');
                         const statusText = isComplete ? '입금완료' : '입금전';
                         
-                        // 서비스 타입 한글화 및 아이콘 설정
                         let displayType = '서비스';
                         let planIcon = 'fa-rocket';
                         const typeStr = (data.type || '').toLowerCase();
