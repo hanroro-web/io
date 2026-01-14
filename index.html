@@ -375,7 +375,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- ... other portfolio cards remain unchanged ... -->
                 <div class="portfolio-card">
                     <span class="card-number">02</span>
                     <div class="relative z-10">
@@ -432,7 +431,7 @@
         </div>
     </section>
 
-    <!-- Footer & Modals remain unchanged ... -->
+    <!-- Footer & Notice Bar -->
     <div class="notice-bar-container py-4">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between gap-6 overflow-hidden">
             <div class="flex items-center gap-3 shrink-0">
@@ -540,7 +539,7 @@
                         <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Category</label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="block relative">
-                                <input type="radio" name="project-category" value="general" class="hidden option-radio" checked>
+                                <input type="radio" name="project-category" value="일반" class="hidden option-radio" checked>
                                 <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
                                         <i class="fas fa-user text-xs sm:text-sm"></i>
@@ -549,7 +548,7 @@
                                 </div>
                             </label>
                             <label class="block relative">
-                                <input type="radio" name="project-category" value="company" class="hidden option-radio">
+                                <input type="radio" name="project-category" value="기업" class="hidden option-radio">
                                 <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
                                         <i class="fas fa-building text-xs sm:text-sm"></i>
@@ -589,7 +588,7 @@
                 <div class="space-y-3">
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Hosting Plan Select</label>
                     <label class="block relative mb-2">
-                        <input type="radio" name="hosting-plan" value="google" class="hidden option-radio" checked>
+                        <input type="radio" name="hosting-plan" value="구글호스팅" class="hidden option-radio" checked>
                         <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
                             <div class="flex items-center gap-3 sm:gap-4">
                                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-600/20 flex items-center justify-center border border-purple-500/20 text-purple-400">
@@ -604,7 +603,7 @@
                         </div>
                     </label>
                     <label class="block relative">
-                        <input type="radio" name="hosting-plan" value="general" class="hidden option-radio">
+                        <input type="radio" name="hosting-plan" value="일반호스팅" class="hidden option-radio">
                         <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
                             <div class="flex items-center gap-3 sm:gap-4">
                                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-600/20 flex items-center justify-center border border-purple-500/20 text-purple-400">
@@ -648,7 +647,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { 
@@ -698,26 +697,22 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // 입금 현황 리스너
                 const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
                 onSnapshot(depositCol, (snap) => {
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
                         const rawStatus = (data.status || '').toLowerCase();
-                        const isComplete = rawStatus.includes('완료');
+                        // 대시보드에서 사용하는 complete/pending 혹은 입금완료/입금전 텍스트 대응
+                        const isComplete = rawStatus.includes('완료') || rawStatus === 'complete';
                         const statusText = isComplete ? '입금완료' : '입금전';
                         
-                        let displayType = '서비스';
+                        let displayType = data.type || '서비스';
                         let planIcon = 'fa-rocket';
-                        const typeStr = (data.type || '').toLowerCase();
                         
-                        if (typeStr.includes('google') || typeStr.includes('구글')) {
-                            displayType = '구글호스팅';
-                            planIcon = 'fa-cloud';
-                        } else if (typeStr.includes('server') || typeStr.includes('premium') || typeStr.includes('일반')) {
-                            displayType = '일반호스팅';
-                            planIcon = 'fa-server';
-                        }
+                        if (displayType.includes('구글')) planIcon = 'fa-cloud';
+                        else if (displayType.includes('일반')) planIcon = 'fa-server';
                         
                         html += `<div class="unified-card group hover:border-purple-500/30 transition-all">
                             <div class="flex justify-between items-center mb-4">
@@ -737,6 +732,7 @@
                     document.getElementById('deposit-list').innerHTML = html;
                 });
 
+                // 프로젝트 현황 리스너
                 const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
                 onSnapshot(projectCol, (snap) => {
                     let html = '';
@@ -756,43 +752,54 @@
                     document.getElementById('modal-project-list').innerHTML = html;
                 });
 
-                const noticeCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'notices');
-                onSnapshot(noticeCol, (snap) => {
-                    if (!snap.empty) {
-                        const latest = snap.docs[snap.docs.length - 1].data();
-                        document.getElementById('notice-text').innerText = latest.title;
+                // 공지사항 리스너 (대시보드 configs/mainSettings 필드 대응)
+                onSnapshot(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        document.getElementById('notice-text').innerText = data.noticeTitle || "환영합니다! 한로로 공식 웹사이트입니다.";
                     }
                 });
 
+                // 견적 신청 폼 제출 로직 (카테고리 반영)
                 document.getElementById('quote-form').onsubmit = async (e) => {
                     e.preventDefault();
-                    const category = e.target['project-category'].value;
+                    const category = e.target['project-category'].value; // '일반' 또는 '기업'
                     const name = document.getElementById('q-name').value;
                     const phone = document.getElementById('q-phone').value;
-                    const memo = document.getElementById('q-memo').value;
+                    const content = document.getElementById('q-memo').value;
+                    
                     try {
-                        await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'inquiries'), {
-                            category, name, phone, memo, createdAt: serverTimestamp(), type: '상담신청'
+                        await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), {
+                            category, 
+                            name, 
+                            contact: phone, 
+                            content, 
+                            createdAt: serverTimestamp()
                         });
-                        alert('상담 신청이 완료되었습니다.');
+                        alert('상담 신청이 완료되었습니다. 담당자가 곧 연락드리겠습니다.');
                         e.target.reset();
                         toggleModal('quote-modal', false);
-                    } catch (err) { alert('오류가 발생했습니다.'); }
+                    } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
                 };
 
+                // 호스팅 결제 폼 제출 로직
                 document.getElementById('hosting-form').onsubmit = async (e) => {
                     e.preventDefault();
-                    const plan = e.target['hosting-plan'].value;
+                    const planType = e.target['hosting-plan'].value; // '구글호스팅' 또는 '일반호스팅'
                     const name = document.getElementById('h-name').value;
                     const phone = document.getElementById('h-phone').value;
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
-                            name, phone, plan, status: '대기', type: plan === 'google' ? '구글호스팅' : '일반호스팅', createdAt: serverTimestamp()
+                            name, 
+                            phone, 
+                            type: planType, 
+                            status: 'pending', // 초기 상태: 입금전
+                            createdAt: serverTimestamp()
                         });
-                        alert('결제 정보가 제출되었습니다.');
+                        alert('결제 정보가 성공적으로 제출되었습니다. 입금 확인 후 서비스가 활성화됩니다.');
                         e.target.reset();
                         toggleModal('hosting-modal', false);
-                    } catch (err) { alert('오류가 발생했습니다.'); }
+                    } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
                 };
             } else {
                 try { await signInAnonymously(auth); } catch (err) { console.error(err); }
