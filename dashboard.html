@@ -8,375 +8,295 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        :root { --primary: #8a4fff; --bg: #05020a; }
-        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: #fff; }
-        
-        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem; }
-        .sidebar { background: #0a0614; border-right: 1px solid rgba(255, 255, 255, 0.05); }
-        .input-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem 1rem; color: #fff; width: 100%; outline: none; transition: 0.2s; font-size: 0.875rem; }
-        .input-dark:focus { border-color: var(--primary); background: rgba(138, 79, 255, 0.05); }
-        
-        .tab-btn { padding: 1rem; font-weight: 700; font-size: 0.875rem; color: #666; border-radius: 1rem; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; }
-        .tab-btn.active { color: #fff; background: rgba(138, 79, 255, 0.1); }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
-
-        #login-overlay { background: var(--bg); z-index: 200; }
-        .tab-content.hidden { display: none; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .sidebar-link { transition: all 0.3s ease; }
+        .sidebar-link.active { background: rgba(138, 79, 255, 0.15); color: #a78bfa; border-left: 3px solid #8a4fff; }
+        .custom-input { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 14px; color: white; width: 100%; outline: none; }
+        .custom-input:focus { border-color: #8a4fff; }
+        .btn-primary { background: #8a4fff; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; }
+        .btn-primary:hover { background: #7c3aed; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
-<body class="flex min-h-screen">
+<body class="min-h-screen flex">
 
-    <!-- 로그인 화면 -->
-    <div id="login-overlay" class="fixed inset-0 flex items-center justify-center p-6">
-        <div class="glass-panel p-10 w-full max-w-md shadow-2xl border-purple-500/20">
-            <div class="text-center mb-10">
-                <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-600/20">
-                    <i class="fas fa-lock text-white"></i>
-                </div>
-                <h1 class="text-2xl font-black tracking-tighter uppercase">Admin Access</h1>
-                <p class="text-gray-500 text-xs mt-2 font-bold tracking-widest uppercase">한로로 관리자 인증이 필요합니다</p>
-            </div>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase ml-1">Admin ID</label>
-                    <input type="text" id="admin-id" class="input-dark" placeholder="아이디를 입력하세요" required>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase ml-1">Password</label>
-                    <input type="password" id="admin-pw" class="input-dark" placeholder="비밀번호를 입력하세요" required>
-                </div>
-                <button type="submit" class="w-full bg-purple-600 py-4 rounded-xl font-black text-lg hover:bg-purple-700 transition-all shadow-lg shadow-purple-600/20 mt-4">로그인</button>
-                <div id="login-error" class="text-center text-red-500 text-xs font-bold mt-4 hidden">인증 정보가 올바르지 않습니다.</div>
-            </form>
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-white/5 flex flex-col">
+        <div class="p-8">
+            <div class="text-xl font-black text-purple-500 tracking-tighter uppercase">HANRORO ADMIN</div>
         </div>
-    </div>
-
-    <!-- 대시보드 사이드바 -->
-    <aside class="sidebar w-64 hidden lg:flex flex-col p-6 fixed h-full">
-        <div class="flex items-center space-x-2 mb-12">
-            <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                <i class="fas fa-bolt text-white text-xs"></i>
-            </div>
-            <span class="text-xl font-black tracking-tighter uppercase">ADMIN</span>
-        </div>
-
-        <nav class="space-y-2 flex-1">
-            <div onclick="switchTab('quotes')" id="tab-quotes" class="tab-btn active">
-                <i class="fas fa-envelope-open-text"></i> 견적 신청 내역
-            </div>
-            <div onclick="switchTab('projects')" id="tab-projects" class="tab-btn">
-                <i class="fas fa-tasks"></i> 프로젝트 관리
-            </div>
-            <div onclick="switchTab('deposits')" id="tab-deposits" class="tab-btn">
-                <i class="fas fa-wallet"></i> 입금 현황 관리
-            </div>
-            <div onclick="switchTab('settings')" id="tab-settings" class="tab-btn">
-                <i class="fas fa-cog"></i> 사이트 설정
-            </div>
-        </nav>
-
-        <div class="pt-6 border-t border-white/5">
-            <button onclick="logout()" class="w-full text-left p-3 text-xs font-bold text-gray-500 hover:text-white transition">
-                <i class="fas fa-sign-out-alt mr-2"></i> LOGOUT
+        <nav class="flex-1 px-4 space-y-2">
+            <button onclick="showTab('deposits-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3 active" id="btn-deposits-tab">
+                <i class="fas fa-wallet w-5"></i> 입금 관리
             </button>
+            <button onclick="showTab('projects-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-projects-tab">
+                <i class="fas fa-tasks w-5"></i> 프로젝트 관리
+            </button>
+            <button onclick="showTab('quotes-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-quotes-tab">
+                <i class="fas fa-comment-dots w-5"></i> 상담 신청
+            </button>
+            <button onclick="showTab('settings-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-settings-tab">
+                <i class="fas fa-cog w-5"></i> 사이트 설정
+            </button>
+        </nav>
+        <div class="p-6">
+            <!-- 요청사항: 로그아웃 버튼으로 변경 -->
+            <button onclick="handleLogout()" class="w-full py-3 rounded-lg bg-red-500/10 text-red-500 text-xs font-bold hover:bg-red-500/20 transition-all">로그아웃</button>
         </div>
     </aside>
 
-    <main class="flex-1 lg:ml-64 p-6 md:p-12">
-        <!-- 견적 신청 섹션 -->
-        <section id="section-quotes" class="tab-content">
+    <!-- Main Content -->
+    <main class="flex-1 p-10 overflow-y-auto">
+        <!-- Deposits Tab -->
+        <section id="deposits-tab" class="tab-content active">
             <div class="flex justify-between items-end mb-8">
                 <div>
-                    <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Inquiries</h2>
-                    <p class="text-gray-500 text-sm">홈페이지를 통해 접수된 최신 견적 및 상담 요청입니다.</p>
+                    <h2 class="text-3xl font-black mb-2">입금 현황 관리</h2>
+                    <p class="text-gray-500 text-sm">입금 내역을 확인하고 상태를 변경할 수 있습니다.</p>
                 </div>
             </div>
-            <div id="quotes-list" class="space-y-4">
-                <div class="text-center py-20 text-gray-600 animate-pulse">
-                    <i class="fas fa-spinner fa-spin mb-4 text-2xl"></i>
-                    <p class="text-sm font-bold uppercase tracking-widest">데이터를 불러오는 중...</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 프로젝트 관리 섹션 -->
-        <section id="section-projects" class="tab-content hidden">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Projects</h2>
-                    <p class="text-gray-500 text-sm">진행률과 상태를 관리합니다.</p>
-                </div>
-                <button onclick="openModal('project')" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-700 transition">추가하기</button>
-            </div>
-            <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </section>
-
-        <!-- 입금 현황 섹션 -->
-        <section id="section-deposits" class="tab-content hidden">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Deposits</h2>
-                    <p class="text-gray-500 text-sm">실시간 입금 현황을 업데이트합니다.</p>
-                </div>
-                <button onclick="openModal('deposit')" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-700 transition">추가하기</button>
-            </div>
-            <div class="glass-panel overflow-hidden">
+            <div class="glass-panel rounded-2xl overflow-hidden">
                 <table class="w-full text-left text-sm">
-                    <thead>
-                        <tr class="bg-white/5 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
-                            <th class="p-4">이름/업체명</th>
-                            <th class="p-4">유형</th>
-                            <th class="p-4">상태</th>
-                            <th class="p-4 text-right">관리</th>
+                    <thead class="bg-white/5 border-b border-white/5 text-gray-400">
+                        <tr>
+                            <th class="p-4 font-bold">이름/업체</th>
+                            <th class="p-4 font-bold">연락처</th>
+                            <th class="p-4 font-bold">플랜</th>
+                            <th class="p-4 font-bold">상태</th>
+                            <th class="p-4 font-bold">액션</th>
                         </tr>
                     </thead>
-                    <tbody id="deposits-table"></tbody>
+                    <tbody id="deposit-table-body"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- 사이트 설정 섹션 -->
-        <section id="section-settings" class="tab-content hidden">
-            <h2 class="text-3xl font-black tracking-tighter uppercase mb-8">Settings</h2>
+        <!-- Projects Tab -->
+        <section id="projects-tab" class="tab-content">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-black mb-2">프로젝트 관리</h2>
+                    <p class="text-gray-500 text-sm">진행 중인 프로젝트를 추가하거나 수정합니다.</p>
+                </div>
+                <button onclick="openProjectModal()" class="btn-primary">신규 추가</button>
+            </div>
+            <div class="grid grid-cols-1 gap-4" id="project-admin-list"></div>
+        </section>
+
+        <!-- Quotes Tab -->
+        <section id="quotes-tab" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-3xl font-black mb-2">상담 신청 목록</h2>
+                <p class="text-gray-500 text-sm">유입된 상담 및 견적 신청 내역입니다.</p>
+            </div>
+            <div class="glass-panel rounded-2xl overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-white/5 border-b border-white/5 text-gray-400">
+                        <tr>
+                            <th class="p-4 font-bold">구분</th>
+                            <th class="p-4 font-bold">신청자</th>
+                            <th class="p-4 font-bold">연락처</th>
+                            <th class="p-4 font-bold">내용</th>
+                            <th class="p-4 font-bold">날짜</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quote-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="settings-tab" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-3xl font-black mb-2">사이트 설정</h2>
+                <p class="text-gray-500 text-sm">홈페이지의 전역 설정을 변경합니다.</p>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
-                <div class="glass-panel p-8">
-                    <h3 class="text-lg font-bold mb-6 text-purple-400">Main Notice</h3>
-                    <div class="mb-4">
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">공지사항 제목</label>
-                        <input type="text" id="setting-notice-title" class="input-dark" placeholder="예: NOTICE">
-                    </div>
+            <div class="max-w-2xl space-y-8">
+                <!-- 노티스 제목 설정 (요청사항 반영) -->
+                <div class="glass-panel p-8 rounded-2xl space-y-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">공지사항 내용</label>
-                        <textarea id="setting-notice-text" class="input-dark h-24 resize-none" placeholder="배너에 표시될 내용"></textarea>
+                        <h4 class="text-lg font-bold mb-1">공지사항 관리</h4>
+                        <p class="text-gray-500 text-xs">메인페이지 하단 티커에 노출되는 노티스 제목입니다.</p>
                     </div>
-                </div>
-
-                <div class="glass-panel p-8">
-                    <h3 class="text-lg font-bold mb-6 text-purple-400">Top Banner Popup</h3>
-                    <div class="mb-4">
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 제목</label>
-                        <input type="text" id="setting-top-title" class="input-dark" placeholder="상단 바 제목">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">노티스 제목 (1줄)</label>
+                        <input type="text" id="setting-notice-title" class="custom-input" placeholder="공지사항 내용을 입력하세요.">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 내용</label>
-                        <textarea id="setting-top-text" class="input-dark h-24 resize-none" placeholder="상단 바 상세 내용"></textarea>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-8">
-                    <h3 class="text-lg font-bold mb-6 text-purple-400">Floating Popup (Bottom)</h3>
-                    <div class="mb-4">
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 제목</label>
-                        <input type="text" id="setting-bottom-title" class="input-dark" placeholder="플로팅 팝업 제목">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 내용</label>
-                        <textarea id="setting-bottom-text" class="input-dark h-24 resize-none" placeholder="플로팅 팝업 상세 내용"></textarea>
-                    </div>
-                </div>
-
-                <div class="flex flex-col justify-end">
-                    <div class="bg-purple-600/10 border border-purple-500/20 p-6 rounded-2xl mb-4">
-                        <p class="text-xs text-gray-400 font-medium leading-relaxed">
-                            <i class="fas fa-info-circle mr-1"></i> 각 항목을 수정한 후 아래 '모든 설정 저장' 버튼을 클릭하면 홈페이지에 즉시 반영됩니다.
-                        </p>
-                    </div>
-                    <button onclick="saveSettings()" class="w-full bg-white text-black py-4 rounded-xl font-black hover:bg-purple-600 hover:text-white transition shadow-lg shadow-white/5">모든 설정 저장</button>
+                    <button onclick="saveMainSettings()" class="btn-primary w-full mt-4">설정 저장하기</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 모달 레이아웃 -->
-    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-6">
-        <div class="glass-panel bg-[#0a0614] w-full max-w-md p-8 shadow-2xl">
-            <h3 id="modal-title" class="text-2xl font-black mb-6 uppercase tracking-tighter">Item Detail</h3>
-            <div id="modal-form" class="space-y-4"></div>
-            <div class="flex gap-3 mt-8">
-                <button onclick="closeModal()" class="flex-1 bg-white/5 py-4 rounded-xl font-bold hover:bg-white/10 transition">취소</button>
-                <button id="modal-save-btn" class="flex-1 bg-purple-600 py-4 rounded-xl font-bold hover:bg-purple-700 transition">저장하기</button>
+    <!-- Project Modal -->
+    <div id="project-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-6">
+        <div class="bg-[#0f0a1f] border border-white/10 w-full max-w-md rounded-2xl p-8">
+            <h3 class="text-xl font-bold mb-6">프로젝트 정보 입력</h3>
+            <div class="space-y-4">
+                <input type="text" id="p-name" class="custom-input" placeholder="프로젝트명">
+                <input type="text" id="p-phase" class="custom-input" placeholder="현재 단계 (예: 기획중)">
+                <input type="number" id="p-progress" class="custom-input" placeholder="진행률 (%)" min="0" max="100">
+                <div class="flex gap-3 mt-6">
+                    <button onclick="closeProjectModal()" class="flex-1 py-3 rounded-lg bg-white/5 font-bold">취소</button>
+                    <button onclick="saveProject()" class="flex-1 py-3 rounded-lg bg-purple-600 font-bold">저장</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp, setDoc, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
-            authDomain: "hanroro-web.firebaseapp.com", 
+            authDomain: "hanroro-web.firebaseapp.app", 
             projectId: "hanroro-web", 
             appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
         };
-        
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const appId = "hanroro-official-service";
+        const currentAppId = "hanroro-official-service";
 
-        const ADMIN_ID = "hanroro";
-        const ADMIN_PW = "gksfhfh00@@";
-
-        document.getElementById('login-form').onsubmit = (e) => {
-            e.preventDefault();
-            if (document.getElementById('admin-id').value === ADMIN_ID && document.getElementById('admin-pw').value === ADMIN_PW) {
-                sessionStorage.setItem('is_admin_logged_in', 'true');
-                startDashboard();
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
+        window.showTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
         };
 
-        const startDashboard = async () => {
-            document.getElementById('login-overlay').classList.add('hidden');
-            await signInAnonymously(auth);
-            loadData();
-        };
-
-        const loadData = () => {
-            // Quotes 리스너
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'quotes'), (snap) => {
-                const list = document.getElementById('quotes-list');
-                const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-                if (docs.length === 0) {
-                    list.innerHTML = `<div class="glass-panel p-12 text-center text-gray-500"><p class="text-sm font-bold uppercase tracking-widest">접수된 내역이 없습니다</p></div>`;
-                    return;
-                }
-
-                list.innerHTML = docs.map(d => `
-                    <div class="glass-panel p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-l-4 border-purple-600/30">
-                        <div class="flex-1 w-full">
-                            <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <span class="text-[9px] font-black bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded uppercase tracking-widest border border-purple-500/20">${d.category || '기타 상담'}</span>
-                                <span class="text-[10px] font-bold text-gray-500 uppercase">${d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleString('ko-KR') : '방금 전'}</span>
-                            </div>
-                            <div class="mb-4"><h4 class="text-lg font-black text-white mb-1">${d.name || '미기입'}</h4><p class="text-xs text-purple-400 font-bold opacity-80"><i class="fas fa-link mr-1"></i>${d.contact || '연락처 없음'}</p></div>
-                            <div class="bg-white/[0.02] p-4 rounded-xl border border-white/5"><p class="text-sm text-gray-400 whitespace-pre-wrap">${d.content || '내용 없음'}</p></div>
-                        </div>
-                        <button onclick="deleteDocById('quotes', '${d.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                `).join('');
-            });
-
-            // Projects 리스너
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
-                document.getElementById('projects-list').innerHTML = snap.docs.map(d => `
-                    <div class="glass-panel p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h4 class="font-bold text-white">${d.data().name}</h4>
-                            <button onclick="deleteDocById('projects', '${d.id}')" class="text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase mb-2"><span>Progress</span><span class="text-purple-500">${d.data().progress}%</span></div>
-                        <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="bg-purple-600 h-full" style="width: ${d.data().progress}%"></div></div>
-                    </div>
-                `).join('');
-            });
-
-            // Deposits 리스너 (상태 텍스트 변경 로직 적용)
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), (snap) => {
-                document.getElementById('deposits-table').innerHTML = snap.docs.map(d => {
-                    const status = d.data().status;
-                    const statusText = status === 'complete' ? '입금완료' : '입금전';
-                    const statusColor = status === 'complete' ? 'text-emerald-500' : 'text-amber-500';
-                    
-                    return `
-                    <tr class="border-t border-white/5 hover:bg-white/[0.02]">
-                        <td class="p-4 font-bold text-white">${d.data().name}</td>
-                        <td class="p-4 text-gray-500 text-xs">${d.data().type}</td>
-                        <td class="p-4 text-[11px] font-black tracking-tight ${statusColor}">
-                            <i class="fas ${status === 'complete' ? 'fa-check-circle' : 'fa-clock'} mr-1"></i> ${statusText}
-                        </td>
-                        <td class="p-4 text-right">
-                            <button onclick="toggleDepositStatus('${d.id}', '${status}')" class="text-[10px] font-black text-purple-400 bg-purple-400/10 px-3 py-1.5 rounded-lg hover:bg-purple-400 hover:text-white transition uppercase">전환</button>
-                            <button onclick="deleteDocById('deposits', '${d.id}')" class="ml-3 text-gray-600 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                `}).join('');
-            });
-
-            // Settings 리스너
-            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    document.getElementById('setting-notice-title').value = data.noticeTitle || "";
-                    document.getElementById('setting-notice-text').value = data.noticeContent || "";
-                    document.getElementById('setting-top-title').value = data.topPopupTitle || "";
-                    document.getElementById('setting-top-text').value = data.topPopupContent || "";
-                    document.getElementById('setting-bottom-title').value = data.bottomPopupTitle || "";
-                    document.getElementById('setting-bottom-text').value = data.bottomPopupContent || "";
-                }
-            });
-        };
-
-        window.switchTab = (tabName) => {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`section-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-        };
-
-        window.logout = () => { sessionStorage.removeItem('is_admin_logged_in'); location.reload(); };
-
-        window.deleteDocById = async (col, id) => {
-            if (confirm('정말 삭제하시겠습니까?')) {
+        // 로그아웃 핸들러
+        window.handleLogout = async () => {
+            if(confirm('로그아웃 하시겠습니까?')) {
                 try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
-                } catch(e) { alert('오류가 발생했습니다.'); }
+                    await signOut(auth);
+                    location.href = 'index.html'; // 로그아웃 후 메인으로 리다이렉트
+                } catch (error) {
+                    console.error("로그아웃 실패:", error);
+                }
             }
         };
 
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // 입금 관리 데이터
+                onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), (snap) => {
+                    let html = '';
+                    snap.forEach(d => {
+                        const item = d.data();
+                        html += `<tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                            <td class="p-4 font-bold">${item.name}</td>
+                            <td class="p-4 text-gray-400">${item.phone || '-'}</td>
+                            <td class="p-4"><span class="px-2 py-1 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold uppercase">${item.type}</span></td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 rounded text-[10px] font-bold ${item.status === 'complete' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}">
+                                    ${item.status === 'complete' ? '완료' : '대기중'}
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <button onclick="toggleDepositStatus('${d.id}', '${item.status}')" class="text-xs font-bold text-gray-400 hover:text-white mr-3">상태변경</button>
+                                <button onclick="deleteData('deposits', '${d.id}')" class="text-xs font-bold text-red-500 hover:text-red-400">삭제</button>
+                            </td>
+                        </tr>`;
+                    });
+                    document.getElementById('deposit-table-body').innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-gray-500">데이터가 없습니다.</td></tr>';
+                });
+
+                // 프로젝트 관리 데이터
+                onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), (snap) => {
+                    let html = '';
+                    snap.forEach(d => {
+                        const p = d.data();
+                        html += `<div class="glass-panel p-6 rounded-2xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold mb-1">${p.name}</h4>
+                                <p class="text-xs text-gray-500">${p.phase} | ${p.progress}%</p>
+                            </div>
+                            <button onclick="deleteData('projects', '${d.id}')" class="w-10 h-10 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`;
+                    });
+                    document.getElementById('project-admin-list').innerHTML = html || '<p class="p-10 text-center text-gray-500">등록된 프로젝트가 없습니다.</p>';
+                });
+
+                // 상담 신청 데이터
+                onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), (snap) => {
+                    let html = '';
+                    snap.forEach(d => {
+                        const q = d.data();
+                        const date = q.createdAt ? new Date(q.createdAt.seconds * 1000).toLocaleDateString() : '-';
+                        html += `<tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="p-4 font-bold text-purple-400 text-xs">${q.category || '일반'}</td>
+                            <td class="p-4 font-bold">${q.name}</td>
+                            <td class="p-4 text-gray-400">${q.contact}</td>
+                            <td class="p-4 text-gray-500 max-w-xs truncate">${q.content}</td>
+                            <td class="p-4 text-gray-600 text-[10px]">${date}</td>
+                        </tr>`;
+                    });
+                    document.getElementById('quote-table-body').innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-gray-500">상담 내역이 없습니다.</td></tr>';
+                });
+
+                // 사이트 설정
+                onSnapshot(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        const input = document.getElementById('setting-notice-title');
+                        if(input) input.value = data.noticeTitle || "";
+                    }
+                });
+
+            } else {
+                signInAnonymously(auth);
+            }
+        });
+
+        // 기능 함수들
         window.toggleDepositStatus = async (id, current) => {
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'deposits', id), { 
-                status: current === 'complete' ? 'pending' : 'complete' 
-            });
+            const next = current === 'complete' ? 'pending' : 'complete';
+            await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id), { status: next });
         };
 
-        window.saveSettings = async () => {
-            const settings = {
-                noticeTitle: document.getElementById('setting-notice-title').value,
-                noticeContent: document.getElementById('setting-notice-text').value,
-                topPopupTitle: document.getElementById('setting-top-title').value,
-                topPopupContent: document.getElementById('setting-top-text').value,
-                bottomPopupTitle: document.getElementById('setting-bottom-title').value,
-                bottomPopupContent: document.getElementById('setting-bottom-text').value,
-                updatedAt: serverTimestamp()
-            };
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'configs', 'mainSettings'), settings, { merge: true });
-                alert('모든 설정이 성공적으로 저장되었습니다.');
-            } catch (e) { alert('저장 실패: ' + e.message); }
-        };
-
-        window.openModal = (type) => {
-            const modal = document.getElementById('modal');
-            const form = document.getElementById('modal-form');
-            modal.classList.replace('hidden', 'flex');
-            if (type === 'project') {
-                form.innerHTML = `<input type="text" id="m-p-name" class="input-dark" placeholder="프로젝트 이름"><input type="number" id="m-p-progress" class="input-dark" placeholder="진행률 (0-100)">`;
-                document.getElementById('modal-save-btn').onclick = async () => {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), { name: document.getElementById('m-p-name').value, progress: parseInt(document.getElementById('m-p-progress').value) || 0, createdAt: serverTimestamp() });
-                    closeModal();
-                };
-            } else if (type === 'deposit') {
-                form.innerHTML = `<input type="text" id="m-d-name" class="input-dark" placeholder="입금자명/업체명"><input type="text" id="m-d-type" class="input-dark" placeholder="유형 (예: 선금 50%)">`;
-                document.getElementById('modal-save-btn').onclick = async () => {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), { name: document.getElementById('m-d-name').value, type: document.getElementById('m-d-type').value, status: 'pending', createdAt: serverTimestamp() });
-                    closeModal();
-                };
+        window.deleteData = async (col, id) => {
+            if(confirm('정말 삭제하시겠습니까?')) {
+                await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', col, id));
             }
         };
 
-        window.closeModal = () => document.getElementById('modal').classList.replace('flex', 'hidden');
+        window.saveMainSettings = async () => {
+            const noticeTitle = document.getElementById('setting-notice-title').value;
+            try {
+                await setDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), {
+                    noticeTitle: noticeTitle,
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                alert('공지사항 설정이 저장되었습니다.');
+            } catch (e) {
+                alert('저장 중 오류가 발생했습니다.');
+            }
+        };
 
-        if (sessionStorage.getItem('is_admin_logged_in') === 'true') startDashboard();
+        window.openProjectModal = () => document.getElementById('project-modal').classList.replace('hidden', 'flex');
+        window.closeProjectModal = () => document.getElementById('project-modal').classList.replace('flex', 'hidden');
+
+        window.saveProject = async () => {
+            const name = document.getElementById('p-name').value;
+            const phase = document.getElementById('p-phase').value;
+            const progress = document.getElementById('p-progress').value;
+            if(!name || !phase) return alert('정보를 입력하세요.');
+            
+            await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), {
+                name, phase, progress: parseInt(progress), createdAt: serverTimestamp()
+            });
+            closeProjectModal();
+        };
+
     </script>
 </body>
 </html>
