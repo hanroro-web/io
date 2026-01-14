@@ -22,6 +22,10 @@
             overflow-x: hidden;
             margin: 0;
             padding: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         
         /* Layout Components */
@@ -55,12 +59,11 @@
             animation: giantWandFloat 6s ease-in-out infinite;
         }
 
-        /* Updated Round Notification Bar with Icons */
         .neon-notification-bar { 
             background: rgba(138, 79, 255, 0.12); 
             border: 1px solid rgba(138, 79, 255, 0.35); 
             backdrop-filter: blur(16px);
-            border-radius: 9999px; /* Fully Rounded */
+            border-radius: 9999px;
             padding: 10px 24px; 
             display: flex; 
             align-items: center; 
@@ -76,7 +79,7 @@
             width: 92%; max-width: 580px; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
-        /* Portfolio Horizontal Scroll */
+        /* Portfolio Horizontal Scroll Section */
         .portfolio-outer-wrapper {
             position: relative;
             height: 450vh; 
@@ -157,37 +160,57 @@
             .giant-wand-wrapper { display: none; }
         }
 
-        /* Mobile Optimization Fixes */
+        /* Mobile Optimization Fixes - Addressing Overlay Issues */
         @media (max-width: 768px) {
-            .portfolio-outer-wrapper { height: auto; }
-            .portfolio-sticky-box { position: relative; height: auto; overflow-x: auto; padding: 4rem 0; }
-            .horizontal-track { transform: none !important; padding: 0 5vw; }
-            .portfolio-card { flex: 0 0 85vw; height: auto; min-height: 400px; padding: 2.5rem; }
+            .portfolio-outer-wrapper { height: 500vh; } /* Increased height for longer scroll feel on mobile */
             
-            /* Typography Optimization for Mobile */
+            /* Repositioning Title to avoid overlap */
+            .portfolio-title-group {
+                top: 80px !important; /* Fixed offset from top */
+                left: 24px !important;
+                position: absolute !important;
+            }
+
+            .portfolio-sticky-box {
+                align-items: flex-end; /* Align cards to the bottom half on mobile */
+                padding-bottom: 80px;
+            }
+
+            .horizontal-track {
+                padding: 0 24px; /* Align with title left margin */
+                margin-bottom: 20px;
+            }
+
+            .portfolio-card { 
+                flex: 0 0 82vw; 
+                height: 440px; 
+                padding: 2rem; 
+                margin-right: 5vw; 
+            }
+            
             h1 { font-size: 2.5rem !important; line-height: 1.2 !important; }
             p { font-size: 0.95rem !important; line-height: 1.6 !important; letter-spacing: -0.01em; }
-            .portfolio-card h4 { font-size: 1.75rem !important; }
+            .portfolio-card h4 { font-size: 1.6rem !important; }
             .portfolio-card p { font-size: 0.85rem !important; }
             
-            /* Footer Information Clarity */
             footer .flex-wrap { justify-content: flex-start; gap: 1rem; }
             footer span { font-size: 9px; opacity: 0.8; }
         }
+
+        /* Image Security */
+        img { -webkit-user-drag: none; pointer-events: none; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 glass-nav top-0">
         <div class="max-w-7xl mx-auto px-5 h-20 flex items-center justify-between">
-            <!-- Logo Section -->
             <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
                 <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
                 <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
             </div>
             
-            <!-- Updated Round Event Bar with Icons -->
             <div class="hidden lg:flex neon-notification-bar">
                 <i class="fas fa-stars text-purple-400 text-xs animate-pulse"></i>
                 <div class="flex items-center gap-2">
@@ -196,7 +219,6 @@
                 </div>
             </div>
 
-            <!-- CTA Section -->
             <div class="flex items-center gap-4">
                 <button onclick="toggleModal('status-modal', true)" class="flex items-center gap-2 text-purple-400 text-[11px] font-bold uppercase tracking-widest mr-4 hover:text-white transition-colors hidden sm:flex">
                     <i class="fas fa-chart-line text-[10px]"></i>
@@ -256,10 +278,11 @@
         </div>
     </section>
 
-    <!-- Portfolio Section (Horizontal Scroll) -->
+    <!-- Portfolio Section -->
     <div class="portfolio-outer-wrapper" id="portfolio-section">
         <div class="portfolio-sticky-box">
-            <div class="absolute top-16 sm:top-24 left-6 sm:left-12 z-10">
+            <!-- Title Group with unique class for mobile targeting -->
+            <div class="portfolio-title-group absolute top-16 sm:top-24 left-6 sm:left-12 z-10">
                 <span class="text-[10px] sm:text-[11px] font-black text-purple-500 uppercase tracking-[0.3em] mb-3 sm:mb-4 block">Selected Works</span>
                 <h3 class="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
                     한로로 <br><span class="gradient-text">PORTFOLIO</span>
@@ -281,7 +304,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Other Portfolio Cards -->
                 <div class="portfolio-card">
                     <span class="card-number">02</span>
                     <div class="relative z-10">
@@ -404,7 +426,7 @@
         </div>
     </footer>
 
-    <!-- Project Status Modal -->
+    <!-- Modals -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-[650px] !p-0 overflow-hidden">
             <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
@@ -421,14 +443,11 @@
                 </div>
             </div>
             <div class="p-6 sm:p-8 max-h-[60vh] overflow-y-auto">
-                <div id="modal-project-list" class="space-y-6">
-                    <p class="text-center text-gray-500 py-10 text-[10px] uppercase font-bold tracking-widest">Loading Projects...</p>
-                </div>
+                <div id="modal-project-list" class="space-y-6"></div>
             </div>
         </div>
     </div>
 
-    <!-- Quote Modal -->
     <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
         <div class="modal-content !max-w-[550px] !p-0 overflow-hidden">
             <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
@@ -444,7 +463,6 @@
                     </button>
                 </div>
             </div>
-
             <div class="p-6 sm:p-8">
                 <form id="quote-form" class="space-y-5 sm:space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
@@ -474,11 +492,10 @@
                 <h3 class="text-xl font-black text-white uppercase tracking-tight">서비스 결제 신청</h3>
                 <button onclick="toggleModal('hosting-modal', false)" class="text-gray-500 hover:text-white"><i class="fas fa-times text-lg"></i></button>
             </div>
-            
             <form id="hosting-form" class="space-y-5 sm:space-y-6">
                 <div class="space-y-3">
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Hosting Plan Select</label>
-                    <label class="block relative">
+                    <label class="block relative mb-2">
                         <input type="radio" name="hosting-plan" value="google" class="hidden option-radio" checked>
                         <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
                             <div class="flex items-center gap-3 sm:gap-4">
@@ -490,36 +507,52 @@
                                     <h4 class="text-xs sm:text-sm font-bold text-white">한로로 구글호스팅</h4>
                                 </div>
                             </div>
-                            <span class="text-xs sm:text-sm font-black text-white">1.35M KRW</span>
+                            <span class="text-xs sm:text-sm font-black text-white">1,350,000원</span>
+                        </div>
+                    </label>
+                    <label class="block relative">
+                        <input type="radio" name="hosting-plan" value="general" class="hidden option-radio">
+                        <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-600/20 flex items-center justify-center border border-purple-500/20 text-purple-400">
+                                    <i class="fas fa-server text-base sm:text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">Premium Server</p>
+                                    <h4 class="text-xs sm:text-sm font-bold text-white">한로로 일반호스팅</h4>
+                                </div>
+                            </div>
+                            <span class="text-xs sm:text-sm font-black text-white">1,450,000원</span>
                         </div>
                     </label>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                    <div>
-                        <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest ml-1">입금자 성함</label>
-                        <input type="text" id="h-name" class="custom-input !py-3" placeholder="성함" required>
-                    </div>
-                    <div>
-                        <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest ml-1">연락처</label>
-                        <input type="tel" id="h-phone" class="custom-input !py-3" placeholder="010-0000-0000" required>
-                    </div>
+                    <div><input type="text" id="h-name" class="custom-input !py-3" placeholder="성함" required></div>
+                    <div><input type="tel" id="h-phone" class="custom-input !py-3" placeholder="010-0000-0000" required></div>
                 </div>
-
-                <div class="p-5 sm:p-6 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-center relative overflow-hidden">
-                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-[0.2em] mb-2">TOSS BANK 무통장 입금</p>
+                <div class="p-5 sm:p-6 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-center">
                     <h4 class="text-base sm:text-lg font-black text-white tracking-tight mb-0.5">토스뱅크 1001-2586-0977</h4>
-                    <p class="text-[10px] text-gray-400 font-medium">예금주: 김상우</p>
+                    <p class="text-[10px] text-gray-400">예금주: 김상우</p>
                 </div>
-
-                <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-[0.2em] hover:bg-purple-700 transition-all">결제 정보 제출하기</button>
+                <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-[0.2em]">결제 정보 제출하기</button>
             </form>
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85) || (e.ctrlKey && e.keyCode === 83)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", authDomain: "hanroro-web.firebaseapp.com", projectId: "hanroro-web", appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" };
@@ -528,19 +561,27 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        const outer = document.getElementById('portfolio-section');
         const track = document.getElementById('track');
+        const outer = document.getElementById('portfolio-section');
 
-        window.addEventListener('scroll', () => {
-            if (window.innerWidth <= 768 || !outer) return;
-            const offsetTop = outer.offsetTop;
-            const scrollDistance = window.pageYOffset - offsetTop;
-            const scrollPercent = scrollDistance / (outer.offsetHeight - window.innerHeight);
-            if (scrollDistance >= 0 && scrollPercent <= 1) {
-                const moveX = scrollPercent * (track.scrollWidth - window.innerWidth + (window.innerWidth * 0.2));
+        const handleScroll = () => {
+            if (!outer || !track) return;
+            const currentScroll = window.pageYOffset;
+            const startOffset = outer.offsetTop;
+            const endOffset = startOffset + outer.offsetHeight - window.innerHeight;
+            
+            if (currentScroll >= startOffset && currentScroll <= endOffset) {
+                const scrollPercent = (currentScroll - startOffset) / (outer.offsetHeight - window.innerHeight);
+                const maxMove = track.scrollWidth - window.innerWidth + (window.innerWidth * 0.2); 
+                const moveX = scrollPercent * maxMove;
                 track.style.transform = `translateX(-${moveX}px)`;
+            } else if (currentScroll < startOffset) {
+                track.style.transform = `translateX(0px)`;
             }
-        });
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
 
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
@@ -550,8 +591,7 @@
 
         const anonymizeName = (name) => {
             if (!name) return '익명';
-            if (name.length < 2) return name;
-            return name.substring(0, 1) + '**';
+            return name.length < 2 ? name : name.substring(0, 1) + '**';
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -560,75 +600,34 @@
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
-                        let displayStatus = data.status || '입금전';
-                        const isComplete = displayStatus.includes('완료') || displayStatus.includes('확인');
-                        const statusText = isComplete ? '입금완료' : '입금전';
-                        
-                        html += `
-                        <div class="unified-card group hover:border-purple-500/30 transition-all">
+                        const isComplete = (data.status || '').includes('완료');
+                        html += `<div class="unified-card group hover:border-purple-500/30 transition-all">
                             <div class="flex justify-between items-center mb-3">
-                                <span class="text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase tracking-[0.2em]">${data.type || 'Hosting'}</span>
-                                <span class="text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40 bg-purple-500/5' : 'text-yellow-500 border-yellow-500/40 bg-yellow-500/5'} uppercase tracking-tighter">${statusText}</span>
+                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${data.type || 'Hosting'}</span>
+                                <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40'} uppercase tracking-tighter">${isComplete ? '완료' : '대기'}</span>
                             </div>
-                            <h4 class="font-bold text-white text-xs sm:text-sm mt-1">${anonymizeName(data.name)}</h4>
+                            <h4 class="font-bold text-white text-xs mt-1">${anonymizeName(data.name)}</h4>
                         </div>`;
                     });
-                    document.getElementById('deposit-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-[10px] uppercase font-bold">최근 내역이 없습니다.</p>';
+                    document.getElementById('deposit-list').innerHTML = html;
                 });
 
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
                     let html = '';
-                    let modalHtml = '';
                     snap.forEach(d => {
                         const p = d.data();
-                        const cardHtml = `
-                        <div class="unified-card">
-                            <h4 class="font-bold text-white text-xs sm:text-sm mb-2.5 sm:mb-3">${p.name}</h4>
-                            <div class="flex justify-between text-[8px] sm:text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
+                        html += `<div class="unified-card">
+                            <h4 class="font-bold text-white text-xs sm:text-sm mb-3">${p.name}</h4>
+                            <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
                                 <span>Phase: ${p.phase}</span>
                                 <span>${p.progress}%</span>
                             </div>
                             <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress}%"></div></div>
                         </div>`;
-                        html += cardHtml;
-                        modalHtml += cardHtml;
                     });
-                    document.getElementById('project-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-xs">데이터 로딩 중...</p>';
-                    document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-center text-gray-500 py-10 text-[10px] uppercase font-bold tracking-widest">No projects currently live.</p>';
+                    document.getElementById('project-list').innerHTML = html;
+                    document.getElementById('modal-project-list').innerHTML = html;
                 });
-
-                document.getElementById('hosting-form').onsubmit = async (e) => {
-                    e.preventDefault();
-                    const plan = document.querySelector('input[name="hosting-plan"]:checked').value;
-                    const planName = plan === 'google' ? '구글호스팅' : '일반호스팅';
-                    try {
-                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), {
-                            name: document.getElementById('h-name').value,
-                            phone: document.getElementById('h-phone').value,
-                            type: planName,
-                            status: '입금전',
-                            createdAt: serverTimestamp()
-                        });
-                        alert('결제 정보가 제출되었습니다. 입금 확인 후 진행됩니다.');
-                        toggleModal('hosting-modal', false);
-                        e.target.reset();
-                    } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
-                };
-
-                document.getElementById('quote-form').onsubmit = async (e) => {
-                    e.preventDefault();
-                    try {
-                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quotes'), {
-                            name: document.getElementById('q-name').value,
-                            phone: document.getElementById('q-phone').value,
-                            memo: document.getElementById('q-memo').value,
-                            createdAt: serverTimestamp()
-                        });
-                        alert('상담 신청이 접수되었습니다.');
-                        toggleModal('quote-modal', false);
-                        e.target.reset();
-                    } catch (err) { alert('오류가 발생했습니다.'); }
-                };
 
                 onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), orderBy('createdAt', 'desc'), limit(1)), (snap) => {
                     if (!snap.empty) document.getElementById('notice-text').innerText = snap.docs[0].data().title;
