@@ -231,7 +231,6 @@
                 word-break: keep-all;
             }
             
-            /* [수정] 모바일에서 카드 내부 흰색 고객명(h4) 폰트 축소 */
             .unified-card h4 {
                 font-size: 11px !important;
                 letter-spacing: -0.02em !important;
@@ -416,7 +415,8 @@
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
                 <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
             </div>
-            <div id="deposit-list" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
+            <!-- [수정] grid-cols-1 (모바일에서 1열)로 설정 -->
+            <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
         </div>
     </section>
 
@@ -697,14 +697,12 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // 입금 현황 리스너
                 const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
                 onSnapshot(depositCol, (snap) => {
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
                         const rawStatus = (data.status || '').toLowerCase();
-                        // 대시보드에서 사용하는 complete/pending 혹은 입금완료/입금전 텍스트 대응
                         const isComplete = rawStatus.includes('완료') || rawStatus === 'complete';
                         const statusText = isComplete ? '입금완료' : '입금전';
                         
@@ -732,7 +730,6 @@
                     document.getElementById('deposit-list').innerHTML = html;
                 });
 
-                // 프로젝트 현황 리스너
                 const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
                 onSnapshot(projectCol, (snap) => {
                     let html = '';
@@ -752,7 +749,6 @@
                     document.getElementById('modal-project-list').innerHTML = html;
                 });
 
-                // 공지사항 리스너 (대시보드 configs/mainSettings 필드 대응)
                 onSnapshot(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
                     if (snap.exists()) {
                         const data = snap.data();
@@ -760,10 +756,9 @@
                     }
                 });
 
-                // 견적 신청 폼 제출 로직 (카테고리 반영)
                 document.getElementById('quote-form').onsubmit = async (e) => {
                     e.preventDefault();
-                    const category = e.target['project-category'].value; // '일반' 또는 '기업'
+                    const category = e.target['project-category'].value;
                     const name = document.getElementById('q-name').value;
                     const phone = document.getElementById('q-phone').value;
                     const content = document.getElementById('q-memo').value;
@@ -782,10 +777,9 @@
                     } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
                 };
 
-                // 호스팅 결제 폼 제출 로직
                 document.getElementById('hosting-form').onsubmit = async (e) => {
                     e.preventDefault();
-                    const planType = e.target['hosting-plan'].value; // '구글호스팅' 또는 '일반호스팅'
+                    const planType = e.target['hosting-plan'].value;
                     const name = document.getElementById('h-name').value;
                     const phone = document.getElementById('h-phone').value;
                     try {
@@ -793,7 +787,7 @@
                             name, 
                             phone, 
                             type: planType, 
-                            status: 'pending', // 초기 상태: 입금전
+                            status: 'pending',
                             createdAt: serverTimestamp()
                         });
                         alert('결제 정보가 성공적으로 제출되었습니다. 입금 확인 후 서비스가 활성화됩니다.');
