@@ -247,6 +247,9 @@
             .modal-content .toss-icon { width: 16px !important; height: 16px !important; }
             .modal-content .text-base { font-size: 13px !important; }
             .modal-content .text-\[10px\] { font-size: 8px !important; }
+
+            /* --- MOBILE TEXT ADJUSTMENT FOR STATUS SECTIONS --- */
+            .mobile-title-small { font-size: 15px !important; }
         }
 
         img { -webkit-user-drag: none; pointer-events: none; }
@@ -393,7 +396,8 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-3 mb-10 sm:init-12">
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
-                <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic">실시간 <span class="gradient-text">입금 현황</span></h3>
+                <!-- Added mobile-title-small class -->
+                <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
             </div>
             <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
         </div>
@@ -404,7 +408,8 @@
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="flex items-center gap-3 mb-12 sm:mb-16">
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
-                <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
+                <!-- Added mobile-title-small class -->
+                <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter mobile-title-small">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
             </div>
             <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"></div>
         </div>
@@ -515,7 +520,7 @@
             </div>
             <div class="p-6 sm:p-8">
                 <form id="quote-form" class="space-y-5 sm:space-y-6">
-                    <!-- Category Selection Added -->
+                    <!-- Category Selection -->
                     <div class="space-y-3">
                         <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Category</label>
                         <div class="grid grid-cols-2 gap-3">
