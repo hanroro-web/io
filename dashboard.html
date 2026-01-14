@@ -43,23 +43,24 @@
     </div>
 
     <div id="admin-layout">
+        <!-- Sidebar Navigation -->
         <aside class="w-72 border-r border-white/5 flex flex-col h-full bg-[#05020a]">
-            <div class="p-10 text-2xl font-black text-purple-500 uppercase">HANRORO</div>
+            <div class="p-10 text-2xl font-black text-purple-500 uppercase tracking-tighter">HANRORO</div>
             <nav class="flex-1 px-6 space-y-2">
                 <button onclick="showTab('quotes-tab')" class="sidebar-link w-full text-left px-5 py-4 rounded-xl text-sm font-bold flex items-center gap-4 active" id="btn-quotes-tab">
-                    <i class="fas fa-comment-dots"></i> 상담 내역 확인
+                    <i class="fas fa-comment-dots w-5"></i> 상담 내역 확인
                 </button>
                 <button onclick="showTab('projects-tab')" class="sidebar-link w-full text-left px-5 py-4 rounded-xl text-sm font-bold flex items-center gap-4" id="btn-projects-tab">
-                    <i class="fas fa-tasks"></i> 프로젝트 현황 관리
+                    <i class="fas fa-tasks w-5"></i> 프로젝트 관리
                 </button>
                 <button onclick="showTab('deposits-tab')" class="sidebar-link w-full text-left px-5 py-4 rounded-xl text-sm font-bold flex items-center gap-4" id="btn-deposits-tab">
-                    <i class="fas fa-wallet"></i> 입금 현황 관리
+                    <i class="fas fa-wallet w-5"></i> 입금 현황 관리
                 </button>
                 <button onclick="showTab('popups-tab')" class="sidebar-link w-full text-left px-5 py-4 rounded-xl text-sm font-bold flex items-center gap-4" id="btn-popups-tab">
-                    <i class="fas fa-bullhorn"></i> 공지 및 알림 관리
+                    <i class="fas fa-bullhorn w-5"></i> 공지사항 관리
                 </button>
                 <button onclick="showTab('settings-tab')" class="sidebar-link w-full text-left px-5 py-4 rounded-xl text-sm font-bold flex items-center gap-4" id="btn-settings-tab">
-                    <i class="fas fa-cog"></i> 시스템 설정
+                    <i class="fas fa-cog w-5"></i> 시스템 설정
                 </button>
             </nav>
             <div class="p-8">
@@ -67,6 +68,7 @@
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="flex-1 p-12 overflow-y-auto bg-[#080510]">
             
             <!-- 1. 상담 내역 확인 -->
@@ -74,7 +76,7 @@
                 <div class="mb-10 flex justify-between items-end">
                     <div>
                         <h2 class="text-4xl font-black mb-3 text-white">상담 신청 내역</h2>
-                        <p class="text-gray-500 text-sm">신청 즉시 <span class="text-purple-400">service_kobfkfj</span>를 통해 메일이 발송됩니다.</p>
+                        <p class="text-gray-500 text-sm">신규 신청 시 템플릿(template_7meyimh) 규격으로 메일이 발송됩니다.</p>
                     </div>
                 </div>
                 <div class="glass-panel rounded-3xl overflow-hidden">
@@ -89,7 +91,7 @@
                             </tr>
                         </thead>
                         <tbody id="quote-table-body">
-                            <tr><td colspan="5" class="p-20 text-center text-gray-500">데이터 로딩 중...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center text-gray-500 text-sm">데이터를 불러오는 중입니다...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -102,7 +104,7 @@
                     <button onclick="addProject()" class="btn-primary !py-3 !px-6 text-sm">+ 새 프로젝트 추가</button>
                 </div>
                 <div class="grid grid-cols-1 gap-4" id="admin-project-list">
-                    <!-- Dynamic Projects -->
+                    <!-- Projects -->
                 </div>
             </section>
 
@@ -121,7 +123,7 @@
                             </tr>
                         </thead>
                         <tbody id="deposit-table-body">
-                            <!-- Dynamic Deposits -->
+                            <!-- Deposits -->
                         </tbody>
                     </table>
                 </div>
@@ -131,17 +133,13 @@
             <section id="popups-tab" class="tab-content">
                 <div class="mb-10"><h2 class="text-4xl font-black text-white">공지 및 배너 관리</h2></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass-panel p-8 rounded-[32px]">
-                        <h3 class="text-xl font-bold mb-6 text-purple-400">하단 띠배너(Notice) 공지</h3>
+                    <div class="glass-panel p-8 rounded-[32px] border border-purple-500/20">
+                        <h3 class="text-xl font-bold mb-6 text-purple-400">하단 띠배너(Notice) 문구</h3>
                         <div class="space-y-4">
-                            <label class="text-xs text-gray-500 uppercase font-bold">공지 내용</label>
-                            <input type="text" id="main-notice-text" class="custom-input" placeholder="메인 페이지 하단에 노출될 텍스트">
-                            <button onclick="saveMainSettings()" class="btn-primary w-full mt-4">메인 설정 저장</button>
+                            <label class="text-[10px] text-gray-500 uppercase font-black">메인 페이지 노출 텍스트</label>
+                            <input type="text" id="main-notice-text" class="custom-input" placeholder="이곳에 공지사항을 입력하세요">
+                            <button onclick="saveMainSettings()" class="btn-primary w-full mt-4">메인 공지 즉시 적용</button>
                         </div>
-                    </div>
-                    <div class="glass-panel p-8 rounded-[32px] opacity-50 pointer-events-none">
-                        <h3 class="text-xl font-bold mb-6">메인 팝업 레이어 (준비중)</h3>
-                        <p class="text-gray-500 text-sm italic">추후 업데이트 예정 기능입니다.</p>
                     </div>
                 </div>
             </section>
@@ -155,9 +153,9 @@
                             <label class="text-[11px] text-gray-500 uppercase font-bold mb-2 block">알림 수신 이메일</label>
                             <input type="email" id="admin-email" class="custom-input" value="hanroro.web@gmail.com">
                         </div>
-                        <div class="pt-4 border-t border-white/5">
-                            <p class="text-xs text-gray-500 mb-4">EmailJS API 및 Firebase 연동은 시스템 핵심 코드로 보호됩니다.</p>
-                            <button class="btn-primary w-full" onclick="showToast('이메일 수신 설정이 저장되었습니다.')">변경사항 저장</button>
+                        <div class="pt-6 border-t border-white/5 space-y-2">
+                            <p class="text-[11px] text-gray-500">Public Key: <span class="text-white">QvGeQgdI2NrDe_TG9</span></p>
+                            <p class="text-[11px] text-gray-500">Template ID: <span class="text-purple-400 font-bold">template_7meyimh</span></p>
                         </div>
                     </div>
                 </div>
@@ -182,9 +180,10 @@
         const auth = getAuth(app);
         const currentAppId = "hanroro-official-service";
 
-        // EmailJS Config
+        // EmailJS Config (New Key & Template Applied)
         const EMAIL_SERVICE_ID = "service_kobfkfj";
-        const EMAIL_PUBLIC_KEY = "pXk4vWbY4W-oR8P6_"; 
+        const EMAIL_TEMPLATE_ID = "template_7meyimh";
+        const EMAIL_PUBLIC_KEY = "QvGeQgdI2NrDe_TG9"; 
         emailjs.init(EMAIL_PUBLIC_KEY);
 
         window.showToast = (msg) => {
@@ -205,14 +204,14 @@
                     startDataMonitoring();
                 }, 500);
             } else {
-                showToast('비밀번호가 일치하지 않습니다.');
+                showToast('패스코드가 올바르지 않습니다.');
             }
         };
 
         let lastQuoteId = null;
 
         function startDataMonitoring() {
-            // 1. 상담 내역 감시
+            // 1. Quotes
             const qQuotes = query(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), orderBy('createdAt', 'desc'));
             onSnapshot(qQuotes, (snap) => {
                 let html = '';
@@ -232,16 +231,16 @@
                             <td class="p-5"><p class="text-xs text-gray-400 truncate max-w-xs">${data.content}</p></td>
                             <td class="p-5 text-[11px] text-gray-600">${date}</td>
                             <td class="p-5 text-right flex justify-end gap-3">
-                                <button onclick="window.resendQuote('${d.id}')" class="text-gray-600 hover:text-purple-400 transition-colors"><i class="fas fa-paper-plane"></i></button>
-                                <button onclick="window.delData('quotes', '${d.id}')" class="text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
+                                <button onclick="window.resendQuote('${d.id}')" title="메일 재전송" class="text-gray-600 hover:text-purple-400 transition-colors"><i class="fas fa-paper-plane"></i></button>
+                                <button onclick="window.delData('quotes', '${d.id}')" title="내역 삭제" class="text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
                 });
-                document.getElementById('quote-table-body').innerHTML = html || '<tr><td colspan="5" class="p-20 text-center text-gray-500 font-bold">신청 내역이 없습니다.</td></tr>';
+                document.getElementById('quote-table-body').innerHTML = html || '<tr><td colspan="5" class="p-20 text-center text-gray-500 font-bold">신청 내역이 존재하지 않습니다.</td></tr>';
             });
 
-            // 2. 프로젝트 현황 감시
+            // 2. Projects
             onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), (snap) => {
                 let html = '';
                 snap.forEach(d => {
@@ -250,16 +249,16 @@
                         <div class="glass-panel p-6 rounded-2xl border border-white/5 mb-4">
                             <div class="flex flex-wrap items-center gap-6">
                                 <div class="flex-1 min-w-[200px]">
-                                    <label class="text-[10px] text-gray-500 uppercase font-black mb-1 block">프로젝트 이름</label>
+                                    <label class="text-[10px] text-gray-500 uppercase font-black mb-1 block">프로젝트명</label>
                                     <input type="text" class="custom-input !py-2" value="${p.name}" onchange="window.updateProject('${d.id}', 'name', this.value)">
                                 </div>
-                                <div class="w-32">
-                                    <label class="text-[10px] text-gray-500 uppercase font-black mb-1 block">진행률 (%)</label>
+                                <div class="w-24">
+                                    <label class="text-[10px] text-gray-500 uppercase font-black mb-1 block">진행률(%)</label>
                                     <input type="number" class="custom-input !py-2" value="${p.progress}" onchange="window.updateProject('${d.id}', 'progress', parseInt(this.value))">
                                 </div>
                                 <div class="flex-1 min-w-[150px]">
-                                    <label class="text-[10px] text-gray-500 uppercase font-black mb-1 block">현재 단계</label>
-                                    <input type="text" class="custom-input !py-2" value="${p.phase || ''}" placeholder="예: 디자인 검토 중" onchange="window.updateProject('${d.id}', 'phase', this.value)">
+                                    <label class="text-[10px] text-gray-500 uppercase font-black mb-1 block">상세 단계</label>
+                                    <input type="text" class="custom-input !py-2" value="${p.phase || ''}" placeholder="기획 / 디자인 / 개발 중..." onchange="window.updateProject('${d.id}', 'phase', this.value)">
                                 </div>
                                 <div class="pt-5">
                                     <button onclick="window.delData('projects', '${d.id}')" class="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-times"></i></button>
@@ -271,19 +270,19 @@
                 document.getElementById('admin-project-list').innerHTML = html;
             });
 
-            // 3. 입금 현황 감시
+            // 3. Deposits
             onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), (snap) => {
                 let html = '';
                 snap.forEach(d => {
                     const dep = d.data();
                     const isDone = (dep.status || '').toLowerCase() === 'complete';
                     html += `
-                        <tr class="border-b border-white/5">
-                            <td class="p-5 font-bold">${dep.name}<br><span class="text-[10px] text-gray-600">${dep.phone || '-'}</span></td>
+                        <tr class="border-b border-white/5 hover:bg-white/1">
+                            <td class="p-5 font-bold text-gray-100">${dep.name}<br><span class="text-[10px] text-gray-600">${dep.phone || '-'}</span></td>
                             <td class="p-5 text-gray-400 text-xs">${dep.type}</td>
                             <td class="p-5">
                                 <button onclick="window.toggleDepositStatus('${d.id}', '${dep.status}')" class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${isDone ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}">
-                                    ${isDone ? '입금완료' : '대기중(클릭시 전환)'}
+                                    ${isDone ? '입금완료' : '입금대기'}
                                 </button>
                             </td>
                             <td class="p-5 text-gray-600 text-[11px]">${dep.createdAt ? new Date(dep.createdAt.seconds * 1000).toLocaleDateString() : '-'}</td>
@@ -294,45 +293,42 @@
                 document.getElementById('deposit-table-body').innerHTML = html;
             });
 
-            // 4. 메인 설정(공지사항) 초기값 로드
+            // 4. Main Config (Notice)
             getDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings')).then(snap => {
                 if(snap.exists()) document.getElementById('main-notice-text').value = snap.data().noticeTitle || '';
             });
         }
 
-        // Functions
         window.saveMainSettings = async () => {
             const txt = document.getElementById('main-notice-text').value;
             await setDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), {
                 noticeTitle: txt,
                 updatedAt: serverTimestamp()
             }, { merge: true });
-            showToast('메인 공지사항이 즉시 반영되었습니다.');
+            showToast('공지사항이 업데이트 되었습니다.');
         };
 
         window.addProject = async () => {
             await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), {
-                name: '새 프로젝트',
-                progress: 10,
+                name: '새로운 프로젝트',
+                progress: 0,
                 phase: '기획 단계',
                 createdAt: serverTimestamp()
             });
-            showToast('새 프로젝트가 추가되었습니다.');
+            showToast('신규 프로젝트를 추가했습니다.');
         };
 
         window.updateProject = async (id, field, val) => {
             await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id), { [field]: val });
-            showToast('수정되었습니다.');
         };
 
         window.toggleDepositStatus = async (id, current) => {
-            const nextStatus = current === 'complete' ? 'pending' : 'complete';
+            const nextStatus = (current || '').toLowerCase() === 'complete' ? 'pending' : 'complete';
             await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id), { status: nextStatus });
-            showToast('입금 상태가 변경되었습니다.');
         };
 
         window.delData = async (col, id) => {
-            if(confirm('이 데이터를 영구 삭제하시겠습니까?')) {
+            if(confirm('데이터를 영구적으로 삭제하시겠습니까?')) {
                 await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', col, id));
                 showToast('삭제 완료');
             }
@@ -349,10 +345,10 @@
                 sent_at: new Date().toLocaleString()
             };
             try {
-                await emailjs.send(EMAIL_SERVICE_ID, 'template_default', params);
-                showToast(`${data.name}님의 상담 내역이 메일로 자동 전송되었습니다.`);
+                await emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, params);
+                showToast(`[${data.name}] 알림 메일이 전송되었습니다.`);
             } catch (err) {
-                console.error("Email Error:", err);
+                console.error("EmailJS Error:", err);
             }
         }
 
@@ -360,7 +356,6 @@
             const snap = await getDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', id));
             if (snap.exists()) {
                 sendNotificationEmail(snap.data());
-                showToast('메일 재전송 요청을 보냈습니다.');
             }
         };
 
