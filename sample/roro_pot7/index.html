@@ -326,7 +326,7 @@
     <!-- 오른쪽 자가진단 사이드바 (데스크톱 전용) -->
     <aside class="fixed-sidebar">
         <div class="mb-8">
-            <h4 class="diag-sidebar-title">소송 전략 시스템</h4>
+            <h4 class="diag-sidebar-title">지능형 분석 시스템</h4>
             <div class="text-white text-sm font-bold serif mb-2">소송 자가진단</div>
             <div class="diag-step-indicator">
                 <div id="sidebar-progress" class="diag-step-fill" style="width: 25%"></div>
@@ -401,7 +401,7 @@
             <div class="max-w-7xl mx-auto px-6 w-full mobile-center-flex">
                 <div class="text-white max-w-2xl mobile-center-flex">
                     <div class="inline-block px-4 py-1.5 border border-white/20 rounded-full mb-6 text-[10px] backdrop-blur-sm mobile-center-mx">
-                        <span class="text-[#C5A059] font-bold">소송 전략 센터</span> 프리미엄 법률 파트너
+                        <span class="text-[#C5A059] font-bold">소송 전략 센터</span> 법률 파트너
                     </div>
                     <h1 class="text-4xl md:text-6xl font-bold serif leading-tight mb-6 mobile-center">결과로 증명하는<br><span class="text-[#C5A059]">소송의 품격</span></h1>
                     <p class="text-white/60 text-sm mb-8 leading-relaxed max-w-lg mobile-center">수천 건의 승소 데이터를 기반으로 최적의 판결을 이끌어냅니다. 당신의 권리를 보호하는 가장 강력한 법률 파트너입니다.</p>
@@ -754,7 +754,7 @@
             const optionsDiv = document.getElementById('full-diag-options');
             if (fullStep >= diagQuestions.length) {
                 qText.innerText = "분석이 완료되었습니다.";
-                optionsDiv.innerHTML = `<div class="col-span-full"><p class="text-white/40 text-sm mb-8">전문 변호사의 밀착 조력이 필요한 단계입니다.</p><button onclick="openModal()" class="btn-gold px-12 py-5 rounded-2xl font-bold text-sm w-full shadow-2xl">전략 상담 신청</button></div>`;
+                optionsDiv.innerHTML = `<div class="col-span-full"><p class="text-white/40 text-sm mb-8">전문 변호사의 밀착 조력이 필요한 단계입니다.</p><button onclick="openModal()" class="btn-gold px-12 py-5 rounded-2xl font-bold text-sm w-full shadow-2xl">변호사 상담 신청</button></div>`;
                 return;
             }
             const current = diagQuestions[fullStep];
