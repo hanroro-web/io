@@ -8,140 +8,190 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; margin: 0; overflow: hidden; }
+        
+        /* Auth Guard Styles */
+        #auth-guard { 
+            position: fixed; 
+            inset: 0; 
+            background: #05020a; 
+            z-index: 9999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: opacity 0.5s ease;
+        }
         .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
-        .sidebar-link { transition: all 0.3s ease; }
+        
+        /* Layout */
+        #admin-layout { display: none; opacity: 0; transition: opacity 0.5s ease; height: 100vh; }
+        #admin-layout.active { display: flex; opacity: 1; }
+
+        .sidebar-link { transition: all 0.3s ease; border-left: 3px solid transparent; }
         .sidebar-link.active { background: rgba(138, 79, 255, 0.15); color: #a78bfa; border-left: 3px solid #8a4fff; }
-        .custom-input { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 14px; color: white; width: 100%; outline: none; }
-        .custom-input:focus { border-color: #8a4fff; }
-        .btn-primary { background: #8a4fff; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; }
-        .btn-primary:hover { background: #7c3aed; }
+        
+        .custom-input { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px 14px; color: white; width: 100%; outline: none; }
+        .custom-input:focus { border-color: #8a4fff; background: rgba(255, 255, 255, 0.05); }
+        
+        .btn-primary { background: #8a4fff; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; cursor: pointer; border: none; }
+        .btn-primary:hover { background: #7c3aed; transform: translateY(-1px); }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen flex">
+<body class="bg-[#05020a]">
 
-    <!-- Sidebar -->
-    <aside class="w-64 border-r border-white/5 flex flex-col">
-        <div class="p-8">
-            <div class="text-xl font-black text-purple-500 tracking-tighter uppercase">HANRORO ADMIN</div>
-        </div>
-        <nav class="flex-1 px-4 space-y-2">
-            <button onclick="showTab('deposits-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3 active" id="btn-deposits-tab">
-                <i class="fas fa-wallet w-5"></i> 입금 관리
-            </button>
-            <button onclick="showTab('projects-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-projects-tab">
-                <i class="fas fa-tasks w-5"></i> 프로젝트 관리
-            </button>
-            <button onclick="showTab('quotes-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-quotes-tab">
-                <i class="fas fa-comment-dots w-5"></i> 상담 신청
-            </button>
-            <button onclick="showTab('settings-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-settings-tab">
-                <i class="fas fa-cog w-5"></i> 사이트 설정
-            </button>
-        </nav>
-        <div class="p-6">
-            <!-- 요청사항: 로그아웃 버튼으로 변경 -->
-            <button onclick="handleLogout()" class="w-full py-3 rounded-lg bg-red-500/10 text-red-500 text-xs font-bold hover:bg-red-500/20 transition-all">로그아웃</button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-10 overflow-y-auto">
-        <!-- Deposits Tab -->
-        <section id="deposits-tab" class="tab-content active">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h2 class="text-3xl font-black mb-2">입금 현황 관리</h2>
-                    <p class="text-gray-500 text-sm">입금 내역을 확인하고 상태를 변경할 수 있습니다.</p>
-                </div>
-            </div>
-            <div class="glass-panel rounded-2xl overflow-hidden">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-white/5 border-b border-white/5 text-gray-400">
-                        <tr>
-                            <th class="p-4 font-bold">이름/업체</th>
-                            <th class="p-4 font-bold">연락처</th>
-                            <th class="p-4 font-bold">플랜</th>
-                            <th class="p-4 font-bold">상태</th>
-                            <th class="p-4 font-bold">액션</th>
-                        </tr>
-                    </thead>
-                    <tbody id="deposit-table-body"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Projects Tab -->
-        <section id="projects-tab" class="tab-content">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h2 class="text-3xl font-black mb-2">프로젝트 관리</h2>
-                    <p class="text-gray-500 text-sm">진행 중인 프로젝트를 추가하거나 수정합니다.</p>
-                </div>
-                <button onclick="openProjectModal()" class="btn-primary">신규 추가</button>
-            </div>
-            <div class="grid grid-cols-1 gap-4" id="project-admin-list"></div>
-        </section>
-
-        <!-- Quotes Tab -->
-        <section id="quotes-tab" class="tab-content">
+    <!-- 1. 보안 로그인 화면 (Auth Guard) -->
+    <div id="auth-guard">
+        <div id="login-card" class="w-full max-w-sm p-8 glass-panel rounded-3xl border border-white/10 text-center">
             <div class="mb-8">
-                <h2 class="text-3xl font-black mb-2">상담 신청 목록</h2>
-                <p class="text-gray-500 text-sm">유입된 상담 및 견적 신청 내역입니다.</p>
-            </div>
-            <div class="glass-panel rounded-2xl overflow-hidden">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-white/5 border-b border-white/5 text-gray-400">
-                        <tr>
-                            <th class="p-4 font-bold">구분</th>
-                            <th class="p-4 font-bold">신청자</th>
-                            <th class="p-4 font-bold">연락처</th>
-                            <th class="p-4 font-bold">내용</th>
-                            <th class="p-4 font-bold">날짜</th>
-                        </tr>
-                    </thead>
-                    <tbody id="quote-table-body"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Settings Tab -->
-        <section id="settings-tab" class="tab-content">
-            <div class="mb-8">
-                <h2 class="text-3xl font-black mb-2">사이트 설정</h2>
-                <p class="text-gray-500 text-sm">홈페이지의 전역 설정을 변경합니다.</p>
+                <div class="text-3xl font-black text-purple-500 tracking-tighter uppercase mb-2">HANRORO</div>
+                <p class="text-gray-500 text-xs">관리자 대시보드 보안 모드</p>
             </div>
             
-            <div class="max-w-2xl space-y-8">
-                <!-- 노티스 제목 설정 (요청사항 반영) -->
-                <div class="glass-panel p-8 rounded-2xl space-y-4">
-                    <div>
-                        <h4 class="text-lg font-bold mb-1">공지사항 관리</h4>
-                        <p class="text-gray-500 text-xs">메인페이지 하단 티커에 노출되는 노티스 제목입니다.</p>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">노티스 제목 (1줄)</label>
-                        <input type="text" id="setting-notice-title" class="custom-input" placeholder="공지사항 내용을 입력하세요.">
-                    </div>
-                    <button onclick="saveMainSettings()" class="btn-primary w-full mt-4">설정 저장하기</button>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Admin Passcode</label>
+                    <input type="password" id="admin-passcode" class="custom-input mt-1" placeholder="패스코드를 입력하세요">
                 </div>
+                <button onclick="attemptLogin()" id="login-btn" class="btn-primary w-full py-4 mt-2">대시보드 접속</button>
             </div>
-        </section>
-    </main>
+            
+            <p id="error-msg" class="text-red-500 text-[10px] mt-4 hidden font-bold">인증 번호가 올바르지 않습니다.</p>
+            
+            <div id="loading-spinner" class="hidden flex-col items-center gap-4 mt-6">
+                <div class="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-[10px] text-gray-400">데이터 연동 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 실제 대시보드 레이아웃 (접속 성공 시 표시) -->
+    <div id="admin-layout">
+        <!-- Sidebar -->
+        <aside class="w-64 border-r border-white/5 flex flex-col h-full bg-[#05020a]">
+            <div class="p-8">
+                <div class="text-xl font-black text-purple-500 tracking-tighter uppercase">HANRORO</div>
+            </div>
+            <nav class="flex-1 px-4 space-y-2">
+                <button onclick="showTab('deposits-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3 active" id="btn-deposits-tab">
+                    <i class="fas fa-wallet w-5"></i> 입금 관리
+                </button>
+                <button onclick="showTab('projects-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-projects-tab">
+                    <i class="fas fa-tasks w-5"></i> 프로젝트 관리
+                </button>
+                <button onclick="showTab('quotes-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-quotes-tab">
+                    <i class="fas fa-comment-dots w-5"></i> 상담 내역
+                </button>
+                <button onclick="showTab('settings-tab')" class="sidebar-link w-full text-left px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-3" id="btn-settings-tab">
+                    <i class="fas fa-cog w-5"></i> 사이트 설정
+                </button>
+            </nav>
+            <div class="p-6">
+                <button onclick="location.reload()" class="w-full py-3 rounded-lg bg-white/5 text-gray-400 text-xs font-bold hover:bg-red-500/10 hover:text-red-500 transition-all">로그아웃</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-10 overflow-y-auto">
+            <!-- Deposits Tab -->
+            <section id="deposits-tab" class="tab-content active">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black mb-2">입금 내역</h2>
+                        <p class="text-gray-500 text-sm">신규 서비스 신청 및 결제 확인</p>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-white/5 text-gray-400">
+                            <tr>
+                                <th class="p-4 font-bold">이름/업체</th>
+                                <th class="p-4 font-bold">연락처</th>
+                                <th class="p-4 font-bold">플랜</th>
+                                <th class="p-4 font-bold">상태</th>
+                                <th class="p-4 font-bold">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deposit-table-body">
+                            <!-- Data injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Projects Tab -->
+            <section id="projects-tab" class="tab-content">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black mb-2">진행 프로젝트</h2>
+                        <p class="text-gray-500 text-sm">현재 제작 중인 웹사이트 현황 관리</p>
+                    </div>
+                    <button onclick="openProjectModal()" class="btn-primary">신규 등록</button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="project-admin-list">
+                    <!-- Data injected here -->
+                </div>
+            </section>
+
+            <!-- Quotes Tab -->
+            <section id="quotes-tab" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-black mb-2">견적 및 상담</h2>
+                    <p class="text-gray-500 text-sm">홈페이지를 통해 접수된 문의 내역</p>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-white/5 text-gray-400">
+                            <tr>
+                                <th class="p-4 font-bold">신청인</th>
+                                <th class="p-4 font-bold">구분</th>
+                                <th class="p-4 font-bold">내용</th>
+                                <th class="p-4 font-bold">접수일</th>
+                                <th class="p-4 font-bold">삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quote-table-body">
+                            <!-- Data injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings-tab" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-black mb-2">시스템 관리</h2>
+                    <p class="text-gray-500 text-sm">전체 사이트에 적용되는 공지 및 전역 설정</p>
+                </div>
+                <div class="max-w-md glass-panel p-8 rounded-2xl space-y-6">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">하단 띠배너 공지 내용</label>
+                        <input type="text" id="setting-notice-title" class="custom-input mt-2" placeholder="공지사항을 입력하세요">
+                    </div>
+                    <button onclick="saveGlobalSettings()" class="btn-primary w-full">설정 업데이트</button>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <!-- Project Modal -->
-    <div id="project-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-6">
-        <div class="bg-[#0f0a1f] border border-white/10 w-full max-w-md rounded-2xl p-8">
-            <h3 class="text-xl font-bold mb-6">프로젝트 정보 입력</h3>
+    <div id="project-modal" class="fixed inset-0 z-[10000] bg-black/95 backdrop-blur-md hidden items-center justify-center p-6">
+        <div class="bg-[#0f0a1f] border border-white/10 w-full max-w-sm rounded-3xl p-10">
+            <h3 class="text-xl font-bold mb-6">프로젝트 데이터 추가</h3>
             <div class="space-y-4">
-                <input type="text" id="p-name" class="custom-input" placeholder="프로젝트명">
-                <input type="text" id="p-phase" class="custom-input" placeholder="현재 단계 (예: 기획중)">
-                <input type="number" id="p-progress" class="custom-input" placeholder="진행률 (%)" min="0" max="100">
+                <input type="text" id="p-name" class="custom-input" placeholder="업체명 또는 프로젝트명">
+                <input type="text" id="p-phase" class="custom-input" placeholder="현재 진행 단계 (예: 기획중)">
+                <input type="number" id="p-progress" class="custom-input" placeholder="진행률 (0-100)" min="0" max="100">
                 <div class="flex gap-3 mt-6">
-                    <button onclick="closeProjectModal()" class="flex-1 py-3 rounded-lg bg-white/5 font-bold">취소</button>
-                    <button onclick="saveProject()" class="flex-1 py-3 rounded-lg bg-purple-600 font-bold">저장</button>
+                    <button onclick="closeProjectModal()" class="flex-1 py-4 rounded-xl bg-white/5 font-bold">닫기</button>
+                    <button onclick="saveProjectData()" class="flex-1 py-4 rounded-xl bg-purple-600 font-bold">데이터 전송</button>
                 </div>
             </div>
         </div>
@@ -149,13 +199,16 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
+        // Firebase Configuration
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
             authDomain: "hanroro-web.firebaseapp.app", 
             projectId: "hanroro-web", 
+            storageBucket: "hanroro-web.firebasestorage.app",
+            messagingSenderId: "461514865624",
             appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
         };
 
@@ -164,6 +217,131 @@
         const auth = getAuth(app);
         const currentAppId = "hanroro-official-service";
 
+        // 관리자 패스코드 (필요시 여기서 수정 가능)
+        const ADMIN_SECRET = "admin1234";
+
+        // 로그인 로직
+        window.attemptLogin = async () => {
+            const input = document.getElementById('admin-passcode');
+            const error = document.getElementById('error-msg');
+            const loginBtn = document.getElementById('login-btn');
+            const spinner = document.getElementById('loading-spinner');
+
+            if (input.value !== ADMIN_SECRET) {
+                error.classList.remove('hidden');
+                input.value = "";
+                return;
+            }
+
+            // 성공 시 진행
+            error.classList.add('hidden');
+            loginBtn.classList.add('hidden');
+            spinner.classList.remove('hidden');
+
+            try {
+                // 이메일 로그인 에러 우회: 익명 인증 사용
+                await signInAnonymously(auth);
+                
+                // 인증 성공 시 대시보드 표시
+                document.getElementById('auth-guard').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-guard').style.display = 'none';
+                    document.getElementById('admin-layout').classList.add('active');
+                    loadAdminData();
+                }, 500);
+            } catch (e) {
+                console.error("Auth Error:", e);
+                alert("인증 서버 연결 실패. 잠시 후 다시 시도해 주세요.");
+                loginBtn.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        };
+
+        // 실시간 데이터 로드
+        function loadAdminData() {
+            // 1. 입금 내역 리스너
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), (snap) => {
+                let html = '';
+                snap.forEach(d => {
+                    const item = d.data();
+                    const isComplete = item.status === 'complete';
+                    html += `
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                            <td class="p-4 font-bold text-gray-200">${item.name}</td>
+                            <td class="p-4 text-gray-500">${item.phone || '-'}</td>
+                            <td class="p-4"><span class="text-purple-400 font-bold text-[10px] uppercase tracking-tighter">${item.type}</span></td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 rounded text-[10px] font-bold ${isComplete ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}">
+                                    ${isComplete ? '입금확인됨' : '입금대기'}
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex gap-3">
+                                    <button onclick="toggleDepositStatus('${d.id}', '${item.status}')" class="text-gray-400 hover:text-white transition-all"><i class="fas fa-sync"></i></button>
+                                    <button onclick="deleteRecord('deposits', '${d.id}')" class="text-gray-600 hover:text-red-500 transition-all"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+                document.getElementById('deposit-table-body').innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-gray-600">등록된 입금 내역이 없습니다.</td></tr>';
+            });
+
+            // 2. 프로젝트 리스너
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), (snap) => {
+                let html = '';
+                snap.forEach(d => {
+                    const p = d.data();
+                    html += `
+                        <div class="glass-panel p-6 rounded-2xl border border-white/5 flex justify-between items-center group">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h4 class="font-bold text-gray-200">${p.name}</h4>
+                                    <span class="text-[9px] bg-purple-500/10 text-purple-400 px-1.5 py-0.5 rounded font-black uppercase">${p.phase}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-purple-500" style="width: ${p.progress}%"></div>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-gray-500">${p.progress}%</span>
+                                </div>
+                            </div>
+                            <button onclick="deleteRecord('projects', '${d.id}')" class="ml-6 w-10 h-10 rounded-xl bg-red-500/10 text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                <i class="fas fa-trash-alt text-xs"></i>
+                            </button>
+                        </div>`;
+                });
+                document.getElementById('project-admin-list').innerHTML = html || '<div class="col-span-full p-10 text-center text-gray-600">진행 중인 프로젝트 정보가 없습니다.</div>';
+            });
+
+            // 3. 상담 신청 리스너
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), (snap) => {
+                let html = '';
+                snap.forEach(d => {
+                    const q = d.data();
+                    const date = q.createdAt ? new Date(q.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown';
+                    html += `
+                        <tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="p-4 font-bold text-gray-200">${q.name} <span class="text-[10px] text-gray-500 block font-normal">${q.contact}</span></td>
+                            <td class="p-4 text-purple-400 text-[10px] font-bold">${q.category || '기타'}</td>
+                            <td class="p-4 text-gray-400 text-xs truncate max-w-[200px]">${q.content}</td>
+                            <td class="p-4 text-gray-600 text-[10px]">${date}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="deleteRecord('quotes', '${d.id}')" class="text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+                document.getElementById('quote-table-body').innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-gray-600">신규 상담 신청이 없습니다.</td></tr>';
+            });
+
+            // 4. 전역 설정 리스너
+            onSnapshot(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
+                if (snap.exists()) {
+                    document.getElementById('setting-notice-title').value = snap.data().noticeTitle || "";
+                }
+            });
+        }
+
+        // 유틸리티 함수
         window.showTab = (tabId) => {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
@@ -171,131 +349,54 @@
             document.getElementById('btn-' + tabId).classList.add('active');
         };
 
-        // 로그아웃 핸들러
-        window.handleLogout = async () => {
-            if(confirm('로그아웃 하시겠습니까?')) {
-                try {
-                    await signOut(auth);
-                    location.href = 'index.html'; // 로그아웃 후 메인으로 리다이렉트
-                } catch (error) {
-                    console.error("로그아웃 실패:", error);
-                }
-            }
-        };
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // 입금 관리 데이터
-                onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), (snap) => {
-                    let html = '';
-                    snap.forEach(d => {
-                        const item = d.data();
-                        html += `<tr class="border-b border-white/5 hover:bg-white/5 transition-all">
-                            <td class="p-4 font-bold">${item.name}</td>
-                            <td class="p-4 text-gray-400">${item.phone || '-'}</td>
-                            <td class="p-4"><span class="px-2 py-1 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold uppercase">${item.type}</span></td>
-                            <td class="p-4">
-                                <span class="px-2 py-1 rounded text-[10px] font-bold ${item.status === 'complete' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}">
-                                    ${item.status === 'complete' ? '완료' : '대기중'}
-                                </span>
-                            </td>
-                            <td class="p-4">
-                                <button onclick="toggleDepositStatus('${d.id}', '${item.status}')" class="text-xs font-bold text-gray-400 hover:text-white mr-3">상태변경</button>
-                                <button onclick="deleteData('deposits', '${d.id}')" class="text-xs font-bold text-red-500 hover:text-red-400">삭제</button>
-                            </td>
-                        </tr>`;
-                    });
-                    document.getElementById('deposit-table-body').innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-gray-500">데이터가 없습니다.</td></tr>';
-                });
-
-                // 프로젝트 관리 데이터
-                onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), (snap) => {
-                    let html = '';
-                    snap.forEach(d => {
-                        const p = d.data();
-                        html += `<div class="glass-panel p-6 rounded-2xl flex justify-between items-center">
-                            <div>
-                                <h4 class="font-bold mb-1">${p.name}</h4>
-                                <p class="text-xs text-gray-500">${p.phase} | ${p.progress}%</p>
-                            </div>
-                            <button onclick="deleteData('projects', '${d.id}')" class="w-10 h-10 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-all">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>`;
-                    });
-                    document.getElementById('project-admin-list').innerHTML = html || '<p class="p-10 text-center text-gray-500">등록된 프로젝트가 없습니다.</p>';
-                });
-
-                // 상담 신청 데이터
-                onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), (snap) => {
-                    let html = '';
-                    snap.forEach(d => {
-                        const q = d.data();
-                        const date = q.createdAt ? new Date(q.createdAt.seconds * 1000).toLocaleDateString() : '-';
-                        html += `<tr class="border-b border-white/5 hover:bg-white/5">
-                            <td class="p-4 font-bold text-purple-400 text-xs">${q.category || '일반'}</td>
-                            <td class="p-4 font-bold">${q.name}</td>
-                            <td class="p-4 text-gray-400">${q.contact}</td>
-                            <td class="p-4 text-gray-500 max-w-xs truncate">${q.content}</td>
-                            <td class="p-4 text-gray-600 text-[10px]">${date}</td>
-                        </tr>`;
-                    });
-                    document.getElementById('quote-table-body').innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-gray-500">상담 내역이 없습니다.</td></tr>';
-                });
-
-                // 사이트 설정
-                onSnapshot(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
-                    if (snap.exists()) {
-                        const data = snap.data();
-                        const input = document.getElementById('setting-notice-title');
-                        if(input) input.value = data.noticeTitle || "";
-                    }
-                });
-
-            } else {
-                signInAnonymously(auth);
-            }
-        });
-
-        // 기능 함수들
         window.toggleDepositStatus = async (id, current) => {
             const next = current === 'complete' ? 'pending' : 'complete';
             await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id), { status: next });
         };
 
-        window.deleteData = async (col, id) => {
-            if(confirm('정말 삭제하시겠습니까?')) {
+        window.deleteRecord = async (col, id) => {
+            if(confirm('이 기록을 영구적으로 삭제하시겠습니까?')) {
                 await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', col, id));
             }
         };
 
-        window.saveMainSettings = async () => {
-            const noticeTitle = document.getElementById('setting-notice-title').value;
-            try {
-                await setDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), {
-                    noticeTitle: noticeTitle,
-                    updatedAt: serverTimestamp()
-                }, { merge: true });
-                alert('공지사항 설정이 저장되었습니다.');
-            } catch (e) {
-                alert('저장 중 오류가 발생했습니다.');
-            }
+        window.saveGlobalSettings = async () => {
+            const val = document.getElementById('setting-notice-title').value;
+            await setDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), {
+                noticeTitle: val, 
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+            alert('설정이 사이트에 반영되었습니다.');
         };
 
+        // 프로젝트 모달 제어
         window.openProjectModal = () => document.getElementById('project-modal').classList.replace('hidden', 'flex');
         window.closeProjectModal = () => document.getElementById('project-modal').classList.replace('flex', 'hidden');
 
-        window.saveProject = async () => {
+        window.saveProjectData = async () => {
             const name = document.getElementById('p-name').value;
             const phase = document.getElementById('p-phase').value;
             const progress = document.getElementById('p-progress').value;
-            if(!name || !phase) return alert('정보를 입력하세요.');
-            
+
+            if(!name || !phase) return alert('정보를 모두 입력해 주세요.');
+
             await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), {
-                name, phase, progress: parseInt(progress), createdAt: serverTimestamp()
+                name, 
+                phase, 
+                progress: parseInt(progress) || 0, 
+                createdAt: serverTimestamp()
             });
+
             closeProjectModal();
+            document.getElementById('p-name').value = "";
+            document.getElementById('p-phase').value = "";
+            document.getElementById('p-progress').value = "";
         };
+
+        // 엔터키 로그인 지원
+        document.getElementById('admin-passcode').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') attemptLogin();
+        });
 
     </script>
 </body>
