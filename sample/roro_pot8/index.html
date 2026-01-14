@@ -384,7 +384,7 @@
 </head>
 <body class="bg-white text-gray-900" oncontextmenu="return false" onselectstart="return false">
 
-    <!-- 모바일 네비게이션 오버레이 (생략 없이 유지) -->
+    <!-- 모바일 네비게이션 오버레이 -->
     <div id="mobile-nav-overlay">
         <div class="flex justify-between items-center mb-16">
             <div class="flex items-center space-x-2">
@@ -470,7 +470,7 @@
                     </div>
                     <div class="text-white max-w-3xl flex flex-col items-center justify-center flex-grow">
                         <div class="inline-block px-4 py-1.5 border border-white/20 rounded-full mb-8 text-[10px] backdrop-blur-sm tracking-widest">
-                            <span class="text-[#FF7E00] font-bold">로로 소송로펌</span> 센터
+                            <span class="text-[#FF7E00] font-bold">로로 소송</span> 로펌
                         </div>
                         <h1 class="text-5xl md:text-7xl font-bold serif leading-tight mb-8">결과로 증명하는<br><span class="text-[#FF7E00]">소송의 품격</span></h1>
                         <p class="text-white/60 text-base md:text-lg mb-12 leading-relaxed max-w-xl">수천 건의 승소 데이터를 기반으로 최적의 판결을 이끌어냅니다.<br>당신의 권리를 보호하는 가장 강력한 법률 파트너입니다.</p>
@@ -520,7 +520,7 @@
             </section>
         </div>
 
-        <!-- 게시판 섹션 (모바일 최적화 레이아웃 적용) -->
+        <!-- 게시판 섹션 -->
         <div id="board-section" class="hidden">
             <section class="min-h-screen bg-[#111111] pt-[140px] pb-24 px-6">
                 <div class="max-w-5xl mx-auto fade-in-up">
@@ -534,7 +534,6 @@
                         <div onclick="filterBoard('news')" class="board-tab whitespace-nowrap" id="tab-news">언론보도</div>
                     </div>
                     <div class="bg-transparent border-t border-white/20" id="board-list">
-                        <!-- 첫 번째 테스트글 -->
                         <div class="board-item" data-category="notice">
                             <div class="board-row group" onclick="toggleAccordion(this)">
                                 <div class="px-2 sm:px-4"><span class="category-tag tag-notice">공지</span></div>
@@ -546,7 +545,6 @@
                             </div>
                             <div class="board-content"><div class="board-inner-text">한로로 테스트글 입니다.</div></div>
                         </div>
-                        <!-- 두 번째 테스트글 -->
                         <div class="board-item" data-category="news">
                             <div class="board-row group" onclick="toggleAccordion(this)">
                                 <div class="px-2 sm:px-4"><span class="category-tag tag-news">보도</span></div>
@@ -584,18 +582,48 @@
             </div>
         </section>
 
+        <!-- 소송 절차 섹션 (복구 완료) -->
+        <section id="process" class="py-24 bg-white">
+            <div class="max-w-5xl mx-auto px-6 text-center">
+                <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block"></span>
+                <h2 class="text-3xl font-bold serif mb-16">체계적인 소송 절차</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                    <div class="process-node">
+                        <div class="text-[10px] font-bold text-[#FF7E00] mb-4">STEP 01</div>
+                        <h4 class="text-base font-bold mb-4">전략 수립 및 소장 접수</h4>
+                        <p class="text-gray-500 text-[11px] leading-relaxed">사건의 쟁점을 정밀하게 파악하여 원고 또는 피고의 입장에 맞춘 최적의 서면을 작성, 법원에 제출합니다.</p>
+                    </div>
+                    <div class="process-node">
+                        <div class="text-[10px] font-bold text-[#FF7E00] mb-4">STEP 02</div>
+                        <h4 class="text-base font-bold mb-4">변론 기일 및 증거 조사</h4>
+                        <p class="text-gray-500 text-[11px] leading-relaxed">판사 앞에서 직접 사건의 진실을 다투며, 증인 신문 및 사실 조회를 통해 유리한 입증 자료를 선점합니다.</p>
+                    </div>
+                    <div class="process-node">
+                        <div class="text-[10px] font-bold text-[#FF7E00] mb-4">STEP 03</div>
+                        <h4 class="text-base font-bold mb-4">판결 선고 및 불복 절차</h4>
+                        <p class="text-gray-500 text-[11px] leading-relaxed">법원의 최종 판단을 검토하고, 판결 결과에 따라 즉각적인 항소나 상고 전략을 수립하여 권리를 끝까지 지킵니다.</p>
+                    </div>
+                    <div class="process-node">
+                        <div class="text-[10px] font-bold text-[#FF7E00] mb-4">STEP 04</div>
+                        <h4 class="text-base font-bold mb-4">판결 확정 및 집행</h4>
+                        <p class="text-gray-500 text-[11px] leading-relaxed">승소 판결문을 토대로 강제집행 절차에 착수하여, 실제적인 권리 회복과 보상을 실현하며 종결합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- 변호사 소개 -->
-        <section id="lawyers" class="py-24 bg-white">
+        <section id="lawyers" class="py-24 bg-[#F8F8F8]">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-3xl font-bold serif mb-16">전문 변호사</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
-                    <div class="bg-[#F8F8F8] p-10 rounded-[40px] border border-gray-100">
+                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm">
                         <h3 class="text-xl font-bold mb-2">김로로 변호사</h3>
                         <p class="text-[#FF7E00] text-xs font-bold mb-4">대한변협 등록 전문변호사</p>
                         <p class="text-gray-500 text-xs">수천 건의 승소 데이터를 바탕으로 서초동 소송의 흐름을 주도합니다.</p>
                     </div>
-                    <div class="bg-[#F8F8F8] p-10 rounded-[40px] border border-gray-100">
-                        <h3 class="text-xl font-bold mb-2">박로로롤변호사</h3>
+                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm">
+                        <h3 class="text-xl font-bold mb-2">박로로 변호사</h3>
                         <p class="text-[#FF7E00] text-xs font-bold mb-4">대형 로펌 출신 실력파</p>
                         <p class="text-gray-500 text-xs">치밀한 증거 분석과 날카로운 변론으로 최선의 판결을 도출합니다.</p>
                     </div>
@@ -604,10 +632,10 @@
         </section>
 
         <!-- 오시는 길 -->
-        <section id="location" class="py-24 bg-[#F8F8F8]">
+        <section id="location" class="py-24 bg-white">
             <div class="max-w-5xl mx-auto px-6">
                 <div class="text-center mb-16">
-                    <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">위치 안내</span>
+                    <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">위치안내</span>
                     <h2 class="text-3xl font-bold serif mb-4">오시는 길</h2>
                     <p class="text-gray-500 text-sm">전문 법률 자문이 필요하신 순간, 로로 로펌이 서초대로에서 기다립니다.</p>
                 </div>
@@ -678,12 +706,12 @@
                         <h5 class="text-[#FF7E00] text-[10px] font-extrabold uppercase mb-6">Contact</h5>
                         <ul class="text-white/60 text-xs space-y-4">
                             <li>T. 02-588-1234</li>
-                            <li>E. -@-</li>
+                            <li>E. law@lolo.com</li>
                         </ul>
                     </div>
                 </div>
                 <div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] text-white/20 gap-4">
-                    <p>© 2024 LOLO Law Firm. All rights reserved.</p>
+                    <p>© 2026 로로 법률사무소. All rights reserved.</p>
                     <div class="flex gap-4">
                         <a class="hover:text-white cursor-pointer">개인정보처리방침</a>
                         <a class="hover:text-white cursor-pointer">이용약관</a>
