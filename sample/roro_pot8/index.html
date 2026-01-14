@@ -144,28 +144,23 @@
             #main-header { width: 100%; position: fixed; }
             #mobile-menu-toggle { display: block; }
             
-            /* 모바일 헤더 배치 수정: 햄버거 버튼이 위로 가도록 구성 */
             .header-content-wrapper { 
                 display: flex !important; 
-                flex-direction: column !important; /* 세로 배치로 변경 */
+                flex-direction: column !important; 
                 align-items: center !important; 
                 width: 100%; 
                 gap: 1rem;
             }
             
-            /* 햄버거 버튼이 로고보다 위에 오도록 순서 조정 */
             #mobile-toggle-wrapper {
-                order: -1; /* 가장 위로 올림 */
+                order: -1; 
                 width: 100%;
                 display: flex;
-                justify-content: flex-end; /* 우측 정렬 유지 */
+                justify-content: flex-end; 
             }
-
-            #logo-decoration-mobile { display: flex !important; }
-            #header-diagnosis-btn-mobile { display: inline-block !important; }
             
             #main-section > section:first-child {
-                padding-top: 220px; /* 헤더가 길어졌으므로 패딩 추가 */
+                padding-top: 120px; 
                 margin-top: 0;
             }
         }
@@ -289,20 +284,45 @@
             .process-node::after { content: "↓"; right: auto; left: 50%; bottom: -30px; top: auto; transform: translateX(-50%); }
         }
 
-        /* 게시판 스타일 */
         .board-item {
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 24px 0;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .board-item:hover {
-            padding-left: 10px;
-            background: rgba(255,126,0,0.02);
+        .board-header {
+            padding: 30px 10px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
         }
-        
-        .post-detail-view { display: none; }
-        .post-detail-view.active { display: block; animation: modal-up 0.5s ease; }
+        .board-item:hover .board-header {
+            padding-left: 20px;
+            background: rgba(255,126,0,0.05);
+        }
+        .board-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+            background: rgba(255,255,255,0.02);
+        }
+        .board-item.active .board-content {
+            max-height: 1000px; /* 충분한 높이 */
+            transition: max-height 0.4s cubic-bezier(1, 0, 1, 0);
+        }
+        .content-inner {
+            padding: 30px 20px;
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.8;
+            border-top: 1px solid rgba(255,255,255,0.03);
+        }
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        .board-item.active .chevron-icon {
+            transform: rotate(180deg);
+            color: var(--gold-primary);
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900" oncontextmenu="return false" onselectstart="return false">
@@ -368,7 +388,6 @@
             <div class="header-content-wrapper flex items-center justify-between lg:grid lg:grid-cols-3">
                 <div class="hidden lg:block lg:col-start-1"></div>
                 
-                <!-- 로고 영역 -->
                 <div class="flex flex-col items-center lg:justify-center lg:col-start-2 order-2 lg:order-none">
                     <div class="flex items-center space-x-2 cursor-pointer" onclick="showMainSection()">
                         <svg class="w-8 h-8 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -378,7 +397,6 @@
                     </div>
                 </div>
 
-                <!-- 햄버거 버튼 영역 (모바일에서 order-1로 설정되어 위로 올라감) -->
                 <div id="mobile-toggle-wrapper" class="flex justify-end lg:col-start-3 order-1 lg:order-none">
                     <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 text-[#FF7E00] hover:bg-gray-100/10 rounded-xl transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -386,22 +404,13 @@
                 </div>
             </div>
 
-            <!-- 하단 장식 및 버튼 -->
-            <div class="w-full flex flex-col items-center mt-2">
-                <div class="hidden lg:block w-full text-center">
+            <div class="hidden lg:flex flex-col items-center mt-2">
+                <div class="w-full text-center">
                     <div class="mouse-icon-wrap" id="logo-decoration">
                         <div class="mouse-icon"><div class="mouse-wheel"></div></div>
                     </div>
                     <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full hover:bg-[#FF7E00] hover:text-white transition-all bg-transparent backdrop-blur-md shadow-lg" id="header-diagnosis-btn">
                         자가진단 시작
-                    </button>
-                </div>
-                <div class="flex lg:hidden flex-col items-center w-full mt-4" id="logo-decoration-mobile">
-                    <div class="mouse-icon-wrap mb-4">
-                        <div class="mouse-icon"><div class="mouse-wheel"></div></div>
-                    </div>
-                    <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg" id="header-diagnosis-btn-mobile">
-                        소송 자가진단 하기
                     </button>
                 </div>
             </div>
@@ -410,8 +419,16 @@
 
     <!-- 메인 홈페이지 -->
     <div id="main-section" class="w-full overflow-x-hidden">
-        <section class="hero-bg min-h-[85vh] flex items-center justify-center pt-32 pb-12 w-full text-center">
+        <section class="hero-bg min-h-[90vh] flex items-center justify-center pt-32 pb-12 w-full text-center">
             <div class="max-w-7xl mx-auto px-6 w-full flex flex-col items-center">
+                <div class="flex lg:hidden flex-col items-center w-full mb-10 fade-in-up" id="mobile-hero-decor">
+                    <div class="mouse-icon-wrap mb-4">
+                        <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+                    </div>
+                    <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-8 py-3 rounded-full bg-black/40 backdrop-blur-md shadow-lg" id="header-diagnosis-btn-mobile">
+                        소송 자가진단 시작하기
+                    </button>
+                </div>
                 <div class="text-white max-w-3xl">
                     <div class="inline-block px-4 py-1.5 border border-white/20 rounded-full mb-6 text-[10px] backdrop-blur-sm">
                         <span class="text-[#FF7E00] font-bold">소송 전략 센터</span> 법률 파트너
@@ -548,7 +565,7 @@
         </footer>
     </div>
 
-    <!-- 소송 자가진단 (별도 섹션) -->
+    <!-- 소송 자가진단 -->
     <div id="full-diagnosis" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-xl mx-auto fade-in-up">
             <div class="text-center mb-12">
@@ -558,101 +575,176 @@
             </div>
             <div class="bg-[#1A1A1A] p-10 rounded-[40px] border border-white/5 shadow-2xl min-h-[420px] flex flex-col justify-center text-white">
                 <div id="diag-1" class="diag-item active">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 01. 사건 유형</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">현재 갈등 상황의 종류를 선택해주세요.</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 01. 사건의 성격</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">어떤 종류의 갈등을 겪고 계신가요?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">금전/부동산 민사소송</button>
-                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">사기/폭행 형사사건</button>
+                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">금전 거래, 부동산 등 민사적 분쟁</button>
+                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">사기, 폭행, 고소 등 형사적 분쟁</button>
+                        <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">이혼, 상속 등 가사/가족 분쟁</button>
                     </div>
                 </div>
                 <div id="diag-2" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 입증 자료</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">주장을 증명할 객관적 증거가 있습니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 증거 확보 수준</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">주장을 뒷받침할 객관적 자료가 있나요?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">확실한 계약서/녹취/이체내역 있음</button>
-                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">간접적인 카톡/증언만 있음</button>
+                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">계약서, 문자, 녹취 등 명확한 증거 있음</button>
+                        <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">목격자 진술 등 간접적인 증거 있음</button>
                     </div>
                 </div>
                 <div id="diag-3" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 03. 소멸 시효</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">사건이 발생한지 얼마나 경과했습니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 03. 사건 발생 시점</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">사건이 발생한 지 얼마나 지났나요?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">1년 미만 (최근 사건)</button>
-                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">3년 이상 경과함</button>
+                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">최근 1년 이내</button>
+                        <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">3년 이상 지남</button>
                     </div>
                 </div>
                 <div id="diag-4" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 04. 피해 규모</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">추정되는 경제적 피해액은 얼마입니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 04. 상대방 신원</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">상대방의 인적사항을 알고 계신가요?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">3천만 원 이상 (합의 필요)</button>
-                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">3천만 원 미만 (소액 심판)</button>
+                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">정확히 알고 있음</button>
+                        <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">일부만 알고 있거나 모름</button>
                     </div>
                 </div>
                 <div id="diag-5" class="diag-item">
-                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 05. 상대방 신원</p>
-                    <h3 class="text-xl font-bold serif mb-8 text-white/90">상대방의 인적사항을 알고 있습니까?</h3>
+                    <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 05. 해결 의지</p>
+                    <h3 class="text-xl font-bold serif mb-8 text-white/90">어떤 결과를 가장 원하시나요?</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">이름/주소/연락처 중 하나라도 앎</button>
-                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00]">전혀 모름 (추적 필요)</button>
+                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">완전한 금전 배상</button>
+                        <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">상대방 엄벌</button>
                     </div>
                 </div>
                 <div id="diag-6" class="diag-item text-center">
                     <div class="w-20 h-20 bg-[#FF7E00]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <svg class="w-10 h-10 text-[#FF7E00]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <h3 class="text-2xl font-bold serif mb-4">진단 결과: 분석 완료</h3>
-                    <p class="text-white/60 text-xs leading-relaxed mb-8">선택하신 답변을 종합할 때, 법적 대응을 통해 피해 회복이 가능할 것으로 보입니다. 구체적인 실익 계산을 위해 상담을 권장합니다.</p>
-                    <button onclick="openModal()" class="w-full btn-gold py-5 rounded-3xl font-bold text-xs">상담 예약하기</button>
+                    <h3 class="text-2xl font-bold serif mb-4 text-white">진단 완료</h3>
+                    <p class="text-white/60 text-xs mb-8">변호사 상담을 통해 상세 분석 결과를 확인하세요.</p>
+                    <button onclick="openModal()" class="w-full btn-gold py-5 rounded-3xl font-bold text-xs">상담 신청하기</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 공지/언론사례 게시판 -->
+    <!-- 공지/언론사례 섹션 (펼치기/아코디언 형식으로 업데이트) -->
     <div id="board-section" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-4xl mx-auto fade-in-up">
-            <div id="board-list-view">
-                <div class="flex justify-between items-end mb-12">
-                    <div>
-                        <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">NEWS & NOTICE</span>
-                        <h2 class="text-3xl font-bold serif text-white">공지 및 언론보도</h2>
+            <div class="text-center mb-16">
+                <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">NEWS & NOTICE</span>
+                <h2 class="text-3xl font-bold serif text-white">공지 및 언론사례</h2>
+                <p class="text-white/30 text-[10px] mt-4 italic">항목을 클릭하면 내용을 확인하실 수 있습니다.</p>
+            </div>
+            
+            <div class="bg-[#1A1A1A] rounded-[40px] border border-white/5 overflow-hidden">
+                <!-- 게시물 1 -->
+                <div class="board-item" onclick="toggleAccordion(this)">
+                    <div class="board-header">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <span class="inline-block px-3 py-1 bg-[#FF7E00]/20 text-[#FF7E00] text-[9px] font-bold rounded-full mb-3 uppercase">공지</span>
+                                <h4 class="text-white text-lg font-bold serif">한로로 테스트글 입니다</h4>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-white/20 text-[10px] font-mono">2026.01.15</span>
+                                <svg class="chevron-icon w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="showMainSection()" class="text-white/40 text-[10px] font-bold border-b border-white/20 pb-1">목록 닫기</button>
+                    <div class="board-content">
+                        <div class="content-inner">
+                            한로로 테스트글 입니다
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-1">
-                    <div onclick="showPost('한로로 테스트글 입니다.', '2025.11.20', '한로로 테스트글 입니다.')" class="board-item group flex items-center justify-between">
-                        <div class="flex-1 pr-8">
-                            <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[공지사항]</span>
-                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">한로로 테스트글 입니다.</h4>
+
+                <!-- 게시물 2 -->
+                <div class="board-item" onclick="toggleAccordion(this)">
+                    <div class="board-header">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-[9px] font-bold rounded-full mb-3 uppercase">언론</span>
+                                <h4 class="text-white text-lg font-bold serif">한로로 테스트글 입니다</h4>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-white/20 text-[10px] font-mono">2026.01.10</span>
+                                <svg class="chevron-icon w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
                         </div>
-                        <span class="text-white/20 text-[11px] font-mono">2025.11.20</span>
                     </div>
-                    <div onclick="showPost('한로로 테스트글 입니다.', '2025.11.15', '한로로 테스트글 입니다.')" class="board-item group flex items-center justify-between">
-                        <div class="flex-1 pr-8">
-                            <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[언론보도]</span>
-                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">한로로 테스트글 입니다.</h4>
+                    <div class="board-content">
+                        <div class="content-inner">
+                            한로로 테스트글 입니다
                         </div>
-                        <span class="text-white/20 text-[11px] font-mono">2025.11.15</span>
                     </div>
-                    <div onclick="showPost('한로로 테스트글 입니다.', '2025.11.10', '한로로 테스트글 입니다.')" class="board-item group flex items-center justify-between">
-                        <div class="flex-1 pr-8">
-                            <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[뉴스]</span>
-                            <h4 class="text-white group-hover:text-[#FF7E00] transition-colors font-bold serif">한로로 테스트글 입니다.</h4>
+                </div>
+
+                <!-- 게시물 3 -->
+                <div class="board-item" onclick="toggleAccordion(this)">
+                    <div class="board-header">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <span class="inline-block px-3 py-1 bg-[#FF7E00]/20 text-[#FF7E00] text-[9px] font-bold rounded-full mb-3 uppercase">공지</span>
+                                <h4 class="text-white text-lg font-bold serif">한로로 테스트글 입니다</h4>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-white/20 text-[10px] font-mono">2026.01.05</span>
+                                <svg class="chevron-icon w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
                         </div>
-                        <span class="text-white/20 text-[11px] font-mono">2025.11.10</span>
+                    </div>
+                    <div class="board-content">
+                        <div class="content-inner">
+                            한로로 테스트글 입니다
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 게시물 4 -->
+                <div class="board-item" onclick="toggleAccordion(this)">
+                    <div class="board-header">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-[9px] font-bold rounded-full mb-3 uppercase">언론</span>
+                                <h4 class="text-white text-lg font-bold serif">한로로 테스트글 입니다</h4>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-white/20 text-[10px] font-mono">2026.01.01</span>
+                                <svg class="chevron-icon w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-content">
+                        <div class="content-inner">
+                            한로로 테스트글 입니다
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 게시물 5 -->
+                <div class="board-item" onclick="toggleAccordion(this)">
+                    <div class="board-header">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <span class="inline-block px-3 py-1 bg-[#FF7E00]/20 text-[#FF7E00] text-[9px] font-bold rounded-full mb-3 uppercase">공지</span>
+                                <h4 class="text-white text-lg font-bold serif">한로로 테스트글 입니다</h4>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-white/20 text-[10px] font-mono">2025.12.25</span>
+                                <svg class="chevron-icon w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-content">
+                        <div class="content-inner">
+                            한로로 테스트글 입니다
+                        </div>
                     </div>
                 </div>
             </div>
-            <div id="post-detail-view" class="post-detail-view bg-[#1A1A1A] p-12 rounded-[40px] border border-white/5 text-white">
-                <button onclick="hidePost()" class="text-[#FF7E00] text-[10px] font-bold mb-8 flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg> 뒤로가기
-                </button>
-                <div class="border-b border-white/10 pb-8 mb-8">
-                    <h2 id="post-title" class="text-2xl font-bold serif mb-4">한로로 테스트글 입니다.</h2>
-                    <p id="post-date" class="text-white/20 text-xs font-mono"></p>
-                </div>
-                <div id="post-content" class="text-white/60 text-sm leading-relaxed min-h-[200px]">한로로 테스트글 입니다.</div>
+            
+            <div class="mt-12 text-center">
+                <button onclick="showMainSection()" class="text-white/30 text-xs hover:text-[#FF7E00] transition-colors border-b border-white/10 pb-1 italic">메인 화면으로 돌아가기</button>
             </div>
         </div>
     </div>
@@ -684,6 +776,17 @@
     </div>
 
     <script>
+        function toggleAccordion(element) {
+            // 다른 열려있는 항목 닫기 (선택 사항)
+            /*
+            const items = document.querySelectorAll('.board-item');
+            items.forEach(item => {
+                if (item !== element) item.classList.remove('active');
+            });
+            */
+            element.classList.toggle('active');
+        }
+
         function toggleMobileMenu() {
             const overlay = document.getElementById('mobile-nav-overlay');
             if (overlay.classList.contains('active')) {
@@ -715,22 +818,8 @@
             document.getElementById('main-section').classList.add('hidden');
             document.getElementById('full-diagnosis').classList.add('hidden');
             document.getElementById('board-section').classList.remove('hidden');
-            document.getElementById('board-list-view').classList.remove('hidden');
-            document.getElementById('post-detail-view').classList.remove('active');
             updateSidebarMenu('공지/언론사례');
             window.scrollTo(0,0);
-        }
-        function showPost(title, date, content) {
-            document.getElementById('board-list-view').classList.add('hidden');
-            const detail = document.getElementById('post-detail-view');
-            detail.classList.add('active');
-            document.getElementById('post-title').innerText = title;
-            document.getElementById('post-date').innerText = date;
-            document.getElementById('post-content').innerText = content;
-        }
-        function hidePost() {
-            document.getElementById('board-list-view').classList.remove('hidden');
-            document.getElementById('post-detail-view').classList.remove('active');
         }
         function updateSidebarMenu(text) {
             const items = document.querySelectorAll('.sidebar-menu-item');
