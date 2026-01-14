@@ -183,8 +183,11 @@
             .giant-wand-wrapper { display: none; }
         }
 
-        /* Mobile Version Optimization */
+        /* ----------------------------------------------------------- */
+        /* [모바일 환경 가독성 최적화 섹션] */
+        /* ----------------------------------------------------------- */
         @media (max-width: 768px) {
+            /* 1. 기본 레이아웃 및 스크롤 감도 조정 */
             .portfolio-outer-wrapper { height: 500vh; }
             .portfolio-title-group {
                 top: 80px !important;
@@ -206,50 +209,67 @@
                 margin-right: 5vw; 
             }
             
-            /* Typography Scaling for Mobile */
-            h1 { font-size: 2.15rem !important; line-height: 1.2 !important; letter-spacing: -0.02em; }
-            h3 { font-size: 1.85rem !important; }
-            h4 { font-size: 1.35rem !important; }
-            p { font-size: 0.88rem !important; line-height: 1.6 !important; letter-spacing: -0.01em; color: #94a3b8; }
+            /* 2. 모바일 타이포그래피 최적화 (가독성 향상) */
+            h1 { 
+                font-size: 2.25rem !important; 
+                line-height: 1.2 !important; 
+                letter-spacing: -0.04em !important; 
+                word-break: keep-all; 
+            }
+            h3 { 
+                font-size: 1.85rem !important; 
+                letter-spacing: -0.03em !important;
+                word-break: keep-all;
+            }
+            h4 { 
+                font-size: 1.4rem !important; 
+                letter-spacing: -0.02em !important;
+            }
+            p { 
+                font-size: 0.95rem !important; 
+                line-height: 1.7 !important; 
+                letter-spacing: -0.01em !important; 
+                color: #cbd5e1 !important; /* 명도 살짝 조절 */
+                word-break: keep-all;
+            }
             
-            .portfolio-card h4 { font-size: 1.5rem !important; margin-bottom: 0.5rem !important; }
-            .portfolio-card p { font-size: 0.82rem !important; line-height: 1.5 !important; }
-            .portfolio-card .card-number { font-size: 80px !important; top: -10px !important; }
+            /* 포트폴리오 카드 내부 텍스트 */
+            .portfolio-card h4 { font-size: 1.6rem !important; margin-bottom: 0.75rem !important; }
+            .portfolio-card p { font-size: 0.88rem !important; line-height: 1.6 !important; }
+            .portfolio-card .card-number { font-size: 85px !important; top: -10px !important; }
 
-            .bottom-floating-bar h4 { font-size: 11px !important; }
-            .bottom-floating-bar p { font-size: 9px !important; }
-            
-            .notice-bar-container #notice-text { font-size: 11px !important; }
+            /* 플로팅 바 & 공지사항 */
+            .bottom-floating-bar h4 { font-size: 13px !important; }
+            .bottom-floating-bar p { font-size: 10px !important; }
+            .notice-bar-container #notice-text { font-size: 12px !important; font-weight: 600 !important; }
 
+            /* 푸터 정보 가독성 */
             footer .flex-wrap { justify-content: flex-start; gap: 0.75rem; }
-            footer span { font-size: 8.5px !important; opacity: 0.8; }
-            footer p { font-size: 8.5px !important; }
+            footer span { font-size: 10px !important; color: #94a3b8; }
+            footer p { font-size: 10px !important; }
 
-            /* --- POPUP(MODAL) FONT SIZE REDUCTION FOR MOBILE --- */
-            .modal-content { padding: 1.25rem !important; border-radius: 24px !important; }
-            .modal-content h3 { font-size: 1.45rem !important; margin-bottom: 0.25rem !important; }
-            .modal-content .inline-flex { font-size: 8px !important; padding: 2px 8px !important; }
-            .modal-content label { font-size: 8px !important; letter-spacing: 0.1em !important; }
-            .modal-content .custom-input { font-size: 12px !important; padding: 10px 14px !important; }
-            .modal-content .custom-input::placeholder { font-size: 11px !important; }
-            .modal-content button[type="submit"] { font-size: 11px !important; padding-top: 1rem !important; padding-bottom: 1rem !important; border-radius: 14px !important; }
+            /* 3. 모바일 모달(팝업) 텍스트 가독성 조정 */
+            .modal-content { padding: 1.5rem !important; border-radius: 24px !important; }
+            .modal-content h3 { font-size: 1.6rem !important; margin-bottom: 0.5rem !important; }
+            .modal-content .inline-flex { font-size: 9px !important; padding: 3px 10px !important; }
+            .modal-content label { font-size: 10px !important; font-weight: 700 !important; color: #94a3b8 !important; }
+            .modal-content .custom-input { font-size: 14px !important; padding: 12px 16px !important; }
+            .modal-content .custom-input::placeholder { font-size: 13px !important; opacity: 0.6; }
+            .modal-content button[type="submit"] { font-size: 13px !important; padding: 1.1rem !important; border-radius: 16px !important; }
             
-            /* Option Cards inside Hosting Modal & Quote Modal */
-            .option-card { padding: 0.75rem !important; border-radius: 16px !important; }
-            .option-card h4 { font-size: 11px !important; }
-            .option-card p { font-size: 8px !important; }
-            .option-card span { font-size: 11px !important; }
-            .option-card .w-9, .option-card .w-10 { width: 34px !important; height: 34px !important; }
-            .option-card i { font-size: 14px !important; }
+            /* 옵션 카드 내부 텍스트 */
+            .option-card { padding: 0.85rem !important; border-radius: 18px !important; }
+            .option-card h4 { font-size: 13px !important; }
+            .option-card p { font-size: 10px !important; }
+            .option-card span { font-size: 13px !important; }
             
-            /* Deposit/Bank Info Box */
-            .modal-content .p-5 { padding: 1rem !important; border-radius: 16px !important; }
-            .modal-content .toss-icon { width: 16px !important; height: 16px !important; }
-            .modal-content .text-base { font-size: 13px !important; }
-            .modal-content .text-\[10px\] { font-size: 8px !important; }
+            /* 입금 정보 안내창 */
+            .modal-content .p-5 { padding: 1.25rem !important; border-radius: 18px !important; }
+            .modal-content .text-base { font-size: 14px !important; }
+            .modal-content .text-\[10px\] { font-size: 10px !important; }
 
-            /* --- MOBILE TEXT ADJUSTMENT FOR STATUS SECTIONS --- */
-            .mobile-title-small { font-size: 15px !important; }
+            /* 실시간 현황 섹션 제목 */
+            .mobile-title-small { font-size: 1.15rem !important; letter-spacing: -0.02em !important; }
         }
 
         img { -webkit-user-drag: none; pointer-events: none; }
@@ -396,7 +416,6 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-3 mb-10 sm:init-12">
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
-                <!-- Added mobile-title-small class -->
                 <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
             </div>
             <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
@@ -408,7 +427,6 @@
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="flex items-center gap-3 mb-12 sm:mb-16">
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
-                <!-- Added mobile-title-small class -->
                 <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter mobile-title-small">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
             </div>
             <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"></div>
