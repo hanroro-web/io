@@ -299,10 +299,26 @@
             },
             notices: { 
                 collection: 'settings', 
-                title: '공지사항', 
-                desc: '배너 공지사항을 관리합니다.', 
-                fields: [{ id: 'content', label: '공지 문구', type: 'text' }], 
-                render: (id, d) => `<div class="card p-6 flex justify-between items-center"><p class="text-sm text-gray-300">${d.content || '공지 내용 없음'}</p><div class="flex gap-2"><button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="p-2 text-gray-600 hover:text-white"><i class="fas fa-edit"></i></button><button onclick="window.deleteItem('${id}')" class="p-2 text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button></div></div>` 
+                title: '공지사항 관리', 
+                desc: '웹사이트 배너 및 팝업 공지사항을 관리합니다.', 
+                fields: [
+                    { id: 'title', label: '공지 제목', type: 'text' },
+                    { id: 'content', label: '공지 상세 내용', type: 'textarea' }
+                ], 
+                render: (id, d) => `
+                <div class="card p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="font-bold text-white text-base">${d.title || '제목 없음'}</h4>
+                            <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-widest">NOTICE ARTICLE</p>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-gray-600 hover:text-white transition-colors"><i class="fas fa-edit text-xs"></i></button>
+                            <button onclick="window.deleteItem('${id}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">${d.content || '내용 없음'}</div>
+                </div>` 
             }
         };
 
