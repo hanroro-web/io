@@ -15,6 +15,7 @@
         
         html {
             font-size: 0.9rem;
+            scroll-behavior: smooth;
             overflow-x: hidden;
         }
 
@@ -26,7 +27,6 @@
         
         body {
             font-family: 'Dotum', '돋움', 'Apple SD Gothic Neo', sans-serif;
-            scroll-behavior: smooth;
             background-color: #fff;
             color: #333;
             padding-bottom: 0; 
@@ -165,6 +165,9 @@
         .mouse-icon-wrap {
             margin-top: 12px;
             margin-bottom: 10px;
+            /* 중앙 정렬을 위해 flex 및 justify-center 추가 */
+            display: flex;
+            justify-content: center;
         }
         .mouse-icon {
             width: 18px;
@@ -330,36 +333,39 @@
         </div>
     </aside>
 
-    <!-- 헤더 (모바일 정렬 수정됨) -->
-    <header class="flex flex-col items-center px-4 md:px-12 fixed z-40 transition-all" id="main-header">
-        <div class="w-full max-w-7xl">
-            <!-- 모바일에서의 정렬을 위해 그리드 비율을 1:2:1 또는 유연하게 조정 -->
-            <div class="grid grid-cols-4 lg:grid-cols-3 items-center w-full">
-                <!-- 왼쪽 공백 또는 여분 공간 -->
-                <div class="col-span-1 hidden lg:flex items-center"></div>
+    <!-- 헤더 -->
+    <header class="fixed left-0 top-0 z-40 flex w-full justify-center transition-all" id="main-header">
+        <div class="w-full max-w-7xl px-4 md:px-12">
+            <div class="flex items-center justify-between lg:grid lg:grid-cols-3">
                 
-                <!-- 중앙 로고 섹션 (모바일에서 중앙 집중) -->
-                <div class="col-span-3 lg:col-span-1 flex flex-col items-center justify-center lg:ml-0 -ml-[-25%] lg:-ml-0">
+                <!-- 1. 로고 섹션 (중앙 정렬 래퍼) -->
+                <div class="flex flex-col items-center justify-center lg:col-start-2">
                     <div class="flex items-center space-x-2 cursor-pointer" onclick="showMainSection()">
                         <svg class="w-8 h-8 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 3v17M3 7h18M7 7c0 4 1 6 5 6s5-2 5-6"></path>
                         </svg>
                         <div class="text-xl md:text-2xl font-bold serif tracking-tighter text-white" id="logo-text">로로 <span class="text-[#FF7E00]">소송 로펌</span></div>
                     </div>
-                    <div class="mouse-icon-wrap" id="logo-decoration">
-                        <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+                    <!-- 데스크탑에서만 보이는 장식 요소들 -->
+                    <div class="hidden lg:block w-full text-center">
+                        <div class="mouse-icon-wrap" id="logo-decoration">
+                            <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+                        </div>
+                        <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full hover:bg-[#FF7E00] hover:text-white transition-all bg-transparent backdrop-blur-md shadow-lg" id="header-diagnosis-btn">
+                            자가진단 시작
+                        </button>
                     </div>
-                    <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full hover:bg-[#FF7E00] hover:text-white transition-all bg-transparent backdrop-blur-md shadow-lg" id="header-diagnosis-btn">
-                        자가진단 시작
-                    </button>
                 </div>
 
-                <!-- 오른쪽 메뉴 버튼 (모바일에서 우측 끝 정렬) -->
-                <div class="col-span-1 flex justify-end items-center">
+                <!-- 2. 모바일 메뉴 버튼 (오른쪽 끝 배치) -->
+                <div class="flex justify-end lg:col-start-3">
                     <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 text-[#FF7E00] hover:bg-gray-100/10 rounded-xl transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
+
+                <!-- 3. 데스크탑 왼쪽 여백 확보용 빈 디브 (그리드 균형) -->
+                <div class="hidden lg:block lg:col-start-1"></div>
             </div>
         </div>
     </header>
@@ -381,7 +387,7 @@
             </div>
         </section>
 
-        <!-- 변호사 소개 (섹션 위로 이동) -->
+        <!-- 변호사 소개 -->
         <section id="lawyers" class="py-24 bg-white">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-3xl font-bold serif mb-16">전문 변호사</h2>
@@ -508,26 +514,24 @@
         </section>
         
         <footer class="bg-[#1A1A1A] text-white pt-20 pb-10 border-t border-white/5">
-            <div class="max-w-6xl mx-auto px-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                    <div class="col-span-1 md:col-span-2">
-                        <div class="flex items-center space-x-2 mb-6">
-                            <svg class="w-6 h-6 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 3v17M3 7h18M7 7c0 4 1 6 5 6s5-2 5-6"></path>
-                            </svg>
-                            <span class="text-lg font-bold serif tracking-tighter">로로 <span class="text-[#FF7E00]">소송 로펌</span></span>
-                        </div>
-                        <div class="space-y-2 text-[11px] text-white/30 leading-relaxed">
-                            <p>상호명 : 로로 법률사무소 | 대표변호사 : 김로로</p>
-                            <p>주소 : 서울특별시 서초구 서초대로 123, 법조빌딩 7층</p>
-                        </div>
+            <div class="max-w-6xl mx-auto px-6 text-center">
+                <div class="flex flex-col items-center mb-16">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <svg class="w-6 h-6 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 3v17M3 7h18M7 7c0 4 1 6 5 6s5-2 5-6"></path>
+                        </svg>
+                        <span class="text-lg font-bold serif tracking-tighter">로로 <span class="text-[#FF7E00]">소송 로펌</span></span>
+                    </div>
+                    <div class="space-y-2 text-[11px] text-white/30 leading-relaxed">
+                        <p>상호명 : 로로 법률사무소 | 대표변호사 : 김로로</p>
+                        <p>주소 : 서울특별시 서초구 서초대로 123, 법조빌딩 7층</p>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- 소송 자가진단 -->
+    <!-- 소송 자가진단 (페이지형) -->
     <div id="full-diagnosis" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-xl mx-auto fade-in-up">
             <div class="text-center mb-12">
@@ -536,7 +540,6 @@
             </div>
             <div class="bg-[#1A1A1A] p-10 rounded-[40px] border border-white/5 shadow-2xl min-h-[420px] flex flex-col justify-center text-white">
                 
-                <!-- 질문 1: 사건 분류 -->
                 <div id="diag-1" class="diag-item active">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 01. 사건 분류</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">현재 겪고 계신 법률 갈등의 분야는 무엇입니까?</h3>
@@ -547,7 +550,6 @@
                     </div>
                 </div>
 
-                <!-- 질문 2: 증거 유무 -->
                 <div id="diag-2" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 증거 확인</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">입증할 수 있는 핵심적인 증거(문서, 녹취, 사진 등)가 있습니까?</h3>
@@ -558,7 +560,6 @@
                     </div>
                 </div>
 
-                <!-- 질문 3: 긴급도 -->
                 <div id="diag-3" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 03. 긴급도 판단</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">사건 해결이 얼마나 시급한 상황입니까?</h3>
@@ -569,7 +570,6 @@
                     </div>
                 </div>
 
-                <!-- 질문 4: 상담 의사 -->
                 <div id="diag-4" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">분석 직전 단계</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">전문 변호사의 정밀 분석 리포트를 받아보시겠습니까?</h3>
@@ -579,7 +579,6 @@
                     </div>
                 </div>
 
-                <!-- 분석 대기 -->
                 <div id="diag-5" class="diag-item text-center">
                     <div class="py-12 flex flex-col items-center">
                         <div class="w-16 h-16 border-4 border-[#FF7E00] border-t-transparent rounded-full animate-spin mb-8"></div>
@@ -588,7 +587,6 @@
                     </div>
                 </div>
 
-                <!-- 최종 결과 -->
                 <div id="diag-result" class="diag-item">
                     <div class="bg-[#FF7E00]/10 p-8 rounded-3xl border border-[#FF7E00]/30 mb-8 text-center">
                         <h4 class="text-sm font-bold text-[#FF7E00] mb-2">진단 결과: [전문 조력 강력 권장]</h4>
@@ -624,24 +622,6 @@
                         </div>
                         <svg class="w-5 h-5 text-white/10 group-hover:text-[#FF7E00] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </div>
-
-                    <div onclick="viewPost(3)" class="p-8 bg-[#1A1A1A] rounded-[30px] flex justify-between items-center group cursor-pointer border border-white/5 hover:border-[#FF7E00]/30 transition-all">
-                        <div class="flex-1">
-                            <span class="text-[9px] font-bold text-[#FF7E00] mb-2 block uppercase tracking-widest">언론보도</span>
-                            <h4 class="text-sm font-bold serif text-white group-hover:text-[#FF7E00] transition-colors">김로로 대표변호사, '디지털 자산 소송의 미래' 컨퍼런스 기조 강연</h4>
-                            <p class="text-[10px] text-white/30 mt-2">2024.12.20 | 법조신문</p>
-                        </div>
-                        <svg class="w-5 h-5 text-white/10 group-hover:text-[#FF7E00] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-
-                    <div onclick="viewPost(4)" class="p-8 bg-[#1A1A1A] rounded-[30px] flex justify-between items-center group cursor-pointer border border-white/5 hover:border-[#FF7E00]/30 transition-all">
-                        <div class="flex-1">
-                            <span class="text-[9px] font-bold text-blue-400 mb-2 block uppercase tracking-widest">공지사항</span>
-                            <h4 class="text-sm font-bold serif text-white group-hover:text-[#FF7E00] transition-colors">민사소송법 개정에 따른 '신속 대응 전담팀' 발족 안내</h4>
-                            <p class="text-[10px] text-white/30 mt-2">2024.12.15 | 로로 전략 센터</p>
-                        </div>
-                        <svg class="w-5 h-5 text-white/10 group-hover:text-[#FF7E00] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
                 </div>
             </div>
 
@@ -658,7 +638,6 @@
                         <p>로로 법률사무소가 지난 10일 발표된 '2025 대한민국 소비자 만족도 조사'에서 법률 서비스 부문 1위를 수상했습니다.</p>
                     </div>
                 </div>
-                <!-- ... 다른 포스트 내용들 생략 ... -->
             </div>
         </div>
     </div>
