@@ -118,7 +118,7 @@
         }
         .portfolio-card {
             flex: 0 0 450px;
-            height: 550px;
+            height: 580px; /* 버튼 추가를 위해 높이 소폭 조정 */
             margin-right: 4vw;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -203,7 +203,7 @@
             }
             .portfolio-card { 
                 flex: 0 0 82vw; 
-                height: 420px; 
+                height: 460px; /* 버튼 추가를 위해 모바일 높이도 조정 */
                 padding: 1.75rem; 
                 margin-right: 5vw; 
             }
@@ -270,6 +270,39 @@
         }
 
         img { -webkit-user-drag: none; pointer-events: none; }
+
+        /* 신규 추가된 스타일: 포트폴리오 카드 내부 버튼 */
+        .case-button {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 1rem 0;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 2rem;
+        }
+        .portfolio-card:hover .case-button {
+            background: #8a4fff;
+            border-color: #8a4fff;
+            box-shadow: 0 10px 30px rgba(138, 79, 255, 0.3);
+            transform: scale(1.02);
+        }
+        .case-button i {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+        .portfolio-card:hover .case-button i {
+            transform: translateX(4px);
+        }
     </style>
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -360,49 +393,85 @@
             </div>
             
             <div class="horizontal-track" id="track">
+                <!-- 01: 일반 홈페이지 -->
                 <div class="portfolio-card">
                     <span class="card-number">01</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
-                            <i class="fas fa-brain text-2xl sm:text-3xl"></i>
+                            <i class="fas fa-laptop text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">넥스트 인텔리전스</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">AI 데이터 분석 솔루션 기업의 아이덴티티를 담은 미래지향적 인터페이스 구축 및 복합 대시보드 설계.</p>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">라이트하우스 개인 블로그</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">사용자 중심의 깔끔하고 직관적인 레이아웃을 갖춘 일반형 홈페이지. 누구나 쉽게 정보를 탐색할 수 있는 접근성 중심의 UI를 구현했습니다.</p>
                         <div class="flex gap-2">
-                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#AI_PLATFORM</span>
-                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#WEB_APP</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#BASIC_WEB</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#BLOG_TYPE</span>
                         </div>
                     </div>
+                    <!-- 신규 버튼 -->
+                    <button class="case-button">
+                        <i class="fas fa-eye"></i>
+                        고객 사례 보기
+                    </button>
                 </div>
+                <!-- 02: 기업 홈페이지 -->
                 <div class="portfolio-card">
                     <span class="card-number">02</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
-                            <i class="fas fa-shopping-bag text-2xl sm:text-3xl"></i>
+                            <i class="fas fa-city text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">모던 바이브</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">사용자 경험을 극대화한 UI 설계로 구매 전환율을 40% 이상 향상시킨 감성 커머스 플랫폼.</p>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">글로벌 테크 코퍼레이션</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">신뢰와 전문성을 상징하는 기업형 웹사이트. 복잡한 비즈니스 모델을 효과적으로 시각화하고 멀티 디바이스에 최적화된 반응형 환경을 구축했습니다.</p>
+                        <div class="flex gap-2">
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#CORPORATE</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#BUSINESS</span>
+                        </div>
                     </div>
+                    <!-- 신규 버튼 -->
+                    <button class="case-button">
+                        <i class="fas fa-building-user"></i>
+                        고객 사례 보기
+                    </button>
                 </div>
+                <!-- 03: 브랜딩 홈페이지 -->
                 <div class="portfolio-card">
                     <span class="card-number">03</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
                             <i class="fas fa-palette text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">스튜디오 엘리먼츠</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">디자인 스튜디오의 독창적인 작품들을 몰입감 있게 보여주는 인터랙티브 웹진 포트폴리오.</p>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">아뜰리에 무드 브랜딩</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">브랜드의 철학을 예술적 인터랙션으로 표현한 브랜딩 사이트. 감각적인 색채 조합과 타이포그래피를 통해 독창적인 브랜드 아이덴티티를 확립했습니다.</p>
+                        <div class="flex gap-2">
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#BRANDING</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#IDENTITY</span>
+                        </div>
                     </div>
+                    <!-- 신규 버튼 -->
+                    <button class="case-button">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                        고객 사례 보기
+                    </button>
                 </div>
+                <!-- 04: 쇼핑몰 홈페이지 -->
                 <div class="portfolio-card">
                     <span class="card-number">04</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
-                            <i class="fas fa-bolt text-2xl sm:text-3xl"></i>
+                            <i class="fas fa-shopping-cart text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">하이퍼 랜딩</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-6">0.5초 이내의 초고속 로딩 속도를 보장하는 퍼포먼스 마케팅 최적화 랜딩페이지 시스템.</p>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">트렌드 픽스 쇼핑몰</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">구매 전환을 유도하는 고성능 커머스 플랫폼. 간결한 결제 프로세스와 강력한 상품 검색 필터를 통해 사용자 편의성을 극대화한 쇼핑 경험을 제공합니다.</p>
+                        <div class="flex gap-2">
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#E-COMMERCE</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#SHOPPING</span>
+                        </div>
                     </div>
+                    <!-- 신규 버튼 -->
+                    <button class="case-button">
+                        <i class="fas fa-cart-shopping"></i>
+                        고객 사례 보기
+                    </button>
                 </div>
             </div>
         </div>
@@ -415,7 +484,6 @@
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
                 <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
             </div>
-            <!-- [수정] grid-cols-1 (모바일에서 1열)로 설정 -->
             <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
         </div>
     </section>
