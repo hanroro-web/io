@@ -3,407 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한로로 대시보드 | 통합 관리 시스템</title>
+    <title>HANRORO | Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background: #05020a; color: #fff; margin: 0; padding: 0; }
+        :root { --primary: #8a4fff; --bg: #05020a; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: #fff; }
         
-        /* 로그인 오버레이 */
-        #login-overlay { position: fixed; inset: 0; z-index: 2000; background: #05020a; display: flex; align-items: center; justify-content: center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        #login-overlay.hidden { opacity: 0; pointer-events: none; visibility: hidden; transform: translateY(-20px); }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.5rem; }
+        .sidebar { background: #0a0614; border-right: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem 1rem; color: #fff; width: 100%; outline: none; transition: 0.2s; font-size: 0.875rem; }
+        .input-dark:focus { border-color: var(--primary); background: rgba(138, 79, 255, 0.05); }
         
-        .sidebar { background: #0c051a; border-right: 1px solid rgba(138, 79, 255, 0.1); }
-        .card { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.1); border-radius: 1rem; transition: all 0.2s; }
-        .card:hover { border-color: rgba(138, 79, 255, 0.3); }
+        .tab-btn { padding: 1rem; font-weight: 700; font-size: 0.875rem; color: #666; border-radius: 1rem; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; }
+        .tab-btn.active { color: #fff; background: rgba(138, 79, 255, 0.1); }
         
-        .input-field { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 0.75rem 1rem; color: #fff; outline: none; width: 100%; font-size: 0.9rem; }
-        .input-field:focus { border-color: #8a4fff; background: rgba(138, 79, 255, 0.12); }
-        
-        .btn-primary { background: #8a4fff; color: #fff; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; transition: all 0.2s; cursor: pointer; border: none; }
-        .btn-primary:hover { background: #7a3fff; transform: translateY(-1px); }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .nav-item { cursor: pointer; transition: all 0.2s; }
-        .nav-item.active { background: rgba(138, 79, 255, 0.1); color: #8a4fff; }
-        
-        .modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1rem; }
-        .modal.active { display: flex; }
-        .modal-body { background: #161129; border: 1px solid rgba(138, 79, 255, 0.2); border-radius: 1.5rem; width: 100%; max-width: 500px; padding: 2rem; position: relative; }
-        
-        #auth-status-bar { position: fixed; top: 1rem; right: 1rem; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 10px; font-weight: bold; z-index: 50; }
-        .status-online { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .status-loading { background: rgba(255, 255, 255, 0.05); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
+
+        #login-overlay { background: var(--bg); z-index: 200; }
+        .tab-content.hidden { display: none; }
     </style>
 </head>
-<body class="min-h-screen flex overflow-hidden">
+<body class="flex min-h-screen">
 
-    <!-- 로그인 오버레이 -->
-    <div id="login-overlay">
-        <div class="text-center p-8 max-w-sm w-full">
-            <div class="flex justify-center mb-6 text-5xl text-purple-500">
-                <i class="fas fa-shield-halved"></i>
+    <!-- 로그인 화면 -->
+    <div id="login-overlay" class="fixed inset-0 flex items-center justify-center p-6">
+        <div class="glass-panel p-10 w-full max-w-md shadow-2xl border-purple-500/20">
+            <div class="text-center mb-10">
+                <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-600/20">
+                    <i class="fas fa-lock text-white"></i>
+                </div>
+                <h1 class="text-2xl font-black tracking-tighter uppercase">Admin Access</h1>
+                <p class="text-gray-500 text-xs mt-2 font-bold tracking-widest uppercase">한로로 관리자 인증이 필요합니다</p>
             </div>
-            <h1 class="text-3xl font-black tracking-tighter mb-2 uppercase">ADMIN ACCESS</h1>
-            <p class="text-gray-500 text-sm mb-8">한로로 CMS 관리자 계정으로 접속하세요.</p>
-            
-            <form id="login-form" class="space-y-4 text-left">
+            <form id="login-form" class="space-y-4">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">ID</label>
-                    <input type="text" id="login-id" class="input-field" placeholder="아이디 입력" required>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase ml-1">Admin ID</label>
+                    <input type="text" id="admin-id" class="input-dark" placeholder="아이디를 입력하세요" required>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-500 mb-1 ml-1 uppercase">Password</label>
-                    <input type="password" id="login-pw" class="input-field" placeholder="••••••••" required>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase ml-1">Password</label>
+                    <input type="password" id="admin-pw" class="input-dark" placeholder="비밀번호를 입력하세요" required>
                 </div>
-                <button type="submit" id="login-btn" class="btn-primary w-full py-4 text-lg mt-6">
-                    <i class="fas fa-sign-in-alt mr-2"></i>로그인
-                </button>
+                <button type="submit" class="w-full bg-purple-600 py-4 rounded-xl font-black text-lg hover:bg-purple-700 transition-all shadow-lg shadow-purple-600/20 mt-4">로그인</button>
+                <div id="login-error" class="text-center text-red-500 text-xs font-bold mt-4 hidden">인증 정보가 올바르지 않습니다.</div>
             </form>
         </div>
     </div>
 
-    <div id="auth-status-bar" class="status-loading">
-        <i class="fas fa-spinner fa-spin mr-1"></i> CONNECTING...
-    </div>
-
-    <!-- 사이드바 -->
-    <aside class="sidebar w-64 flex-shrink-0 flex flex-col">
-        <div class="p-6 flex-grow">
-            <div class="flex items-center space-x-2 mb-10">
-                <i class="fas fa-magic text-purple-500"></i>
-                <span class="text-xl font-black tracking-tighter uppercase">HANRORO CMS</span>
+    <!-- 대시보드 사이드바 -->
+    <aside class="sidebar w-64 hidden lg:flex flex-col p-6 fixed h-full">
+        <div class="flex items-center space-x-2 mb-12">
+            <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-bolt text-white text-xs"></i>
             </div>
-            <nav class="space-y-1">
-                <div onclick="switchTab('projects')" class="nav-item active w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-400" id="nav-projects">
-                    <i class="fas fa-tasks w-5"></i><span>프로젝트 관리</span>
-                </div>
-                <div onclick="switchTab('payments')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-400" id="nav-payments">
-                    <i class="fas fa-wallet w-5"></i><span>입금 현황</span>
-                </div>
-                <div onclick="switchTab('quotes')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-400" id="nav-quotes">
-                    <i class="fas fa-file-invoice-dollar w-5"></i><span>견적 신청 내역</span>
-                </div>
-                <div onclick="switchTab('consultations')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-400" id="nav-consultations">
-                    <i class="fas fa-comments w-5"></i><span>상담 신청 내역</span>
-                </div>
-                <div onclick="switchTab('notices')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-400" id="nav-notices">
-                    <i class="fas fa-bullhorn w-5"></i><span>공지사항 관리</span>
-                </div>
-            </nav>
+            <span class="text-xl font-black tracking-tighter uppercase">ADMIN</span>
         </div>
-        <div class="p-6 border-t border-white/5">
-            <button onclick="window.handleLogout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-400/10 transition-colors">
-                <i class="fas fa-sign-out-alt w-5"></i><span>로그아웃</span>
+
+        <nav class="space-y-2 flex-1">
+            <div onclick="switchTab('quotes')" id="tab-quotes" class="tab-btn active">
+                <i class="fas fa-envelope-open-text"></i> 견적 신청 내역
+            </div>
+            <div onclick="switchTab('projects')" id="tab-projects" class="tab-btn">
+                <i class="fas fa-tasks"></i> 프로젝트 관리
+            </div>
+            <div onclick="switchTab('deposits')" id="tab-deposits" class="tab-btn">
+                <i class="fas fa-wallet"></i> 입금 현황 관리
+            </div>
+            <div onclick="switchTab('settings')" id="tab-settings" class="tab-btn">
+                <i class="fas fa-cog"></i> 사이트 설정
+            </div>
+        </nav>
+
+        <div class="pt-6 border-t border-white/5">
+            <button onclick="logout()" class="w-full text-left p-3 text-xs font-bold text-gray-500 hover:text-white transition">
+                <i class="fas fa-sign-out-alt mr-2"></i> LOGOUT
             </button>
         </div>
     </aside>
 
-    <!-- 메인 컨텐츠 -->
-    <main class="flex-grow overflow-y-auto p-8 lg:p-12">
-        <header class="flex justify-between items-end mb-10">
-            <div>
-                <h1 class="text-3xl font-black mb-2" id="page-title">프로젝트 관리</h1>
-                <p class="text-gray-500 text-sm" id="page-desc">실시간으로 프로젝트 진행 상태를 업데이트합니다.</p>
+    <main class="flex-1 lg:ml-64 p-6 md:p-12">
+        <!-- 견적 신청 섹션 -->
+        <section id="section-quotes" class="tab-content">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Inquiries</h2>
+                    <p class="text-gray-500 text-sm">홈페이지를 통해 접수된 최신 견적 및 상담 요청입니다.</p>
+                </div>
             </div>
-            <button id="add-btn" class="btn-primary flex items-center gap-2">
-                <i class="fas fa-plus"></i><span>새로 등록</span>
-            </button>
-        </header>
+            <div id="quotes-list" class="space-y-4">
+                <div class="text-center py-20 text-gray-600 animate-pulse">
+                    <i class="fas fa-spinner fa-spin mb-4 text-2xl"></i>
+                    <p class="text-sm font-bold uppercase tracking-widest">데이터를 불러오는 중...</p>
+                </div>
+            </div>
+        </section>
 
-        <div id="tab-projects" class="tab-content active"><div id="project-list" class="grid gap-4 sm:grid-cols-2"></div></div>
-        <div id="tab-payments" class="tab-content"><div id="payment-list" class="grid gap-4"></div></div>
-        <div id="tab-quotes" class="tab-content"><div id="quote-list" class="grid gap-4"></div></div>
-        <div id="tab-consultations" class="tab-content"><div id="consultation-list" class="grid gap-4"></div></div>
-        <div id="tab-notices" class="tab-content"><div id="notice-list" class="grid gap-4"></div></div>
+        <!-- 프로젝트 관리 섹션 -->
+        <section id="section-projects" class="tab-content hidden">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Projects</h2>
+                    <p class="text-gray-500 text-sm">진행률과 상태를 관리합니다.</p>
+                </div>
+                <button onclick="openModal('project')" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-700 transition">추가하기</button>
+            </div>
+            <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+
+        <!-- 입금 현황 섹션 -->
+        <section id="section-deposits" class="tab-content hidden">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Deposits</h2>
+                    <p class="text-gray-500 text-sm">실시간 입금 현황을 업데이트합니다.</p>
+                </div>
+                <button onclick="openModal('deposit')" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-700 transition">추가하기</button>
+            </div>
+            <div class="glass-panel overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="bg-white/5 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
+                            <th class="p-4">이름/업체명</th>
+                            <th class="p-4">유형</th>
+                            <th class="p-4">상태</th>
+                            <th class="p-4 text-right">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deposits-table"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 사이트 설정 섹션 -->
+        <section id="section-settings" class="tab-content hidden">
+            <h2 class="text-3xl font-black tracking-tighter uppercase mb-8">Settings</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+                <div class="glass-panel p-8">
+                    <h3 class="text-lg font-bold mb-6 text-purple-400">Main Notice</h3>
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">공지사항 제목</label>
+                        <input type="text" id="setting-notice-title" class="input-dark" placeholder="예: NOTICE">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">공지사항 내용</label>
+                        <textarea id="setting-notice-text" class="input-dark h-24 resize-none" placeholder="배너에 표시될 내용"></textarea>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8">
+                    <h3 class="text-lg font-bold mb-6 text-purple-400">Top Banner Popup</h3>
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 제목</label>
+                        <input type="text" id="setting-top-title" class="input-dark" placeholder="상단 바 제목">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 내용</label>
+                        <textarea id="setting-top-text" class="input-dark h-24 resize-none" placeholder="상단 바 상세 내용"></textarea>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8">
+                    <h3 class="text-lg font-bold mb-6 text-purple-400">Floating Popup (Bottom)</h3>
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 제목</label>
+                        <input type="text" id="setting-bottom-title" class="input-dark" placeholder="플로팅 팝업 제목">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase">팝업 내용</label>
+                        <textarea id="setting-bottom-text" class="input-dark h-24 resize-none" placeholder="플로팅 팝업 상세 내용"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-end">
+                    <div class="bg-purple-600/10 border border-purple-500/20 p-6 rounded-2xl mb-4">
+                        <p class="text-xs text-gray-400 font-medium leading-relaxed">
+                            <i class="fas fa-info-circle mr-1"></i> 각 항목을 수정한 후 아래 '모든 설정 저장' 버튼을 클릭하면 홈페이지에 즉시 반영됩니다.
+                        </p>
+                    </div>
+                    <button onclick="saveSettings()" class="w-full bg-white text-black py-4 rounded-xl font-black hover:bg-purple-600 hover:text-white transition shadow-lg shadow-white/5">모든 설정 저장</button>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- CRUD 모달 -->
-    <div id="crud-modal" class="modal">
-        <div class="modal-body">
-            <h2 id="modal-title" class="text-xl font-black mb-6">데이터 등록</h2>
-            <form id="crud-form" class="space-y-4">
-                <div id="form-fields" class="space-y-4"></div>
-                <div class="flex gap-2 pt-4">
-                    <button type="button" onclick="closeModal()" class="flex-1 bg-gray-800 text-white py-3 rounded-xl font-bold">취소</button>
-                    <button type="submit" id="submit-btn" class="flex-1 bg-purple-600 text-white py-3 rounded-xl font-bold">저장하기</button>
-                </div>
-            </form>
+    <!-- 모달 레이아웃 -->
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-6">
+        <div class="glass-panel bg-[#0a0614] w-full max-w-md p-8 shadow-2xl">
+            <h3 id="modal-title" class="text-2xl font-black mb-6 uppercase tracking-tighter">Item Detail</h3>
+            <div id="modal-form" class="space-y-4"></div>
+            <div class="flex gap-3 mt-8">
+                <button onclick="closeModal()" class="flex-1 bg-white/5 py-4 rounded-xl font-bold hover:bg-white/10 transition">취소</button>
+                <button id="modal-save-btn" class="flex-1 bg-purple-600 py-4 rounded-xl font-bold hover:bg-purple-700 transition">저장하기</button>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-        
+        import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp, setDoc, query } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
             authDomain: "hanroro-web.firebaseapp.com", 
             projectId: "hanroro-web", 
             appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
         };
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        const VALID_ID = "hanroro";
-        const VALID_PW = "gksfhfh00@@";
+        const ADMIN_ID = "hanroro";
+        const ADMIN_PW = "gksfhfh00@@";
 
-        let currentTab = 'projects';
-        let editingId = null;
-        let unsubscribers = [];
-
-        // 로그인 로직
-        document.getElementById('login-form').onsubmit = async (e) => {
+        document.getElementById('login-form').onsubmit = (e) => {
             e.preventDefault();
-            const id = document.getElementById('login-id').value;
-            const pw = document.getElementById('login-pw').value;
-            
-            if (id === VALID_ID && pw === VALID_PW) {
-                try {
-                    await signInAnonymously(auth);
-                    sessionStorage.setItem('h_admin_auth', 'true');
-                    document.getElementById('login-overlay').classList.add('hidden');
-                    document.getElementById('auth-status-bar').className = 'status-online';
-                    document.getElementById('auth-status-bar').innerHTML = 'ONLINE';
-                    initRealtime(); 
-                } catch (error) {
-                    console.error("Auth Error:", error);
-                    alert('인증 서버 연결 실패');
-                }
+            if (document.getElementById('admin-id').value === ADMIN_ID && document.getElementById('admin-pw').value === ADMIN_PW) {
+                sessionStorage.setItem('is_admin_logged_in', 'true');
+                startDashboard();
             } else {
-                alert('정보 불일치');
+                document.getElementById('login-error').classList.remove('hidden');
             }
         };
 
-        window.handleLogout = async () => {
-            sessionStorage.removeItem('h_admin_auth');
-            await signOut(auth);
-            location.reload();
+        const startDashboard = async () => {
+            document.getElementById('login-overlay').classList.add('hidden');
+            await signInAnonymously(auth);
+            loadData();
         };
 
-        onAuthStateChanged(auth, (user) => {
-            const isAuthorized = sessionStorage.getItem('h_admin_auth') === 'true';
-            if (user && isAuthorized) {
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('auth-status-bar').className = 'status-online';
-                document.getElementById('auth-status-bar').innerHTML = 'ONLINE';
-                initRealtime();
-            } else {
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('auth-status-bar').className = 'status-loading';
-                document.getElementById('auth-status-bar').innerHTML = 'DISCONNECTED';
-            }
-        });
+        const loadData = () => {
+            // Quotes 리스너
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'quotes'), (snap) => {
+                const list = document.getElementById('quotes-list');
+                const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
-        const config = {
-            projects: {
-                collection: 'projects',
-                title: '프로젝트 관리',
-                desc: '진행중인 프로젝트의 상태를 관리합니다.',
-                fields: [
-                    { id: 'name', label: '프로젝트명', type: 'text' },
-                    { id: 'phase', label: '단계', type: 'text' },
-                    { id: 'progress', label: '진행률(%)', type: 'number' }
-                ],
-                render: (id, d) => `
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="font-bold text-lg text-white">${d.name || '제목 없음'}</h4>
-                                <p class="text-xs text-purple-400 mt-1 uppercase font-bold">${d.phase || '준비중'}</p>
-                            </div>
-                            <div class="text-2xl font-black text-purple-500">${d.progress || 0}%</div>
-                        </div>
-                        <div class="w-full bg-white/5 rounded-full h-1.5 mb-6">
-                            <div class="bg-purple-500 h-1.5 rounded-full transition-all duration-500" style="width: ${d.progress || 0}%"></div>
-                        </div>
-                        <div class="flex gap-3 border-t border-white/5 pt-4">
-                            <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="text-xs font-bold text-gray-500 hover:text-white">수정</button>
-                            <button onclick="window.deleteItem('${id}')" class="text-xs font-bold text-gray-500 hover:text-red-500">삭제</button>
-                        </div>
-                    </div>`
-            },
-            payments: {
-                collection: 'deposits',
-                title: '입금 현황',
-                desc: '정산 및 입금 내역을 관리합니다.',
-                fields: [
-                    { id: 'name', label: '입금자명', type: 'text' },
-                    { id: 'type', label: '항목', type: 'text' },
-                    { id: 'status', label: '입금 상태', type: 'select', options: [{v:'waiting', l:'입금전'}, {v:'complete', l:'입금완료'}] }
-                ],
-                render: (id, d) => {
-                    const isComplete = d.status === 'complete';
-                    const statusText = isComplete ? '입금완료' : '입금전';
-                    const statusColor = isComplete ? 'text-emerald-500' : 'text-amber-500';
-                    return `
-                    <div class="card p-5 flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold text-white text-base">${d.name || '이름 없음'}</h4>
-                            <p class="text-[10px] text-gray-500 mt-1 font-bold uppercase tracking-wider">${d.type || '일반 항목'}</p>
-                        </div>
-                        <div class="flex items-center gap-8">
-                            <div class="text-right">
-                                <div class="text-xs font-black ${statusColor} uppercase tracking-tighter">${statusText}</div>
-                            </div>
-                            <div class="flex gap-1">
-                                <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/5 text-gray-600 hover:text-white transition-colors"><i class="fas fa-edit text-sm"></i></button>
-                                <button onclick="window.deleteItem('${id}')" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash text-sm"></i></button>
-                            </div>
-                        </div>
-                    </div>`;
+                if (docs.length === 0) {
+                    list.innerHTML = `<div class="glass-panel p-12 text-center text-gray-500"><p class="text-sm font-bold uppercase tracking-widest">접수된 내역이 없습니다</p></div>`;
+                    return;
                 }
-            },
-            quotes: { 
-                collection: 'quotes', 
-                title: '견적 신청 내역', 
-                desc: '웹사이트를 통해 접수된 견적 문의 내역입니다.',
-                fields: [
-                    { id: 'category', label: '카테고리', type: 'select', options: [{v:'personal', l:'일반'}, {v:'business', l:'기업'}] },
-                    { id: 'name', label: '성함/업체명', type: 'text' },
-                    { id: 'contact', label: '연락처', type: 'text' },
-                    { id: 'content', label: '상세 내용', type: 'textarea' }
-                ],
-                render: (id, d) => {
-                    const categoryLabel = d.category === 'business' ? '기업' : '일반';
-                    const categoryColor = d.category === 'business' ? 'bg-blue-500/10 text-blue-400' : 'bg-purple-500/10 text-purple-400';
-                    return `
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex flex-col gap-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${categoryColor}">${categoryLabel}</span>
-                                    <h4 class="font-bold text-white text-base">${d.name || '미기입'}</h4>
-                                </div>
-                                <p class="text-[11px] text-gray-500 font-bold">${d.contact || '연락처 없음'}</p>
+
+                list.innerHTML = docs.map(d => `
+                    <div class="glass-panel p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-l-4 border-purple-600/30">
+                        <div class="flex-1 w-full">
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                <span class="text-[9px] font-black bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded uppercase tracking-widest border border-purple-500/20">${d.category || '기타 상담'}</span>
+                                <span class="text-[10px] font-bold text-gray-500 uppercase">${d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleString('ko-KR') : '방금 전'}</span>
                             </div>
-                            <div class="flex gap-1">
-                                <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-gray-600 hover:text-white transition-colors"><i class="fas fa-edit text-xs"></i></button>
-                                <button onclick="window.deleteItem('${id}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash text-xs"></i></button>
-                            </div>
+                            <div class="mb-4"><h4 class="text-lg font-black text-white mb-1">${d.name || '미기입'}</h4><p class="text-xs text-purple-400 font-bold opacity-80"><i class="fas fa-link mr-1"></i>${d.contact || '연락처 없음'}</p></div>
+                            <div class="bg-white/[0.02] p-4 rounded-xl border border-white/5"><p class="text-sm text-gray-400 whitespace-pre-wrap">${d.content || '내용 없음'}</p></div>
                         </div>
-                        <div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">${d.content || d.memo || '내용 없음'}</div>
-                    </div>`;
-                }
-            },
-            consultations: { 
-                collection: 'consultations', 
-                title: '상담 내역', 
-                desc: '간편 상담 신청 내역입니다.', 
-                render: (id, d) => `<div class="card p-6"><div class="flex justify-between mb-4"><div><h4 class="font-bold text-white">${d.name || '익명'}</h4><p class="text-[11px] text-emerald-400 font-bold mt-1">${d.phone || d.contact || ''}</p></div><button onclick="window.deleteItem('${id}')" class="text-gray-600 hover:text-red-500"><i class="fas fa-trash"></i></button></div><div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400">${d.memo || '내용 없음'}</div></div>` 
-            },
-            notices: { 
-                collection: 'settings', 
-                title: '공지사항 관리', 
-                desc: '웹사이트 배너 및 팝업 공지사항을 관리합니다.', 
-                fields: [
-                    { id: 'title', label: '공지 제목', type: 'text' },
-                    { id: 'content', label: '공지 상세 내용', type: 'textarea' }
-                ], 
-                render: (id, d) => `
-                <div class="card p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h4 class="font-bold text-white text-base">${d.title || '제목 없음'}</h4>
-                            <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-widest">NOTICE ARTICLE</p>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="window.openEdit('${id}', '${encodeURIComponent(JSON.stringify(d))}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-gray-600 hover:text-white transition-colors"><i class="fas fa-edit text-xs"></i></button>
-                            <button onclick="window.deleteItem('${id}')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash text-xs"></i></button>
-                        </div>
+                        <button onclick="deleteDocById('quotes', '${d.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash-alt"></i></button>
                     </div>
-                    <div class="bg-black/30 p-4 rounded-xl text-xs text-gray-400 leading-relaxed whitespace-pre-wrap">${d.content || '내용 없음'}</div>
-                </div>` 
-            }
-        };
-
-        window.switchTab = (tabId) => {
-            currentTab = tabId;
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === `tab-${tabId}`));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.id === `nav-${tabId}`));
-            document.getElementById('page-title').innerText = config[tabId].title;
-            document.getElementById('page-desc').innerText = config[tabId].desc;
-            document.getElementById('add-btn').style.display = (tabId === 'consultations') ? 'none' : 'flex';
-        };
-
-        const initRealtime = () => {
-            unsubscribers.forEach(unsub => unsub());
-            unsubscribers = [];
-            const mappings = { projects: 'project-list', payments: 'payment-list', quotes: 'quote-list', consultations: 'consultation-list', notices: 'notice-list' };
-            Object.keys(config).forEach(key => {
-                const colRef = collection(db, 'artifacts', appId, 'public', 'data', config[key].collection);
-                const unsub = onSnapshot(colRef, (snap) => {
-                    const el = document.getElementById(mappings[key]);
-                    if (!el) return;
-                    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    docs.sort((a, b) => {
-                        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds * 1000 || 0);
-                        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds * 1000 || 0);
-                        return timeB - timeA;
-                    });
-                    if (docs.length === 0) {
-                        el.innerHTML = '<div class="col-span-full py-20 text-center text-gray-600 text-sm font-bold uppercase tracking-widest">데이터가 없습니다.</div>';
-                    } else {
-                        el.innerHTML = docs.map(doc => config[key].render(doc.id, doc)).join('');
-                    }
-                }, (error) => console.error(`Error fetching ${key}:`, error));
-                unsubscribers.push(unsub);
+                `).join('');
             });
-        };
 
-        const openModal = (isEdit = false, data = null) => {
-            const fieldsEl = document.getElementById('form-fields');
-            fieldsEl.innerHTML = '';
-            editingId = isEdit ? data.id : null;
-            document.getElementById('modal-title').innerText = isEdit ? '정보 수정' : '새로운 등록';
-            const fields = config[currentTab].fields || [];
-            fields.forEach(f => {
-                let val = data ? (data[f.id] || '') : '';
-                let input = '';
-                
-                if (f.type === 'select') {
-                    input = `<select name="${f.id}" class="input-field">${f.options.map(o => `<option value="${o.v}" ${val === o.v ? 'selected' : ''}>${o.l}</option>`).join('')}</select>`;
-                } else if (f.type === 'textarea') {
-                    input = `<textarea name="${f.id}" class="input-field min-h-[120px]" required>${val}</textarea>`;
-                } else {
-                    input = `<input type="${f.type}" name="${f.id}" value="${val}" class="input-field" required>`;
+            // Projects 리스너
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
+                document.getElementById('projects-list').innerHTML = snap.docs.map(d => `
+                    <div class="glass-panel p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold text-white">${d.data().name}</h4>
+                            <button onclick="deleteDocById('projects', '${d.id}')" class="text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase mb-2"><span>Progress</span><span class="text-purple-500">${d.data().progress}%</span></div>
+                        <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="bg-purple-600 h-full" style="width: ${d.data().progress}%"></div></div>
+                    </div>
+                `).join('');
+            });
+
+            // Deposits 리스너 (상태 텍스트 변경 로직 적용)
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), (snap) => {
+                document.getElementById('deposits-table').innerHTML = snap.docs.map(d => {
+                    const status = d.data().status;
+                    const statusText = status === 'complete' ? '입금완료' : '입금전';
+                    const statusColor = status === 'complete' ? 'text-emerald-500' : 'text-amber-500';
+                    
+                    return `
+                    <tr class="border-t border-white/5 hover:bg-white/[0.02]">
+                        <td class="p-4 font-bold text-white">${d.data().name}</td>
+                        <td class="p-4 text-gray-500 text-xs">${d.data().type}</td>
+                        <td class="p-4 text-[11px] font-black tracking-tight ${statusColor}">
+                            <i class="fas ${status === 'complete' ? 'fa-check-circle' : 'fa-clock'} mr-1"></i> ${statusText}
+                        </td>
+                        <td class="p-4 text-right">
+                            <button onclick="toggleDepositStatus('${d.id}', '${status}')" class="text-[10px] font-black text-purple-400 bg-purple-400/10 px-3 py-1.5 rounded-lg hover:bg-purple-400 hover:text-white transition uppercase">전환</button>
+                            <button onclick="deleteDocById('deposits', '${d.id}')" class="ml-3 text-gray-600 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `}).join('');
+            });
+
+            // Settings 리스너
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    document.getElementById('setting-notice-title').value = data.noticeTitle || "";
+                    document.getElementById('setting-notice-text').value = data.noticeContent || "";
+                    document.getElementById('setting-top-title').value = data.topPopupTitle || "";
+                    document.getElementById('setting-top-text').value = data.topPopupContent || "";
+                    document.getElementById('setting-bottom-title').value = data.bottomPopupTitle || "";
+                    document.getElementById('setting-bottom-text').value = data.bottomPopupContent || "";
                 }
-                
-                fieldsEl.innerHTML += `<div><label class="block text-[11px] font-bold text-purple-400 mb-2 uppercase tracking-tighter">${f.label}</label>${input}</div>`;
             });
-            document.getElementById('crud-modal').classList.add('active');
         };
 
-        window.closeModal = () => document.getElementById('crud-modal').classList.remove('active');
-        window.openEdit = (id, json) => openModal(true, { id, ...JSON.parse(decodeURIComponent(json)) });
-        window.deleteItem = async (id) => { 
-            if (confirm('삭제하시겠습니까?')) {
+        window.switchTab = (tabName) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        };
+
+        window.logout = () => { sessionStorage.removeItem('is_admin_logged_in'); location.reload(); };
+
+        window.deleteDocById = async (col, id) => {
+            if (confirm('정말 삭제하시겠습니까?')) {
                 try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, id));
-                } catch (e) { alert('삭제 권한이 없습니다.'); }
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+                } catch(e) { alert('오류가 발생했습니다.'); }
             }
         };
 
-        document.getElementById('add-btn').onclick = () => openModal();
-        document.getElementById('crud-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = { updatedAt: serverTimestamp() };
-            formData.forEach((v, k) => data[k] = (k === 'progress' || k === 'amount') ? Number(v) : v);
-            try {
-                if (editingId) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection, editingId), data);
-                } else {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', config[currentTab].collection), { ...data, createdAt: serverTimestamp() });
-                }
-                closeModal();
-            } catch (err) { alert('저장 실패: 권한 부족 또는 서버 오류'); }
+        window.toggleDepositStatus = async (id, current) => {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'deposits', id), { 
+                status: current === 'complete' ? 'pending' : 'complete' 
+            });
         };
+
+        window.saveSettings = async () => {
+            const settings = {
+                noticeTitle: document.getElementById('setting-notice-title').value,
+                noticeContent: document.getElementById('setting-notice-text').value,
+                topPopupTitle: document.getElementById('setting-top-title').value,
+                topPopupContent: document.getElementById('setting-top-text').value,
+                bottomPopupTitle: document.getElementById('setting-bottom-title').value,
+                bottomPopupContent: document.getElementById('setting-bottom-text').value,
+                updatedAt: serverTimestamp()
+            };
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'configs', 'mainSettings'), settings, { merge: true });
+                alert('모든 설정이 성공적으로 저장되었습니다.');
+            } catch (e) { alert('저장 실패: ' + e.message); }
+        };
+
+        window.openModal = (type) => {
+            const modal = document.getElementById('modal');
+            const form = document.getElementById('modal-form');
+            modal.classList.replace('hidden', 'flex');
+            if (type === 'project') {
+                form.innerHTML = `<input type="text" id="m-p-name" class="input-dark" placeholder="프로젝트 이름"><input type="number" id="m-p-progress" class="input-dark" placeholder="진행률 (0-100)">`;
+                document.getElementById('modal-save-btn').onclick = async () => {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), { name: document.getElementById('m-p-name').value, progress: parseInt(document.getElementById('m-p-progress').value) || 0, createdAt: serverTimestamp() });
+                    closeModal();
+                };
+            } else if (type === 'deposit') {
+                form.innerHTML = `<input type="text" id="m-d-name" class="input-dark" placeholder="입금자명/업체명"><input type="text" id="m-d-type" class="input-dark" placeholder="유형 (예: 선금 50%)">`;
+                document.getElementById('modal-save-btn').onclick = async () => {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), { name: document.getElementById('m-d-name').value, type: document.getElementById('m-d-type').value, status: 'pending', createdAt: serverTimestamp() });
+                    closeModal();
+                };
+            }
+        };
+
+        window.closeModal = () => document.getElementById('modal').classList.replace('flex', 'hidden');
+
+        if (sessionStorage.getItem('is_admin_logged_in') === 'true') startDashboard();
     </script>
 </body>
 </html>
