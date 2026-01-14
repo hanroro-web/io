@@ -20,42 +20,55 @@
             scroll-behavior: smooth; 
             -webkit-font-smoothing: antialiased; 
             overflow-x: hidden;
-            /* 기본 드래그 방지 스타일 */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
             margin: 0;
             padding: 0;
         }
         
-        img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
-
+        /* Layout Components */
         .glass-nav { background: rgba(5, 2, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .hero-gradient { background: radial-gradient(circle at 50% 50%, #150b2e 0%, #05020a 100%); }
         .gradient-text { background: linear-gradient(90deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .magic-wand-float { animation: wandFloat 3s ease-in-out infinite; display: inline-block; }
         @keyframes wandFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 5px rgba(138, 79, 255, 0.3)); }
-            50% { transform: translateY(-12px) rotate(12deg); filter: drop-shadow(0 0 20px rgba(138, 79, 255, 0.6)); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(12deg); }
         }
 
+        /* Giant Wand Animation */
+        @keyframes giantWandFloat {
+            0%, 100% { transform: translate(0, 0) rotate(-15deg); }
+            50% { transform: translate(-20px, -40px) rotate(5deg); }
+        }
+        .giant-wand-wrapper {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            pointer-events: none;
+        }
+        .giant-wand {
+            font-size: 18rem;
+            color: rgba(167, 139, 250, 0.2); 
+            filter: blur(1px) drop-shadow(0 0 50px rgba(167, 139, 250, 0.35));
+            animation: giantWandFloat 6s ease-in-out infinite;
+        }
+
+        /* Updated Round Notification Bar with Icons */
         .neon-notification-bar { 
-            background: rgba(138, 79, 255, 0.08); 
-            border: 1px solid rgba(138, 79, 255, 0.25); 
-            backdrop-filter: blur(12px);
-            border-radius: 14px; 
-            padding: 8px 20px; 
+            background: rgba(138, 79, 255, 0.12); 
+            border: 1px solid rgba(138, 79, 255, 0.35); 
+            backdrop-filter: blur(16px);
+            border-radius: 9999px; /* Fully Rounded */
+            padding: 10px 24px; 
             display: flex; 
             align-items: center; 
-            gap: 12px; 
+            gap: 10px; 
             width: fit-content;
+            box-shadow: 0 0 20px rgba(138, 79, 255, 0.15);
         }
-        
-        .infinity-icon { color: #10b981; font-size: 14px; animation: breathe 3s infinite ease-in-out; text-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
-        @keyframes breathe { 0%, 100% { opacity: 0.7; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
-        
+
         .bottom-floating-bar { 
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; 
             background: rgba(15, 10, 25, 0.95); backdrop-filter: blur(24px); border: 1px solid rgba(138, 79, 255, 0.4); 
@@ -63,432 +76,467 @@
             width: 92%; max-width: 580px; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
-        .hero-visual-box { background: #0c051a; border-radius: 2rem; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .pattern-overlay { position: absolute; inset: 0; background-image: radial-gradient(rgba(138, 79, 255, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; }
+        /* Portfolio Horizontal Scroll */
+        .portfolio-outer-wrapper {
+            position: relative;
+            height: 450vh; 
+        }
+        .portfolio-sticky-box {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .horizontal-track {
+            display: flex;
+            padding: 0 10vw;
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+        }
+        .portfolio-card {
+            flex: 0 0 450px;
+            height: 550px;
+            margin-right: 4vw;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2rem;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .portfolio-card:hover {
+            border-color: #8a4fff;
+            background: rgba(138, 79, 255, 0.08);
+            transform: translateY(-15px);
+        }
+        .card-number {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            font-size: 120px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.02);
+            z-index: 0;
+        }
+
+        /* Common Components */
+        .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; padding: 1.25rem; }
+        .gauge-container { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin-top: 8px; overflow: hidden; }
+        .gauge-bar { height: 100%; background: linear-gradient(90deg, #8a4fff, #c084fc); border-radius: 10px; }
         
+        /* Modal Styles */
         .custom-modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; padding: 16px; }
         .custom-modal.active { display: flex; }
-        .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 500px; border-radius: 28px; overflow: hidden; animation: modalPop 0.4s ease-out; position: relative; max-height: 95vh; overflow-y: auto; }
-        @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
-        .input-group { margin-bottom: 1.25rem; }
-        .input-group label { display: block; font-size: 11px; font-weight: 800; color: #8a4fff; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
-        .custom-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 16px; color: white; outline: none; transition: all 0.3s; font-size: 14px; }
-        .custom-input:focus { border-color: #8a4fff; background: rgba(138, 79, 255, 0.05); }
+        .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 500px; border-radius: 28px; padding: 2rem; max-height: 90vh; overflow-y: auto; }
+        .custom-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 16px; color: white; margin-top: 0.5rem; outline: none; transition: all 0.3s ease; }
+        .custom-input:focus { border-color: #8a4fff; background: rgba(138, 79, 255, 0.05); box-shadow: 0 0 15px rgba(138, 79, 255, 0.1); }
 
-        .pay-item { 
-            background: rgba(255, 255, 255, 0.02); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 16px; 
-            padding: 16px 20px;
-            display: flex; 
-            align-items: center; 
-            cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 100%;
-            margin-bottom: 0.75rem;
-            gap: 16px;
+        /* Option Selection Style */
+        .option-card {
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
         }
-        .pay-item:hover { background: rgba(255, 255, 255, 0.04); border-color: rgba(138, 79, 255, 0.2); }
-        .pay-item.selected { 
-            background: rgba(138, 79, 255, 0.1); 
-            border-color: #8a4fff; 
-            box-shadow: 0 0 20px rgba(138, 79, 255, 0.1);
+        .option-radio:checked + .option-card {
+            border-color: #8a4fff;
+            background: rgba(138, 79, 255, 0.1);
+            box-shadow: 0 0 15px rgba(138, 79, 255, 0.2);
         }
 
-        .pay-icon-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.3s;
-        }
-        .pay-item.selected .pay-icon-box { background: #8a4fff; color: white; }
+        .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 
-        .total-summary {
-            background: rgba(138, 79, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 1.5rem;
-            border: 1px dashed rgba(138, 79, 255, 0.3);
+        @media (max-width: 1024px) {
+            .giant-wand-wrapper { display: none; }
         }
 
-        .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; transition: all 0.3s; cursor: pointer; padding: 1.25rem; position: relative; }
-        .unified-card:hover { transform: translateY(-4px); border-color: rgba(138, 79, 255, 0.4); }
-
-        .gauge-container { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin-top: 8px; overflow: hidden; }
-        .gauge-bar { height: 100%; background: linear-gradient(90deg, #8a4fff, #c084fc); border-radius: 10px; transition: width 1s; }
-
-        .payment-badge { font-size: 9px; font-weight: 900; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .payment-badge.waiting { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
-
-        .toss-bank-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
-            background: #3182f6;
-            border-radius: 6px;
-            margin-right: 8px;
+        @media (max-width: 768px) {
+            .portfolio-outer-wrapper { height: auto; }
+            .portfolio-sticky-box { position: relative; height: auto; overflow-x: auto; padding: 4rem 0; }
+            .horizontal-track { transform: none !important; padding: 0 5vw; }
+            .portfolio-card { flex: 0 0 85vw; height: 450px; padding: 2rem; }
         }
-
-        .submit-payment-btn {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .submit-payment-btn:hover {
-            background: linear-gradient(135deg, #6d28d9, #9333ea);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
-        }
-
-        .notice-board-section {
-            background: rgba(138, 79, 255, 0.03);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px 0;
-            overflow: hidden;
-        }
-        .notice-board-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .notice-label {
-            background: #8a4fff;
-            color: white;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 3px 10px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            flex-shrink: 0;
-        }
-        .notice-scroll-area {
-            flex-grow: 1;
-            font-size: 13px;
-            color: #d1d5db;
-            font-weight: 500;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        @media (max-width: 640px) {
-            h1 { font-size: 2.5rem !important; line-height: 1.2 !important; }
-            .bottom-floating-bar { padding: 10px 16px; border-radius: 20px; bottom: 10px; width: 94%; }
-        }
-        
-        input, textarea, select { -webkit-user-select: text !important; user-select: text !important; }
     </style>
 </head>
-<!-- oncontextmenu, onselectstart, ondragstart 속성을 추가하여 방지 기능을 강화함 -->
-<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<body>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass-nav">
+    <nav class="fixed w-full z-50 glass-nav top-0">
         <div class="max-w-7xl mx-auto px-5 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-2 shrink-0 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
                 <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
                 <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
             </div>
             
+            <!-- Updated Round Event Bar with Icons -->
             <div class="hidden lg:flex neon-notification-bar">
-                <div class="flex items-center">
-                    <i class="fas fa-infinity infinity-icon"></i>
-                    <span class="ml-2.5 text-[11px] font-bold text-gray-200 tracking-tight">지금 상담하면 제작 비용 60% 자체 할인 이벤트 중!</span>
+                <i class="fas fa-stars text-purple-400 text-xs animate-pulse"></i>
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] font-bold text-gray-200 uppercase tracking-tight">제작 비용 60% 자체 할인 이벤트 중</span>
+                    <i class="fas fa-fire-flame-curved text-orange-500 text-[10px]"></i>
                 </div>
-                <div class="w-[1px] h-3 bg-white/10 mx-2"></div>
-                <button onclick="toggleModal('quote-modal', true)" class="text-[11px] font-black text-purple-400 hover:text-purple-300">상담하기</button>
             </div>
 
-            <div class="flex items-center space-x-2">
-                <button onclick="toggleModal('status-modal', true)" class="hidden sm:block border border-white/10 text-white px-4 py-2 rounded-lg text-[11px] font-bold hover:bg-white/5 transition-all">현황보기</button>
-                <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-4 py-2.5 sm:px-5 rounded-lg font-bold text-[11px] shadow-lg shadow-purple-600/20 hover:bg-purple-500">견적 상담</button>
+            <!-- CTA Section -->
+            <div class="flex items-center gap-4">
+                <button onclick="toggleModal('status-modal', true)" class="flex items-center gap-2 text-purple-400 text-[11px] font-bold uppercase tracking-widest mr-4 hover:text-white transition-colors hidden sm:flex">
+                    <i class="fas fa-chart-line text-[10px]"></i>
+                    진행현황
+                </button>
+                <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-6 py-2.5 rounded-xl font-bold text-[11px] hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/30">견적 상담</button>
             </div>
         </div>
     </nav>
 
-    <!-- Floating Bar -->
+    <!-- Floating Bar (Bottom) -->
     <div class="bottom-floating-bar">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-purple-600/20 flex items-center justify-center border border-purple-500/30">
-                <i class="fas fa-rocket text-purple-400 text-xs"></i>
+            <div class="w-10 h-10 rounded-full bg-purple-600/20 flex items-center justify-center border border-purple-500/30">
+                <i class="fas fa-rocket text-purple-400 text-sm"></i>
             </div>
             <div class="shrink">
-                <h4 class="text-white font-bold text-[12px] sm:text-sm tracking-tight">제작 비용 60% 자체 할인 이벤트 중</h4>
-                <p class="text-[10px] text-gray-400">한로로만의 압도적 혜택을 놓치지 마세요</p>
+                <h4 class="text-white font-bold text-xs sm:text-sm">제작 비용 60% 할인 진행 중</h4>
+                <p class="text-[10px] text-gray-400 uppercase tracking-tighter font-semibold">Limited Offer for Hanroro Clients</p>
             </div>
         </div>
-        <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-full font-black text-[11px] sm:text-xs hover:scale-105 transition-transform">상담신청</button>
+        <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-7 py-3 rounded-full font-black text-[11px] hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-purple-600/20">상담 신청하기</button>
     </div>
 
     <!-- Hero Section -->
-    <section class="hero-gradient min-h-screen flex items-center pt-24 pb-20">
-        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-            <div class="text-center lg:text-left">
-                <div class="inline-flex items-center px-3 py-1 mb-6 rounded-md border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[9px] font-black uppercase tracking-widest">Premium Web Agency</div>
-                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black leading-tight mb-8">홈페이지 가치는 <br><span class="gradient-text">브랜드의 얼굴입니다</span></h1>
-                <p class="text-gray-400 mb-10 text-base sm:text-lg leading-relaxed max-w-md mx-auto lg:mx-0">감각적인 디자인과 독보적인 기술력을 결합하여, 온라인에서 가장 빛나도록 설계합니다.</p>
-                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                    <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-10 py-5 rounded-2xl font-black text-xs sm:text-sm transition-all hover:scale-105 shadow-xl shadow-purple-600/30 uppercase tracking-widest">견적 상담신청</button>
-                    <button onclick="toggleModal('payment-modal', true)" class="border border-purple-500/40 text-purple-300 px-10 py-5 rounded-2xl font-black text-xs sm:text-sm transition-all hover:bg-purple-500/10 uppercase tracking-widest">견적 결제하기</button>
-                </div>
+    <section class="hero-gradient min-h-screen flex items-center pt-24 pb-20 relative overflow-hidden">
+        <div class="giant-wand-wrapper">
+            <i class="fas fa-magic giant-wand"></i>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+            <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em]">
+                <i class="fas fa-sparkles mr-2"></i> 고품격 프리미엄 웹에이전시
             </div>
-            <div class="hidden lg:block">
-                <div class="hero-visual-box h-[480px] w-full max-w-[420px] mx-auto shadow-2xl">
-                    <div class="pattern-overlay"></div>
-                    <i class="fas fa-magic text-8xl text-purple-400 relative z-20 magic-wand-float"></i>
+            <h1 class="text-4xl sm:text-6xl font-black leading-[1.15] mb-10 tracking-tighter">
+                홈페이지 가치는 <br>
+                <span class="gradient-text italic">브랜드의 얼굴</span>입니다
+            </h1>
+            <p class="text-gray-400 mb-12 text-base sm:text-lg max-w-xl leading-relaxed font-medium">
+                우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
+            </p>
+            <div class="flex flex-wrap items-center gap-4">
+                <button onclick="toggleModal('quote-modal', true)" class="bg-white text-black px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">프로젝트 시작하기</button>
+                <button onclick="toggleModal('hosting-modal', true)" class="px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
+                    <i class="fas fa-credit-card text-purple-400"></i> 결제하기
+                </button>
+
+                <div class="flex items-center gap-4 px-6 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+                    <div class="flex -space-x-2">
+                        <div class="w-6 h-6 rounded-full border-2 border-black bg-gray-600"></div>
+                        <div class="w-6 h-6 rounded-full border-2 border-black bg-purple-600"></div>
+                        <div class="w-6 h-6 rounded-full border-2 border-black bg-indigo-600"></div>
+                    </div>
+                    <span class="text-xs font-bold text-gray-300">124+ 프로젝트 완료</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="live-status" class="py-24 border-t border-white/5 bg-black/20">
-        <div class="max-w-7xl mx-auto px-6">
-            <h3 class="text-2xl sm:text-3xl font-black mb-12 uppercase tracking-tighter">진행 중인 <span class="gradient-text">프로젝트</span></h3>
-            <div id="main-project-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="p-10 text-center col-span-full text-gray-600 text-sm">로드 중...</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Payment Grid Section -->
-    <section id="payment-status" class="py-24 border-t border-white/5 bg-black/40">
-        <div class="max-w-7xl mx-auto px-6">
-            <h3 class="text-2xl sm:text-3xl font-black text-gray-200 mb-12 uppercase tracking-tighter">실시간 <span class="text-emerald-500">입금</span> 현황</h3>
-            <div id="payment-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="p-10 text-center col-span-full text-gray-600 text-sm">로드 중...</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="py-24 border-t border-white/5 bg-black/60">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-                <div>
-                    <span class="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-2 block">Our Works</span>
-                    <h3 class="text-2xl sm:text-4xl font-black text-white uppercase tracking-tighter">한로로 <span class="gradient-text">포트폴리오</span></h3>
-                </div>
-                <p class="text-gray-500 text-xs sm:text-sm font-medium max-w-sm">최신 트렌드와 고도의 기술력을 바탕으로 제작된 프리미엄 프로젝트들을 소개합니다.</p>
+    <!-- Portfolio Section (Horizontal Scroll) -->
+    <div class="portfolio-outer-wrapper" id="portfolio-section">
+        <div class="portfolio-sticky-box">
+            <div class="absolute top-24 left-6 sm:left-12 z-10">
+                <span class="text-[11px] font-black text-purple-500 uppercase tracking-[0.3em] mb-4 block">Selected Works</span>
+                <h3 class="text-4xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                    한로로 <br><span class="gradient-text">PORTFOLIO</span>
+                </h3>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Portfolio Card 1 -->
-                <div class="unified-card !p-8 flex flex-col h-full group">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-600/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
-                            <i class="fas fa-layer-group text-xl"></i>
+            <div class="horizontal-track" id="track">
+                <div class="portfolio-card">
+                    <span class="card-number">01</span>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
+                            <i class="fas fa-brain text-3xl"></i>
                         </div>
-                        <span class="text-[9px] font-black px-2 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Corporate</span>
-                    </div>
-                    <h4 class="text-white font-black text-lg mb-3 tracking-tight">넥스트 인텔리전스</h4>
-                    <p class="text-gray-400 text-xs leading-relaxed mb-8 flex-grow">AI 기반의 데이터 분석 솔루션 기업을 위한 미래지향적 인터페이스와 인터랙티브 랜딩페이지 구축.</p>
-                    <div class="flex flex-wrap gap-2 pt-6 border-t border-white/5">
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">React</span>
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">Three.js</span>
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">GSAP</span>
+                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">넥스트 인텔리전스</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">AI 데이터 분석 솔루션 기업의 아이덴티티를 담은 미래지향적 인터페이스 구축 및 복합 대시보드 설계.</p>
+                        <div class="flex gap-2">
+                            <span class="text-[10px] bg-white/5 px-4 py-1.5 rounded-full text-gray-400 border border-white/5">#AI_PLATFORM</span>
+                            <span class="text-[10px] bg-white/5 px-4 py-1.5 rounded-full text-gray-400 border border-white/5">#WEB_APP</span>
+                        </div>
                     </div>
                 </div>
-                <!-- Portfolio Card 2 -->
-                <div class="unified-card !p-8 flex flex-col h-full border-purple-500/20 bg-purple-500/5 group">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-600/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
-                            <i class="fas fa-shopping-bag text-xl"></i>
+                <!-- Other Portfolio Cards -->
+                <div class="portfolio-card">
+                    <span class="card-number">02</span>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
+                            <i class="fas fa-shopping-bag text-3xl"></i>
                         </div>
-                        <span class="text-[9px] font-black px-2 py-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">E-Commerce</span>
-                    </div>
-                    <h4 class="text-white font-black text-lg mb-3 tracking-tight">모던 바이브 셀렉트샵</h4>
-                    <p class="text-gray-400 text-xs leading-relaxed mb-8 flex-grow">사용자 경험을 극대화한 UI 설계로 구매 전환율을 35% 이상 향상시킨 감성적인 패션 커머스 플랫폼.</p>
-                    <div class="flex flex-wrap gap-2 pt-6 border-t border-white/5">
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">Next.js</span>
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">Tailwind</span>
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">API</span>
+                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">모던 바이브</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">사용자 경험을 극대화한 UI 설계로 구매 전환율을 40% 이상 향상시킨 감성 커머스 플랫폼.</p>
                     </div>
                 </div>
-                <!-- Portfolio Card 3 -->
-                <div class="unified-card !p-8 flex flex-col h-full group">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-600/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
-                            <i class="fas fa-paint-brush text-xl"></i>
+                <div class="portfolio-card">
+                    <span class="card-number">03</span>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
+                            <i class="fas fa-palette text-3xl"></i>
                         </div>
-                        <span class="text-[9px] font-black px-2 py-1 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">Art / Design</span>
+                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">스튜디오 엘리먼츠</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">디자인 스튜디오의 독창적인 작품들을 몰입감 있게 보여주는 인터랙티브 웹진 포트폴리오.</p>
                     </div>
-                    <h4 class="text-white font-black text-lg mb-3 tracking-tight">스튜디오 엘리먼츠</h4>
-                    <p class="text-gray-400 text-xs leading-relaxed mb-8 flex-grow">디자인 스튜디오의 작품을 몰입감 있게 보여주는 웹진 형태의 포트폴리오 및 아카이브 시스템.</p>
-                    <div class="flex flex-wrap gap-2 pt-6 border-t border-white/5">
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">WebGL</span>
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">Framer</span>
-                        <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-1 rounded">SEO</span>
+                </div>
+                <div class="portfolio-card">
+                    <span class="card-number">04</span>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
+                            <i class="fas fa-bolt text-3xl"></i>
+                        </div>
+                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">하이퍼 랜딩</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">0.5초 이내의 초고속 로딩 속도를 보장하는 퍼포먼스 마케팅 최적화 랜딩페이지 시스템.</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Deposit Status Board -->
+    <section class="py-24 bg-black/40 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center gap-3 mb-12">
+                <div class="w-12 h-[1px] bg-purple-500"></div>
+                <h3 class="text-xl font-black uppercase tracking-tighter italic">실시간 <span class="gradient-text">입금 현황</span></h3>
+            </div>
+            <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </div>
     </section>
 
-    <!-- Notice Board -->
-    <div class="notice-board-section">
-        <div class="notice-board-container">
-            <span class="notice-label">Notice</span>
-            <div id="footer-notice-text" class="notice-scroll-area">한정 기간 내 상담 시 제작 비용 60% 자체 할인 혜택 제공 중입니다.</div>
+    <!-- Live Project Status -->
+    <section class="py-32 bg-black/60 border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex items-center gap-3 mb-16">
+                <div class="w-12 h-[1px] bg-purple-500"></div>
+                <h3 class="text-2xl font-black uppercase tracking-tighter">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
+            </div>
+            <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- One-line Notice Bar -->
+    <div class="notice-bar-container py-4">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between gap-6 overflow-hidden">
+            <div class="flex items-center gap-4 shrink-0">
+                <span class="bg-purple-600 text-[10px] font-black px-2 py-0.5 rounded text-white uppercase tracking-tighter">Notice</span>
+            </div>
+            <div id="notice-ticker" class="flex-1 truncate">
+                <p id="notice-text" class="text-[12px] text-gray-400 font-medium hover:text-white transition-colors cursor-pointer">최신 공지사항을 불러오고 있습니다...</p>
+            </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="py-20 bg-[#030107]">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            <div class="col-span-1 lg:col-span-1">
-                <div class="flex items-center space-x-2 mb-6">
-                    <i class="fas fa-magic text-purple-500"></i>
-                    <span class="text-xl font-black tracking-tighter uppercase gradient-text">HANRORO</span>
+    <footer class="py-24 bg-[#030107] border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-20">
+                <div>
+                    <div class="text-2xl font-black gradient-text uppercase mb-8 tracking-tighter">HANRORO</div>
+                    <div class="space-y-4">
+                        <p class="text-gray-400 text-sm leading-relaxed max-w-md">한로로(Hanroro)는 고객의 비즈니스 가치를 디자인과 기술로 증명하는 프리미엄 웹 에이전시입니다.</p>
+                        <div class="flex gap-4 pt-4">
+                            <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-instagram"></i></div>
+                            <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-facebook-f"></i></div>
+                            <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-github"></i></div>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-gray-500 text-xs leading-relaxed mb-6">한로로가 최고의 결과물을 약속합니다.</p>
-            </div>
-            <div>
-                <h5 class="text-white font-bold text-sm mb-6 uppercase tracking-widest">Services</h5>
-                <ul class="space-y-4 text-xs text-gray-500 font-bold">
-                    <li>반응형 홈페이지</li>
-                    <li>랜딩페이지 제작</li>
-                    <li>UI/UX 디자인</li>
-                    <li>유지보수 관리</li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="text-white font-bold text-sm mb-6 uppercase tracking-widest">사업자 정보</h5>
-                <ul class="space-y-4 text-xs text-gray-500 font-bold">
-                    <li><div class="flex items-center mb-1"><i class="fas fa-id-card text-purple-500 mr-2 shrink-0"></i>상호명: 한로로(Hanroro) - 55디자이너스</div></li>
-                    <li><div class="flex items-center mb-1"><i class="fas fa-file-invoice text-gray-600 mr-2 shrink-0"></i>사업자번호: 540-40-00028</div></li>
-                    <li><div class="flex items-center mb-1"><i class="fas fa-shopping-cart text-gray-600 mr-2 shrink-0"></i>통신판매업: 제 2015-안양만안-00105호</div></li>
-                    <li><div class="flex items-center mb-1"><i class="fas fa-user-tie text-gray-600 mr-2 shrink-0"></i>대표자: 김상우</div></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="text-white font-bold text-sm mb-6 uppercase tracking-widest">Consulting</h5>
-                <div class="p-6 rounded-2xl bg-white/5 border border-white/5">
-                    <p class="text-lg font-black text-white mb-2">0507-1354-9107</p>
-                    <p class="text-[10px] text-gray-600">AM 10:00 - PM 18:00 (Mon-Fri)</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+                    <div>
+                        <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Company</h5>
+                        <ul class="space-y-4 text-gray-500 text-xs font-medium">
+                            <li class="hover:text-white cursor-pointer transition-colors">About Us</li>
+                            <li class="hover:text-white cursor-pointer transition-colors">Portfolio</li>
+                            <li class="hover:text-white cursor-pointer transition-colors">Our Service</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Legal</h5>
+                        <ul class="space-y-4 text-gray-500 text-xs font-medium">
+                            <li class="hover:text-white cursor-pointer transition-colors">이용약관</li>
+                            <li class="hover:text-white cursor-pointer transition-colors">개인정보처리방침</li>
+                            <li class="hover:text-white cursor-pointer transition-colors">호스팅 정책</li>
+                        </ul>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Contact</h5>
+                        <ul class="space-y-4 text-gray-500 text-xs font-medium">
+                            <li>hanroro.web@gmail.com</li>
+                            <li>0507-1354-9107</li>
+                            <li>-</li>
+                        </ul>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-[10px] text-gray-600 font-bold uppercase tracking-tighter">
+                    <span>상호명: 한로로(Hanroro) - 55디자이너스</span>
+                    <span>대표자: 김상우</span>
+                    <span>사업자등록번호: 540-40-00028</span>
+                    <span>통신판매업신고: 제 2015-안양만안-00105호</span>
+                </div>
+                <p class="text-gray-700 text-[10px] uppercase tracking-widest font-black">© 2024 HANRORO. ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modals -->
-    <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
-        <div class="modal-content p-8">
-            <h3 class="text-xl font-black text-white mb-6 uppercase tracking-tight">견적 상담 신청</h3>
-            <form id="quote-form">
-                <div class="input-group">
-                    <label>성함 / 업체명</label>
-                    <input type="text" id="q-name" class="custom-input" placeholder="성함 또는 업체명을 입력해주세요" required>
-                </div>
-                <div class="input-group">
-                    <label>연락처</label>
-                    <input type="tel" id="q-phone" class="custom-input" placeholder="010-0000-0000" required>
-                </div>
-                <div class="input-group">
-                    <label>프로젝트 예산 범위</label>
-                    <select id="q-budget" class="custom-input appearance-none bg-black">
-                        <option value="50-100">50만원 ~ 100만원</option>
-                        <option value="100-300">100만원 ~ 300만원</option>
-                        <option value="300-500">300만원 ~ 500만원</option>
-                        <option value="500+">500만원 이상</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>필요한 서비스 선택</label>
-                    <select id="q-type" class="custom-input appearance-none bg-black">
-                        <option value="landing">랜딩페이지 제작 (1page)</option>
-                        <option value="corporate">기업 홍보형 웹사이트</option>
-                        <option value="shopping">쇼핑몰 / 커머스 구축</option>
-                        <option value="redesign">기존 사이트 리뉴얼</option>
-                        <option value="maintenance">유지보수 및 관리</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>상세 문의 내용</label>
-                    <textarea id="q-memo" class="custom-input h-28 resize-none" placeholder="원하시는 기능이나 벤치마킹 사이트가 있다면 적어주세요."></textarea>
-                </div>
-                <button type="submit" class="w-full bg-purple-600 text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-purple-500 transition-colors mt-2">상담 신청 완료하기</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="payment-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('payment-modal', false)">
-        <div class="modal-content p-8">
-            <h3 class="text-xl font-black text-white mb-6 uppercase tracking-tight">견적 결제 (입금 확인)</h3>
-            <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 mb-6">
-                <p class="text-[10px] text-purple-300 font-bold mb-1 uppercase tracking-widest">Bank Info</p>
-                <div class="flex items-center">
-                    <span class="toss-bank-icon">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 13.5c-1.2 1.2-3.3 1.2-4.5 0l-3.5-3.5c-1.2-1.2-1.2-3.3 0-4.5s3.3-1.2 4.5 0l3.5 3.5c1.2 1.2 1.2 3.3 0 4.5z"/></svg>
-                    </span>
-                    <p class="text-sm font-black text-white">토스뱅크 1001-2586-0977 (김상우)</p>
+    <!-- Project Status Modal -->
+    <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
+        <div class="modal-content !max-w-[650px] !p-0 overflow-hidden">
+            <div class="p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest mb-3">
+                            <i class="fas fa-satellite-dish animate-pulse"></i> Live Progress
+                        </div>
+                        <h3 class="text-3xl font-black text-white uppercase tracking-tighter">진행 중인 프로젝트 현황</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-medium">현재 한로로에서 제작 중인 프로젝트들의 실시간 공정률입니다.</p>
+                    </div>
+                    <button onclick="toggleModal('status-modal', false)" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
-            
-            <form id="payment-form">
-                <div class="input-group">
-                    <label>입금자 성함</label>
-                    <input type="text" id="p-name" class="custom-input" placeholder="입금하신 성함을 입력해주세요" required>
+            <div class="p-8 max-h-[60vh] overflow-y-auto">
+                <div id="modal-project-list" class="space-y-6">
+                    <p class="text-center text-gray-500 py-10 text-xs uppercase font-bold tracking-widest">Loading Projects...</p>
                 </div>
-                <div class="input-group">
-                    <label>연락처</label>
-                    <input type="tel" id="p-phone" class="custom-input" placeholder="010-0000-0000" required>
-                </div>
-                <div class="input-group">
-                    <label>상품 선택</label>
-                    <div id="pay-options" class="space-y-2">
-                        <div class="pay-item selected" onclick="selectPay(this, '1. 한로로 + 구글 호스팅', 1350000)">
-                            <div class="pay-icon-box"><i class="fab fa-google text-lg"></i></div>
-                            <div class="flex-grow text-left">
-                                <h4 class="text-white font-bold text-xs">1. 한로로 + 구글 호스팅</h4>
-                                <p class="text-[9px] text-gray-500">Google Cloud 최고급 인프라 적용</p>
-                            </div>
-                            <div class="text-purple-400 font-black text-xs shrink-0">₩1,350,000</div>
-                        </div>
-                        <div class="pay-item" onclick="selectPay(this, '2. 한로로 + 일반 호스팅', 1450000)">
-                            <div class="pay-icon-box"><i class="fas fa-server text-lg"></i></div>
-                            <div class="flex-grow text-left">
-                                <h4 class="text-white font-bold text-xs">2. 한로로 + 일반 호스팅</h4>
-                                <p class="text-[9px] text-gray-500">안정적이고 효율적인 매니지드 서버</p>
-                            </div>
-                            <div class="text-purple-400 font-black text-xs shrink-0">₩1,450,000</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="total-summary flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block">Total Price</span>
-                        <span id="display-selected-type" class="text-[11px] text-purple-400 font-bold">1. 한로로 + 구글 호스팅</span>
-                    </div>
-                    <div class="text-right"><span id="display-total-price" class="text-xl font-black text-white">₩1,350,000</span></div>
-                </div>
-                <button type="submit" class="submit-payment-btn w-full text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest mt-6">입금 확인 요청하기</button>
-            </form>
+            </div>
+            <div class="p-6 bg-white/5 border-t border-white/5 text-center">
+                <button onclick="toggleModal('status-modal', false)" class="text-[10px] font-black text-gray-400 hover:text-white uppercase tracking-widest">Close Dashboard</button>
+            </div>
         </div>
     </div>
 
-    <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
-        <div class="modal-content !max-w-lg bg-[#08040f] p-8">
-            <h3 class="text-lg font-black text-white uppercase mb-6">프로젝트 라이브</h3>
-            <div id="modal-project-list" class="space-y-4"></div>
+    <!-- Quote Modal -->
+    <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
+        <div class="modal-content !max-w-[550px] !p-0 overflow-hidden">
+            <div class="p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest mb-3">
+                            <i class="fas fa-envelope-open-text"></i> Project Inquiries
+                        </div>
+                        <h3 class="text-3xl font-black text-white uppercase tracking-tighter">견적 및 상담 신청</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-medium">당신의 아이디어를 현실로 만드는 첫 걸음입니다.</p>
+                    </div>
+                    <button onclick="toggleModal('quote-modal', false)" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-8">
+                <form id="quote-form" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Name / Company</label>
+                            <input type="text" id="q-name" class="custom-input !mt-0" placeholder="성함 또는 업체명" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Contact Number</label>
+                            <input type="tel" id="q-phone" class="custom-input !mt-0" placeholder="010-0000-0000" required>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Message</label>
+                        <textarea id="q-memo" class="custom-input h-32 resize-none !mt-0" placeholder="내용을 입력해 주세요."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] mt-2 hover:bg-purple-700 transition-all shadow-2xl shadow-purple-600/40">신청하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hosting Modal -->
+    <div id="hosting-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('hosting-modal', false)">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-white uppercase tracking-tight">서비스 결제 신청</h3>
+                <button onclick="toggleModal('hosting-modal', false)" class="text-gray-500 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="hosting-form" class="space-y-6">
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Hosting Plan Select</label>
+                    <label class="block relative group">
+                        <input type="radio" name="hosting-plan" value="google" class="hidden option-radio" checked>
+                        <div class="option-card p-4 rounded-2xl flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center border border-purple-500/20 text-purple-400">
+                                    <i class="fas fa-cloud text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">Google Cloud</p>
+                                    <h4 class="text-sm font-bold text-white">한로로 구글호스팅</h4>
+                                </div>
+                            </div>
+                            <span class="text-sm font-black text-white">1,350,000원</span>
+                        </div>
+                    </label>
+                    <label class="block relative group">
+                        <input type="radio" name="hosting-plan" value="standard" class="hidden option-radio">
+                        <div class="option-card p-4 rounded-2xl flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-gray-600/20 flex items-center justify-center border border-gray-500/20 text-gray-400">
+                                    <i class="fas fa-server text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Standard</p>
+                                    <h4 class="text-sm font-bold text-white">한로로 일반호스팅</h4>
+                                </div>
+                            </div>
+                            <span class="text-sm font-black text-white">1,450,000원</span>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">입금자 성함</label>
+                        <input type="text" id="h-name" class="custom-input" placeholder="성함" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">연락처</label>
+                        <input type="tel" id="h-phone" class="custom-input" placeholder="010-0000-0000" required>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-center relative overflow-hidden">
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                        <i class="fas fa-comment-dollar text-purple-400 text-xs"></i>
+                        <p class="text-[10px] font-bold text-purple-400 uppercase tracking-[0.2em]">TOSS BANK 무통장 입금</p>
+                    </div>
+                    <h4 class="text-lg font-black text-white tracking-tight mb-1">토스뱅크 1001-2586-0977</h4>
+                    <p class="text-[11px] text-gray-400 font-medium">예금주: 김상우</p>
+                </div>
+
+                <p class="text-center text-[10px] text-gray-500 leading-relaxed font-medium">
+                    * 위 계좌로 선택하신 금액을 입금해 주세요.
+                </p>
+
+                <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-purple-700 transition-all shadow-xl shadow-purple-600/20">결제 정보 제출하기</button>
+            </form>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", authDomain: "hanroro-web.firebaseapp.com", projectId: "hanroro-web", appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" };
@@ -497,95 +545,113 @@
         const auth = getAuth(app);
         const appId = "hanroro-official-service";
 
-        // 소스 보기 및 키보드 단축키 차단 스크립트
-        document.onkeydown = function(e) {
-            // F12 차단
-            if (e.keyCode == 123) return false;
-            // Ctrl+Shift+I, J, C 차단
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;
-            // Ctrl+U (소스 보기) 차단
-            if (e.ctrlKey && e.keyCode == 85) return false;
-            // Ctrl+S (저장) 차단
-            if (e.ctrlKey && e.keyCode == 83) return false;
-        };
+        const outer = document.getElementById('portfolio-section');
+        const track = document.getElementById('track');
 
-        let selectedPayData = { type: '1. 한로로 + 구글 호스팅', amount: 1350000 };
-        const maskName = (name) => name && name.length > 1 ? name[0] + "*".repeat(name.length - 1) : "익명";
-        
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth <= 768 || !outer) return;
+            const offsetTop = outer.offsetTop;
+            const scrollDistance = window.pageYOffset - offsetTop;
+            const scrollPercent = scrollDistance / (outer.offsetHeight - window.innerHeight);
+            if (scrollDistance >= 0 && scrollPercent <= 1) {
+                const moveX = scrollPercent * (track.scrollWidth - window.innerWidth + (window.innerWidth * 0.2));
+                track.style.transform = `translateX(-${moveX}px)`;
+            }
+        });
+
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
             if(show) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
             else { m.classList.remove('active'); document.body.style.overflow = ''; }
         };
 
-        window.selectPay = (el, type, amount) => {
-            document.querySelectorAll('#pay-options .pay-item').forEach(i => i.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedPayData = { type, amount };
-            document.getElementById('display-selected-type').innerText = type;
-            document.getElementById('display-total-price').innerText = `₩${amount.toLocaleString()}`;
+        const anonymizeName = (name) => {
+            if (!name) return '익명';
+            if (name.length < 2) return name;
+            return name.substring(0, 1) + '**';
         };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
-                    let html = '';
-                    snap.forEach(d => {
-                        const p = d.data();
-                        html += `<div class="unified-card"><h4 class="font-bold text-white text-sm mb-2">${p.name}</h4><div class="flex justify-between text-[9px] text-purple-400 mb-1"><span>${p.phase}</span><span>${p.progress}%</span></div><div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress}%"></div></div></div>`;
-                    });
-                    document.getElementById('main-project-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 text-xs py-10">진행 중인 프로젝트가 없습니다.</p>';
-                    document.getElementById('modal-project-list').innerHTML = html;
-                });
-
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), (snap) => {
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
-                        html += `<div class="unified-card"><h4 class="font-bold text-white text-sm mb-2">${maskName(data.name)}</h4><div class="flex justify-between items-center"><span class="text-[9px] text-purple-300 font-black uppercase">${data.type || '서비스'}</span><span class="payment-badge ${data.status === 'complete' ? '' : 'waiting'}">${data.status === 'complete' ? '입금완료' : '확인중'}</span></div></div>`;
+                        let displayStatus = data.status || '입금전';
+                        const isComplete = displayStatus.includes('완료') || displayStatus.includes('확인');
+                        const statusText = isComplete ? '입금완료' : '입금전';
+                        
+                        html += `
+                        <div class="unified-card group hover:border-purple-500/30 transition-all">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.2em]">${data.type || 'Hosting'}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[9px] font-black px-2 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40 bg-purple-500/5' : 'text-yellow-500 border-yellow-500/40 bg-yellow-500/5'} uppercase tracking-tighter">${statusText}</span>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-white text-sm mt-2">${anonymizeName(data.name)}</h4>
+                        </div>`;
                     });
-                    document.getElementById('payment-grid').innerHTML = html || '<p class="col-span-full text-center text-gray-700 text-xs py-10">입금 내역이 없습니다.</p>';
+                    document.getElementById('deposit-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-xs uppercase font-bold">최근 내역이 없습니다.</p>';
                 });
+
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
+                    let html = '';
+                    let modalHtml = '';
+                    snap.forEach(d => {
+                        const p = d.data();
+                        const cardHtml = `
+                        <div class="unified-card">
+                            <h4 class="font-bold text-white text-sm mb-3">${p.name}</h4>
+                            <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
+                                <span>Phase: ${p.phase}</span>
+                                <span>${p.progress}%</span>
+                            </div>
+                            <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress}%"></div></div>
+                        </div>`;
+                        html += cardHtml;
+                        modalHtml += cardHtml;
+                    });
+                    document.getElementById('project-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-xs">데이터 로딩 중...</p>';
+                    document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-center text-gray-500 py-10 text-xs uppercase font-bold tracking-widest">No projects currently live.</p>';
+                });
+
+                document.getElementById('hosting-form').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const plan = document.querySelector('input[name="hosting-plan"]:checked').value;
+                    const planName = plan === 'google' ? '구글호스팅' : '일반호스팅';
+                    try {
+                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), {
+                            name: document.getElementById('h-name').value,
+                            phone: document.getElementById('h-phone').value,
+                            type: planName,
+                            status: '입금전',
+                            createdAt: serverTimestamp()
+                        });
+                        alert('결제 정보가 제출되었습니다. 입금 확인 후 진행됩니다.');
+                        toggleModal('hosting-modal', false);
+                        e.target.reset();
+                    } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
+                };
 
                 document.getElementById('quote-form').onsubmit = async (e) => {
                     e.preventDefault();
-                    const btn = e.target.querySelector('button');
-                    btn.disabled = true; btn.innerText = "전송 중...";
                     try {
                         await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quotes'), {
                             name: document.getElementById('q-name').value,
                             phone: document.getElementById('q-phone').value,
-                            budget: document.getElementById('q-budget').value,
-                            type: document.getElementById('q-type').value,
                             memo: document.getElementById('q-memo').value,
                             createdAt: serverTimestamp()
                         });
                         alert('상담 신청이 접수되었습니다.');
                         toggleModal('quote-modal', false);
                         e.target.reset();
-                    } catch (err) { alert('오류 발생'); }
-                    btn.disabled = false; btn.innerText = "상담 신청 완료하기";
+                    } catch (err) { alert('오류가 발생했습니다.'); }
                 };
 
-                document.getElementById('payment-form').onsubmit = async (e) => {
-                    e.preventDefault();
-                    const btn = e.target.querySelector('button');
-                    btn.disabled = true; btn.innerText = "처리 중...";
-                    try {
-                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), {
-                            name: document.getElementById('p-name').value,
-                            phone: document.getElementById('p-phone').value,
-                            type: selectedPayData.type,
-                            amount: selectedPayData.amount,
-                            status: 'waiting',
-                            createdAt: serverTimestamp()
-                        });
-                        alert('입금 확인 요청이 접수되었습니다.');
-                        toggleModal('payment-modal', false);
-                        e.target.reset();
-                    } catch (err) { alert('오류 발생'); }
-                    btn.disabled = false; btn.innerText = "입금 확인 요청하기";
-                };
+                onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), orderBy('createdAt', 'desc'), limit(1)), (snap) => {
+                    if (!snap.empty) document.getElementById('notice-text').innerText = snap.docs[0].data().title;
+                });
             } else { signInAnonymously(auth); }
         });
     </script>
