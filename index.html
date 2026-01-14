@@ -552,18 +552,30 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, limit, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
-        const firebaseConfig = { apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", authDomain: "hanroro-web.firebaseapp.com", projectId: "hanroro-web", appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" };
+        // Firebase Config (기존 설정 유지)
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
+            authDomain: "hanroro-web.firebaseapp.com", 
+            projectId: "hanroro-web", 
+            appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
+        };
+        
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const appId = "hanroro-official-service";
+        
+        // Mandatory App ID for Firestore paths
+        const currentAppId = "hanroro-official-service";
 
+        // UI Element References
         const track = document.getElementById('track');
         const outer = document.getElementById('portfolio-section');
 
+        // Scroll Animation Logic (기존 유지)
         const handleScroll = () => {
             if (!outer || !track) return;
             const currentScroll = window.pageYOffset;
@@ -583,20 +595,27 @@
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize', handleScroll);
 
+        // Modal Utility
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
             if(show) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
             else { m.classList.remove('active'); document.body.style.overflow = ''; }
         };
 
+        // Data Anonymization
         const anonymizeName = (name) => {
             if (!name) return '익명';
             return name.length < 2 ? name : name.substring(0, 1) + '**';
         };
 
-        onAuthStateChanged(auth, (user) => {
+        // Auth & Realtime Data Synchronization
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deposits'), (snap) => {
+                console.log("Authenticated as:", user.uid);
+
+                // 1. Deposits Data
+                const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
+                onSnapshot(depositCol, (snap) => {
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
@@ -609,30 +628,87 @@
                             <h4 class="font-bold text-white text-xs mt-1">${anonymizeName(data.name)}</h4>
                         </div>`;
                     });
+                    if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">No Deposit Data</p>';
                     document.getElementById('deposit-list').innerHTML = html;
-                });
+                }, (err) => console.error("Deposit sync error:", err));
 
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
+                // 2. Projects Data
+                const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
+                onSnapshot(projectCol, (snap) => {
                     let html = '';
                     snap.forEach(d => {
                         const p = d.data();
                         html += `<div class="unified-card">
                             <h4 class="font-bold text-white text-xs sm:text-sm mb-3">${p.name}</h4>
                             <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
-                                <span>Phase: ${p.phase}</span>
-                                <span>${p.progress}%</span>
+                                <span>Phase: ${p.phase || '준비중'}</span>
+                                <span>${p.progress || 0}%</span>
                             </div>
-                            <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress}%"></div></div>
+                            <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress || 0}%"></div></div>
                         </div>`;
                     });
+                    if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">Project Initializing...</p>';
                     document.getElementById('project-list').innerHTML = html;
                     document.getElementById('modal-project-list').innerHTML = html;
-                });
+                }, (err) => console.error("Project sync error:", err));
 
-                onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'notices'), orderBy('createdAt', 'desc'), limit(1)), (snap) => {
-                    if (!snap.empty) document.getElementById('notice-text').innerText = snap.docs[0].data().title;
-                });
-            } else { signInAnonymously(auth); }
+                // 3. Latest Notice
+                const noticeCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'notices');
+                // Note: Simple query to avoid index requirements
+                onSnapshot(noticeCol, (snap) => {
+                    if (!snap.empty) {
+                        const latest = snap.docs[snap.docs.length - 1].data();
+                        document.getElementById('notice-text').innerText = latest.title;
+                    }
+                }, (err) => console.error("Notice sync error:", err));
+
+                // 4. Form Handlers (Quote & Hosting)
+                document.getElementById('quote-form').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('q-name').value;
+                    const phone = document.getElementById('q-phone').value;
+                    const memo = document.getElementById('q-memo').value;
+                    
+                    try {
+                        await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'inquiries'), {
+                            name, phone, memo, createdAt: serverTimestamp(), type: '상담신청'
+                        });
+                        alert('상담 신청이 완료되었습니다. 확인 후 연락드리겠습니다.');
+                        e.target.reset();
+                        toggleModal('quote-modal', false);
+                    } catch (err) {
+                        console.error("Inquiry error:", err);
+                        alert('신청 처리 중 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+                    }
+                };
+
+                document.getElementById('hosting-form').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const plan = e.target['hosting-plan'].value;
+                    const name = document.getElementById('h-name').value;
+                    const phone = document.getElementById('h-phone').value;
+
+                    try {
+                        await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
+                            name, phone, plan, status: '대기', type: plan === 'google' ? 'Google Cloud' : 'Premium Server', createdAt: serverTimestamp()
+                        });
+                        alert('입금 정보가 제출되었습니다. 입금 확인 후 서비스가 활성화됩니다.');
+                        e.target.reset();
+                        toggleModal('hosting-modal', false);
+                    } catch (err) {
+                        console.error("Hosting error:", err);
+                        alert('오류가 발생했습니다. 고객센터로 문의해주세요.');
+                    }
+                };
+
+            } else {
+                // Initial Authentication
+                try {
+                    await signInAnonymously(auth);
+                } catch (err) {
+                    console.error("Authentication failed:", err);
+                }
+            }
         });
     </script>
 </body>
