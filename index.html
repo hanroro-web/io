@@ -4,8 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     
-    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 </title>
-    <meta name="description" content="한로로(Hanroro)는 감각적인 디자인과 독보적인 기술력을 결합한 프리미엄 웹 에이전시입니다.">
+    <!-- Primary Meta Tags -->
+    <title>한로로(Hanroro) | 프리미엄 웹 에이전시 & 디자인 스튜디오</title>
+    <meta name="title" content="한로로(Hanroro) | 프리미엄 웹 에이전시 & 디자인 스튜디오">
+    <meta name="description" content="감각적인 디자인과 독보적인 기술력의 결합. 한로로(Hanroro)는 당신의 비즈니스 가치를 높이는 프리미엄 웹사이트 제작 전문 에이전시입니다.">
+    <meta name="keywords" content="한로로, hanroro, 웹에이전시, 홈페이지제작, 디자인스튜디오, 프리미엄웹사이트, 반응형웹, UIUX디자인, 기업홈페이지">
+    <meta name="author" content="Hanroro">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://hanroro-web.web.app/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hanroro-web.web.app/">
+    <meta property="og:title" content="한로로(Hanroro) | 프리미엄 웹 에이전시">
+    <meta property="og:description" content="단순한 코딩을 넘어 브랜드의 가치를 디자인합니다. 지금 한로로와 함께 프로젝트를 시작하세요.">
+    <meta property="og:image" content="https://hanroro-web.web.app/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://hanroro-web.web.app/">
+    <meta property="twitter:title" content="한로로(Hanroro) | 프리미엄 웹 에이전시">
+    <meta property="twitter:description" content="감각적인 디자인과 독보적인 기술력의 결합. 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.">
+    <meta property="twitter:image" content="https://hanroro-web.web.app/og-image.jpg">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -28,7 +48,6 @@
             user-select: none;
         }
         
-        /* Layout Components */
         .glass-nav { background: rgba(5, 2, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .hero-gradient { background: radial-gradient(circle at 50% 50%, #150b2e 0%, #05020a 100%); }
         .gradient-text { background: linear-gradient(90deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -39,7 +58,6 @@
             50% { transform: translateY(-12px) rotate(12deg); }
         }
 
-        /* Giant Wand Animation */
         @keyframes giantWandFloat {
             0%, 100% { transform: translate(0, 0) rotate(-15deg); }
             50% { transform: translate(-20px, -40px) rotate(5deg); }
@@ -79,7 +97,6 @@
             width: 92%; max-width: 580px; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
-        /* Portfolio Horizontal Scroll Section */
         .portfolio-outer-wrapper {
             position: relative;
             height: 450vh; 
@@ -129,19 +146,16 @@
             z-index: 0;
         }
 
-        /* Common Components */
         .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; padding: 1.25rem; }
         .gauge-container { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin-top: 8px; overflow: hidden; }
         .gauge-bar { height: 100%; background: linear-gradient(90deg, #8a4fff, #c084fc); border-radius: 10px; }
         
-        /* Modal Styles */
         .custom-modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; padding: 16px; }
         .custom-modal.active { display: flex; }
         .modal-content { background: #0f0a1f; border: 1px solid rgba(138, 79, 255, 0.2); width: 100%; max-width: 500px; border-radius: 28px; padding: 2rem; max-height: 90vh; overflow-y: auto; }
         .custom-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 16px; color: white; margin-top: 0.5rem; outline: none; transition: all 0.3s ease; }
         .custom-input:focus { border-color: #8a4fff; background: rgba(138, 79, 255, 0.05); box-shadow: 0 0 15px rgba(138, 79, 255, 0.1); }
 
-        /* Option Selection Style */
         .option-card {
             cursor: pointer;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -160,44 +174,35 @@
             .giant-wand-wrapper { display: none; }
         }
 
-        /* Mobile Optimization Fixes - Addressing Overlay Issues */
         @media (max-width: 768px) {
-            .portfolio-outer-wrapper { height: 500vh; } /* Increased height for longer scroll feel on mobile */
-            
-            /* Repositioning Title to avoid overlap */
+            .portfolio-outer-wrapper { height: 500vh; }
             .portfolio-title-group {
-                top: 80px !important; /* Fixed offset from top */
+                top: 80px !important;
                 left: 24px !important;
                 position: absolute !important;
             }
-
             .portfolio-sticky-box {
-                align-items: flex-end; /* Align cards to the bottom half on mobile */
+                align-items: flex-end;
                 padding-bottom: 80px;
             }
-
             .horizontal-track {
-                padding: 0 24px; /* Align with title left margin */
+                padding: 0 24px;
                 margin-bottom: 20px;
             }
-
             .portfolio-card { 
                 flex: 0 0 82vw; 
                 height: 440px; 
                 padding: 2rem; 
                 margin-right: 5vw; 
             }
-            
             h1 { font-size: 2.5rem !important; line-height: 1.2 !important; }
             p { font-size: 0.95rem !important; line-height: 1.6 !important; letter-spacing: -0.01em; }
             .portfolio-card h4 { font-size: 1.6rem !important; }
             .portfolio-card p { font-size: 0.85rem !important; }
-            
             footer .flex-wrap { justify-content: flex-start; gap: 1rem; }
             footer span { font-size: 9px; opacity: 0.8; }
         }
 
-        /* Image Security */
         img { -webkit-user-drag: none; pointer-events: none; }
     </style>
 </head>
@@ -281,7 +286,6 @@
     <!-- Portfolio Section -->
     <div class="portfolio-outer-wrapper" id="portfolio-section">
         <div class="portfolio-sticky-box">
-            <!-- Title Group with unique class for mobile targeting -->
             <div class="portfolio-title-group absolute top-16 sm:top-24 left-6 sm:left-12 z-10">
                 <span class="text-[10px] sm:text-[11px] font-black text-purple-500 uppercase tracking-[0.3em] mb-3 sm:mb-4 block">Selected Works</span>
                 <h3 class="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
@@ -485,7 +489,6 @@
         </div>
     </div>
 
-    <!-- Hosting Modal -->
     <div id="hosting-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('hosting-modal', false)">
         <div class="modal-content !p-6 sm:!p-8">
             <div class="flex justify-between items-center mb-6">
@@ -552,10 +555,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, limit, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
-        // Firebase Config (기존 설정 유지)
         const firebaseConfig = { 
             apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
             authDomain: "hanroro-web.firebaseapp.com", 
@@ -563,19 +565,14 @@
             appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
         };
         
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        
-        // Mandatory App ID for Firestore paths
         const currentAppId = "hanroro-official-service";
 
-        // UI Element References
         const track = document.getElementById('track');
         const outer = document.getElementById('portfolio-section');
 
-        // Scroll Animation Logic (기존 유지)
         const handleScroll = () => {
             if (!outer || !track) return;
             const currentScroll = window.pageYOffset;
@@ -595,44 +592,44 @@
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize', handleScroll);
 
-        // Modal Utility
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
             if(show) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
             else { m.classList.remove('active'); document.body.style.overflow = ''; }
         };
 
-        // Data Anonymization
         const anonymizeName = (name) => {
             if (!name) return '익명';
             return name.length < 2 ? name : name.substring(0, 1) + '**';
         };
 
-        // Auth & Realtime Data Synchronization
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("Authenticated as:", user.uid);
-
-                // 1. Deposits Data
                 const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
                 onSnapshot(depositCol, (snap) => {
                     let html = '';
                     snap.forEach(d => {
                         const data = d.data();
-                        const isComplete = (data.status || '').includes('완료');
+                        
+                        // Status mapping logic
+                        const rawStatus = (data.status || '').toLowerCase();
+                        const isComplete = rawStatus.includes('완료');
+                        
+                        // Display text logic: '입금완료' for completed, '입금전' for anything else (like '대기')
+                        const statusText = isComplete ? '입금완료' : '입금전';
+                        
                         html += `<div class="unified-card group hover:border-purple-500/30 transition-all">
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${data.type || 'Hosting'}</span>
-                                <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40'} uppercase tracking-tighter">${isComplete ? '완료' : '대기'}</span>
+                                <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40'} uppercase tracking-tighter">${statusText}</span>
                             </div>
                             <h4 class="font-bold text-white text-xs mt-1">${anonymizeName(data.name)}</h4>
                         </div>`;
                     });
                     if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">No Deposit Data</p>';
                     document.getElementById('deposit-list').innerHTML = html;
-                }, (err) => console.error("Deposit sync error:", err));
+                });
 
-                // 2. Projects Data
                 const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
                 onSnapshot(projectCol, (snap) => {
                     let html = '';
@@ -650,36 +647,29 @@
                     if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">Project Initializing...</p>';
                     document.getElementById('project-list').innerHTML = html;
                     document.getElementById('modal-project-list').innerHTML = html;
-                }, (err) => console.error("Project sync error:", err));
+                });
 
-                // 3. Latest Notice
                 const noticeCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'notices');
-                // Note: Simple query to avoid index requirements
                 onSnapshot(noticeCol, (snap) => {
                     if (!snap.empty) {
                         const latest = snap.docs[snap.docs.length - 1].data();
                         document.getElementById('notice-text').innerText = latest.title;
                     }
-                }, (err) => console.error("Notice sync error:", err));
+                });
 
-                // 4. Form Handlers (Quote & Hosting)
                 document.getElementById('quote-form').onsubmit = async (e) => {
                     e.preventDefault();
                     const name = document.getElementById('q-name').value;
                     const phone = document.getElementById('q-phone').value;
                     const memo = document.getElementById('q-memo').value;
-                    
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'inquiries'), {
                             name, phone, memo, createdAt: serverTimestamp(), type: '상담신청'
                         });
-                        alert('상담 신청이 완료되었습니다. 확인 후 연락드리겠습니다.');
+                        alert('상담 신청이 완료되었습니다.');
                         e.target.reset();
                         toggleModal('quote-modal', false);
-                    } catch (err) {
-                        console.error("Inquiry error:", err);
-                        alert('신청 처리 중 오류가 발생했습니다. 나중에 다시 시도해주세요.');
-                    }
+                    } catch (err) { alert('오류가 발생했습니다.'); }
                 };
 
                 document.getElementById('hosting-form').onsubmit = async (e) => {
@@ -687,27 +677,17 @@
                     const plan = e.target['hosting-plan'].value;
                     const name = document.getElementById('h-name').value;
                     const phone = document.getElementById('h-phone').value;
-
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
                             name, phone, plan, status: '대기', type: plan === 'google' ? 'Google Cloud' : 'Premium Server', createdAt: serverTimestamp()
                         });
-                        alert('입금 정보가 제출되었습니다. 입금 확인 후 서비스가 활성화됩니다.');
+                        alert('결제 정보가 제출되었습니다.');
                         e.target.reset();
                         toggleModal('hosting-modal', false);
-                    } catch (err) {
-                        console.error("Hosting error:", err);
-                        alert('오류가 발생했습니다. 고객센터로 문의해주세요.');
-                    }
+                    } catch (err) { alert('오류가 발생했습니다.'); }
                 };
-
             } else {
-                // Initial Authentication
-                try {
-                    await signInAnonymously(auth);
-                } catch (err) {
-                    console.error("Authentication failed:", err);
-                }
+                try { await signInAnonymously(auth); } catch (err) { console.error(err); }
             }
         });
     </script>
