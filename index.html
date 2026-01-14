@@ -234,7 +234,7 @@
             .modal-content .custom-input::placeholder { font-size: 11px !important; }
             .modal-content button[type="submit"] { font-size: 11px !important; padding-top: 1rem !important; padding-bottom: 1rem !important; border-radius: 14px !important; }
             
-            /* Option Cards inside Hosting Modal */
+            /* Option Cards inside Hosting Modal & Quote Modal */
             .option-card { padding: 0.75rem !important; border-radius: 16px !important; }
             .option-card h4 { font-size: 11px !important; }
             .option-card p { font-size: 8px !important; }
@@ -515,6 +515,31 @@
             </div>
             <div class="p-6 sm:p-8">
                 <form id="quote-form" class="space-y-5 sm:space-y-6">
+                    <!-- Category Selection Added -->
+                    <div class="space-y-3">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Category</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="block relative">
+                                <input type="radio" name="project-category" value="general" class="hidden option-radio" checked>
+                                <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
+                                        <i class="fas fa-user text-xs sm:text-sm"></i>
+                                    </div>
+                                    <h4 class="text-[11px] sm:text-xs font-bold text-white uppercase tracking-tight">일반</h4>
+                                </div>
+                            </label>
+                            <label class="block relative">
+                                <input type="radio" name="project-category" value="company" class="hidden option-radio">
+                                <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
+                                        <i class="fas fa-building text-xs sm:text-sm"></i>
+                                    </div>
+                                    <h4 class="text-[11px] sm:text-xs font-bold text-white uppercase tracking-tight">기업</h4>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Name / Company</label>
@@ -734,12 +759,13 @@
 
                 document.getElementById('quote-form').onsubmit = async (e) => {
                     e.preventDefault();
+                    const category = e.target['project-category'].value;
                     const name = document.getElementById('q-name').value;
                     const phone = document.getElementById('q-phone').value;
                     const memo = document.getElementById('q-memo').value;
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'inquiries'), {
-                            name, phone, memo, createdAt: serverTimestamp(), type: '상담신청'
+                            category, name, phone, memo, createdAt: serverTimestamp(), type: '상담신청'
                         });
                         alert('상담 신청이 완료되었습니다.');
                         e.target.reset();
