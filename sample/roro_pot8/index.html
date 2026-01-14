@@ -116,7 +116,7 @@
 
         #mobile-menu-toggle {
             position: absolute;
-            right: 1rem;
+            right: 1.5rem; /* 우측 끝 여백 조정 */
             top: 50%;
             transform: translateY(-50%);
             display: none;
@@ -147,7 +147,15 @@
             .fixed-sidebar { display: none; }
             #main-header { width: 100%; position: fixed; }
             #mobile-menu-toggle { display: block; }
-            .header-content-wrapper { flex-direction: column; align-items: center; text-align: center; width: 100%; }
+            /* 모바일에서 로고와 햄버거 버튼이 양 끝으로 가도록 래퍼 수정 */
+            .header-content-wrapper { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                justify-content: space-between !important; 
+                align-items: center !important; 
+                width: 100%; 
+                text-align: left !important;
+            }
             #logo-decoration-mobile { display: flex !important; }
             #header-diagnosis-btn-mobile { display: inline-block !important; }
             
@@ -354,7 +362,8 @@
         <div class="w-full max-w-7xl px-4 md:px-12 relative">
             <div class="header-content-wrapper flex items-center justify-between lg:grid lg:grid-cols-3">
                 <div class="hidden lg:block lg:col-start-1"></div>
-                <div class="flex flex-col items-center justify-center lg:col-start-2 w-full">
+                <!-- 로고 영역 -->
+                <div class="flex flex-col items-center lg:justify-center lg:col-start-2">
                     <div class="flex items-center space-x-2 cursor-pointer" onclick="showMainSection()">
                         <svg class="w-8 h-8 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 3v17M3 7h18M7 7c0 4 1 6 5 6s5-2 5-6"></path>
@@ -362,6 +371,7 @@
                         <div class="text-xl md:text-2xl font-bold serif tracking-tighter text-white" id="logo-text">로로 <span class="text-[#FF7E00]">소송 로펌</span></div>
                     </div>
                 </div>
+                <!-- 햄버거 버튼 영역 -->
                 <div class="flex justify-end lg:col-start-3">
                     <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 text-[#FF7E00] hover:bg-gray-100/10 rounded-xl transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -369,6 +379,7 @@
                 </div>
             </div>
 
+            <!-- 하단 장식 및 버튼 -->
             <div class="w-full flex flex-col items-center mt-2">
                 <div class="hidden lg:block w-full text-center">
                     <div class="mouse-icon-wrap" id="logo-decoration">
@@ -407,7 +418,7 @@
             </div>
         </section>
 
-        <!-- ... (기존 섹션들: lawyers, practice-areas, process, location 등은 이전과 동일하게 유지) ... -->
+        <!-- 변호사 섹션 -->
         <section id="lawyers" class="py-24 bg-white">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-3xl font-bold serif mb-16">전문 변호사</h2>
@@ -426,6 +437,7 @@
             </div>
         </section>
 
+        <!-- 분야 섹션 -->
         <section id="practice-areas" class="py-24 bg-[#F8F8F8]">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-3xl font-bold serif mb-16">법률 서비스</h2>
@@ -446,6 +458,7 @@
             </div>
         </section>
 
+        <!-- 절차 섹션 -->
         <section id="process" class="py-24 bg-white">
             <div class="max-w-6xl mx-auto px-6 text-center">
                 <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">진행 절차</span>
@@ -475,6 +488,7 @@
             </div>
         </section>
 
+        <!-- 위치 섹션 -->
         <section id="location" class="py-24 bg-[#F8F8F8]">
             <div class="max-w-6xl mx-auto px-6">
                 <div class="flex flex-col md:flex-row gap-12">
@@ -527,7 +541,7 @@
         </footer>
     </div>
 
-    <!-- 소송 자가진단 -->
+    <!-- 소송 자가진단 (별도 섹션) -->
     <div id="full-diagnosis" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-xl mx-auto fade-in-up">
             <div class="text-center mb-12">
@@ -544,7 +558,6 @@
                         <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5">사기/폭행 형사사건</button>
                     </div>
                 </div>
-                <!-- ... (진단 프로세스 중략: Step 2~5 동일) ... -->
                 <div id="diag-2" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 입증 자료</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">주장을 증명할 객관적 증거가 있습니까?</h3>
@@ -589,7 +602,7 @@
         </div>
     </div>
 
-    <!-- 공지/언론사례 게시판 (텍스트 수정됨) -->
+    <!-- 공지/언론사례 게시판 -->
     <div id="board-section" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-4xl mx-auto fade-in-up">
             <div id="board-list-view">
@@ -601,7 +614,6 @@
                     <button onclick="showMainSection()" class="text-white/40 text-[10px] font-bold border-b border-white/20 pb-1">목록 닫기</button>
                 </div>
                 <div class="space-y-1">
-                    <!-- 게시물 항목들 (제목 일괄 수정) -->
                     <div onclick="showPost('한로로 테스트글 입니다.', '2025.11.20', '한로로 테스트글 입니다.')" class="board-item group flex items-center justify-between">
                         <div class="flex-1 pr-8">
                             <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[공지사항]</span>
@@ -625,7 +637,6 @@
                     </div>
                 </div>
             </div>
-            <!-- 게시글 상세 뷰 (내용 수정됨) -->
             <div id="post-detail-view" class="post-detail-view bg-[#1A1A1A] p-12 rounded-[40px] border border-white/5 text-white">
                 <button onclick="hidePost()" class="text-[#FF7E00] text-[10px] font-bold mb-8 flex items-center">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg> 뒤로가기
@@ -639,12 +650,13 @@
         </div>
     </div>
 
-    <!-- ... (하단 CTA, 모달 및 스크립트 등 기존 로직 동일하게 유지) ... -->
+    <!-- 하단 고정 CTA 바 -->
     <div id="bottom-cta-bar">
         <p class="text-white text-xs font-bold serif">법률 고민, 지금 바로 1:1 비밀 상담을 신청하세요.</p>
         <button onclick="openModal()" class="btn-gold px-6 py-3 rounded-xl font-bold text-[11px]">상담 신청하기</button>
     </div>
 
+    <!-- 상담 신청 모달 -->
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal-content bg-white rounded-[35px] w-full max-w-2xl overflow-hidden relative shadow-2xl fade-in-up" onclick="event.stopPropagation()">
             <div class="flex flex-col md:flex-row">
