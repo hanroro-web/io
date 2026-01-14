@@ -46,6 +46,8 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            /* 터치 시 기본 하이라이트 제거 */
+            -webkit-tap-highlight-color: transparent;
         }
         
         .glass-nav { background: rgba(5, 2, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
@@ -118,7 +120,7 @@
         }
         .portfolio-card {
             flex: 0 0 450px;
-            height: 580px; /* 버튼 추가를 위해 높이 소폭 조정 */
+            height: 580px; 
             margin-right: 4vw;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -127,15 +129,18 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
-        .portfolio-card:hover {
+
+        /* 호버 및 모바일 액티브 공통 효과 */
+        .portfolio-card:hover, .portfolio-card:active, .portfolio-card.is-active {
             border-color: #8a4fff;
             background: rgba(138, 79, 255, 0.08);
             transform: translateY(-15px);
         }
+
         .card-number {
             position: absolute;
             top: -20px;
@@ -146,7 +151,13 @@
             z-index: 0;
         }
 
-        .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; padding: 1.25rem; }
+        .unified-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; padding: 1.25rem; transition: all 0.3s ease; }
+        /* 입금현황 카드 터치 대응 */
+        .unified-card:hover, .unified-card:active {
+            border-color: rgba(138, 79, 255, 0.3);
+            background: rgba(138, 79, 255, 0.05);
+        }
+
         .gauge-container { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin-top: 8px; overflow: hidden; }
         .gauge-bar { height: 100%; background: linear-gradient(90deg, #8a4fff, #c084fc); border-radius: 10px; }
         
@@ -171,21 +182,12 @@
         .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 
         /* Toss Icon Style */
-        .toss-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 6px;
-            vertical-align: middle;
-            fill: #3182f6;
-        }
+        .toss-icon { width: 20px; height: 20px; margin-right: 6px; vertical-align: middle; fill: #3182f6; }
 
         @media (max-width: 1024px) {
             .giant-wand-wrapper { display: none; }
         }
 
-        /* ----------------------------------------------------------- */
-        /* [모바일 환경 가독성 최적화 섹션] */
-        /* ----------------------------------------------------------- */
         @media (max-width: 768px) {
             .portfolio-outer-wrapper { height: 500vh; }
             .portfolio-title-group {
@@ -203,69 +205,35 @@
             }
             .portfolio-card { 
                 flex: 0 0 82vw; 
-                height: 460px; /* 버튼 추가를 위해 모바일 높이도 조정 */
+                height: 460px; 
                 padding: 1.75rem; 
                 margin-right: 5vw; 
             }
-            
-            h1 { 
-                font-size: 2.25rem !important; 
-                line-height: 1.2 !important; 
-                letter-spacing: -0.04em !important; 
-                word-break: keep-all; 
-            }
-            h3 { 
-                font-size: 1.85rem !important; 
-                letter-spacing: -0.03em !important;
-                word-break: keep-all;
-            }
-            h4 { 
-                font-size: 1.4rem !important; 
-                letter-spacing: -0.02em !important;
-            }
-            p { 
-                font-size: 0.95rem !important; 
-                line-height: 1.7 !important; 
-                letter-spacing: -0.01em !important; 
-                color: #cbd5e1 !important; 
-                word-break: keep-all;
+            /* 모바일에서 트랜스폼 소폭 조정 (너무 크지 않게) */
+            .portfolio-card:hover, .portfolio-card:active, .portfolio-card.is-active {
+                transform: translateY(-8px);
             }
             
-            .unified-card h4 {
-                font-size: 11px !important;
-                letter-spacing: -0.02em !important;
-                line-height: 1.3 !important;
-            }
-
+            h1 { font-size: 2.25rem !important; line-height: 1.2 !important; letter-spacing: -0.04em !important; word-break: keep-all; }
+            h3 { font-size: 1.85rem !important; letter-spacing: -0.03em !important; word-break: keep-all; }
+            h4 { font-size: 1.4rem !important; letter-spacing: -0.02em !important; }
+            p { font-size: 0.95rem !important; line-height: 1.7 !important; letter-spacing: -0.01em !important; color: #cbd5e1 !important; word-break: keep-all; }
+            
+            .unified-card h4 { font-size: 11px !important; letter-spacing: -0.02em !important; line-height: 1.3 !important; }
             .portfolio-card h4 { font-size: 1.6rem !important; margin-bottom: 0.75rem !important; }
             .portfolio-card p { font-size: 0.88rem !important; line-height: 1.6 !important; }
             .portfolio-card .card-number { font-size: 85px !important; top: -10px !important; }
-
             .bottom-floating-bar h4 { font-size: 13px !important; }
             .bottom-floating-bar p { font-size: 10px !important; }
             .notice-bar-container #notice-text { font-size: 12px !important; font-weight: 600 !important; }
-
-            footer .flex-wrap { justify-content: flex-start; gap: 0.75rem; }
             footer span { font-size: 10px !important; color: #94a3b8; }
             footer p { font-size: 10px !important; }
-
             .modal-content { padding: 1.5rem !important; border-radius: 24px !important; }
             .modal-content h3 { font-size: 1.6rem !important; margin-bottom: 0.5rem !important; }
-            .modal-content .inline-flex { font-size: 9px !important; padding: 3px 10px !important; }
-            .modal-content label { font-size: 10px !important; font-weight: 700 !important; color: #94a3b8 !important; }
-            .modal-content .custom-input { font-size: 14px !important; padding: 12px 16px !important; }
-            .modal-content .custom-input::placeholder { font-size: 13px !important; opacity: 0.6; }
-            .modal-content button[type="submit"] { font-size: 13px !important; padding: 1.1rem !important; border-radius: 16px !important; }
-            
             .option-card { padding: 0.85rem !important; border-radius: 18px !important; }
             .option-card h4 { font-size: 13px !important; }
             .option-card p { font-size: 10px !important; }
             .option-card span { font-size: 13px !important; }
-            
-            .modal-content .p-5 { padding: 1.25rem !important; border-radius: 18px !important; }
-            .modal-content .text-base { font-size: 14px !important; }
-            .modal-content .text-\[10px\] { font-size: 10px !important; }
-
             .mobile-title-small { font-size: 1.15rem !important; letter-spacing: -0.02em !important; }
         }
 
@@ -290,19 +258,21 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: 2rem;
         }
-        .portfolio-card:hover .case-button {
+        
+        /* 카드에 호버되거나 액티브될 때 버튼 스타일 변경 */
+        .portfolio-card:hover .case-button, 
+        .portfolio-card:active .case-button,
+        .portfolio-card.is-active .case-button {
             background: #8a4fff;
             border-color: #8a4fff;
             box-shadow: 0 10px 30px rgba(138, 79, 255, 0.3);
             transform: scale(1.02);
         }
-        .case-button i {
-            font-size: 0.7rem;
-            transition: transform 0.3s ease;
-        }
-        .portfolio-card:hover .case-button i {
-            transform: translateX(4px);
-        }
+        
+        .case-button i { font-size: 0.7rem; transition: transform 0.3s ease; }
+        .portfolio-card:hover .case-button i,
+        .portfolio-card:active .case-button i,
+        .portfolio-card.is-active .case-button i { transform: translateX(4px); }
     </style>
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -394,7 +364,7 @@
             
             <div class="horizontal-track" id="track">
                 <!-- 01: 일반 홈페이지 -->
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-touch-effect>
                     <span class="card-number">01</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
@@ -407,14 +377,10 @@
                             <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#BLOG_TYPE</span>
                         </div>
                     </div>
-                    <!-- 신규 버튼 -->
-                    <button class="case-button">
-                        <i class="fas fa-eye"></i>
-                        고객 사례 보기
-                    </button>
+                    <button class="case-button"><i class="fas fa-eye"></i> 고객 사례 보기</button>
                 </div>
                 <!-- 02: 기업 홈페이지 -->
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-touch-effect>
                     <span class="card-number">02</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
@@ -427,14 +393,10 @@
                             <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#BUSINESS</span>
                         </div>
                     </div>
-                    <!-- 신규 버튼 -->
-                    <button class="case-button">
-                        <i class="fas fa-building-user"></i>
-                        고객 사례 보기
-                    </button>
+                    <button class="case-button"><i class="fas fa-building-user"></i> 고객 사례 보기</button>
                 </div>
                 <!-- 03: 브랜딩 홈페이지 -->
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-touch-effect>
                     <span class="card-number">03</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
@@ -447,14 +409,10 @@
                             <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#IDENTITY</span>
                         </div>
                     </div>
-                    <!-- 신규 버튼 -->
-                    <button class="case-button">
-                        <i class="fas fa-wand-magic-sparkles"></i>
-                        고객 사례 보기
-                    </button>
+                    <button class="case-button"><i class="fas fa-wand-magic-sparkles"></i> 고객 사례 보기</button>
                 </div>
                 <!-- 04: 쇼핑몰 홈페이지 -->
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-touch-effect>
                     <span class="card-number">04</span>
                     <div class="relative z-10">
                         <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
@@ -467,11 +425,7 @@
                             <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#SHOPPING</span>
                         </div>
                     </div>
-                    <!-- 신규 버튼 -->
-                    <button class="case-button">
-                        <i class="fas fa-cart-shopping"></i>
-                        고객 사례 보기
-                    </button>
+                    <button class="case-button"><i class="fas fa-cart-shopping"></i> 고객 사례 보기</button>
                 </div>
             </div>
         </div>
@@ -586,6 +540,7 @@
         </div>
     </div>
 
+    <!-- Quote Modal -->
     <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
         <div class="modal-content !max-w-[550px] !p-0 overflow-hidden">
             <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
@@ -646,6 +601,7 @@
         </div>
     </div>
 
+    <!-- Hosting Modal -->
     <div id="hosting-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('hosting-modal', false)">
         <div class="modal-content !p-6 sm:!p-8">
             <div class="flex justify-between items-center mb-6">
@@ -704,12 +660,23 @@
         </div>
     </div>
 
+    <!-- Security Script -->
     <script>
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85) || (e.ctrlKey && e.keyCode === 83)) {
                 e.preventDefault();
                 return false;
             }
+        });
+
+        // 모바일 터치 피드백을 위한 전역 스크립트
+        document.addEventListener('DOMContentLoaded', () => {
+            const touchElements = document.querySelectorAll('[data-touch-effect]');
+            touchElements.forEach(el => {
+                el.addEventListener('touchstart', () => el.classList.add('is-active'), {passive: true});
+                el.addEventListener('touchend', () => el.classList.remove('is-active'), {passive: true});
+                el.addEventListener('touchcancel', () => el.classList.remove('is-active'), {passive: true});
+            });
         });
     </script>
 
@@ -780,7 +747,7 @@
                         if (displayType.includes('구글')) planIcon = 'fa-cloud';
                         else if (displayType.includes('일반')) planIcon = 'fa-server';
                         
-                        html += `<div class="unified-card group hover:border-purple-500/30 transition-all">
+                        html += `<div class="unified-card group transition-all">
                             <div class="flex justify-between items-center mb-4">
                                 <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10">
                                     <i class="fas ${planIcon} text-purple-400 text-[10px]"></i>
@@ -833,11 +800,7 @@
                     
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), {
-                            category, 
-                            name, 
-                            contact: phone, 
-                            content, 
-                            createdAt: serverTimestamp()
+                            category, name, contact: phone, content, createdAt: serverTimestamp()
                         });
                         alert('상담 신청이 완료되었습니다. 담당자가 곧 연락드리겠습니다.');
                         e.target.reset();
@@ -852,11 +815,7 @@
                     const phone = document.getElementById('h-phone').value;
                     try {
                         await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
-                            name, 
-                            phone, 
-                            type: planType, 
-                            status: 'pending',
-                            createdAt: serverTimestamp()
+                            name, phone, type: planType, status: 'pending', createdAt: serverTimestamp()
                         });
                         alert('결제 정보가 성공적으로 제출되었습니다. 입금 확인 후 서비스가 활성화됩니다.');
                         e.target.reset();
