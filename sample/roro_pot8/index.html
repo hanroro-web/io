@@ -354,33 +354,16 @@
     <!-- 헤더 -->
     <header class="fixed left-0 top-0 z-40 flex w-full justify-center transition-all" id="main-header">
         <div class="w-full max-w-7xl px-4 md:px-12 relative">
+            <!-- 로고 및 햄버거 메뉴를 상단에 배치 -->
             <div class="header-content-wrapper flex items-center justify-between lg:grid lg:grid-cols-3">
-                <div class="flex flex-col items-center justify-center lg:col-start-2">
+                <div class="hidden lg:block lg:col-start-1"></div>
+
+                <div class="flex flex-col items-center justify-center lg:col-start-2 w-full">
                     <div class="flex items-center space-x-2 cursor-pointer" onclick="showMainSection()">
                         <svg class="w-8 h-8 text-[#FF7E00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 3v17M3 7h18M7 7c0 4 1 6 5 6s5-2 5-6"></path>
                         </svg>
                         <div class="text-xl md:text-2xl font-bold serif tracking-tighter text-white" id="logo-text">로로 <span class="text-[#FF7E00]">소송 로펌</span></div>
-                    </div>
-                    
-                    <!-- 데스크탑 전용 장식 -->
-                    <div class="hidden lg:block w-full text-center">
-                        <div class="mouse-icon-wrap" id="logo-decoration">
-                            <div class="mouse-icon"><div class="mouse-wheel"></div></div>
-                        </div>
-                        <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full hover:bg-[#FF7E00] hover:text-white transition-all bg-transparent backdrop-blur-md shadow-lg" id="header-diagnosis-btn">
-                            자가진단 시작
-                        </button>
-                    </div>
-
-                    <!-- 모바일/태블릿 전용 장식 -->
-                    <div class="hidden w-full text-center mt-4" id="logo-decoration-mobile">
-                        <div class="mouse-icon-wrap mb-4">
-                            <div class="mouse-icon"><div class="mouse-wheel"></div></div>
-                        </div>
-                        <button onclick="showDiagnosisSection()" class="hidden text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg" id="header-diagnosis-btn-mobile">
-                            소송 자가진단 하기
-                        </button>
                     </div>
                 </div>
 
@@ -389,8 +372,29 @@
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
+            </div>
 
-                <div class="hidden lg:block lg:col-start-1"></div>
+            <!-- 데스크탑 및 모바일 마우스/버튼 영역 (메뉴 아래로 배치) -->
+            <div class="w-full flex flex-col items-center mt-2">
+                <!-- 데스크탑 장식 -->
+                <div class="hidden lg:block w-full text-center">
+                    <div class="mouse-icon-wrap" id="logo-decoration">
+                        <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+                    </div>
+                    <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full hover:bg-[#FF7E00] hover:text-white transition-all bg-transparent backdrop-blur-md shadow-lg" id="header-diagnosis-btn">
+                        자가진단 시작
+                    </button>
+                </div>
+
+                <!-- 모바일/태블릿 장식 (메뉴바 아래로 확실히 내림) -->
+                <div class="flex lg:hidden flex-col items-center w-full mt-4" id="logo-decoration-mobile">
+                    <div class="mouse-icon-wrap mb-4">
+                        <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+                    </div>
+                    <button onclick="showDiagnosisSection()" class="text-[11px] font-bold text-[#FF7E00] border-2 border-[#FF7E00]/60 px-6 py-2 rounded-full bg-black/40 backdrop-blur-md shadow-lg" id="header-diagnosis-btn-mobile">
+                        소송 자가진단 하기
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -412,6 +416,7 @@
             </div>
         </section>
 
+        <!-- (이하 기존 섹션들 동일하게 유지) -->
         <section id="lawyers" class="py-24 bg-white">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-3xl font-bold serif mb-16">전문 변호사</h2>
@@ -552,7 +557,7 @@
         </footer>
     </div>
 
-    <!-- 소송 자가진단 섹션 (전체 5단계 복구) -->
+    <!-- 소송 자가진단 섹션 -->
     <div id="full-diagnosis" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-xl mx-auto fade-in-up">
             <div class="text-center mb-12">
@@ -561,8 +566,6 @@
                 <p class="text-white/40 text-[11px]">답변 내용을 바탕으로 소송 실익을 1차 분석합니다.</p>
             </div>
             <div class="bg-[#1A1A1A] p-10 rounded-[40px] border border-white/5 shadow-2xl min-h-[420px] flex flex-col justify-center text-white">
-                
-                <!-- 질문 1 -->
                 <div id="diag-1" class="diag-item active">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 01. 사건 유형</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">현재 갈등 상황의 종류를 선택해주세요.</h3>
@@ -572,8 +575,6 @@
                         <button onclick="nextDiag(2)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">이혼/상속/가사소송</button>
                     </div>
                 </div>
-
-                <!-- 질문 2 -->
                 <div id="diag-2" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 02. 소멸 시효</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">사건이 발생한 지 얼마나 지났습니까?</h3>
@@ -583,8 +584,6 @@
                         <button onclick="nextDiag(3)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">3년 이상 (시효 검토 필요)</button>
                     </div>
                 </div>
-
-                <!-- 질문 3 -->
                 <div id="diag-3" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 03. 객관적 증거</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">주장을 뒷받침할 자료가 있습니까?</h3>
@@ -594,8 +593,6 @@
                         <button onclick="nextDiag(4)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">현재는 증거가 부족함</button>
                     </div>
                 </div>
-
-                <!-- 질문 4 -->
                 <div id="diag-4" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 04. 소송 실익</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">분쟁 금액 또는 피해 정도가 어느 정도입니까?</h3>
@@ -605,8 +602,6 @@
                         <button onclick="nextDiag(5)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">금전 외 권리/명예 회복 목적</button>
                     </div>
                 </div>
-
-                <!-- 질문 5 -->
                 <div id="diag-5" class="diag-item">
                     <p class="text-[10px] text-[#FF7E00] font-bold mb-4 uppercase tracking-tighter">질문 05. 상대방 상태</p>
                     <h3 class="text-xl font-bold serif mb-8 text-white/90">상대방의 소재나 재산 상태를 알고 계십니까?</h3>
@@ -616,8 +611,6 @@
                         <button onclick="nextDiag(6)" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-left text-xs font-bold text-white/70 hover:border-[#FF7E00] hover:bg-[#FF7E00]/5 transition-all">전혀 모름 (사실조회 필요)</button>
                     </div>
                 </div>
-
-                <!-- 진단 완료 결과 -->
                 <div id="diag-6" class="diag-item">
                     <div class="text-center mb-10">
                         <div class="w-20 h-20 bg-[#FF7E00]/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -635,7 +628,7 @@
         </div>
     </div>
 
-    <!-- 공지/언론사례 게시판 섹션 (게시물 상세 복구) -->
+    <!-- 공지/언론사례 게시판 섹션 -->
     <div id="board-section" class="hidden min-h-screen bg-[#121212] pt-48 pb-20 px-6">
         <div class="max-w-4xl mx-auto fade-in-up">
             <div id="board-list-view">
@@ -646,7 +639,6 @@
                     </div>
                     <button onclick="showMainSection()" class="text-white/40 text-[10px] font-bold border-b border-white/20 pb-1">목록 닫기</button>
                 </div>
-                
                 <div class="space-y-1">
                     <div onclick="showPost('post-1')" class="board-item group flex items-center justify-between">
                         <div class="flex-1 pr-8">
@@ -655,7 +647,6 @@
                         </div>
                         <span class="text-white/20 text-[11px] font-mono">2025.11.15</span>
                     </div>
-
                     <div onclick="showPost('post-2')" class="board-item group flex items-center justify-between">
                         <div class="flex-1 pr-8">
                             <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[공지사항]</span>
@@ -663,7 +654,6 @@
                         </div>
                         <span class="text-white/20 text-[11px] font-mono">2025.10.30</span>
                     </div>
-
                     <div onclick="showPost('post-3')" class="board-item group flex items-center justify-between">
                         <div class="flex-1 pr-8">
                             <span class="text-white/40 text-[10px] font-bold mb-2 block">[승소사례]</span>
@@ -671,7 +661,6 @@
                         </div>
                         <span class="text-white/20 text-[11px] font-mono">2025.10.12</span>
                     </div>
-
                     <div onclick="showPost('post-4')" class="board-item group flex items-center justify-between">
                         <div class="flex-1 pr-8">
                             <span class="text-[#FF7E00] text-[10px] font-bold mb-2 block">[언론보도]</span>
@@ -681,14 +670,11 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 게시글 상세 내용 컨테이너 -->
             <div id="post-view-container" class="hidden">
                 <button onclick="backToBoard()" class="text-white/40 text-[10px] mb-8 flex items-center group">
                     <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     뒤로가기
                 </button>
-                
                 <div id="post-1" class="post-content-container text-white">
                     <h3 class="text-2xl font-bold serif mb-6">로로 법률사무소, '2025 소비자 만족 브랜드 대상' 수상</h3>
                     <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.11.15 | WRITER: ADMIN</div>
@@ -697,7 +683,6 @@
                         <p>의뢰인 개개인의 사정을 깊이 공감하고, 철저한 판례 분석을 통해 최선의 결과를 도출해온 노력을 인정받은 결과입니다. 앞으로도 변함없이 정직하고 실력 있는 법률 파트너가 되겠습니다.</p>
                     </div>
                 </div>
-
                 <div id="post-2" class="post-content-container text-white">
                     <h3 class="text-2xl font-bold serif mb-6">사무소 이전 안내</h3>
                     <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.10.30 | WRITER: ADMIN</div>
@@ -706,7 +691,6 @@
                         <p>기존 서초구 00동에서 <b>서초구 서초대로 123, 법조빌딩 7층</b>으로 확장 이전하였으니, 방문 시 착오 없으시길 바랍니다. 감사합니다.</p>
                     </div>
                 </div>
-
                 <div id="post-3" class="post-content-container text-white">
                     <h3 class="text-2xl font-bold serif mb-6">보이스피싱 무죄 판결 승소 사례</h3>
                     <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.10.12 | WRITER: LAWYER PARK</div>
@@ -715,7 +699,6 @@
                         <p>의뢰인이 불법성을 인지하지 못했다는 점을 입증하는 정황 증거와 메신저 대화 내용을 치밀하게 분석하여 재판부를 설득한 핵심적인 승리였습니다.</p>
                     </div>
                 </div>
-
                 <div id="post-4" class="post-content-container text-white">
                     <h3 class="text-2xl font-bold serif mb-6">전세 사기 대응법 인터뷰 보도</h3>
                     <div class="text-white/20 text-[10px] mb-8 pb-8 border-b border-white/5">DATE: 2025.09.28 | WRITER: ADMIN</div>
@@ -728,13 +711,12 @@
         </div>
     </div>
 
-    <!-- 하단 플로팅 바 -->
+    <!-- 상담 모달 및 하단 바 -->
     <div id="bottom-cta-bar">
         <p class="text-white text-xs font-bold serif">법률 고민, 지금 바로 1:1 비밀 상담을 신청하세요.</p>
         <button onclick="openModal()" class="btn-gold px-6 py-3 rounded-xl font-bold text-[11px]">상담 신청하기</button>
     </div>
 
-    <!-- 상담 모달 -->
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal-content bg-white rounded-[35px] w-full max-w-2xl overflow-hidden relative shadow-2xl fade-in-up" onclick="event.stopPropagation()">
             <div class="flex flex-col md:flex-row">
@@ -786,12 +768,10 @@
             document.getElementById('main-section').classList.add('hidden');
             document.getElementById('full-diagnosis').classList.add('hidden');
             document.getElementById('board-section').classList.remove('hidden');
-            backToBoard(); // 리스트 뷰가 먼저 나오도록
+            backToBoard();
             updateSidebarMenu('공지/언론사례');
             window.scrollTo(0,0);
         }
-
-        /* 게시판 본문 보기 */
         function showPost(postId) {
             document.getElementById('board-list-view').classList.add('hidden');
             document.getElementById('post-view-container').classList.remove('hidden');
@@ -803,7 +783,6 @@
             document.getElementById('board-list-view').classList.remove('hidden');
             document.getElementById('post-view-container').classList.add('hidden');
         }
-
         function updateSidebarMenu(text) {
             const items = document.querySelectorAll('.sidebar-menu-item');
             items.forEach(item => {
@@ -824,7 +803,6 @@
                 if(el) window.scrollTo({top: el.offsetTop - 100, behavior: 'smooth'});
             }, 100);
         }
-        
         function nextDiag(step) {
             document.querySelectorAll('.diag-item').forEach(i => i.classList.remove('active'));
             const target = document.getElementById('diag-' + step);
