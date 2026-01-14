@@ -311,6 +311,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        /* 공지사항 모바일 최적화 레이아웃 */
         .board-row {
             display: grid;
             grid-template-columns: 80px 1fr 120px;
@@ -319,6 +320,22 @@
             transition: all 0.2s;
             cursor: pointer;
         }
+        @media (max-width: 640px) {
+            .board-row {
+                grid-template-columns: 60px 1fr;
+                grid-template-areas: 
+                    "tag date"
+                    "title title";
+                padding: 20px 10px;
+                gap: 10px 0;
+            }
+            .board-row > div:nth-child(1) { grid-area: tag; }
+            .board-row > div:nth-child(2) { grid-area: title; padding-left: 0; }
+            .board-row > div:nth-child(3) { grid-area: date; text-align: right; }
+            
+            .board-row h4 { font-size: 1.1rem; line-height: 1.4; }
+        }
+
         .board-row:hover {
             background: rgba(255, 126, 0, 0.05);
         }
@@ -339,6 +356,9 @@
             line-height: 1.8;
             border-left: 2px solid var(--gold-primary);
             margin-bottom: 20px;
+        }
+        @media (max-width: 640px) {
+            .board-inner-text { padding: 20px; margin-left: 10px; font-size: 13px; }
         }
 
         .category-tag {
@@ -364,7 +384,7 @@
 </head>
 <body class="bg-white text-gray-900" oncontextmenu="return false" onselectstart="return false">
 
-    <!-- 모바일 네비게이션 오버레이 -->
+    <!-- 모바일 네비게이션 오버레이 (생략 없이 유지) -->
     <div id="mobile-nav-overlay">
         <div class="flex justify-between items-center mb-16">
             <div class="flex items-center space-x-2">
@@ -450,7 +470,7 @@
                     </div>
                     <div class="text-white max-w-3xl flex flex-col items-center justify-center flex-grow">
                         <div class="inline-block px-4 py-1.5 border border-white/20 rounded-full mb-8 text-[10px] backdrop-blur-sm tracking-widest">
-                            <span class="text-[#FF7E00] font-bold">LOLO LAW FIRM</span> STRATEGY CENTER
+                            <span class="text-[#FF7E00] font-bold">로로 소송로펌</span> 센터
                         </div>
                         <h1 class="text-5xl md:text-7xl font-bold serif leading-tight mb-8">결과로 증명하는<br><span class="text-[#FF7E00]">소송의 품격</span></h1>
                         <p class="text-white/60 text-base md:text-lg mb-12 leading-relaxed max-w-xl">수천 건의 승소 데이터를 기반으로 최적의 판결을 이끌어냅니다.<br>당신의 권리를 보호하는 가장 강력한 법률 파트너입니다.</p>
@@ -500,7 +520,7 @@
             </section>
         </div>
 
-        <!-- 게시판 섹션 (요청사항 반영) -->
+        <!-- 게시판 섹션 (모바일 최적화 레이아웃 적용) -->
         <div id="board-section" class="hidden">
             <section class="min-h-screen bg-[#111111] pt-[140px] pb-24 px-6">
                 <div class="max-w-5xl mx-auto fade-in-up">
@@ -508,33 +528,33 @@
                         <span class="text-[#FF7E00] text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block">LOLO INSIGHT</span>
                         <h2 class="text-4xl font-bold serif mb-6 text-white">공지 및 언론사례</h2>
                     </div>
-                    <div class="flex justify-center space-x-3 mb-12">
-                        <div onclick="filterBoard('all')" class="board-tab active" id="tab-all">전체보기</div>
-                        <div onclick="filterBoard('notice')" class="board-tab" id="tab-notice">공지사항</div>
-                        <div onclick="filterBoard('news')" class="board-tab" id="tab-news">언론보도</div>
+                    <div class="flex justify-center space-x-3 mb-12 overflow-x-auto pb-2 scrollbar-hide">
+                        <div onclick="filterBoard('all')" class="board-tab active whitespace-nowrap" id="tab-all">전체보기</div>
+                        <div onclick="filterBoard('notice')" class="board-tab whitespace-nowrap" id="tab-notice">공지사항</div>
+                        <div onclick="filterBoard('news')" class="board-tab whitespace-nowrap" id="tab-news">언론보도</div>
                     </div>
                     <div class="bg-transparent border-t border-white/20" id="board-list">
                         <!-- 첫 번째 테스트글 -->
                         <div class="board-item" data-category="notice">
                             <div class="board-row group" onclick="toggleAccordion(this)">
-                                <div class="px-4"><span class="category-tag tag-notice">공지</span></div>
+                                <div class="px-2 sm:px-4"><span class="category-tag tag-notice">공지</span></div>
                                 <div class="px-2 flex items-center">
                                     <h4 class="text-base font-bold text-white/90 group-hover:text-[#FF7E00] transition-colors">한로로 테스트글 입니다.</h4>
-                                    <svg class="row-arrow w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    <svg class="row-arrow w-4 h-4 ml-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                                 </div>
-                                <div class="text-right px-4 text-white/30 text-xs">2024.03.15</div>
+                                <div class="text-right px-2 sm:px-4 text-white/30 text-xs">2024.03.15</div>
                             </div>
                             <div class="board-content"><div class="board-inner-text">한로로 테스트글 입니다.</div></div>
                         </div>
                         <!-- 두 번째 테스트글 -->
                         <div class="board-item" data-category="news">
                             <div class="board-row group" onclick="toggleAccordion(this)">
-                                <div class="px-4"><span class="category-tag tag-news">보도</span></div>
+                                <div class="px-2 sm:px-4"><span class="category-tag tag-news">보도</span></div>
                                 <div class="px-2 flex items-center">
                                     <h4 class="text-base font-bold text-white/90 group-hover:text-[#FF7E00] transition-colors">한로로 테스트글 입니다.</h4>
-                                    <svg class="row-arrow w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    <svg class="row-arrow w-4 h-4 ml-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                                 </div>
-                                <div class="text-right px-4 text-white/30 text-xs">2024.03.10</div>
+                                <div class="text-right px-2 sm:px-4 text-white/30 text-xs">2024.03.10</div>
                             </div>
                             <div class="board-content"><div class="board-inner-text">한로로 테스트글 입니다.</div></div>
                         </div>
