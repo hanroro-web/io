@@ -157,11 +157,22 @@
             .giant-wand-wrapper { display: none; }
         }
 
+        /* Mobile Optimization Fixes */
         @media (max-width: 768px) {
             .portfolio-outer-wrapper { height: auto; }
             .portfolio-sticky-box { position: relative; height: auto; overflow-x: auto; padding: 4rem 0; }
             .horizontal-track { transform: none !important; padding: 0 5vw; }
-            .portfolio-card { flex: 0 0 85vw; height: 450px; padding: 2rem; }
+            .portfolio-card { flex: 0 0 85vw; height: auto; min-height: 400px; padding: 2.5rem; }
+            
+            /* Typography Optimization for Mobile */
+            h1 { font-size: 2.5rem !important; line-height: 1.2 !important; }
+            p { font-size: 0.95rem !important; line-height: 1.6 !important; letter-spacing: -0.01em; }
+            .portfolio-card h4 { font-size: 1.75rem !important; }
+            .portfolio-card p { font-size: 0.85rem !important; }
+            
+            /* Footer Information Clarity */
+            footer .flex-wrap { justify-content: flex-start; gap: 1rem; }
+            footer span { font-size: 9px; opacity: 0.8; }
         }
     </style>
 </head>
@@ -203,11 +214,11 @@
                 <i class="fas fa-rocket text-purple-400 text-sm"></i>
             </div>
             <div class="shrink">
-                <h4 class="text-white font-bold text-xs sm:text-sm">제작 비용 60% 할인 진행 중</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-tighter font-semibold">Limited Offer for Hanroro Clients</p>
+                <h4 class="text-white font-bold text-[11px] sm:text-sm">제작 비용 60% 할인 진행 중</h4>
+                <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-tighter font-semibold">Limited Offer</p>
             </div>
         </div>
-        <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-7 py-3 rounded-full font-black text-[11px] hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-purple-600/20">상담 신청하기</button>
+        <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-black text-[10px] sm:text-[11px] hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-purple-600/20">상담 신청</button>
     </div>
 
     <!-- Hero Section -->
@@ -220,26 +231,26 @@
             <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em]">
                 <i class="fas fa-sparkles mr-2"></i> 고품격 프리미엄 웹에이전시
             </div>
-            <h1 class="text-4xl sm:text-6xl font-black leading-[1.15] mb-10 tracking-tighter">
+            <h1 class="text-4xl sm:text-6xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter">
                 홈페이지 가치는 <br>
                 <span class="gradient-text italic">브랜드의 얼굴</span>입니다
             </h1>
-            <p class="text-gray-400 mb-12 text-base sm:text-lg max-w-xl leading-relaxed font-medium">
+            <p class="text-gray-400 mb-10 sm:mb-12 text-base sm:text-lg max-w-xl leading-relaxed font-medium">
                 우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
             </p>
             <div class="flex flex-wrap items-center gap-4">
-                <button onclick="toggleModal('quote-modal', true)" class="bg-white text-black px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">프로젝트 시작하기</button>
-                <button onclick="toggleModal('hosting-modal', true)" class="px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
+                <button onclick="toggleModal('quote-modal', true)" class="bg-white text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">프로젝트 시작</button>
+                <button onclick="toggleModal('hosting-modal', true)" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
                     <i class="fas fa-credit-card text-purple-400"></i> 결제하기
                 </button>
 
-                <div class="flex items-center gap-4 px-6 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+                <div class="flex items-center gap-4 px-5 py-3.5 sm:px-6 sm:py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
                     <div class="flex -space-x-2">
                         <div class="w-6 h-6 rounded-full border-2 border-black bg-gray-600"></div>
                         <div class="w-6 h-6 rounded-full border-2 border-black bg-purple-600"></div>
                         <div class="w-6 h-6 rounded-full border-2 border-black bg-indigo-600"></div>
                     </div>
-                    <span class="text-xs font-bold text-gray-300">124+ 프로젝트 완료</span>
+                    <span class="text-[11px] font-bold text-gray-300">124+ 프로젝트 완료</span>
                 </div>
             </div>
         </div>
@@ -248,9 +259,9 @@
     <!-- Portfolio Section (Horizontal Scroll) -->
     <div class="portfolio-outer-wrapper" id="portfolio-section">
         <div class="portfolio-sticky-box">
-            <div class="absolute top-24 left-6 sm:left-12 z-10">
-                <span class="text-[11px] font-black text-purple-500 uppercase tracking-[0.3em] mb-4 block">Selected Works</span>
-                <h3 class="text-4xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+            <div class="absolute top-16 sm:top-24 left-6 sm:left-12 z-10">
+                <span class="text-[10px] sm:text-[11px] font-black text-purple-500 uppercase tracking-[0.3em] mb-3 sm:mb-4 block">Selected Works</span>
+                <h3 class="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
                     한로로 <br><span class="gradient-text">PORTFOLIO</span>
                 </h3>
             </div>
@@ -259,14 +270,14 @@
                 <div class="portfolio-card">
                     <span class="card-number">01</span>
                     <div class="relative z-10">
-                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
-                            <i class="fas fa-brain text-3xl"></i>
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
+                            <i class="fas fa-brain text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">넥스트 인텔리전스</h4>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">넥스트 인텔리전스</h4>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">AI 데이터 분석 솔루션 기업의 아이덴티티를 담은 미래지향적 인터페이스 구축 및 복합 대시보드 설계.</p>
                         <div class="flex gap-2">
-                            <span class="text-[10px] bg-white/5 px-4 py-1.5 rounded-full text-gray-400 border border-white/5">#AI_PLATFORM</span>
-                            <span class="text-[10px] bg-white/5 px-4 py-1.5 rounded-full text-gray-400 border border-white/5">#WEB_APP</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#AI_PLATFORM</span>
+                            <span class="text-[9px] sm:text-[10px] bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-gray-400 border border-white/5">#WEB_APP</span>
                         </div>
                     </div>
                 </div>
@@ -274,30 +285,30 @@
                 <div class="portfolio-card">
                     <span class="card-number">02</span>
                     <div class="relative z-10">
-                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
-                            <i class="fas fa-shopping-bag text-3xl"></i>
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
+                            <i class="fas fa-shopping-bag text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">모던 바이브</h4>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">모던 바이브</h4>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">사용자 경험을 극대화한 UI 설계로 구매 전환율을 40% 이상 향상시킨 감성 커머스 플랫폼.</p>
                     </div>
                 </div>
                 <div class="portfolio-card">
                     <span class="card-number">03</span>
                     <div class="relative z-10">
-                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
-                            <i class="fas fa-palette text-3xl"></i>
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
+                            <i class="fas fa-palette text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">스튜디오 엘리먼츠</h4>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">스튜디오 엘리먼츠</h4>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">디자인 스튜디오의 독창적인 작품들을 몰입감 있게 보여주는 인터랙티브 웹진 포트폴리오.</p>
                     </div>
                 </div>
                 <div class="portfolio-card">
                     <span class="card-number">04</span>
                     <div class="relative z-10">
-                        <div class="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-10 border border-purple-500/20">
-                            <i class="fas fa-bolt text-3xl"></i>
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-400 mb-6 sm:mb-10 border border-purple-500/20">
+                            <i class="fas fa-bolt text-2xl sm:text-3xl"></i>
                         </div>
-                        <h4 class="text-3xl font-black text-white mb-4 tracking-tight">하이퍼 랜딩</h4>
+                        <h4 class="text-2xl sm:text-3xl font-black text-white mb-3 sm:mb-4 tracking-tight">하이퍼 랜딩</h4>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">0.5초 이내의 초고속 로딩 속도를 보장하는 퍼포먼스 마케팅 최적화 랜딩페이지 시스템.</p>
                     </div>
                 </div>
@@ -306,90 +317,89 @@
     </div>
 
     <!-- Deposit Status Board -->
-    <section class="py-24 bg-black/40 border-t border-white/5">
+    <section class="py-20 sm:py-24 bg-black/40 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-center gap-3 mb-12">
-                <div class="w-12 h-[1px] bg-purple-500"></div>
-                <h3 class="text-xl font-black uppercase tracking-tighter italic">실시간 <span class="gradient-text">입금 현황</span></h3>
+            <div class="flex items-center gap-3 mb-10 sm:init-12">
+                <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
+                <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic">실시간 <span class="gradient-text">입금 현황</span></h3>
             </div>
-            <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+            <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
         </div>
     </section>
 
     <!-- Live Project Status -->
-    <section class="py-32 bg-black/60 border-t border-white/5 relative overflow-hidden">
+    <section class="py-24 sm:py-32 bg-black/60 border-t border-white/5 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex items-center gap-3 mb-16">
-                <div class="w-12 h-[1px] bg-purple-500"></div>
-                <h3 class="text-2xl font-black uppercase tracking-tighter">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
+            <div class="flex items-center gap-3 mb-12 sm:mb-16">
+                <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
+                <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
             </div>
-            <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+            <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"></div>
         </div>
     </section>
 
     <!-- One-line Notice Bar -->
     <div class="notice-bar-container py-4">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between gap-6 overflow-hidden">
-            <div class="flex items-center gap-4 shrink-0">
-                <span class="bg-purple-600 text-[10px] font-black px-2 py-0.5 rounded text-white uppercase tracking-tighter">Notice</span>
+            <div class="flex items-center gap-3 shrink-0">
+                <span class="bg-purple-600 text-[9px] font-black px-2 py-0.5 rounded text-white uppercase tracking-tighter">Notice</span>
             </div>
             <div id="notice-ticker" class="flex-1 truncate">
-                <p id="notice-text" class="text-[12px] text-gray-400 font-medium hover:text-white transition-colors cursor-pointer">최신 공지사항을 불러오고 있습니다...</p>
+                <p id="notice-text" class="text-[11px] sm:text-[12px] text-gray-400 font-medium hover:text-white transition-colors cursor-pointer">최신 공지사항을 불러오고 있습니다...</p>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="py-24 bg-[#030107] border-t border-white/5">
+    <footer class="py-20 sm:py-24 bg-[#030107] border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16 sm:mb-20">
                 <div>
-                    <div class="text-2xl font-black gradient-text uppercase mb-8 tracking-tighter">HANRORO</div>
+                    <div class="text-2xl font-black gradient-text uppercase mb-6 sm:mb-8 tracking-tighter">HANRORO</div>
                     <div class="space-y-4">
                         <p class="text-gray-400 text-sm leading-relaxed max-w-md">한로로(Hanroro)는 고객의 비즈니스 가치를 디자인과 기술로 증명하는 프리미엄 웹 에이전시입니다.</p>
-                        <div class="flex gap-4 pt-4">
-                            <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-instagram"></i></div>
-                            <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-facebook-f"></i></div>
-                            <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-github"></i></div>
+                        <div class="flex gap-3 pt-2 sm:pt-4">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-instagram text-sm"></i></div>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-facebook-f text-sm"></i></div>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-github text-sm"></i></div>
                         </div>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
                     <div>
-                        <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Company</h5>
-                        <ul class="space-y-4 text-gray-500 text-xs font-medium">
+                        <h5 class="text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-4 sm:mb-6 text-purple-400">Company</h5>
+                        <ul class="space-y-3 sm:space-y-4 text-gray-500 text-[11px] sm:text-xs font-medium">
                             <li class="hover:text-white cursor-pointer transition-colors">About Us</li>
                             <li class="hover:text-white cursor-pointer transition-colors">Portfolio</li>
                             <li class="hover:text-white cursor-pointer transition-colors">Our Service</li>
                         </ul>
                     </div>
                     <div>
-                        <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Legal</h5>
-                        <ul class="space-y-4 text-gray-500 text-xs font-medium">
+                        <h5 class="text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-4 sm:mb-6 text-purple-400">Legal</h5>
+                        <ul class="space-y-3 sm:space-y-4 text-gray-500 text-[11px] sm:text-xs font-medium">
                             <li class="hover:text-white cursor-pointer transition-colors">이용약관</li>
                             <li class="hover:text-white cursor-pointer transition-colors">개인정보처리방침</li>
                             <li class="hover:text-white cursor-pointer transition-colors">호스팅 정책</li>
                         </ul>
                     </div>
                     <div class="col-span-2 sm:col-span-1">
-                        <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Contact</h5>
-                        <ul class="space-y-4 text-gray-500 text-xs font-medium">
+                        <h5 class="text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-4 sm:mb-6 text-purple-400">Contact</h5>
+                        <ul class="space-y-3 sm:space-y-4 text-gray-500 text-[11px] sm:text-xs font-medium">
                             <li>hanroro.web@gmail.com</li>
                             <li>0507-1354-9107</li>
-                            <li>-</li>
                         </ul>
                     </div>
                 </div>
             </div>
             
-            <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-[10px] text-gray-600 font-bold uppercase tracking-tighter">
+            <div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-3 text-[9px] sm:text-[10px] text-gray-600 font-bold uppercase tracking-tighter text-center md:text-left">
                     <span>상호명: 한로로(Hanroro) - 55디자이너스</span>
                     <span>대표자: 김상우</span>
                     <span>사업자등록번호: 540-40-00028</span>
                     <span>통신판매업신고: 제 2015-안양만안-00105호</span>
                 </div>
-                <p class="text-gray-700 text-[10px] uppercase tracking-widest font-black">© 2024 HANRORO. ALL RIGHTS RESERVED.</p>
+                <p class="text-gray-700 text-[9px] sm:text-[10px] uppercase tracking-widest font-black">© 2024 HANRORO. ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>
@@ -397,27 +407,23 @@
     <!-- Project Status Modal -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-[650px] !p-0 overflow-hidden">
-            <div class="p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
+            <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
                 <div class="flex justify-between items-start">
                     <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest mb-3">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[8px] sm:text-[9px] font-black uppercase tracking-widest mb-2 sm:mb-3">
                             <i class="fas fa-satellite-dish animate-pulse"></i> Live Progress
                         </div>
-                        <h3 class="text-3xl font-black text-white uppercase tracking-tighter">진행 중인 프로젝트 현황</h3>
-                        <p class="text-gray-400 text-xs mt-2 font-medium">현재 한로로에서 제작 중인 프로젝트들의 실시간 공정률입니다.</p>
+                        <h3 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter leading-tight">진행 중인 프로젝트 현황</h3>
                     </div>
-                    <button onclick="toggleModal('status-modal', false)" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                    <button onclick="toggleModal('status-modal', false)" class="w-9 h-9 sm:w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
-            <div class="p-8 max-h-[60vh] overflow-y-auto">
+            <div class="p-6 sm:p-8 max-h-[60vh] overflow-y-auto">
                 <div id="modal-project-list" class="space-y-6">
-                    <p class="text-center text-gray-500 py-10 text-xs uppercase font-bold tracking-widest">Loading Projects...</p>
+                    <p class="text-center text-gray-500 py-10 text-[10px] uppercase font-bold tracking-widest">Loading Projects...</p>
                 </div>
-            </div>
-            <div class="p-6 bg-white/5 border-t border-white/5 text-center">
-                <button onclick="toggleModal('status-modal', false)" class="text-[10px] font-black text-gray-400 hover:text-white uppercase tracking-widest">Close Dashboard</button>
             </div>
         </div>
     </div>
@@ -425,38 +431,37 @@
     <!-- Quote Modal -->
     <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
         <div class="modal-content !max-w-[550px] !p-0 overflow-hidden">
-            <div class="p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
+            <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest mb-3">
-                            <i class="fas fa-envelope-open-text"></i> Project Inquiries
+                            <i class="fas fa-envelope-open-text"></i> Inquiries
                         </div>
-                        <h3 class="text-3xl font-black text-white uppercase tracking-tighter">견적 및 상담 신청</h3>
-                        <p class="text-gray-400 text-xs mt-2 font-medium">당신의 아이디어를 현실로 만드는 첫 걸음입니다.</p>
+                        <h3 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter">견적 및 상담 신청</h3>
                     </div>
-                    <button onclick="toggleModal('quote-modal', false)" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
-                        <i class="fas fa-times"></i>
+                    <button onclick="toggleModal('quote-modal', false)" class="w-9 h-9 sm:w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">
+                        <i class="fas fa-times text-sm"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="p-8">
-                <form id="quote-form" class="space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="p-6 sm:p-8">
+                <form id="quote-form" class="space-y-5 sm:space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                         <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Name / Company</label>
-                            <input type="text" id="q-name" class="custom-input !mt-0" placeholder="성함 또는 업체명" required>
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Name / Company</label>
+                            <input type="text" id="q-name" class="custom-input !mt-0 !py-3" placeholder="성함 또는 업체명" required>
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Contact Number</label>
-                            <input type="tel" id="q-phone" class="custom-input !mt-0" placeholder="010-0000-0000" required>
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Contact Number</label>
+                            <input type="tel" id="q-phone" class="custom-input !mt-0 !py-3" placeholder="010-0000-0000" required>
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Message</label>
-                        <textarea id="q-memo" class="custom-input h-32 resize-none !mt-0" placeholder="내용을 입력해 주세요."></textarea>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Message</label>
+                        <textarea id="q-memo" class="custom-input h-24 sm:h-32 resize-none !mt-0 !py-3" placeholder="내용을 입력해 주세요."></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] mt-2 hover:bg-purple-700 transition-all shadow-2xl shadow-purple-600/40">신청하기</button>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-[0.2em] hover:bg-purple-700 transition-all">신청하기</button>
                 </form>
             </div>
         </div>
@@ -464,72 +469,50 @@
 
     <!-- Hosting Modal -->
     <div id="hosting-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('hosting-modal', false)">
-        <div class="modal-content">
+        <div class="modal-content !p-6 sm:!p-8">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-black text-white uppercase tracking-tight">서비스 결제 신청</h3>
-                <button onclick="toggleModal('hosting-modal', false)" class="text-gray-500 hover:text-white"><i class="fas fa-times"></i></button>
+                <button onclick="toggleModal('hosting-modal', false)" class="text-gray-500 hover:text-white"><i class="fas fa-times text-lg"></i></button>
             </div>
             
-            <form id="hosting-form" class="space-y-6">
+            <form id="hosting-form" class="space-y-5 sm:space-y-6">
                 <div class="space-y-3">
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Hosting Plan Select</label>
-                    <label class="block relative group">
+                    <label class="block relative">
                         <input type="radio" name="hosting-plan" value="google" class="hidden option-radio" checked>
-                        <div class="option-card p-4 rounded-2xl flex justify-between items-center">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center border border-purple-500/20 text-purple-400">
-                                    <i class="fas fa-cloud text-lg"></i>
+                        <div class="option-card p-3.5 sm:p-4 rounded-2xl flex justify-between items-center">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-600/20 flex items-center justify-center border border-purple-500/20 text-purple-400">
+                                    <i class="fas fa-cloud text-base sm:text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">Google Cloud</p>
-                                    <h4 class="text-sm font-bold text-white">한로로 구글호스팅</h4>
+                                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-0.5">Google Cloud</p>
+                                    <h4 class="text-xs sm:text-sm font-bold text-white">한로로 구글호스팅</h4>
                                 </div>
                             </div>
-                            <span class="text-sm font-black text-white">1,350,000원</span>
-                        </div>
-                    </label>
-                    <label class="block relative group">
-                        <input type="radio" name="hosting-plan" value="standard" class="hidden option-radio">
-                        <div class="option-card p-4 rounded-2xl flex justify-between items-center">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-gray-600/20 flex items-center justify-center border border-gray-500/20 text-gray-400">
-                                    <i class="fas fa-server text-lg"></i>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Standard</p>
-                                    <h4 class="text-sm font-bold text-white">한로로 일반호스팅</h4>
-                                </div>
-                            </div>
-                            <span class="text-sm font-black text-white">1,450,000원</span>
+                            <span class="text-xs sm:text-sm font-black text-white">1.35M KRW</span>
                         </div>
                     </label>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">입금자 성함</label>
-                        <input type="text" id="h-name" class="custom-input" placeholder="성함" required>
+                        <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest ml-1">입금자 성함</label>
+                        <input type="text" id="h-name" class="custom-input !py-3" placeholder="성함" required>
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">연락처</label>
-                        <input type="tel" id="h-phone" class="custom-input" placeholder="010-0000-0000" required>
+                        <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest ml-1">연락처</label>
+                        <input type="tel" id="h-phone" class="custom-input !py-3" placeholder="010-0000-0000" required>
                     </div>
                 </div>
 
-                <div class="p-6 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-center relative overflow-hidden">
-                    <div class="flex items-center justify-center gap-2 mb-3">
-                        <i class="fas fa-comment-dollar text-purple-400 text-xs"></i>
-                        <p class="text-[10px] font-bold text-purple-400 uppercase tracking-[0.2em]">TOSS BANK 무통장 입금</p>
-                    </div>
-                    <h4 class="text-lg font-black text-white tracking-tight mb-1">토스뱅크 1001-2586-0977</h4>
-                    <p class="text-[11px] text-gray-400 font-medium">예금주: 김상우</p>
+                <div class="p-5 sm:p-6 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-center relative overflow-hidden">
+                    <p class="text-[9px] font-bold text-purple-400 uppercase tracking-[0.2em] mb-2">TOSS BANK 무통장 입금</p>
+                    <h4 class="text-base sm:text-lg font-black text-white tracking-tight mb-0.5">토스뱅크 1001-2586-0977</h4>
+                    <p class="text-[10px] text-gray-400 font-medium">예금주: 김상우</p>
                 </div>
 
-                <p class="text-center text-[10px] text-gray-500 leading-relaxed font-medium">
-                    * 위 계좌로 선택하신 금액을 입금해 주세요.
-                </p>
-
-                <button type="submit" class="w-full bg-purple-600 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-purple-700 transition-all shadow-xl shadow-purple-600/20">결제 정보 제출하기</button>
+                <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-[0.2em] hover:bg-purple-700 transition-all">결제 정보 제출하기</button>
             </form>
         </div>
     </div>
@@ -583,16 +566,14 @@
                         
                         html += `
                         <div class="unified-card group hover:border-purple-500/30 transition-all">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.2em]">${data.type || 'Hosting'}</span>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[9px] font-black px-2 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40 bg-purple-500/5' : 'text-yellow-500 border-yellow-500/40 bg-yellow-500/5'} uppercase tracking-tighter">${statusText}</span>
-                                </div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase tracking-[0.2em]">${data.type || 'Hosting'}</span>
+                                <span class="text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40 bg-purple-500/5' : 'text-yellow-500 border-yellow-500/40 bg-yellow-500/5'} uppercase tracking-tighter">${statusText}</span>
                             </div>
-                            <h4 class="font-bold text-white text-sm mt-2">${anonymizeName(data.name)}</h4>
+                            <h4 class="font-bold text-white text-xs sm:text-sm mt-1">${anonymizeName(data.name)}</h4>
                         </div>`;
                     });
-                    document.getElementById('deposit-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-xs uppercase font-bold">최근 내역이 없습니다.</p>';
+                    document.getElementById('deposit-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-[10px] uppercase font-bold">최근 내역이 없습니다.</p>';
                 });
 
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), (snap) => {
@@ -602,8 +583,8 @@
                         const p = d.data();
                         const cardHtml = `
                         <div class="unified-card">
-                            <h4 class="font-bold text-white text-sm mb-3">${p.name}</h4>
-                            <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
+                            <h4 class="font-bold text-white text-xs sm:text-sm mb-2.5 sm:mb-3">${p.name}</h4>
+                            <div class="flex justify-between text-[8px] sm:text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
                                 <span>Phase: ${p.phase}</span>
                                 <span>${p.progress}%</span>
                             </div>
@@ -613,7 +594,7 @@
                         modalHtml += cardHtml;
                     });
                     document.getElementById('project-list').innerHTML = html || '<p class="col-span-full text-center text-gray-700 py-10 text-xs">데이터 로딩 중...</p>';
-                    document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-center text-gray-500 py-10 text-xs uppercase font-bold tracking-widest">No projects currently live.</p>';
+                    document.getElementById('modal-project-list').innerHTML = modalHtml || '<p class="text-center text-gray-500 py-10 text-[10px] uppercase font-bold tracking-widest">No projects currently live.</p>';
                 });
 
                 document.getElementById('hosting-form').onsubmit = async (e) => {
