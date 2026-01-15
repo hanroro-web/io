@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HANRORO | Admin Dashboard</title>
+    <title>HAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background-color: #05020a; color: #ffffff; margin: 0; overflow: hidden; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #05020a; 
+            color: #ffffff; 
+            margin: 0; 
+            overflow: hidden; 
+            /* 텍스트 선택 방지 추가 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
         .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         #auth-guard { position: fixed; inset: 0; background: #05020a; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         #admin-layout { display: none; opacity: 0; transition: opacity 0.5s ease; height: 100vh; }
@@ -28,7 +39,7 @@
         #toast.show { transform: translateY(0); opacity: 1; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
     <div id="toast">알림 메시지</div>
 
@@ -163,6 +174,18 @@
 
         </main>
     </div>
+
+    <!-- 우클릭 및 보안 스크립트 -->
+    <script>
+        document.addEventListener('keydown', function(e) {
+            // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S 방지
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85) || (e.ctrlKey && e.keyCode === 83)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        // 우클릭 방지는 body 태그 속성(oncontextmenu)으로도 적용되어 있습니다.
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
