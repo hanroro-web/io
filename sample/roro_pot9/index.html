@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로로페이백 - 프리미엄 암호화폐 페이백 서비스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --kavi-black: #080808;
+            --kavi-pink: #FF69B4;
+            --kavi-pink-light: #FFF0F5;
+            --kavi-gray: #F2F2F2;
+        }
+
+        body { 
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #ffffff;
+            color: var(--kavi-black);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            letter-spacing: -0.02em;
+            -webkit-font-smoothing: antialiased;
+            word-break: keep-all;
+        }
+
+        /* Typography */
+        h1 { font-size: clamp(2.5rem, 6vw, 5rem) !important; line-height: 1.1 !important; font-weight: 900 !important; }
+        h2 { font-size: clamp(2rem, 5vw, 4rem) !important; line-height: 1.2 !important; font-weight: 900 !important; }
+        h3 { font-size: clamp(1.5rem, 3vw, 2.5rem) !important; font-weight: 800 !important; }
+
+        /* Navigation Styling */
+        nav {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* [수정] 스크롤 시 배경 효과 */
+        nav.scrolled {
+            background-color: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 105, 180, 0.1);
+            height: 70px !important;
+        }
+
+        /* Pill Switch Button */
+        .pill-switch {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.05);
+        }
+        .pill-switch:hover {
+            border-color: var(--kavi-pink);
+            background: white;
+            color: var(--kavi-pink);
+            transform: translateY(-2px);
+        }
+        .pill-switch.active {
+            background: var(--kavi-pink);
+            color: white;
+            border-color: var(--kavi-pink);
+        }
+
+        /* Modal & UI Elements */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 105, 180, 0.05);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
+
+        .modal-card {
+            background: white;
+            padding: 3.5rem 2.5rem;
+            border-radius: 50px;
+            max-width: 550px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 105, 180, 0.15);
+            box-shadow: 0 40px 100px rgba(255, 105, 180, 0.12);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        .modal-overlay.open .modal-card { transform: translateY(0) scale(1); }
+
+        .menu-list-item {
+            padding: 1.5rem 2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        .menu-list-item:hover {
+            background: var(--kavi-pink-light);
+            transform: translateX(10px);
+        }
+
+        /* Calculator & Card Styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #ffe4f1;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--kavi-pink);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .premium-card {
+            background: #ffffff;
+            border-radius: clamp(25px, 4vw, 40px);
+            border: 1px solid rgba(255, 105, 180, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.02);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: clamp(1.5rem, 5vw, 3rem);
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--kavi-pink);
+            box-shadow: 0 30px 60px rgba(255, 105, 180, 0.1);
+        }
+
+        /* Animations */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+
+        .text-reveal { overflow: hidden; display: block; }
+        .text-reveal span {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .active .text-reveal span { transform: translateY(0); }
+
+        .floating-icon { animation: floating 4s ease-in-out infinite; }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .ticker-animate { animation: scrollTicker 20s linear infinite; }
+        @keyframes scrollTicker {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .content-section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* [수정] 히어로 배경 공통 적용 클래스 */
+        .hero-bg-unified {
+            background: radial-gradient(circle at top right, #fff5f9, #ffffff);
+        }
+
+        @media (max-width: 768px) { .hide-mobile { display: none; } }
+    </style>
+</head>
+<body class="hero-bg-unified">
+
+    <!-- 프리미엄 메뉴 모달 -->
+    <div id="main-menu-overlay" class="modal-overlay" onclick="toggleMenu()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h3 class="tracking-tighter text-pink-500">로로페이백.</h3>
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">Navigation Menu</p>
+                </div>
+                <button onclick="toggleMenu()" class="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 hover:bg-pink-500 hover:text-white transition duration-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="flex flex-col relative !bg-transparent !border-none !h-auto !static">
+                <div onclick="showPage('main'); toggleMenu();" class="menu-list-item">
+                    <h4 class="text-xl font-extrabold">메인으로</h4>
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-pink-500"><i class="fas fa-home text-xs"></i></div>
+                </div>
+                <div onclick="showPage('notice'); toggleMenu();" class="menu-list-item">
+                    <h4 class="text-xl font-extrabold">공지사항</h4>
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-pink-500"><i class="fas fa-bullhorn text-xs"></i></div>
+                </div>
+                <div onclick="showPage('shop'); toggleMenu();" class="menu-list-item">
+                    <h4 class="text-xl font-extrabold">거래소 페이백</h4>
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-pink-500"><i class="fas fa-exchange-alt text-xs"></i></div>
+                </div>
+                <div onclick="showPage('buyback'); toggleMenu();" class="menu-list-item">
+                    <h4 class="text-xl font-extrabold">셀퍼럴 등록</h4>
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-pink-500"><i class="fas fa-user-plus text-xs"></i></div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 페이백 계산기 모달 -->
+    <div id="calculator-modal" class="modal-overlay" onclick="toggleCalculator()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="tracking-tighter text-pink-500">Payback Calc.</h3>
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">예상 페이백 계산기</p>
+                </div>
+                <button onclick="toggleCalculator()" class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 hover:bg-pink-500 hover:text-white transition duration-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-gray-50 p-5 rounded-3xl border border-pink-50">
+                    <label class="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-3 block">Exchange</label>
+                    <select id="calc-exchange" onchange="calculatePayback()" class="w-full bg-transparent font-bold text-lg outline-none cursor-pointer">
+                        <option value="0.45">바이낸스 (45%)</option>
+                        <option value="0.54">비트겟 (54%)</option>
+                        <option value="0.50">OKX (50%)</option>
+                        <option value="0.25">바이비트 (25%)</option>
+                        <option value="0.60">빙엑스 (60%)</option>
+                    </select>
+                </div>
+                <div class="bg-gray-50 p-5 rounded-3xl border border-pink-50">
+                    <div class="flex justify-between mb-3">
+                        <label class="text-[10px] font-black text-pink-500 uppercase tracking-widest block">Seed Money</label>
+                        <span id="seed-value" class="text-xs font-bold text-gray-500">$10,000</span>
+                    </div>
+                    <input type="range" id="calc-seed" min="1000" max="100000" step="1000" value="10000" oninput="calculatePayback()">
+                </div>
+                <div class="bg-pink-500 p-8 rounded-[40px] text-white text-center shadow-lg shadow-pink-200">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mb-4">Estimated Monthly Payback</p>
+                    <h2 id="calc-result" class="text-white !font-black !mb-0">$1,350</h2>
+                </div>
+                <button onclick="showPage('buyback'); toggleCalculator();" class="w-full py-5 bg-black text-white rounded-2xl font-black uppercase tracking-widest hover:bg-pink-600 transition duration-500">지금 바로 환급 신청하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 페이백 신청 안내 팝업 -->
+    <div id="payment-modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-hand-holding-usd text-2xl text-pink-500"></i>
+                </div>
+                <h3 class="tracking-tighter mb-2">페이백 신청 안내</h3>
+                <p class="text-gray-400 text-sm font-medium">거래소 UID를 연동하여 누적 수수료를 환급받으세요.</p>
+            </div>
+            <input type="text" placeholder="UID 번호를 입력하세요" class="w-full p-6 bg-gray-50 rounded-3xl border border-pink-50 font-black text-xl outline-none mb-6">
+            <button onclick="closeModal()" class="w-full py-5 bg-pink-500 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-black transition duration-500">신청 완료하기</button>
+        </div>
+    </div>
+
+    <!-- [수정] 고정 내비게이션 (배경 투명화 및 히어로 배경 노출) -->
+    <nav id="main-nav" class="fixed w-full top-0 z-[100] h-24 md:h-32 bg-transparent">
+        <div class="container mx-auto px-6 h-full flex justify-between items-center max-w-[1600px] relative">
+            <div class="flex-1 flex justify-start">
+                <div onclick="toggleMenu()" class="pill-switch">
+                    <i class="fas fa-bars text-[10px]"></i> <span class="hide-mobile">Menu</span>
+                </div>
+            </div>
+            <div class="absolute left-1/2 -translate-x-1/2">
+                <a href="javascript:void(0)" onclick="showPage('main')" class="text-2xl md:text-3xl font-black tracking-tighter text-pink-500">로로페이백.</a>
+            </div>
+            <div class="flex-1 flex justify-end">
+                <button onclick="toggleCalculator()" class="pill-switch active">
+                    <i class="fas fa-calculator text-[10px]"></i> <span class="hide-mobile">Payback Calculator</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 콘텐츠 영역 -->
+    <main id="main-wrapper" class="relative">
+        
+        <!-- [메인 홈 섹션] -->
+        <div id="main-section" class="content-section active">
+            <!-- 히어로 섹션 (배경을 body에서 관리하므로 투명 처리) -->
+            <section id="hero" class="min-h-[100vh] pt-32 md:pt-40 flex items-center relative overflow-hidden bg-transparent">
+                <div class="absolute right-[-5%] top-1/2 -translate-y-1/2 w-1/2 h-full hidden lg:flex items-center justify-center opacity-20 pointer-events-none">
+                    <div class="relative w-full h-full">
+                        <div class="floating-icon absolute top-[15%] left-[20%] text-pink-500 text-8xl"><i class="fab fa-bitcoin"></i></div>
+                        <div class="floating-icon absolute top-[45%] left-[65%] text-gray-300 text-9xl" style="animation-delay: 0.5s;"><i class="fab fa-ethereum"></i></div>
+                        <div class="floating-icon absolute top-[75%] left-[15%] text-pink-300 text-7xl" style="animation-delay: 1.2s;"><i class="fas fa-coins"></i></div>
+                    </div>
+                </div>
+                <div class="container mx-auto px-6 max-w-[1400px] relative z-10">
+                    <div class="max-w-[800px] text-center md:text-left">
+                        <p class="text-[10px] font-black uppercase tracking-[0.4em] text-pink-500 mb-6 reveal-up">Premium Cashback Solution</p>
+                        <h1 class="mb-10 reveal-up">
+                            <span class="text-reveal"><span>버려지는 수수료를</span></span>
+                            <span class="text-reveal text-pink-500"><span>자산으로 환급.</span></span>
+                        </h1>
+                        <p class="text-gray-400 mb-12 font-medium reveal-up md:max-w-md">업계 최고 요율의 수수료 페이백 서비스를 경험하세요. 로로페이백은 당신의 투명한 트레이딩을 지원합니다.</p>
+                        <div class="flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4 reveal-up">
+                            <button onclick="showPage('shop')" class="w-full sm:w-auto bg-black text-white px-10 py-5 rounded-2xl font-bold text-[13px] tracking-widest hover:bg-pink-500 transition duration-500">페이백 거래소 보기</button>
+                            <button onclick="toggleCalculator()" class="w-full sm:w-auto bg-white border border-pink-100 text-pink-500 px-10 py-5 rounded-2xl font-bold text-[13px] tracking-widest hover:border-pink-500 transition duration-500">수수료 계산하기</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 실시간 현황 -->
+            <section class="py-12 bg-white/50">
+                <div class="container mx-auto px-6 max-w-[1400px]">
+                    <div class="premium-card bg-white border-none shadow-none flex flex-col lg:flex-row items-center gap-8">
+                        <div class="w-full lg:w-1/4 text-center lg:text-left">
+                            <span class="inline-block px-3 py-1 bg-pink-500 text-white text-[8px] font-black rounded-full mb-3 animate-pulse tracking-widest uppercase">Live Payback</span>
+                            <h3 class="tracking-tighter mb-1">실시간 환급 현황</h3>
+                        </div>
+                        <div class="w-full lg:w-3/4 h-24 overflow-hidden relative">
+                            <div class="ticker-animate flex flex-col space-y-3" id="deposit-ticker"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 인기 거래소 -->
+            <section class="py-24 bg-white/30">
+                <div class="container mx-auto px-6 max-w-[1400px]">
+                    <div class="flex flex-col sm:flex-row justify-between items-end mb-16 reveal-up">
+                        <div class="mb-6 sm:mb-0">
+                            <p class="text-pink-500 font-black text-[10px] uppercase tracking-[0.4em] mb-4">Top Exchanges</p>
+                            <h2 class="tracking-tighter">인기 페이백 거래소.</h2>
+                        </div>
+                        <button onclick="showPage('shop')" class="text-[10px] font-black uppercase tracking-widest border-b-2 border-pink-500 pb-1">전체 거래소 <i class="fas fa-arrow-right ml-2"></i></button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="shop-preview"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- [공지사항 섹션] -->
+        <div id="notice-section" class="content-section pt-32">
+            <div class="container mx-auto px-6 py-24 max-w-[1000px]">
+                <button onclick="showPage('main')" class="mb-12 text-pink-500 font-black text-[11px] uppercase tracking-widest"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                <h2 class="mb-16 tracking-tighter">공지사항.</h2>
+                <div id="notice-list"></div>
+            </div>
+        </div>
+
+        <!-- [거래소 페이백 숍 섹션] -->
+        <div id="shop-section" class="content-section pt-32">
+            <div class="container mx-auto px-6 py-24 max-w-[1400px]">
+                <button onclick="showPage('main')" class="mb-12 text-pink-500 font-black text-[11px] uppercase tracking-widest"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                <h2 class="mb-16 tracking-tighter">전체 페이백 거래소.</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="shop-full-list"></div>
+            </div>
+        </div>
+
+        <!-- [셀퍼럴 등록 섹션] -->
+        <div id="buyback-section" class="content-section pt-32">
+            <div class="container mx-auto px-6 py-24 max-w-[1200px]">
+                <button onclick="showPage('main')" class="mb-12 text-pink-500 font-black text-[11px] uppercase tracking-widest"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    <div>
+                        <h2 class="mb-8 tracking-tighter">본인의 수수료를<br><span class="text-pink-500">본인이 직접.</span></h2>
+                        <p class="text-gray-400 font-medium">로로페이백의 셀퍼럴 등록 시스템을 통해 가장 투명하게 수수료를 돌려받으세요.</p>
+                    </div>
+                    <div class="premium-card">
+                        <div class="space-y-4">
+                            <select class="w-full p-4 bg-gray-50 rounded-xl border-none font-bold text-sm">
+                                <option>바이낸스 (Binance)</option>
+                                <option>비트겟 (Bitget)</option>
+                                <option>OKX</option>
+                                <option>바이비트 (Bybit)</option>
+                                <option>빙엑스 (BingX)</option>
+                            </select>
+                            <input type="text" placeholder="UID 입력" class="w-full p-4 bg-gray-50 rounded-xl border-none font-bold outline-none focus:ring-1 focus:ring-pink-200">
+                            <button class="w-full py-5 bg-pink-500 text-white rounded-xl font-black uppercase tracking-widest hover:bg-black transition duration-500">셀퍼럴 등록신청</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 고정 푸터 -->
+        <footer id="support" class="bg-white/80 backdrop-blur-md pt-24 pb-12 border-t border-pink-50">
+            <div class="container mx-auto px-6 max-w-[1400px]">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-20">
+                    <div>
+                        <h2 class="text-5xl font-black text-pink-500 mb-6">로로페이백.</h2>
+                        <p class="text-gray-300 font-bold text-sm">© 2024 LOROPAYBACK GLOBAL. All Rights Reserved.</p>
+                    </div>
+                    <div class="mt-12 md:mt-0 md:text-right">
+                        <a href="mailto:payback@loropayback.com" class="text-xl md:text-3xl font-black border-b-2 border-pink-500 hover:text-pink-500 transition uppercase">payback@loropayback.com</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // 스크롤 감지 및 내비게이션 배경 처리
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            reveal();
+        });
+
+        function toggleMenu() {
+            const menu = document.getElementById('main-menu-overlay');
+            menu.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : 'auto';
+        }
+
+        function toggleCalculator() {
+            const calc = document.getElementById('calculator-modal');
+            calc.classList.toggle('open');
+            document.body.style.overflow = calc.classList.contains('open') ? 'hidden' : 'auto';
+            if(calc.classList.contains('open')) calculatePayback();
+        }
+
+        function calculatePayback() {
+            const rate = parseFloat(document.getElementById('calc-exchange').value);
+            const seed = parseInt(document.getElementById('calc-seed').value);
+            document.getElementById('seed-value').innerText = `$${seed.toLocaleString()}`;
+            const estimatedPayback = seed * 20 * 0.0004 * 5 * 30 * rate;
+            document.getElementById('calc-result').innerText = `$${Math.round(estimatedPayback).toLocaleString()}`;
+        }
+
+        function openPaymentModal() {
+            document.getElementById('payment-modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('payment-modal').classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const target = document.getElementById(`${id}-section`);
+            if (target) target.classList.add('active');
+            window.scrollTo(0, 0);
+            reveal();
+        }
+
+        function reveal() {
+            document.querySelectorAll(".reveal-up, section").forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) el.classList.add("active");
+            });
+        }
+
+        function init() {
+            const mockData = [
+                { name: "UID 82***01", amount: "$124.5", time: "방금 전" },
+                { name: "UID 15***92", amount: "$3,201.0", time: "1분 전" },
+                { name: "UID 44***28", amount: "$89.2", time: "2분 전" }
+            ];
+            document.getElementById('deposit-ticker').innerHTML = [...mockData, ...mockData, ...mockData].map(item => `
+                <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-pink-50">
+                    <span class="font-black text-sm">${item.name}</span>
+                    <span class="text-pink-500 font-black text-sm">${item.amount} 페이백 완료</span>
+                    <span class="text-[9px] text-gray-300 font-bold uppercase">${item.time}</span>
+                </div>
+            `).join('');
+
+            const exchanges = [
+                { title: "바이낸스", icon: "fab fa-bitcoin", rate: "45%" },
+                { title: "비트겟", icon: "fas fa-bolt", rate: "54%" },
+                { title: "OKX", icon: "fas fa-cube", rate: "50%" },
+                { title: "바이비트", icon: "fas fa-chart-line", rate: "25%" },
+                { title: "빙엑스", icon: "fas fa-infinity", rate: "60%" }
+            ];
+
+            const renderCard = (c) => `
+                <div class="premium-card group reveal-up">
+                    <div class="w-14 h-14 bg-pink-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition duration-500">
+                        <i class="${c.icon} text-2xl text-pink-500"></i>
+                    </div>
+                    <h4 class="text-xl font-black mb-4">${c.title}</h4>
+                    <div class="flex justify-between items-center pt-6 border-t border-gray-50">
+                        <span class="text-xl font-black">${c.rate}</span>
+                        <button onclick="openPaymentModal()" class="bg-black text-white px-5 py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-pink-500 transition">신청하기</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('shop-preview').innerHTML = exchanges.slice(0, 3).map(renderCard).join('');
+            document.getElementById('shop-full-list').innerHTML = exchanges.map(renderCard).join('');
+            document.getElementById('notice-list').innerHTML = [1, 2, 3].map(() => `
+                <div class="premium-card mb-4 flex justify-between items-center hover:border-pink-500 cursor-pointer">
+                    <h4 class="font-bold text-sm">로로페이백 서비스 업데이트 공지</h4>
+                    <span class="text-[10px] text-gray-300">2024.03.25</span>
+                </div>
+            `).join('');
+            reveal();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
