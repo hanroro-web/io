@@ -34,20 +34,22 @@
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --vibe-deep: #05020a; --vibe-primary: #8a4fff; }
         
-        /* HTML/Body 스크롤 최적화 */
-        html, body {
-            width: 100%;
-            overflow-x: hidden; /* 가로 스크롤 완전 차단 */
-            margin: 0;
-            padding: 0;
+        /* HTML/Body 스크롤 최적화 (수정됨) */
+        html {
+            /* overflow-x: hidden 제거 -> sticky 동작 보장 */
+            scroll-behavior: smooth;
         }
 
         body { 
             font-family: 'Pretendard', sans-serif; 
             background-color: var(--vibe-deep); 
             color: #ffffff; 
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden; /* body에만 적용하여 가로 스크롤 방지 */
             -webkit-font-smoothing: antialiased; 
-            -webkit-user-select: none;
+            -webkit-user-select: none; /* 텍스트 선택 방지 */
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
@@ -144,32 +146,42 @@
             }
         }
 
-        /* Portfolio Styles - Smooth Scroll Logic Applied */
+        /* Portfolio Styles - Smooth & Sticky Scroll (Corrected) */
         .portfolio-outer-wrapper {
             position: relative;
-            /* 높이를 줄여 스크롤 체류 시간을 단축하고 다음 섹션과의 간격을 좁힘 */
-            height: 300vh; 
+            display: block;
+            width: 100%;
+            height: 400vh; 
+            z-index: 20; 
+            overflow: visible; /* Sticky 작동을 위해 visible 필수 */
         }
         .portfolio-sticky-box {
             position: sticky;
+            position: -webkit-sticky;
             top: 0;
+            left: 0;
             height: 100vh;
-            height: 100dvh; /* Mobile Address Bar Fix */
+            height: 100dvh;
             width: 100%;
             overflow: hidden;
             display: flex;
             align-items: center;
+            background-color: #05020a;
+            z-index: 30;
+            will-change: transform; /* 성능 최적화 */
         }
         .horizontal-track {
             display: flex;
-            padding: 0 10vw;
+            gap: 5vw; 
+            padding: 0 5vw; 
+            width: max-content;
             will-change: transform;
-            /* transition 제거: JS 스크롤과 싱크를 맞추기 위해 제거 */
+            height: 100%;
+            align-items: center;
         }
         .portfolio-card {
             flex: 0 0 450px;
             height: 580px; 
-            margin-right: 4vw;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 2rem;
@@ -254,14 +266,38 @@
         .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .toss-icon { width: 20px; height: 20px; margin-right: 6px; vertical-align: middle; fill: #3182f6; }
 
+        /* Pagination Buttons */
+        .pagination-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            background: rgba(138, 79, 255, 0.2);
+            color: white;
+            border-color: #8a4fff;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 768px) {
             .hero-wand-container { right: -15%; opacity: 0.7; }
             .hero-wand-3d { font-size: 24rem; }
-            .portfolio-outer-wrapper { height: 400vh; /* 모바일에서는 조금 더 길게 주어 터치감 확보 */ }
+            /* 모바일에서도 충분한 스크롤 길이 확보 */
+            .portfolio-outer-wrapper { height: 400vh; }
             .portfolio-title-group { top: 80px !important; left: 24px !important; position: absolute !important; }
-            .portfolio-sticky-box { align-items: flex-end; padding-bottom: 80px; }
-            .horizontal-track { padding: 0 24px; margin-bottom: 20px; }
-            .portfolio-card { flex: 0 0 82vw; height: 460px; padding: 1.75rem; margin-right: 5vw; }
+            .portfolio-sticky-box { align-items: flex-end; padding-bottom: 20px; }
+            .horizontal-track { padding: 0 24px; margin-bottom: 0; gap: 20px; }
+            .portfolio-card { flex: 0 0 85vw; height: 460px; padding: 1.75rem; margin-right: 0; }
             .portfolio-card:hover, .portfolio-card:active, .portfolio-card.is-active { transform: translateY(-8px); }
             
             h1 { font-size: 2.25rem !important; line-height: 1.2 !important; letter-spacing: -0.04em !important; word-break: keep-all; }
@@ -314,7 +350,7 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center pt-24 pb-20 relative overflow-hidden bg-[#05020a]">
+    <section class="min-h-screen flex items-center pt-24 pb-10 relative overflow-hidden bg-[#05020a]">
         <!-- Magic Neon Rain Canvas -->
         <canvas id="magic-rain" class="magic-rain-canvas"></canvas>
         
@@ -357,7 +393,7 @@
         </div>
     </section>
 
-    <!-- Portfolio Section (Updated Scroll Logic) -->
+    <!-- Portfolio Section (Moved & Fixed Sticky Scroll) -->
     <div class="portfolio-outer-wrapper" id="portfolio-section">
         <div class="portfolio-sticky-box">
             <div class="portfolio-title-group absolute top-16 sm:top-24 left-6 sm:left-12 z-10">
@@ -436,31 +472,45 @@
         </div>
     </div>
 
-    <!-- Deposit Status Board -->
-    <!-- 상하 패딩(py)을 줄여서 위 섹션과의 간격을 좁힘: py-20 -> py-10 -->
-    <section class="py-10 sm:py-16 bg-black/40 border-t border-white/5">
+    <!-- Deposit Status Board (Moved Up) -->
+    <!-- 패딩을 제거하고 배경색을 조정하여 이전 섹션과 자연스럽게 연결 -->
+    <!-- z-index를 조정하여 포트폴리오 섹션 아래로 자연스럽게 깔리게 함 -->
+    <section class="pt-0 pb-16 sm:pb-24 bg-black/40 border-t-0 relative z-20"> 
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
-                <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
+            <!-- 상단 여백 추가하여 콘텐츠 겹침 방지 (스크롤 끝난 후 바로 보이도록 조정) -->
+            <div class="flex items-center justify-between mb-8 pt-24 border-t-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
+                    <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-deposit-prev" class="pagination-btn" onclick="changeDepositPage(-1)"><i class="fas fa-chevron-left text-xs"></i></button>
+                    <button id="btn-deposit-next" class="pagination-btn" onclick="changeDepositPage(1)"><i class="fas fa-chevron-right text-xs"></i></button>
+                </div>
             </div>
             <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
         </div>
     </section>
 
-    <!-- Live Project Status -->
-    <section class="py-24 sm:py-32 bg-black/60 border-t border-white/5 relative overflow-hidden">
+    <!-- Live Project Status (Moved Up) -->
+    <section class="py-20 bg-black/60 border-t border-white/5 relative overflow-hidden z-20">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex items-center gap-3 mb-12">
-                <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
-                <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter mobile-title-small">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
+                    <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter mobile-title-small">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-project-prev" class="pagination-btn" onclick="changeProjectPage(-1)"><i class="fas fa-chevron-left text-xs"></i></button>
+                    <button id="btn-project-next" class="pagination-btn" onclick="changeProjectPage(1)"><i class="fas fa-chevron-right text-xs"></i></button>
+                </div>
             </div>
             <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"></div>
         </div>
     </section>
 
     <!-- Footer & Notice Bar -->
-    <div class="notice-bar-container py-4">
+    <div class="notice-bar-container py-4 relative z-20">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between gap-6 overflow-hidden">
             <div class="flex items-center gap-3 shrink-0">
                 <span class="bg-purple-600 text-[9px] font-black px-2 py-0.5 rounded text-white uppercase tracking-tighter">Notice</span>
@@ -471,7 +521,7 @@
         </div>
     </div>
 
-    <footer class="py-20 sm:py-24 bg-[#030107] border-t border-white/5">
+    <footer class="py-20 sm:py-24 bg-[#030107] border-t border-white/5 relative z-20">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16 sm:mb-20">
                 <div>
@@ -806,6 +856,9 @@
                 return false;
             }
         });
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
 
         // 네비게이션 스크롤 효과
         window.addEventListener('scroll', () => {
@@ -935,22 +988,17 @@
             const parentRect = outer.getBoundingClientRect();
             const viewportHeight = window.innerHeight;
             
-            // 스크롤 가능한 총 거리 (섹션 높이 - 뷰포트 높이)
+            // 스크롤 가능한 총 거리
             const totalScrollDistance = parentRect.height - viewportHeight;
-            
-            // 현재 스크롤된 픽셀 (섹션 상단이 뷰포트 상단에 닿은 시점부터 계산)
-            // parentRect.top은 스크롤 내릴수록 음수가 됨
             let scrollPixels = -parentRect.top;
             
-            // 범위 제한 (Clamp)
             if (scrollPixels < 0) scrollPixels = 0;
             if (scrollPixels > totalScrollDistance) scrollPixels = totalScrollDistance;
 
-            // 진행률 (0.0 ~ 1.0)
             const progress = scrollPixels / totalScrollDistance;
 
-            // 가로 이동 거리 계산
-            // track.scrollWidth - window.innerWidth: 트랙 전체 길이에서 화면 너비를 뺀 만큼만 이동하면 끝에 도달
+            // gap을 사용하므로 scrollWidth 계산이 정확함
+            // 화면 너비보다 내용이 작을 경우 이동하지 않도록 0 보장
             const maxTranslate = Math.max(0, track.scrollWidth - window.innerWidth);
             const moveX = progress * maxTranslate;
 
@@ -1063,65 +1111,142 @@
             toggleModal('portfolio-detail-modal', true);
         }
 
+        // Pagination Logic
+        let allDeposits = [];
+        let depositPage = 1;
+        const ITEMS_PER_PAGE = 6;
+        
+        let allProjects = [];
+        let projectPage = 1;
+
+        const renderDeposits = () => {
+            const listEl = document.getElementById('deposit-list');
+            if (!listEl) return;
+            
+            const start = (depositPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const items = allDeposits.slice(start, end);
+            
+            let html = '';
+            if (items.length === 0) {
+                 html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">데이터가 없습니다</p>';
+            } else {
+                items.forEach(data => {
+                    const rawStatus = (data.status || '').toLowerCase();
+                    const isComplete = rawStatus.includes('완료') || rawStatus === 'complete';
+                    const statusText = isComplete ? '입금완료' : '입금전';
+                    
+                    let displayType = data.type || '서비스';
+                    let planIcon = 'fa-rocket';
+                    if (displayType.includes('구글')) planIcon = 'fa-cloud';
+                    else if (displayType.includes('일반')) planIcon = 'fa-server';
+                    
+                    html += `<div class="unified-card group transition-all" data-touch-effect>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10">
+                                <i class="fas ${planIcon} text-purple-400 text-[10px]"></i>
+                                <span class="text-[9px] font-black text-purple-300 uppercase tracking-tighter">${displayType}</span>
+                            </div>
+                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40'} uppercase tracking-tighter">${statusText}</span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">클라이언트</span>
+                            <h4 class="font-bold text-white text-xs">${anonymizeName(data.name)}</h4>
+                        </div>
+                    </div>`;
+                });
+            }
+            listEl.innerHTML = html;
+            
+            // Button states
+            const prevBtn = document.getElementById('btn-deposit-prev');
+            const nextBtn = document.getElementById('btn-deposit-next');
+            if (prevBtn) prevBtn.disabled = depositPage === 1;
+            if (nextBtn) nextBtn.disabled = end >= allDeposits.length;
+        };
+
+        window.changeDepositPage = (delta) => {
+            const maxPage = Math.ceil(allDeposits.length / ITEMS_PER_PAGE);
+            const newPage = depositPage + delta;
+            if (newPage >= 1 && newPage <= maxPage) {
+                depositPage = newPage;
+                renderDeposits();
+            }
+        };
+
+        const renderProjects = () => {
+            const listEl = document.getElementById('project-list');
+            if (!listEl) return;
+            
+            const start = (projectPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const items = allProjects.slice(start, end);
+            
+            let html = '';
+            if (items.length === 0) {
+                 html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">Project Initializing...</p>';
+            } else {
+                items.forEach(p => {
+                     html += `<div class="unified-card" data-touch-effect>
+                        <h4 class="font-bold text-white text-xs sm:text-sm mb-3">${p.name}</h4>
+                        <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
+                            <span>Phase: ${p.phase || '준비중'}</span>
+                            <span>${p.progress || 0}%</span>
+                        </div>
+                        <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress || 0}%"></div></div>
+                    </div>`;
+                });
+            }
+            listEl.innerHTML = html;
+            
+            const modalListEl = document.getElementById('modal-project-list');
+            if (modalListEl) {
+                // Generate HTML for ALL projects for the modal
+                let fullHtml = '';
+                allProjects.forEach(p => {
+                     fullHtml += `<div class="unified-card">
+                        <h4 class="font-bold text-white text-xs sm:text-sm mb-3">${p.name}</h4>
+                        <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
+                            <span>Phase: ${p.phase || '준비중'}</span>
+                            <span>${p.progress || 0}%</span>
+                        </div>
+                        <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress || 0}%"></div></div>
+                    </div>`;
+                });
+                modalListEl.innerHTML = fullHtml || '<p class="text-gray-500 text-xs text-center">데이터가 없습니다.</p>';
+            }
+
+            // Button states
+            const prevBtn = document.getElementById('btn-project-prev');
+            const nextBtn = document.getElementById('btn-project-next');
+            if (prevBtn) prevBtn.disabled = projectPage === 1;
+            if (nextBtn) nextBtn.disabled = end >= allProjects.length;
+        };
+
+        window.changeProjectPage = (delta) => {
+            const maxPage = Math.ceil(allProjects.length / ITEMS_PER_PAGE);
+            const newPage = projectPage + delta;
+            if (newPage >= 1 && newPage <= maxPage) {
+                projectPage = newPage;
+                renderProjects();
+            }
+        };
+
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
                 onSnapshot(depositCol, (snap) => {
-                    let html = '';
-                    snap.forEach(d => {
-                        const data = d.data();
-                        const rawStatus = (data.status || '').toLowerCase();
-                        const isComplete = rawStatus.includes('완료') || rawStatus === 'complete';
-                        const statusText = isComplete ? '입금완료' : '입금전';
-                        
-                        let displayType = data.type || '서비스';
-                        let planIcon = 'fa-rocket';
-                        
-                        if (displayType.includes('구글')) planIcon = 'fa-cloud';
-                        else if (displayType.includes('일반')) planIcon = 'fa-server';
-                        
-                        html += `<div class="unified-card group transition-all" data-touch-effect>
-                            <div class="flex justify-between items-center mb-4">
-                                <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10">
-                                    <i class="fas ${planIcon} text-purple-400 text-[10px]"></i>
-                                    <span class="text-[9px] font-black text-purple-300 uppercase tracking-tighter">${displayType}</span>
-                                </div>
-                                <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40'} uppercase tracking-tighter">${statusText}</span>
-                            </div>
-                            <div class="space-y-1">
-                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">클라이언트</span>
-                                <h4 class="font-bold text-white text-xs">${anonymizeName(data.name)}</h4>
-                            </div>
-                        </div>`;
-                    });
-                    if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">데이터가 없습니다</p>';
-                    
-                    const depositListEl = document.getElementById('deposit-list');
-                    if (depositListEl) depositListEl.innerHTML = html;
+                    allDeposits = [];
+                    snap.forEach(d => allDeposits.push(d.data()));
+                    renderDeposits();
                 });
 
                 const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
                 onSnapshot(projectCol, (snap) => {
-                    let html = '';
-                    snap.forEach(d => {
-                        const p = d.data();
-                        html += `<div class="unified-card" data-touch-effect>
-                            <h4 class="font-bold text-white text-xs sm:text-sm mb-3">${p.name}</h4>
-                            <div class="flex justify-between text-[9px] font-black text-purple-400 mb-2 uppercase tracking-tighter">
-                                <span>Phase: ${p.phase || '준비중'}</span>
-                                <span>${p.progress || 0}%</span>
-                            </div>
-                            <div class="gauge-container"><div class="gauge-bar" style="width: ${p.progress || 0}%"></div></div>
-                        </div>`;
-                    });
-                    if (html === '') html = '<p class="text-gray-600 text-[10px] col-span-full text-center py-10 uppercase tracking-widest font-bold">Project Initializing...</p>';
-                    
-                    const projectListEl = document.getElementById('project-list');
-                    if (projectListEl) projectListEl.innerHTML = html;
-
-                    const modalProjectListEl = document.getElementById('modal-project-list');
-                    // Check if element exists before setting innerHTML
-                    if (modalProjectListEl) modalProjectListEl.innerHTML = html;
+                    allProjects = [];
+                    snap.forEach(d => allProjects.push(d.data()));
+                    renderProjects();
                 });
 
                 onSnapshot(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), (snap) => {
