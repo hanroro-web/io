@@ -34,9 +34,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --vibe-deep: #05020a; --vibe-primary: #8a4fff; }
         
-        /* HTML/Body 스크롤 최적화 (수정됨) */
+        /* HTML/Body 스크롤 최적화 */
         html {
-            /* overflow-x: hidden 제거 -> sticky 동작 보장 */
             scroll-behavior: smooth;
         }
 
@@ -47,9 +46,9 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            overflow-x: hidden; /* body에만 적용하여 가로 스크롤 방지 */
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased; 
-            -webkit-user-select: none; /* 텍스트 선택 방지 */
+            -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
@@ -98,7 +97,7 @@
             width: 92%; max-width: 580px; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
-        /* Hero 3D Wand & Rain Effect */
+        /* Hero 3D Wand & Rain Effect (사파리 메모리 최적화 적용) */
         .magic-rain-canvas {
             position: absolute;
             top: 0;
@@ -108,7 +107,7 @@
             z-index: 0;
             opacity: 0.8;
             pointer-events: none;
-            mix-blend-mode: screen;
+            /* mix-blend-mode: screen; -> 제거하여 성능 향상 */
         }
 
         .hero-wand-container {
@@ -128,32 +127,38 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 50px rgba(168, 85, 247, 0.4));
+            
+            /* [최적화 핵심] filter: drop-shadow 대신 text-shadow 사용 */
+            /* filter는 메모리 사용량이 매우 높음 */
+            text-shadow: 
+                0 0 20px rgba(168, 85, 247, 0.5),
+                0 0 40px rgba(168, 85, 247, 0.3);
+            
             animation: heroWandFloat 6s ease-in-out infinite;
             transform-style: preserve-3d;
             transform: rotateZ(-15deg) rotateY(15deg);
-            will-change: transform;
+            /* will-change: transform; -> 제거 (메모리 과부하 방지) */
         }
 
         @keyframes heroWandFloat {
             0%, 100% { 
                 transform: translateY(0) rotateZ(-15deg) rotateY(15deg) scale(1); 
-                filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 50px rgba(168, 85, 247, 0.4));
+                text-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3);
             }
             50% { 
                 transform: translateY(-30px) rotateZ(-12deg) rotateY(5deg) scale(1.02); 
-                filter: drop-shadow(0 0 25px rgba(192, 132, 252, 0.8)) drop-shadow(0 0 70px rgba(168, 85, 247, 0.6));
+                text-shadow: 0 0 30px rgba(192, 132, 252, 0.7), 0 0 60px rgba(168, 85, 247, 0.5);
             }
         }
 
-        /* Portfolio Styles - Smooth & Sticky Scroll (Corrected) */
+        /* Portfolio Styles - Smooth & Sticky Scroll */
         .portfolio-outer-wrapper {
             position: relative;
             display: block;
             width: 100%;
             height: 400vh; 
             z-index: 20; 
-            overflow: visible; /* Sticky 작동을 위해 visible 필수 */
+            overflow: visible;
         }
         .portfolio-sticky-box {
             position: sticky;
@@ -168,14 +173,14 @@
             align-items: center;
             background-color: #05020a;
             z-index: 30;
-            will-change: transform; /* 성능 최적화 */
+            /* will-change: transform; 제거 */
         }
         .horizontal-track {
             display: flex;
             gap: 5vw; 
             padding: 0 5vw; 
             width: max-content;
-            will-change: transform;
+            /* will-change: transform; 제거 */
             height: 100%;
             align-items: center;
         }
@@ -189,7 +194,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            /* transition 제거 */
             position: relative;
             overflow: hidden;
         }
@@ -266,33 +271,9 @@
         .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .toss-icon { width: 20px; height: 20px; margin-right: 6px; vertical-align: middle; fill: #3182f6; }
 
-        /* Pagination Buttons */
-        .pagination-btn {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #94a3b8;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .pagination-btn:hover:not(:disabled) {
-            background: rgba(138, 79, 255, 0.2);
-            color: white;
-            border-color: #8a4fff;
-        }
-        .pagination-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
         @media (max-width: 768px) {
             .hero-wand-container { right: -15%; opacity: 0.7; }
             .hero-wand-3d { font-size: 24rem; }
-            /* 모바일에서도 충분한 스크롤 길이 확보 */
             .portfolio-outer-wrapper { height: 400vh; }
             .portfolio-title-group { top: 80px !important; left: 24px !important; position: absolute !important; }
             .portfolio-sticky-box { align-items: flex-end; padding-bottom: 20px; }
@@ -366,11 +347,13 @@
             <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto">
                 <i class="fas fa-sparkles mr-2"></i> <span id="hero-badge-text">고품격 프리미엄 웹에이전시</span>
             </div>
-            <h1 class="text-3xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
+            <!-- 타이틀: 폰트 두께 가늘게(font-light), 모바일 크기 축소(text-2xl) -->
+            <h1 class="text-2xl sm:text-5xl font-light leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
                 <span id="hero-title-1">홈페이지 가치는</span> <br>
                 <span class="gradient-text italic" id="hero-title-2">브랜드의 얼굴</span><span id="hero-title-3">입니다</span>
             </h1>
-            <p class="text-white mb-10 sm:mb-12 text-base sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto" id="hero-subtitle">
+            <!-- 소문구: 모바일 크기 축소(text-sm), 폰트 두께 가늘게 유지(font-light) -->
+            <p class="text-white mb-10 sm:mb-12 text-sm sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto" id="hero-subtitle">
                 우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
             </p>
             <div class="flex flex-wrap items-center gap-4 pointer-events-auto">
@@ -855,9 +838,6 @@
                 e.preventDefault();
                 return false;
             }
-        });
-        document.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
         });
 
         // 네비게이션 스크롤 효과
