@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     
     <!-- Primary Meta Tags -->
     <title>한로로(Hanroro) | 프리미엄 웹 에이전시</title>
@@ -29,20 +29,24 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.36/build/spline-viewer.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --vibe-deep: #05020a; --vibe-primary: #8a4fff; }
         
+        /* HTML/Body 스크롤 최적화 */
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* 가로 스크롤 완전 차단 */
+            margin: 0;
+            padding: 0;
+        }
+
         body { 
             font-family: 'Pretendard', sans-serif; 
             background-color: var(--vibe-deep); 
             color: #ffffff; 
-            scroll-behavior: smooth; 
             -webkit-font-smoothing: antialiased; 
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -100,9 +104,9 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.8; /* Increased opacity for visibility */
+            opacity: 0.8;
             pointer-events: none;
-            mix-blend-mode: screen; /* Neon effect blending */
+            mix-blend-mode: screen;
         }
 
         .hero-wand-container {
@@ -111,19 +115,17 @@
             right: -5%;
             top: 50%;
             transform: translateY(-50%);
-            z-index: 1; /* Bring forward */
-            opacity: 1; /* Fully visible */
+            z-index: 1;
+            opacity: 1;
             pointer-events: none;
         }
         
         .hero-wand-3d {
             font-size: clamp(15rem, 40vw, 35rem);
-            /* Crisp metallic/neon gradient */
             background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 20%, #a855f7 50%, #7e22ce 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            /* Sharp, multi-layered glowing shadow */
             filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 50px rgba(168, 85, 247, 0.4));
             animation: heroWandFloat 6s ease-in-out infinite;
             transform-style: preserve-3d;
@@ -142,15 +144,17 @@
             }
         }
 
-        /* Portfolio Styles */
+        /* Portfolio Styles - Smooth Scroll Logic Applied */
         .portfolio-outer-wrapper {
             position: relative;
-            height: 450vh; 
+            /* 높이를 줄여 스크롤 체류 시간을 단축하고 다음 섹션과의 간격을 좁힘 */
+            height: 300vh; 
         }
         .portfolio-sticky-box {
             position: sticky;
             top: 0;
             height: 100vh;
+            height: 100dvh; /* Mobile Address Bar Fix */
             width: 100%;
             overflow: hidden;
             display: flex;
@@ -160,7 +164,7 @@
             display: flex;
             padding: 0 10vw;
             will-change: transform;
-            transition: transform 0.1s ease-out;
+            /* transition 제거: JS 스크롤과 싱크를 맞추기 위해 제거 */
         }
         .portfolio-card {
             flex: 0 0 450px;
@@ -253,7 +257,7 @@
         @media (max-width: 768px) {
             .hero-wand-container { right: -15%; opacity: 0.7; }
             .hero-wand-3d { font-size: 24rem; }
-            .portfolio-outer-wrapper { height: 500vh; }
+            .portfolio-outer-wrapper { height: 400vh; /* 모바일에서는 조금 더 길게 주어 터치감 확보 */ }
             .portfolio-title-group { top: 80px !important; left: 24px !important; position: absolute !important; }
             .portfolio-sticky-box { align-items: flex-end; padding-bottom: 80px; }
             .horizontal-track { padding: 0 24px; margin-bottom: 20px; }
@@ -326,12 +330,10 @@
             <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto">
                 <i class="fas fa-sparkles mr-2"></i> <span id="hero-badge-text">고품격 프리미엄 웹에이전시</span>
             </div>
-            <!-- 타이틀 크기 축소: text-4xl/6xl -> text-3xl/5xl -->
             <h1 class="text-3xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
                 <span id="hero-title-1">홈페이지 가치는</span> <br>
                 <span class="gradient-text italic" id="hero-title-2">브랜드의 얼굴</span><span id="hero-title-3">입니다</span>
             </h1>
-            <!-- 소문구 두께 변경: font-medium -> font-light -->
             <p class="text-white mb-10 sm:mb-12 text-base sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto" id="hero-subtitle">
                 우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
             </p>
@@ -355,7 +357,7 @@
         </div>
     </section>
 
-    <!-- Portfolio Section -->
+    <!-- Portfolio Section (Updated Scroll Logic) -->
     <div class="portfolio-outer-wrapper" id="portfolio-section">
         <div class="portfolio-sticky-box">
             <div class="portfolio-title-group absolute top-16 sm:top-24 left-6 sm:left-12 z-10">
@@ -435,7 +437,8 @@
     </div>
 
     <!-- Deposit Status Board -->
-    <section class="py-20 sm:py-24 bg-black/40 border-t border-white/5">
+    <!-- 상하 패딩(py)을 줄여서 위 섹션과의 간격을 좁힘: py-20 -> py-10 -->
+    <section class="py-10 sm:py-16 bg-black/40 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-3 mb-10">
                 <div class="w-10 sm:w-12 h-[1px] bg-purple-500"></div>
@@ -838,12 +841,22 @@
             let width, height;
             let particles = [];
 
+            // 리사이즈 디바운스 및 조건 체크 (모바일 주소창 대응)
+            let lastWidth = window.innerWidth;
+            
             function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
+                // 가로 폭이 변했을 때만 리사이즈 실행
+                if (window.innerWidth !== lastWidth || !width) {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                    lastWidth = width;
+                    initParticles();
+                }
             }
             window.addEventListener('resize', resize);
-            resize();
+            // 초기 실행
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
 
             class Particle {
                 constructor() {
@@ -917,21 +930,46 @@
 
         const handleScroll = () => {
             if (!outer || !track) return;
-            const currentScroll = window.pageYOffset;
-            const startOffset = outer.offsetTop;
-            const endOffset = startOffset + outer.offsetHeight - window.innerHeight;
             
-            if (currentScroll >= startOffset && currentScroll <= endOffset) {
-                const scrollPercent = (currentScroll - startOffset) / (outer.offsetHeight - window.innerHeight);
-                const maxMove = track.scrollWidth - window.innerWidth + (window.innerWidth * 0.2); 
-                const moveX = scrollPercent * maxMove;
-                track.style.transform = `translateX(-${moveX}px)`;
-            } else if (currentScroll < startOffset) {
-                track.style.transform = `translateX(0px)`;
+            // 뷰포트 기준 위치 계산 (더 정확함)
+            const parentRect = outer.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            
+            // 스크롤 가능한 총 거리 (섹션 높이 - 뷰포트 높이)
+            const totalScrollDistance = parentRect.height - viewportHeight;
+            
+            // 현재 스크롤된 픽셀 (섹션 상단이 뷰포트 상단에 닿은 시점부터 계산)
+            // parentRect.top은 스크롤 내릴수록 음수가 됨
+            let scrollPixels = -parentRect.top;
+            
+            // 범위 제한 (Clamp)
+            if (scrollPixels < 0) scrollPixels = 0;
+            if (scrollPixels > totalScrollDistance) scrollPixels = totalScrollDistance;
+
+            // 진행률 (0.0 ~ 1.0)
+            const progress = scrollPixels / totalScrollDistance;
+
+            // 가로 이동 거리 계산
+            // track.scrollWidth - window.innerWidth: 트랙 전체 길이에서 화면 너비를 뺀 만큼만 이동하면 끝에 도달
+            const maxTranslate = Math.max(0, track.scrollWidth - window.innerWidth);
+            const moveX = progress * maxTranslate;
+
+            track.style.transform = `translateX(-${moveX}px)`;
+        };
+
+        // requestAnimationFrame을 사용하여 스크롤 성능 최적화
+        let isScrolling = false;
+        const onScroll = () => {
+            if (!isScrolling) {
+                window.requestAnimationFrame(() => {
+                    handleScroll();
+                    isScrolling = false;
+                });
+                isScrolling = true;
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', handleScroll);
 
         window.toggleModal = (id, show) => {
@@ -1082,6 +1120,7 @@
                     if (projectListEl) projectListEl.innerHTML = html;
 
                     const modalProjectListEl = document.getElementById('modal-project-list');
+                    // Check if element exists before setting innerHTML
                     if (modalProjectListEl) modalProjectListEl.innerHTML = html;
                 });
 
