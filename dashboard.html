@@ -60,9 +60,40 @@
             box-shadow: 0 0 10px #8a4fff;
         }
 
+        /* 알림 뱃지 스타일 */
+        .nav-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 99px;
+            position: absolute;
+            top: -2px;
+            right: -8px;
+            box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
+            animation: bounceIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .drawer-item .nav-badge {
+            position: static;
+            margin-left: auto;
+        }
+
         /* 텍스트 그라데이션 및 스타일 */
         .gradient-text { background: linear-gradient(90deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* 로고 애니메이션 (index.html과 동일) */
+        .magic-wand-float { animation: wandFloat 3s ease-in-out infinite; display: inline-block; }
+        @keyframes wandFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(12deg); }
+        }
+
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -71,6 +102,22 @@
         }
         .glass-panel:hover {
             border-color: rgba(138, 79, 255, 0.3);
+        }
+
+        /* Index.html과 동일한 카드 스타일 (Unified Card) */
+        .unified-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 1.25rem; 
+            padding: 1.25rem; 
+            transition: all 0.3s ease; 
+            cursor: pointer;
+        }
+        .unified-card:hover, .unified-card:active {
+            border-color: #8a4fff;
+            background: rgba(138, 79, 255, 0.08);
+            box-shadow: 0 0 15px rgba(138, 79, 255, 0.1);
+            transform: translateY(-2px);
         }
 
         .custom-input {
@@ -152,6 +199,19 @@
             overflow-y: auto;
         }
 
+        /* Option Cards (Index.html Style) */
+        .option-card {
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+        }
+        .option-radio:checked + .option-card {
+            border-color: #8a4fff;
+            background: rgba(138, 79, 255, 0.1);
+            box-shadow: 0 0 15px rgba(138, 79, 255, 0.2);
+        }
+
         /* Login Overlay */
         #login-overlay {
             position: fixed;
@@ -226,25 +286,35 @@
 
     <!-- 상단 네비게이션 (Top Bar) -->
     <nav class="fixed w-full z-50 glass-nav h-16 sm:h-20 flex items-center justify-between px-6">
-        <div class="flex items-center gap-2 font-black text-xl tracking-tighter cursor-pointer" onclick="location.reload()">
-            <i class="fas fa-magic text-purple-500"></i> HANRORO ADMIN
+        <!-- 로고 영역 -->
+        <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
+            <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
         </div>
 
         <!-- 데스크탑 메뉴 -->
         <div class="hidden lg:flex items-center gap-2" id="desktop-menu">
             <div class="nav-item active" onclick="showSection('dashboard', this)">대시보드</div>
             <div class="nav-item" onclick="showSection('projects', this)">프로젝트 관리</div>
-            <div class="nav-item" onclick="showSection('quotes', this)">견적 문의</div>
+            <div class="nav-item" onclick="showSection('quotes', this)">
+                견적 문의
+                <span id="badge-quotes-desktop" class="nav-badge hidden">0</span>
+            </div>
             <div class="nav-item" onclick="showSection('deposits', this)">결제 현황</div>
             <div class="nav-item" onclick="showSection('site-config', this)">사이트 설정</div>
         </div>
 
         <div class="flex items-center gap-4">
-            <div class="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <!-- 데스크탑 관리자 프로필 및 로그아웃 버튼 -->
+            <div class="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 group relative">
                 <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center font-bold text-[10px]">A</div>
                 <span class="text-xs font-bold text-gray-300">관리자</span>
+                <!-- 로그아웃 아이콘 버튼 -->
+                <button onclick="logout()" class="ml-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-red-400 transition-colors" title="로그아웃">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                </button>
             </div>
-            <!-- 모바일 햄버거 버튼 (우측 상단 추가) -->
+            <!-- 모바일 햄버거 버튼 -->
             <button class="lg:hidden w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-full transition-colors" onclick="toggleMobileMenu(true)">
                 <i class="fas fa-bars text-xl"></i>
             </button>
@@ -276,12 +346,20 @@
             </div>
             <div class="drawer-item" onclick="showSection('quotes', this)">
                 <i class="fas fa-file-invoice-dollar w-5"></i> 견적 문의
+                <span id="badge-quotes-mobile" class="nav-badge hidden">0</span>
             </div>
             <div class="drawer-item" onclick="showSection('deposits', this)">
                 <i class="fas fa-credit-card w-5"></i> 결제 현황
             </div>
             <div class="drawer-item" onclick="showSection('site-config', this)">
                 <i class="fas fa-sliders-h w-5"></i> 사이트 설정
+            </div>
+            
+            <div class="my-4 border-t border-white/5"></div>
+            
+            <!-- 모바일 로그아웃 버튼 -->
+            <div class="drawer-item text-red-400 hover:text-red-300 hover:bg-red-500/10" onclick="logout()">
+                <i class="fas fa-sign-out-alt w-5"></i> 로그아웃
             </div>
         </div>
 
@@ -452,7 +530,9 @@
                     <i class="fas fa-plus"></i> 수기 등록
                 </button>
             </div>
-            <div class="glass-panel rounded-2xl overflow-hidden">
+            
+            <!-- Desktop Table View -->
+            <div class="glass-panel rounded-2xl overflow-hidden hidden md:block">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -470,6 +550,12 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- Mobile Card View (Index.html Style) -->
+            <div id="deposit-mobile-list" class="grid grid-cols-1 gap-4 md:hidden">
+                <!-- JS Generated Cards -->
+                <div class="text-center py-10 text-gray-500 text-xs">데이터 로딩 중...</div>
             </div>
         </div>
 
@@ -535,38 +621,76 @@
 
     <!-- ADMIN MODALS -->
     
-    <!-- 1. 견적 문의 Modal (장문 확인용 크기 확대) -->
+    <!-- 1. 견적 문의 Modal (Index.html과 동일한 디자인 적용) -->
     <div id="modal-quote" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-quote')">
-        <div class="admin-modal-content">
-            <h3 class="text-lg font-bold mb-4 flex justify-between">
-                <span id="mq-title">견적 문의 상세/수정</span>
-                <button onclick="closeAdminModal('modal-quote')"><i class="fas fa-times text-gray-400"></i></button>
-            </h3>
-            <form id="quote-modal-form" class="space-y-4">
-                <input type="hidden" id="mq-id">
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">구분 (Category)</label>
-                    <select id="mq-category" class="custom-input bg-[#1a1625]">
-                        <option value="일반">일반</option>
-                        <option value="기업">기업</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
+        <div class="admin-modal-content !p-0 overflow-hidden">
+            <!-- Header -->
+            <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
+                <div class="flex justify-between items-start">
                     <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">이름/업체명</label>
-                        <input type="text" id="mq-name" class="custom-input" required>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest mb-3">
+                            <i class="fas fa-edit"></i> Edit Mode
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter" id="mq-title">견적 상세 및 수정</h3>
                     </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">연락처</label>
-                        <input type="text" id="mq-contact" class="custom-input" required>
+                    <button onclick="closeAdminModal('modal-quote')" class="w-9 h-9 sm:w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Body -->
+            <div class="p-6 sm:p-8">
+                <form id="quote-modal-form" class="space-y-5 sm:space-y-6">
+                    <input type="hidden" id="mq-id">
+                    
+                    <!-- Category Selection (Cards) -->
+                    <div class="space-y-3">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Category</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="block relative">
+                                <input type="radio" name="mq-category" value="일반" class="hidden option-radio" checked>
+                                <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
+                                        <i class="fas fa-user text-xs sm:text-sm"></i>
+                                    </div>
+                                    <h4 class="text-[11px] sm:text-xs font-bold text-white uppercase tracking-tight">일반</h4>
+                                </div>
+                            </label>
+                            <label class="block relative">
+                                <input type="radio" name="mq-category" value="기업" class="hidden option-radio">
+                                <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
+                                        <i class="fas fa-building text-xs sm:text-sm"></i>
+                                    </div>
+                                    <h4 class="text-[11px] sm:text-xs font-bold text-white uppercase tracking-tight">기업</h4>
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">문의 내용 (전체 보기)</label>
-                    <textarea id="mq-content" class="custom-input min-h-[300px] resize-y p-4 leading-relaxed" placeholder="문의 내용이 여기에 표시됩니다."></textarea>
-                </div>
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest">저장하기</button>
-            </form>
+
+                    <!-- Inputs -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Name / Company</label>
+                            <input type="text" id="mq-name" class="custom-input !mt-0 !py-3 bg-white/5 border-white/10" placeholder="성함 또는 업체명" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Contact Number</label>
+                            <input type="text" id="mq-contact" class="custom-input !mt-0 !py-3 bg-white/5 border-white/10" placeholder="010-0000-0000" required>
+                        </div>
+                    </div>
+
+                    <!-- Textarea -->
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Message</label>
+                        <textarea id="mq-content" class="custom-input h-64 sm:h-80 resize-y !mt-0 !py-3 bg-white/5 border-white/10 leading-relaxed" placeholder="내용을 입력해 주세요."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-[0.2em] hover:bg-purple-700 transition-all shadow-lg shadow-purple-600/30">
+                        저장하기
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -648,6 +772,14 @@
             }
         });
 
+        // Logout Function
+        window.logout = () => {
+            if(confirm('관리자 모드에서 로그아웃 하시겠습니까?')) {
+                sessionStorage.removeItem('admin_authenticated');
+                location.reload();
+            }
+        }
+
 
         // Global State helpers
         let editingProjectId = null;
@@ -712,11 +844,23 @@
             const qQuotes = query(quoteCol, orderBy('createdAt', 'desc'));
             
             onSnapshot(quoteCol, (snap) => {
+                // Update Badges
+                const count = snap.size;
+                const badgeD = document.getElementById('badge-quotes-desktop');
+                const badgeM = document.getElementById('badge-quotes-mobile');
+                if(count > 0) {
+                    badgeD.innerText = count; badgeD.classList.remove('hidden');
+                    badgeM.innerText = count; badgeM.classList.remove('hidden');
+                } else {
+                    badgeD.classList.add('hidden');
+                    badgeM.classList.add('hidden');
+                }
+
                 const tbody = document.getElementById('quote-table-body');
                 let html = '';
-                let count = 0;
+                let newCount = 0;
                 snap.forEach(d => {
-                    count++;
+                    newCount++;
                     const q = d.data();
                     const safeData = JSON.stringify({id: d.id, ...q}).replace(/"/g, '&quot;');
                     const date = q.createdAt ? new Date(q.createdAt.seconds * 1000).toLocaleDateString() : '-';
@@ -739,7 +883,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">문의 내역이 없습니다.</td></tr>';
-                document.getElementById('stat-new-quotes').innerText = count;
+                document.getElementById('stat-new-quotes').innerText = newCount;
             });
 
             // 3. 입금 현황 로드
@@ -748,17 +892,20 @@
             
             onSnapshot(depositCol, (snap) => {
                 const tbody = document.getElementById('deposit-table-body');
-                let html = '';
+                const mobileList = document.getElementById('deposit-mobile-list');
+                let tableHtml = '';
+                let mobileHtml = '';
                 let pendingCount = 0;
                 
                 snap.forEach(d => {
                     const dep = d.data();
-                    const isComplete = dep.status === 'complete';
+                    const isComplete = dep.status === 'complete' || dep.status === '입금완료';
                     if(!isComplete) pendingCount++;
                     const date = dep.createdAt ? new Date(dep.createdAt.seconds * 1000).toLocaleDateString() : '-';
                     const safeData = JSON.stringify({id: d.id, ...dep}).replace(/"/g, '&quot;');
                     
-                    html += `
+                    // Table Row
+                    tableHtml += `
                     <tr class="table-row">
                         <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
                         <td class="p-4 text-xs text-purple-300 font-bold">${dep.type}</td>
@@ -776,8 +923,38 @@
                             </div>
                         </td>
                     </tr>`;
+
+                    // Mobile Card View (Matches index.html logic)
+                    const statusText = isComplete ? '입금완료' : '입금대기';
+                    const statusClass = isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40';
+                    let displayType = dep.type || '서비스';
+                    let planIcon = 'fa-rocket';
+                    if (displayType.includes('구글')) planIcon = 'fa-cloud';
+                    else if (displayType.includes('일반')) planIcon = 'fa-server';
+
+                    mobileHtml += `
+                    <div class="unified-card group transition-all" onclick="window.openDepositModal('edit', null, ${safeData})">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10">
+                                <i class="fas ${planIcon} text-purple-400 text-[10px]"></i>
+                                <span class="text-[9px] font-black text-purple-300 uppercase tracking-tighter">${displayType}</span>
+                            </div>
+                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${statusClass} uppercase tracking-tighter">${statusText}</span>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">클라이언트</span>
+                                    <h4 class="font-bold text-white text-xs">${dep.name}</h4>
+                                </div>
+                                <div class="text-[10px] text-gray-400 font-mono">${date}</div>
+                            </div>
+                        </div>
+                    </div>`;
                 });
-                tbody.innerHTML = html || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">입금 내역이 없습니다.</td></tr>';
+                
+                tbody.innerHTML = tableHtml || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">입금 내역이 없습니다.</td></tr>';
+                mobileList.innerHTML = mobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">내역이 없습니다.</div>';
                 document.getElementById('stat-pending-deposits').innerText = pendingCount;
             });
 
@@ -877,16 +1054,20 @@
         };
 
 
-        // 2. Quote Logic
+        // 2. Quote Logic (Updated to match Index.html)
         window.openQuoteModal = (mode, _, data = null) => {
             const modal = document.getElementById('modal-quote');
             const title = document.getElementById('mq-title');
             
             if(mode === 'edit' && data) {
                 editingQuoteId = data.id;
-                title.innerText = "견적 문의 상세 보기";
+                title.innerText = "견적 상세 및 수정";
                 document.getElementById('mq-id').value = data.id;
-                document.getElementById('mq-category').value = data.category;
+                // Radio button logic
+                const category = data.category || '일반';
+                const radio = document.querySelector(`input[name="mq-category"][value="${category}"]`);
+                if(radio) radio.checked = true;
+                
                 document.getElementById('mq-name').value = data.name;
                 document.getElementById('mq-contact').value = data.contact;
                 document.getElementById('mq-content').value = data.content;
@@ -895,13 +1076,19 @@
                 title.innerText = "새 견적 문의 등록";
                 document.getElementById('quote-modal-form').reset();
                 document.getElementById('mq-id').value = "";
+                // Default to '일반'
+                const radio = document.querySelector(`input[name="mq-category"][value="일반"]`);
+                if(radio) radio.checked = true;
             }
             modal.classList.add('active');
         };
 
         document.getElementById('quote-modal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const category = document.getElementById('mq-category').value;
+            // Get category from radio
+            const categoryEl = document.querySelector('input[name="mq-category"]:checked');
+            const category = categoryEl ? categoryEl.value : '일반';
+            
             const name = document.getElementById('mq-name').value;
             const contact = document.getElementById('mq-contact').value;
             const content = document.getElementById('mq-content').value;
