@@ -296,6 +296,7 @@
         <div class="hidden lg:flex items-center gap-2" id="desktop-menu">
             <div class="nav-item active" onclick="showSection('dashboard', this)">대시보드</div>
             <div class="nav-item" onclick="showSection('projects', this)">프로젝트 관리</div>
+            <div class="nav-item" onclick="showSection('portfolios', this)">포트폴리오</div>
             <div class="nav-item" onclick="showSection('quotes', this)">
                 견적 문의
                 <span id="badge-quotes-desktop" class="nav-badge hidden">0</span>
@@ -344,6 +345,9 @@
             <div class="drawer-item" onclick="showSection('projects', this)">
                 <i class="fas fa-tasks w-5"></i> 프로젝트 관리
             </div>
+            <div class="drawer-item" onclick="showSection('portfolios', this)">
+                <i class="fas fa-briefcase w-5"></i> 포트폴리오
+            </div>
             <div class="drawer-item" onclick="showSection('quotes', this)">
                 <i class="fas fa-file-invoice-dollar w-5"></i> 견적 문의
                 <span id="badge-quotes-mobile" class="nav-badge hidden">0</span>
@@ -368,15 +372,11 @@
         </div>
     </div>
 
-    <!-- 히어로 섹션 (Index.html과 완벽하게 동일한 구조로 변경) -->
-    <!-- 공유형식: index.html의 코드를 그대로 사용하며 JS로 텍스트를 제어할 수 있는 구조 -->
+    <!-- 히어로 섹션 -->
     <section id="hero-section" class="min-h-screen flex items-center pt-24 pb-20 relative overflow-hidden bg-[#05020a]">
-        <!-- Spline 3D Background -->
         <div class="absolute inset-0 z-0">
             <spline-viewer url="https://prod.spline.design/UszV91sj1rSYrFJm/scene.splinecode"></spline-viewer>
         </div>
-        
-        <!-- 하단 그라데이션 커버 -->
         <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5] pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none">
@@ -391,11 +391,9 @@
                 우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
             </p>
             <div class="flex flex-wrap items-center gap-4 pointer-events-auto">
-                <!-- 버튼 1: 프로젝트 시작 -> 대시보드에서는 '견적 추가'로 매핑 -->
                 <button onclick="openQuoteModal('add')" class="bg-white text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">
                     프로젝트 시작
                 </button>
-                <!-- 버튼 2: 결제하기 -> 대시보드에서는 '입금 추가'로 매핑 -->
                 <button onclick="openDepositModal('add')" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
                     <i class="fas fa-credit-card text-purple-400"></i> 결제하기
                 </button>
@@ -415,9 +413,8 @@
     <!-- 메인 콘텐츠 영역 -->
     <main class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 -mt-10 pb-20">
         
-        <!-- 1. 대시보드 개요 섹션 -->
+        <!-- 1. 대시보드 개요 -->
         <div id="section-dashboard" class="content-section space-y-8">
-            <!-- 요약 카드들 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform">
                     <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-project-diagram text-6xl"></i></div>
@@ -437,19 +434,18 @@
                     <h3 class="text-4xl font-black text-yellow-500" id="stat-pending-deposits">-</h3>
                     <div class="mt-4 text-[10px] text-gray-500 font-bold">입금 확인 대기</div>
                 </div>
-                <!-- 바로가기 카드 -->
-                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center gap-3 border-dashed border-2 border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors" onclick="showSection('site-config', document.querySelectorAll('.nav-item')[4])">
+                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center gap-3 border-dashed border-2 border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors" onclick="showSection('site-config', document.querySelectorAll('.nav-item')[5])">
                     <i class="fas fa-sliders-h text-2xl text-purple-500"></i>
                     <span class="text-xs font-bold uppercase tracking-wider">사이트 설정 바로가기</span>
                 </div>
             </div>
         </div>
 
-        <!-- 2. 프로젝트 관리 섹션 -->
+        <!-- 2. 프로젝트 관리 -->
         <div id="section-projects" class="content-section hidden">
             <h2 class="section-title"><i class="fas fa-tasks"></i> 프로젝트 관리</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- 프로젝트 추가/수정 폼 -->
+                <!-- 프로젝트 폼 -->
                 <div class="lg:col-span-1">
                     <div class="glass-panel p-6 rounded-2xl sticky top-24">
                         <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider flex justify-between items-center">
@@ -457,7 +453,7 @@
                             <button onclick="resetProjectForm()" class="text-[10px] text-gray-400 hover:text-white hidden" id="p-form-reset"><i class="fas fa-undo mr-1"></i>취소</button>
                         </h3>
                         <form id="project-form" class="space-y-4">
-                            <input type="hidden" id="p-id"> <!-- 수정 시 ID 저장 -->
+                            <input type="hidden" id="p-id">
                             <div>
                                 <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">프로젝트명</label>
                                 <input type="text" id="p-name" class="custom-input" placeholder="예: 한로로 웹사이트 리뉴얼" required>
@@ -488,7 +484,6 @@
                         </form>
                     </div>
                 </div>
-                
                 <!-- 프로젝트 리스트 -->
                 <div class="lg:col-span-2 space-y-4" id="project-manage-list">
                     <div class="text-center py-10 text-gray-500 text-xs">데이터 로딩 중...</div>
@@ -496,7 +491,21 @@
             </div>
         </div>
 
-        <!-- 3. 견적 문의 내역 -->
+        <!-- 3. 포트폴리오 관리 (NEW) -->
+        <div id="section-portfolios" class="content-section hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="section-title !mb-0"><i class="fas fa-briefcase"></i> 포트폴리오 관리</h2>
+                <button onclick="openPortfolioModal('add')" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i class="fas fa-plus"></i> 포트폴리오 추가
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="portfolio-manage-list">
+                <!-- JS Load -->
+                <div class="col-span-full text-center py-10 text-gray-500 text-xs">데이터 로딩 중...</div>
+            </div>
+        </div>
+
+        <!-- 4. 견적 문의 내역 -->
         <div id="section-quotes" class="content-section hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="section-title !mb-0"><i class="fas fa-file-invoice-dollar"></i> 견적 문의 내역</h2>
@@ -525,7 +534,7 @@
             </div>
         </div>
 
-        <!-- 4. 결제/입금 현황 -->
+        <!-- 5. 결제/입금 현황 -->
         <div id="section-deposits" class="content-section hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="section-title !mb-0"><i class="fas fa-won-sign"></i> 결제 및 입금 현황</h2>
@@ -555,14 +564,14 @@
                 </div>
             </div>
 
-            <!-- Mobile Card View (Index.html Style) -->
+            <!-- Mobile Card View (Updated with Edit/Delete) -->
             <div id="deposit-mobile-list" class="grid grid-cols-1 gap-4 md:hidden">
                 <!-- JS Generated Cards -->
                 <div class="text-center py-10 text-gray-500 text-xs">데이터 로딩 중...</div>
             </div>
         </div>
 
-        <!-- 5. 사이트 설정 섹션 -->
+        <!-- 6. 사이트 설정 섹션 -->
         <div id="section-site-config" class="content-section hidden">
             <h2 class="section-title"><i class="fas fa-sliders-h"></i> 사이트 설정 (CMS)</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -624,7 +633,7 @@
 
     <!-- ADMIN MODALS -->
     
-    <!-- 1. 견적 문의 Modal (Index.html과 동일한 디자인 적용) -->
+    <!-- 1. 견적 문의 Modal -->
     <div id="modal-quote" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-quote')">
         <div class="admin-modal-content !p-0 overflow-hidden">
             <!-- Header -->
@@ -730,6 +739,53 @@
         </div>
     </div>
 
+    <!-- 3. 포트폴리오 관리 Modal (NEW) -->
+    <div id="modal-portfolio" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-portfolio')">
+        <div class="admin-modal-content !max-w-[700px]">
+            <h3 class="text-lg font-bold mb-4 flex justify-between">
+                <span id="pf-modal-title">포트폴리오 추가</span>
+                <button onclick="closeAdminModal('modal-portfolio')"><i class="fas fa-times text-gray-400"></i></button>
+            </h3>
+            <form id="portfolio-modal-form" class="space-y-4">
+                <input type="hidden" id="pf-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">프로젝트 제목</label>
+                        <input type="text" id="pf-title-input" class="custom-input" placeholder="예: 라이트하우스 블로그" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">카테고리</label>
+                        <input type="text" id="pf-category-input" class="custom-input" placeholder="예: Basic Web / Blog Type" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">클라이언트</label>
+                        <input type="text" id="pf-client-input" class="custom-input" placeholder="예: Lighthouse Inc." required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">제작 연도</label>
+                        <input type="text" id="pf-year-input" class="custom-input" placeholder="예: 2024" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">이미지 URL</label>
+                    <input type="url" id="pf-image-input" class="custom-input" placeholder="https://example.com/image.jpg (이미지 주소 입력)" required>
+                    <p class="text-[10px] text-gray-500 mt-1">* 이미지 호스팅 URL을 입력해주세요.</p>
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상세 설명</label>
+                    <textarea id="pf-desc-input" class="custom-input h-24 resize-none" placeholder="프로젝트에 대한 설명을 입력하세요."></textarea>
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">외부 링크 (선택)</label>
+                    <input type="url" id="pf-link-input" class="custom-input" placeholder="https://...">
+                </div>
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest">저장하기</button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Firebase Logic -->
     <script type="module">
@@ -750,7 +806,6 @@
         const currentAppId = "hanroro-official-service";
 
         // [공유형식] Hero Section Configuration (Index.html과 동일한 텍스트 관리용)
-        // 나중에 이 부분을 DB에서 불러오면 index.html과 동기화 가능합니다.
         const heroConfig = {
             badge: "고품격 프리미엄 웹에이전시",
             title1: "홈페이지 가치는",
@@ -798,6 +853,7 @@
         let editingProjectId = null;
         let editingQuoteId = null;
         let editingDepositId = null;
+        let editingPortfolioId = null;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -809,7 +865,7 @@
         });
 
         function initDashboard() {
-            // Apply Hero Config (Shared format logic)
+            // Apply Hero Config
             document.getElementById('hero-badge-text').innerText = heroConfig.badge;
             document.getElementById('hero-title-1').innerText = heroConfig.title1;
             document.getElementById('hero-title-2').innerText = heroConfig.title2;
@@ -828,7 +884,6 @@
                 snap.forEach(d => {
                     const p = d.data();
                     projects.push(p);
-                    // Safe stringify for passing data to functions
                     const safeData = JSON.stringify({id: d.id, ...p}).replace(/"/g, '&quot;');
                     
                     html += `
@@ -859,12 +914,43 @@
                 document.getElementById('stat-active-projects').innerText = projects.length;
             });
 
-            // 2. 견적 내역 로드
+            // 2. 포트폴리오 리스트 로드 (NEW)
+            const portfolioCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios');
+            const qPortfolios = query(portfolioCol, orderBy('createdAt', 'desc'));
+
+            onSnapshot(portfolioCol, (snap) => {
+                const listEl = document.getElementById('portfolio-manage-list');
+                let html = '';
+                
+                snap.forEach(d => {
+                    const pf = d.data();
+                    const safeData = JSON.stringify({id: d.id, ...pf}).replace(/"/g, '&quot;');
+                    const imgStyle = pf.imageUrl ? `background-image: url('${pf.imageUrl}')` : 'background-color: #2d2d2d';
+                    
+                    html += `
+                    <div class="glass-panel p-4 rounded-xl flex flex-col gap-4 group">
+                        <div class="w-full aspect-video rounded-lg bg-cover bg-center border border-white/10 relative overflow-hidden" style="${imgStyle}">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                <button onclick="window.openPortfolioModal('edit', null, ${safeData})" class="bg-white text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><i class="fas fa-edit text-xs"></i></button>
+                                <button onclick="window.deletePortfolio('${d.id}')" class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><i class="fas fa-trash text-xs"></i></button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1 truncate">${pf.category}</div>
+                            <h4 class="font-bold text-white text-sm truncate">${pf.title}</h4>
+                            <p class="text-[10px] text-gray-500 mt-1 truncate">${pf.client} | ${pf.year}</p>
+                        </div>
+                    </div>`;
+                });
+                
+                if(!html) html = '<div class="col-span-full text-center py-10 text-gray-500 text-xs">등록된 포트폴리오가 없습니다.</div>';
+                listEl.innerHTML = html;
+            });
+
+            // 3. 견적 내역 로드
             const quoteCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes');
-            const qQuotes = query(quoteCol, orderBy('createdAt', 'desc'));
             
             onSnapshot(quoteCol, (snap) => {
-                // Update Badges
                 const count = snap.size;
                 const badgeD = document.getElementById('badge-quotes-desktop');
                 const badgeM = document.getElementById('badge-quotes-mobile');
@@ -906,7 +992,7 @@
                 document.getElementById('stat-new-quotes').innerText = newCount;
             });
 
-            // 3. 입금 현황 로드
+            // 4. 입금 현황 로드 (모바일 카드 뷰에 수정/삭제 추가)
             const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
             const qDeposits = query(depositCol, orderBy('createdAt', 'desc'));
             
@@ -924,7 +1010,7 @@
                     const date = dep.createdAt ? new Date(dep.createdAt.seconds * 1000).toLocaleDateString() : '-';
                     const safeData = JSON.stringify({id: d.id, ...dep}).replace(/"/g, '&quot;');
                     
-                    // Table Row
+                    // Table Row (Desktop)
                     tableHtml += `
                     <tr class="table-row">
                         <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
@@ -944,7 +1030,7 @@
                         </td>
                     </tr>`;
 
-                    // Mobile Card View (Matches index.html logic)
+                    // Mobile Card View (Updated with Actions)
                     const statusText = isComplete ? '입금완료' : '입금대기';
                     const statusClass = isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40';
                     let displayType = dep.type || '서비스';
@@ -953,7 +1039,7 @@
                     else if (displayType.includes('일반')) planIcon = 'fa-server';
 
                     mobileHtml += `
-                    <div class="unified-card group transition-all" onclick="window.openDepositModal('edit', null, ${safeData})">
+                    <div class="unified-card group transition-all relative">
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10">
                                 <i class="fas ${planIcon} text-purple-400 text-[10px]"></i>
@@ -961,7 +1047,7 @@
                             </div>
                             <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${statusClass} uppercase tracking-tighter">${statusText}</span>
                         </div>
-                        <div class="space-y-1">
+                        <div class="space-y-1 mb-3">
                             <div class="flex justify-between items-end">
                                 <div>
                                     <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">클라이언트</span>
@@ -969,6 +1055,11 @@
                                 </div>
                                 <div class="text-[10px] text-gray-400 font-mono">${date}</div>
                             </div>
+                        </div>
+                        <!-- Mobile Actions -->
+                        <div class="flex gap-2 pt-3 border-t border-white/5">
+                            <button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] text-gray-300 font-bold hover:bg-white/10 transition-colors"><i class="fas fa-edit mr-1"></i> 수정</button>
+                            <button onclick="window.deleteDeposit('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] text-red-400 font-bold hover:bg-red-500/20 transition-colors"><i class="fas fa-trash mr-1"></i> 삭제</button>
                         </div>
                     </div>`;
                 });
@@ -978,7 +1069,7 @@
                 document.getElementById('stat-pending-deposits').innerText = pendingCount;
             });
 
-            // 4. 사이트 설정 로드 (Main Settings)
+            // 5. 사이트 설정 로드 (Main Settings)
             const configDocRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings');
             
             getDoc(configDocRef).then((snap) => {
@@ -1026,16 +1117,10 @@
 
             try {
                 if(id) {
-                    // Update
-                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id), {
-                        name, phase, progress
-                    });
+                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id), { name, phase, progress });
                     alert('프로젝트가 수정되었습니다.');
                 } else {
-                    // Create
-                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), {
-                        name, phase, progress, createdAt: serverTimestamp()
-                    });
+                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), { name, phase, progress, createdAt: serverTimestamp() });
                     alert('새 프로젝트가 추가되었습니다.');
                 }
                 resetProjectForm();
@@ -1048,12 +1133,9 @@
             document.getElementById('p-phase').value = data.phase;
             document.getElementById('p-progress').value = data.progress;
             document.getElementById('p-prog-val').innerText = data.progress + "%";
-            
             document.getElementById('p-form-title').innerText = "프로젝트 수정";
             document.getElementById('p-submit-btn').innerText = "변경사항 저장";
             document.getElementById('p-form-reset').classList.remove('hidden');
-            
-            // Scroll to form
             document.getElementById('project-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
         };
 
@@ -1073,8 +1155,62 @@
             }
         };
 
+        // 2. Portfolio Logic (NEW)
+        window.openPortfolioModal = (mode, _, data = null) => {
+            const modal = document.getElementById('modal-portfolio');
+            const title = document.getElementById('pf-modal-title');
+            
+            if(mode === 'edit' && data) {
+                editingPortfolioId = data.id;
+                title.innerText = "포트폴리오 수정";
+                document.getElementById('pf-id').value = data.id;
+                document.getElementById('pf-title-input').value = data.title;
+                document.getElementById('pf-category-input').value = data.category;
+                document.getElementById('pf-client-input').value = data.client;
+                document.getElementById('pf-year-input').value = data.year;
+                document.getElementById('pf-image-input').value = data.imageUrl || '';
+                document.getElementById('pf-desc-input').value = data.description || '';
+                document.getElementById('pf-link-input').value = data.linkUrl || '';
+            } else {
+                editingPortfolioId = null;
+                title.innerText = "포트폴리오 추가";
+                document.getElementById('portfolio-modal-form').reset();
+                document.getElementById('pf-id').value = "";
+            }
+            modal.classList.add('active');
+        };
 
-        // 2. Quote Logic (Updated to match Index.html)
+        document.getElementById('portfolio-modal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pfData = {
+                title: document.getElementById('pf-title-input').value,
+                category: document.getElementById('pf-category-input').value,
+                client: document.getElementById('pf-client-input').value,
+                year: document.getElementById('pf-year-input').value,
+                imageUrl: document.getElementById('pf-image-input').value,
+                description: document.getElementById('pf-desc-input').value,
+                linkUrl: document.getElementById('pf-link-input').value
+            };
+
+            try {
+                if(editingPortfolioId) {
+                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios', editingPortfolioId), pfData);
+                    alert('포트폴리오가 수정되었습니다.');
+                } else {
+                    pfData.createdAt = serverTimestamp();
+                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios'), pfData);
+                    alert('포트폴리오가 추가되었습니다.');
+                }
+                closeAdminModal('modal-portfolio');
+            } catch(e) { alert('저장 실패: ' + e.message); }
+        });
+
+        window.deletePortfolio = async (id) => {
+            if(confirm('이 포트폴리오를 삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios', id));
+        };
+
+
+        // 3. Quote Logic
         window.openQuoteModal = (mode, _, data = null) => {
             const modal = document.getElementById('modal-quote');
             const title = document.getElementById('mq-title');
@@ -1083,11 +1219,9 @@
                 editingQuoteId = data.id;
                 title.innerText = "견적 상세 및 수정";
                 document.getElementById('mq-id').value = data.id;
-                // Radio button logic
                 const category = data.category || '일반';
                 const radio = document.querySelector(`input[name="mq-category"][value="${category}"]`);
                 if(radio) radio.checked = true;
-                
                 document.getElementById('mq-name').value = data.name;
                 document.getElementById('mq-contact').value = data.contact;
                 document.getElementById('mq-content').value = data.content;
@@ -1096,7 +1230,6 @@
                 title.innerText = "새 견적 문의 등록";
                 document.getElementById('quote-modal-form').reset();
                 document.getElementById('mq-id').value = "";
-                // Default to '일반'
                 const radio = document.querySelector(`input[name="mq-category"][value="일반"]`);
                 if(radio) radio.checked = true;
             }
@@ -1105,23 +1238,17 @@
 
         document.getElementById('quote-modal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Get category from radio
             const categoryEl = document.querySelector('input[name="mq-category"]:checked');
             const category = categoryEl ? categoryEl.value : '일반';
-            
             const name = document.getElementById('mq-name').value;
             const contact = document.getElementById('mq-contact').value;
             const content = document.getElementById('mq-content').value;
             
             try {
                 if(editingQuoteId) {
-                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', editingQuoteId), {
-                        category, name, contact, content
-                    });
+                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', editingQuoteId), { category, name, contact, content });
                 } else {
-                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), {
-                        category, name, contact, content, createdAt: serverTimestamp()
-                    });
+                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), { category, name, contact, content, createdAt: serverTimestamp() });
                 }
                 closeAdminModal('modal-quote');
             } catch(e) { alert('저장 실패'); }
@@ -1132,7 +1259,7 @@
         };
 
 
-        // 3. Deposit Logic
+        // 4. Deposit Logic
         window.openDepositModal = (mode, _, data = null) => {
             const modal = document.getElementById('modal-deposit');
             const title = document.getElementById('md-title');
@@ -1163,13 +1290,9 @@
             
             try {
                 if(editingDepositId) {
-                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), {
-                        type, name, phone, status
-                    });
+                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), { type, name, phone, status });
                 } else {
-                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
-                        type, name, phone, status, createdAt: serverTimestamp()
-                    });
+                    await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), { type, name, phone, status, createdAt: serverTimestamp() });
                 }
                 closeAdminModal('modal-deposit');
             } catch(e) { alert('저장 실패'); }
