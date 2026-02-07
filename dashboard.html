@@ -499,7 +499,7 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr>
-                                <th class="table-head p-4">거래일 (입금확인)</th>
+                                <th class="table-head p-4">거래일 (신청일)</th>
                                 <th class="table-head p-4">상품명</th>
                                 <th class="table-head p-4">고객명</th>
                                 <th class="table-head p-4">연락처</th>
@@ -572,7 +572,7 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr>
-                                <th class="table-head p-4">신청일</th>
+                                <th class="table-head p-4">신청일 (거래일)</th>
                                 <th class="table-head p-4">상품 유형</th>
                                 <th class="table-head p-4">입금자명</th>
                                 <th class="table-head p-4">연락처</th>
@@ -688,9 +688,12 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">이미지 URL</label>
-                    <input type="url" id="pf-image-input" class="custom-input" placeholder="https://example.com/image.jpg (이미지 주소 입력)" required>
-                    <p class="text-[10px] text-gray-500 mt-1">* 이미지 호스팅 URL을 입력해주세요.</p>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">이미지 업로드 (최대 500KB)</label>
+                    <input type="file" id="pf-image-file" class="custom-input text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer" accept="image/*">
+                    <input type="hidden" id="pf-image-base64">
+                    <div id="pf-image-preview" class="mt-3 w-full h-32 bg-white/5 rounded-lg border border-dashed border-white/10 flex items-center justify-center overflow-hidden">
+                        <span class="text-gray-500 text-xs">이미지 미리보기</span>
+                    </div>
                 </div>
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상세 설명</label>
@@ -783,6 +786,11 @@
             </h3>
             <form id="deposit-modal-form" class="space-y-4">
                 <input type="hidden" id="md-id">
+                <!-- 날짜 입력 필드 추가 -->
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">거래 일자 (신청일)</label>
+                    <input type="date" id="md-date" class="custom-input" required>
+                </div>
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상품 유형</label>
                     <input type="text" id="md-type" class="custom-input" placeholder="예: 구글 호스팅" required>
@@ -1122,8 +1130,27 @@
                     const taxStatus = dep.taxInvoice === 'complete' ? '발행완료' : '발행전';
                     const taxClass = dep.taxInvoice === 'complete' ? 'tax-complete' : 'tax-pending';
                     
-                    const dateObj = dep.createdAt ? new Date(dep.createdAt.seconds * 1000) : new Date();
-                    const date = dateObj.toLocaleDateString();
+                    // --- Date Logic Update: Prioritize manual date ---
+                    let displayDateStr;
+                    let statYear, statMonth;
+
+                    if (dep.date) {
+                        // 수동 날짜가 있으면 우선 사용 (YYYY-MM-DD)
+                        displayDateStr = dep.date;
+                        const [y, m, d] = dep.date.split('-');
+                        statYear = parseInt(y);
+                        statMonth = m; // '01', '02'...
+                    } else {
+                        // 없으면 createdAt 사용
+                        const dateObj = dep.createdAt ? new Date(dep.createdAt.seconds * 1000) : new Date();
+                        const year = dateObj.getFullYear();
+                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                        const day = String(dateObj.getDate()).padStart(2, '0');
+                        displayDateStr = `${year}-${month}-${day}`;
+                        statYear = year;
+                        statMonth = month;
+                    }
+                    
                     const safeData = JSON.stringify({id: d.id, ...dep}).replace(/"/g, '&quot;');
                     
                     if(!isComplete) pendingCount++;
@@ -1147,12 +1174,10 @@
                         // VAT Calculation (Total / 1.1 = Supply Price, then Total - Supply = VAT)
                         totalVat += Math.round(price - (price / 1.1));
 
-                        // Calculate Month/Year Stats
-                        const year = dateObj.getFullYear();
-                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                        const yearKey = `${year}년`;
-                        const monthKey = `${year}-${month}`;
-                        const monthDisplay = `${year}년 ${month}월`;
+                        // Calculate Month/Year Stats with Manual Date
+                        const yearKey = `${statYear}년`;
+                        const monthKey = `${statYear}-${statMonth}`;
+                        const monthDisplay = `${statYear}년 ${statMonth}월`;
 
                         if (!yearlyStats[yearKey]) yearlyStats[yearKey] = 0;
                         yearlyStats[yearKey] += price;
@@ -1172,7 +1197,7 @@
                         // Add row to Sales Table
                         salesHtml += `
                         <tr class="table-row">
-                            <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
+                            <td class="p-4 text-gray-400 font-mono text-xs">${displayDateStr}</td>
                             <td class="p-4"><span class="px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10 text-[10px] font-bold">${dep.type}</span></td>
                             <td class="p-4 font-bold text-white">${displayName}</td>
                             <td class="p-4 text-gray-400">${displayPhone}</td>
@@ -1201,7 +1226,7 @@
                             </div>
                             <div class="text-xs text-gray-400 mb-3 flex justify-between">
                                 <span>${displayPhone}</span>
-                                <span class="font-mono">${date}</span>
+                                <span class="font-mono">${displayDateStr}</span>
                             </div>
                              <div class="flex gap-2 border-t border-white/5 pt-3">
                                 <button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] font-bold text-gray-300 hover:bg-white/10"><i class="fas fa-edit mr-1"></i> 수정</button>
@@ -1213,7 +1238,7 @@
                     // --- Deposit Table Logic ---
                     tableHtml += `
                     <tr class="table-row">
-                        <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
+                        <td class="p-4 text-gray-400 font-mono text-xs">${displayDateStr}</td>
                         <td class="p-4 text-xs text-purple-300 font-bold">${dep.type}</td>
                         <td class="p-4 font-bold text-white">${dep.name}</td>
                         <td class="p-4 text-gray-400">${dep.phone}</td>
@@ -1244,7 +1269,7 @@
                         <div class="space-y-1 mb-3">
                             <div class="flex justify-between items-end">
                                 <div><span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">클라이언트</span><h4 class="font-bold text-white text-xs">${dep.name}</h4></div>
-                                <div class="text-[10px] text-gray-400 font-mono">${date}</div>
+                                <div class="text-[10px] text-gray-400 font-mono">${displayDateStr}</div>
                             </div>
                         </div>
                         <div class="flex gap-2 pt-3 border-t border-white/5">
@@ -1374,9 +1399,14 @@
         window.deleteProject = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id)); };
 
         // Portfolio
+        let currentPfBase64 = "";
+
         window.openPortfolioModal = (mode, _, data = null) => {
             const modal = document.getElementById('modal-portfolio');
             const title = document.getElementById('pf-modal-title');
+            const previewEl = document.getElementById('pf-image-preview');
+            const fileInput = document.getElementById('pf-image-file');
+
             if(mode === 'edit' && data) {
                 editingPortfolioId = data.id;
                 title.innerText = "포트폴리오 수정";
@@ -1385,26 +1415,61 @@
                 document.getElementById('pf-category-input').value = data.category;
                 document.getElementById('pf-client-input').value = data.client;
                 document.getElementById('pf-year-input').value = data.year;
-                document.getElementById('pf-image-input').value = data.imageUrl || '';
                 document.getElementById('pf-desc-input').value = data.description || '';
                 document.getElementById('pf-link-input').value = data.linkUrl || '';
+                
+                // Image handling
+                currentPfBase64 = data.imageUrl || "";
+                fileInput.value = ""; // Clear file input
+                if(currentPfBase64) {
+                    previewEl.innerHTML = `<img src="${currentPfBase64}" class="w-full h-full object-cover">`;
+                } else {
+                    previewEl.innerHTML = `<span class="text-gray-500 text-xs">이미지 없음</span>`;
+                }
             } else {
                 editingPortfolioId = null;
                 title.innerText = "포트폴리오 추가";
                 document.getElementById('portfolio-modal-form').reset();
                 document.getElementById('pf-id').value = "";
+                currentPfBase64 = "";
+                previewEl.innerHTML = `<span class="text-gray-500 text-xs">이미지 미리보기</span>`;
             }
             modal.classList.add('active');
         };
 
+        // File Input Handler
+        document.getElementById('pf-image-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.size > 500 * 1024) { // 500KB limit
+                alert('이미지 크기는 500KB를 초과할 수 없습니다.');
+                this.value = ''; // Reset input
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentPfBase64 = e.target.result;
+                document.getElementById('pf-image-preview').innerHTML = `<img src="${currentPfBase64}" class="w-full h-full object-cover">`;
+            };
+            reader.readAsDataURL(file);
+        });
+
         document.getElementById('portfolio-modal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (!currentPfBase64) {
+                alert('이미지를 등록해주세요.');
+                return;
+            }
+
             const pfData = {
                 title: document.getElementById('pf-title-input').value,
                 category: document.getElementById('pf-category-input').value,
                 client: document.getElementById('pf-client-input').value,
                 year: document.getElementById('pf-year-input').value,
-                imageUrl: document.getElementById('pf-image-input').value,
+                imageUrl: currentPfBase64, // Use base64 string
                 description: document.getElementById('pf-desc-input').value,
                 linkUrl: document.getElementById('pf-link-input').value
             };
@@ -1461,6 +1526,9 @@
             const modal = document.getElementById('modal-deposit');
             const title = document.getElementById('md-title');
             
+            // Set Today for Date Input
+            const today = new Date().toISOString().split('T')[0];
+
             if(mode === 'edit' && data) {
                 editingDepositId = data.id;
                 title.innerText = "내역 수정";
@@ -1468,15 +1536,30 @@
                 document.getElementById('md-type').value = data.type;
                 document.getElementById('md-name').value = data.name;
                 document.getElementById('md-phone').value = data.phone;
-                document.getElementById('md-price').value = data.price || ""; // Populate Price
+                document.getElementById('md-price').value = data.price || ""; 
                 document.getElementById('md-status').value = data.status === 'complete' || data.status === '입금완료' ? 'complete' : 'pending';
                 document.getElementById('md-tax-invoice').value = data.taxInvoice === 'complete' ? 'complete' : 'pending';
+                
+                // Date handling: use stored date or fallback to createdAt or today
+                if (data.date) {
+                    document.getElementById('md-date').value = data.date;
+                } else if (data.createdAt) {
+                    const d = new Date(data.createdAt.seconds * 1000);
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    document.getElementById('md-date').value = `${y}-${m}-${day}`;
+                } else {
+                    document.getElementById('md-date').value = today;
+                }
+
             } else {
                 editingDepositId = null;
                 title.innerText = source === 'sales' ? "새 매출(입금) 등록" : "새 입금 내역 등록";
                 document.getElementById('deposit-modal-form').reset();
                 document.getElementById('md-id').value = "";
-                // If adding from sales, default status to complete
+                document.getElementById('md-date').value = today; // Default to today
+                
                 if(source === 'sales') {
                     document.getElementById('md-status').value = 'complete';
                 }
@@ -1504,11 +1587,12 @@
             const phone = document.getElementById('md-phone').value;
             const status = document.getElementById('md-status').value;
             const taxInvoice = document.getElementById('md-tax-invoice').value;
-            const price = document.getElementById('md-price').value; // Get Price
+            const price = document.getElementById('md-price').value; 
+            const date = document.getElementById('md-date').value; // Get Date
 
             try {
-                const data = { type, name, phone, status, taxInvoice };
-                if (price) data.price = Number(price); // Save Price
+                const data = { type, name, phone, status, taxInvoice, date }; // Save Date
+                if (price) data.price = Number(price);
 
                 if(editingDepositId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), data);
                 else { data.createdAt = serverTimestamp(); await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), data); }
