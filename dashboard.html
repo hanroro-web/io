@@ -21,15 +21,26 @@
             overflow-x: hidden;
             margin: 0;
             padding: 0;
+            width: 100%;
         }
 
-        /* --- 모바일 환경 90% 축소 (Updated) --- */
+        /* --- 모바일 환경 90% 축소 및 가독성 최적화 --- */
         @media (max-width: 768px) {
             body {
-                zoom: 0.9; /* 0.95 -> 0.9 변경 */
+                zoom: 0.9; 
+            }
+            .content-section {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .section-title {
+                font-size: 1.1rem !important;
             }
             .mobile-card-wrapper {
-                padding-bottom: 20px;
+                padding-bottom: 30px;
+            }
+            .admin-modal-content {
+                zoom: 1; 
             }
         }
 
@@ -39,7 +50,6 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #8a4fff; }
 
-        /* 글래스모피즘 네비게이션 */
         .glass-nav { 
             background: rgba(5, 2, 10, 0.85); 
             backdrop-filter: blur(12px); 
@@ -116,8 +126,8 @@
         }
 
         @keyframes heroWandFloat {
-            0%, 100% { transform: translateY(0) rotateZ(-15deg) rotateY(15deg) scale(1); text-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3); }
-            50% { transform: translateY(-30px) rotateZ(-12deg) rotateY(5deg) scale(1.02); text-shadow: 0 0 30px rgba(192, 132, 252, 0.7), 0 0 60px rgba(168, 85, 247, 0.5); }
+            0%, 100% { transform: translateY(0) rotateZ(-15deg) rotateY(15deg) scale(1); }
+            50% { transform: translateY(-30px) rotateZ(-12deg) rotateY(5deg) scale(1.02); }
         }
 
         .glass-panel {
@@ -125,9 +135,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .glass-panel:hover {
-            border-color: rgba(138, 79, 255, 0.3);
         }
 
         .custom-input { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 14px; color: white; outline: none; transition: border-color 0.2s; font-size: 0.85rem; }
@@ -144,13 +151,13 @@
         .section-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
         .section-title i { color: #8a4fff; font-size: 1rem; }
         
-        /* Unified Card Style for Mobile */
         .unified-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
+            transition: all 0.3s ease;
         }
 
         .admin-modal { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
@@ -158,7 +165,7 @@
         .admin-modal-content { background: #0f0a1f; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; max-width: 600px; border-radius: 20px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); max-height: 90vh; overflow-y: auto; }
 
         #login-overlay { position: fixed; inset: 0; background-color: #05020a; z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
-        #login-overlay.hidden { opacity: 0; pointer-events: none; }
+        #login-overlay.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
         .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
@@ -168,10 +175,8 @@
         .mobile-drawer.active { transform: translateX(0); }
         .drawer-item { padding: 16px; border-radius: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 4px; transition: all 0.2s; display: flex; items-center; gap: 12px; }
         .drawer-item:hover, .drawer-item.active { background: rgba(138, 79, 255, 0.1); color: white; }
-        .drawer-item.active i { color: #8a4fff; }
 
         @media (max-width: 1024px) {
-            .nav-item.active::after { display: none; }
             .hero-wand-container { right: -15%; opacity: 0.7; }
             .hero-wand-3d { font-size: 24rem; }
         }
@@ -208,7 +213,7 @@
         </div>
     </div>
 
-    <!-- 상단 네비게이션 -->
+    <!-- 네비게이션 -->
     <nav class="fixed w-full z-50 glass-nav h-16 sm:h-20 flex items-center justify-between px-6">
         <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
             <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
@@ -227,7 +232,7 @@
             <div class="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 group relative">
                 <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center font-bold text-[10px]">A</div>
                 <span class="text-xs font-bold text-gray-300">관리자</span>
-                <button onclick="logout()" class="ml-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-red-400 transition-colors" title="로그아웃">
+                <button onclick="logout()" class="ml-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-red-400 transition-colors">
                     <i class="fas fa-sign-out-alt text-xs"></i>
                 </button>
             </div>
@@ -244,7 +249,6 @@
             <span class="font-black text-lg tracking-tight"><i class="fas fa-magic text-purple-500 mr-2"></i>MENU</span>
             <button onclick="toggleMobileMenu(false)" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
         </div>
-        
         <div class="flex items-center gap-3 p-4 mb-6 bg-white/5 rounded-xl border border-white/5">
             <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-bold text-sm">A</div>
             <div>
@@ -252,39 +256,16 @@
                 <div class="text-[10px] text-gray-400">Master Access</div>
             </div>
         </div>
-
-        <div class="flex-1 space-y-1">
-            <div class="drawer-item active" onclick="showSection('dashboard', this)">
-                <i class="fas fa-chart-pie w-5"></i> 대시보드
-            </div>
-            <div class="drawer-item" onclick="showSection('projects', this)">
-                <i class="fas fa-tasks w-5"></i> 프로젝트 관리
-            </div>
-             <div class="drawer-item" onclick="showSection('sales', this)">
-                <i class="fas fa-chart-line w-5"></i> 매출 현황
-            </div>
-            <div class="drawer-item" onclick="showSection('portfolios', this)">
-                <i class="fas fa-briefcase w-5"></i> 포트폴리오
-            </div>
-            <div class="drawer-item" onclick="showSection('quotes', this)">
-                <i class="fas fa-file-invoice-dollar w-5"></i> 견적 문의
-            </div>
-            <div class="drawer-item" onclick="showSection('deposits', this)">
-                <i class="fas fa-credit-card w-5"></i> 결제 현황
-            </div>
-            <div class="drawer-item" onclick="showSection('site-config', this)">
-                <i class="fas fa-sliders-h w-5"></i> 사이트 설정
-            </div>
-            
+        <div class="flex-1 space-y-1 overflow-y-auto">
+            <div class="drawer-item active" onclick="showSection('dashboard', this)"><i class="fas fa-chart-pie w-5"></i> 대시보드</div>
+            <div class="drawer-item" onclick="showSection('projects', this)"><i class="fas fa-tasks w-5"></i> 프로젝트 관리</div>
+            <div class="drawer-item" onclick="showSection('sales', this)"><i class="fas fa-chart-line w-5"></i> 매출 현황</div>
+            <div class="drawer-item" onclick="showSection('portfolios', this)"><i class="fas fa-briefcase w-5"></i> 포트폴리오</div>
+            <div class="drawer-item" onclick="showSection('quotes', this)"><i class="fas fa-file-invoice-dollar w-5"></i> 견적 문의</div>
+            <div class="drawer-item" onclick="showSection('deposits', this)"><i class="fas fa-credit-card w-5"></i> 결제 현황</div>
+            <div class="drawer-item" onclick="showSection('site-config', this)"><i class="fas fa-sliders-h w-5"></i> 사이트 설정</div>
             <div class="my-4 border-t border-white/5"></div>
-            
-            <div class="drawer-item text-red-400 hover:text-red-300 hover:bg-red-500/10" onclick="logout()">
-                <i class="fas fa-sign-out-alt w-5"></i> 로그아웃
-            </div>
-        </div>
-
-        <div class="pt-6 border-t border-white/10 text-[10px] text-gray-500 text-center">
-            HANRORO ADMIN SYSTEM v2.0
+            <div class="drawer-item text-red-400 hover:text-red-300" onclick="logout()"><i class="fas fa-sign-out-alt w-5"></i> 로그아웃</div>
         </div>
     </div>
 
@@ -294,1332 +275,644 @@
         <div class="hero-wand-container">
             <i class="fas fa-magic hero-wand-3d"></i>
         </div>
-        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5]"></div>
 
-        <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none">
-            <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto">
+        <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+            <div class="inline-flex items-center px-4 py-1.5 mb-6 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em]">
                 <i class="fas fa-shield-alt mr-2"></i> Administrator Console
             </div>
-            <h1 class="text-3xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
+            <h1 class="text-3xl sm:text-5xl font-black leading-[1.15] mb-6 sm:mb-10 tracking-tighter">
                 시스템 관리 및 <br>
                 <span class="gradient-text italic">데이터 컨트롤 타워</span>
             </h1>
-            <p class="text-white mb-10 sm:mb-12 text-base sm:text-lg max-w-xl leading-relaxed font-medium pointer-events-auto">
-                실시간 프로젝트 모니터링, 견적 문의 확인, 그리고 사이트 설정을 위한 통합 대시보드입니다. 모든 변경사항은 즉시 반영됩니다.
+            <p class="text-white mb-10 text-sm sm:text-lg max-w-xl leading-relaxed font-medium">
+                실시간 프로젝트 모니터링, 매출 현황, 그리고 사이트 설정을 위한 통합 대시보드입니다. 모든 데이터는 실시간 동기화됩니다.
             </p>
-            <div class="flex flex-wrap items-center gap-4 pointer-events-auto">
-                <button onclick="showSection('sales', document.querySelectorAll('.nav-item')[2])" class="bg-white text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="showSection('sales', null)" class="bg-white text-black px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-tight hover:bg-gray-200 transition-colors">
                     <i class="fas fa-chart-line mr-2"></i> 매출 현황 확인
                 </button>
-                <button onclick="showSection('deposits', document.querySelectorAll('.nav-item')[5])" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
+                <button onclick="showSection('deposits', null)" class="px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
                     <i class="fas fa-credit-card text-purple-400"></i> 결제 현황 확인
                 </button>
-
-                <div class="flex items-center gap-4 px-5 py-3.5 sm:px-6 sm:py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
-                    <div class="flex -space-x-2">
-                        <div class="w-6 h-6 rounded-full border-2 border-black bg-green-500 animate-pulse"></div>
-                    </div>
-                    <span class="text-[11px] font-bold text-gray-300">System Online</span>
-                </div>
             </div>
         </div>
     </section>
 
     <!-- 메인 콘텐츠 영역 -->
     <main class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 -mt-10 pb-20">
-        <!-- 1. 대시보드 개요 섹션 -->
+        
+        <!-- 1. 대시보드 메인 -->
         <div id="section-dashboard" class="content-section space-y-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform">
-                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-project-diagram text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Active Projects</p>
-                    <h3 class="text-4xl font-black" id="stat-active-projects">-</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">진행 중인 프로젝트</div>
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="glass-panel p-5 rounded-2xl relative overflow-hidden group">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Projects</p>
+                    <h3 class="text-3xl font-black" id="stat-active-projects">-</h3>
+                    <div class="mt-3 text-[9px] text-gray-500 font-bold uppercase">Active Items</div>
                 </div>
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform">
-                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-envelope-open text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">New Inquiries</p>
-                    <h3 class="text-4xl font-black text-purple-400" id="stat-new-quotes">-</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">신규 견적 문의</div>
+                <div class="glass-panel p-5 rounded-2xl relative overflow-hidden group">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Quotes</p>
+                    <h3 class="text-3xl font-black text-purple-400" id="stat-new-quotes">-</h3>
+                    <div class="mt-3 text-[9px] text-gray-500 font-bold uppercase">Total Inquiries</div>
                 </div>
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform">
-                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-coins text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Pending Payments</p>
-                    <h3 class="text-4xl font-black text-yellow-500" id="stat-pending-deposits">-</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">입금 확인 대기</div>
+                <div class="glass-panel p-5 rounded-2xl relative overflow-hidden group">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pending</p>
+                    <h3 class="text-3xl font-black text-yellow-500" id="stat-pending-deposits">-</h3>
+                    <div class="mt-3 text-[9px] text-gray-500 font-bold uppercase">Wait Payment</div>
                 </div>
-                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center gap-3 border-dashed border-2 border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors" onclick="showSection('sales', document.querySelectorAll('.nav-item')[2])">
-                    <i class="fas fa-chart-line text-2xl text-purple-500"></i>
-                    <span class="text-xs font-bold uppercase tracking-wider">매출 현황 보기</span>
+                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-center items-center gap-2 border-dashed border-2 border-white/10 hover:border-purple-500/50 cursor-pointer" onclick="showSection('sales', null)">
+                    <i class="fas fa-chart-line text-xl text-purple-500"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider">Revenue Detail</span>
                 </div>
             </div>
         </div>
 
         <!-- 2. 프로젝트 관리 -->
         <div id="section-projects" class="content-section hidden">
-             <h2 class="section-title"><i class="fas fa-tasks"></i> 프로젝트 관리</h2>
+            <h2 class="section-title"><i class="fas fa-tasks"></i> 프로젝트 관리</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- 프로젝트 폼 -->
                 <div class="lg:col-span-1">
                     <div class="glass-panel p-6 rounded-2xl sticky top-24">
-                        <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider flex justify-between">
                             <span id="p-form-title">새 프로젝트 등록</span>
-                            <button onclick="resetProjectForm()" class="text-[10px] text-gray-400 hover:text-white hidden" id="p-form-reset"><i class="fas fa-undo mr-1"></i>취소</button>
+                            <button onclick="resetProjectForm()" class="text-[10px] text-gray-400 hover:text-white hidden" id="p-form-reset">취소</button>
                         </h3>
                         <form id="project-form" class="space-y-4">
                             <input type="hidden" id="p-id">
+                            <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">프로젝트명</label><input type="text" id="p-name" class="custom-input" required></div>
                             <div>
-                                <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">프로젝트명</label>
-                                <input type="text" id="p-name" class="custom-input" placeholder="예: 한로로 웹사이트 리뉴얼" required>
-                            </div>
-                            <div>
-                                <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">진행 단계 (Phase)</label>
+                                <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">진행 단계</label>
                                 <select id="p-phase" class="custom-input bg-[#1a1625]">
-                                    <option value="상담">상담 (Consulting)</option>
-                                    <option value="계약">계약 (Contract)</option>
-                                    <option value="기획">기획 (Planning)</option>
-                                    <option value="디자인">디자인 (Design)</option>
-                                    <option value="퍼블리싱">퍼블리싱 (Publishing)</option>
-                                    <option value="개발">개발 (Development)</option>
-                                    <option value="테스트">테스트 (QA)</option>
-                                    <option value="배포">배포 (Deploy)</option>
-                                    <option value="최종 배포 완료">최종 배포 완료 (Final Deployment Complete)</option>
-                                    <option value="유지보수">유지보수 (Maintenance)</option>
+                                    <option value="상담">상담</option><option value="계약">계약</option><option value="기획">기획</option><option value="디자인">디자인</option><option value="개발">개발</option><option value="테스트">테스트</option><option value="배포">배포</option><option value="최종 배포 완료">최종 배포 완료</option><option value="유지보수">유지보수</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">진행률 (%)</label>
-                                <div class="flex items-center gap-3">
-                                    <input type="range" id="p-progress" min="0" max="100" value="0" class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500" oninput="document.getElementById('p-prog-val').innerText = this.value + '%'">
-                                    <span id="p-prog-val" class="text-xs font-bold w-10 text-right">0%</span>
-                                </div>
+                                <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">진행률 (<span id="p-prog-val">0%</span>)</label>
+                                <input type="range" id="p-progress" min="0" max="100" value="0" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500" oninput="document.getElementById('p-prog-val').innerText = this.value + '%'">
                             </div>
-                            <button type="submit" id="p-submit-btn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest mt-2">프로젝트 추가</button>
+                            <button type="submit" id="p-submit-btn" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest">프로젝트 저장</button>
                         </form>
                     </div>
                 </div>
-                <!-- 프로젝트 리스트 -->
-                <div class="lg:col-span-2 space-y-4" id="project-manage-list">
-                    <div class="text-center py-10 text-gray-500 text-xs">데이터 로딩 중...</div>
-                </div>
+                <div class="lg:col-span-2 space-y-3" id="project-manage-list"></div>
             </div>
         </div>
 
-        <!-- NEW: 매출 현황 섹션 (Sales Status) -->
+        <!-- 3. 매출 현황 -->
         <div id="section-sales" class="content-section hidden">
-            <h2 class="section-title !mb-1"><i class="fas fa-chart-line"></i> 매출 현황 (Revenue)</h2>
-            <p class="text-xs sm:text-sm text-gray-500 mb-8 font-bold flex items-center gap-2">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> 매출 현황 (Revenue)</h2>
+            <p class="text-[10px] sm:text-xs text-gray-500 mb-6 font-bold flex flex-wrap items-center gap-2">
                 <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">상호명: 한로로(55디자이너스)</span>
-                <span class="hidden sm:inline text-gray-600">|</span>
                 <span id="sales-today-date" class="text-purple-400"></span> 기준
             </p>
 
-            <!-- 그리드 변경: 5개 항목을 위해 반응형 그리드 조정 (lg:3열, xl:5열) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
-                <!-- Total Revenue Card -->
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden bg-gradient-to-br from-white/5 to-transparent">
-                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-won-sign text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Total Revenue</p>
-                    <h3 class="text-3xl font-black text-white" id="sales-total-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">누적 총 매출액 (VAT 포함)</div>
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-6 mb-8">
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl relative overflow-hidden bg-gradient-to-br from-white/5 to-transparent">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-white" id="sales-total-revenue">0원</h3>
                 </div>
-                <!-- Net Revenue Card (New) -->
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
-                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-wallet text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Net Revenue</p>
-                    <h3 class="text-3xl font-black text-cyan-400" id="sales-net-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">순수 매출액 (VAT 제외)</div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl relative overflow-hidden">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Net</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-cyan-400" id="sales-net-revenue">0원</h3>
                 </div>
-                <!-- VAT Card -->
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
-                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-file-invoice-dollar text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Estimated VAT</p>
-                    <h3 class="text-3xl font-black text-green-400" id="sales-vat-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">예상 부가세 (10%)</div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl relative overflow-hidden">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">VAT</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-green-400" id="sales-vat-revenue">0원</h3>
                 </div>
-                <!-- Google Hosting Sales -->
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
-                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-cloud text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Google Hosting</p>
-                    <h3 class="text-3xl font-black text-purple-400" id="sales-google-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">구글 호스팅 매출 (건당 143만원)</div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl relative overflow-hidden">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Google</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-purple-400" id="sales-google-revenue">0원</h3>
                 </div>
-                <!-- Normal Hosting Sales -->
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
-                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-server text-6xl"></i></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">General Hosting</p>
-                    <h3 class="text-3xl font-black text-blue-400" id="sales-normal-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">일반 호스팅 매출 (건당 153만원)</div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl relative overflow-hidden">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">General</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-blue-400" id="sales-normal-revenue">0원</h3>
                 </div>
             </div>
 
-            <!-- Year/Month Sales Stats -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <!-- Monthly Sales -->
-                <div class="glass-panel p-6 rounded-2xl">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-4 flex justify-between items-center">
-                        <span><i class="fas fa-calendar-alt mr-2 text-purple-400"></i>월별 매출 현황</span>
-                        <span class="text-[10px] text-gray-500 font-normal">최근 12개월 기준</span>
-                    </h3>
-                    <div class="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar" id="sales-monthly-list">
-                        <!-- JS Populated -->
-                    </div>
+                <div class="glass-panel p-5 rounded-2xl">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-4 border-b border-white/5 pb-2">월별 매출 현황</h3>
+                    <div class="space-y-1 max-h-48 overflow-y-auto pr-2 custom-scrollbar" id="sales-monthly-list"></div>
                 </div>
-                <!-- Yearly Sales -->
-                <div class="glass-panel p-6 rounded-2xl">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-4 flex justify-between items-center">
-                        <span><i class="fas fa-calendar mr-2 text-blue-400"></i>년별 매출 현황</span>
-                        <span class="text-[10px] text-gray-500 font-normal">연도별 합계</span>
-                    </h3>
-                    <div class="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar" id="sales-yearly-list">
-                         <!-- JS Populated -->
-                    </div>
+                <div class="glass-panel p-5 rounded-2xl">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-4 border-b border-white/5 pb-2">년별 매출 현황</h3>
+                    <div class="space-y-1 max-h-48 overflow-y-auto pr-2 custom-scrollbar" id="sales-yearly-list"></div>
                 </div>
             </div>
 
-            <!-- Sales Table / Mobile List -->
             <div class="glass-panel rounded-2xl overflow-hidden">
-                <div class="flex justify-between items-center p-6 border-b border-white/5">
-                    <div>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">상세 매출 내역 (입금 완료)</h3>
-                        <div class="text-[10px] text-gray-500 mt-1">※ 구글호스팅: 1,430,000원 / 일반호스팅: 1,530,000원</div>
-                    </div>
+                <div class="flex justify-between items-center p-4 sm:p-6 border-b border-white/5">
+                    <h3 class="text-xs sm:text-sm font-bold text-white uppercase">상세 매출 내역</h3>
                     <div class="flex items-center gap-2">
-                        <button onclick="togglePrivacy()" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-2 rounded-xl text-xs font-bold transition-all border border-white/10" title="고객 정보 숨기기/보기">
-                            <i class="fas fa-eye" id="privacy-icon"></i>
-                        </button>
-                        <button onclick="openDepositModal('add', 'sales')" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-purple-600/20">
-                            <i class="fas fa-plus"></i><span class="hidden sm:inline"> 매출 등록</span>
-                        </button>
+                        <button onclick="togglePrivacy()" class="bg-white/5 text-gray-300 p-2 rounded-lg text-xs border border-white/10" title="개인정보 숨기기"><i class="fas fa-eye" id="privacy-icon"></i></button>
+                        <button onclick="openDepositModal('add', 'sales')" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-[10px] font-bold"><i class="fas fa-plus mr-1"></i> 매출 등록</button>
                     </div>
                 </div>
-                
-                <!-- Desktop Table View -->
                 <div class="overflow-x-auto hidden md:block">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr>
-                                <th class="table-head p-4">거래일 (신청일)</th>
-                                <th class="table-head p-4">상품명</th>
-                                <th class="table-head p-4">고객명</th>
-                                <th class="table-head p-4">연락처</th>
-                                <th class="table-head p-4 text-right">매출 금액</th>
-                                <th class="table-head p-4 text-center">세금계산서</th>
-                                <th class="table-head p-4 text-right">관리</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sales-table-body" class="text-sm text-gray-300">
-                            <!-- JS로 데이터 로드됨 -->
-                        </tbody>
+                    <table class="w-full text-left">
+                        <thead><tr><th class="table-head p-4">거래일</th><th class="table-head p-4">상품명</th><th class="table-head p-4">고객명</th><th class="table-head p-4">연락처</th><th class="table-head p-4 text-right">매출 금액</th><th class="table-head p-4 text-center">세금계산서</th><th class="table-head p-4 text-right">관리</th></tr></thead>
+                        <tbody id="sales-table-body" class="text-sm text-gray-300"></tbody>
                     </table>
                 </div>
-
-                <!-- Mobile Card List View -->
-                <div id="sales-mobile-list" class="grid grid-cols-1 gap-4 p-4 md:hidden"></div>
+                <div id="sales-mobile-list" class="grid grid-cols-1 gap-3 p-4 md:hidden"></div>
             </div>
         </div>
 
-        <!-- 3. 포트폴리오 관리 -->
+        <!-- 4. 포트폴리오 관리 -->
         <div id="section-portfolios" class="content-section hidden">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="section-title !mb-0"><i class="fas fa-briefcase"></i> 포트폴리오 관리</h2>
-                <button onclick="openPortfolioModal('add')" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                    <i class="fas fa-plus"></i> 포트폴리오 추가
-                </button>
+                <button onclick="openPortfolioModal('add')" class="bg-white/10 text-white px-4 py-2 rounded-xl text-xs font-bold border border-white/20 transition-all"><i class="fas fa-plus"></i> 포트폴리오 추가</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="portfolio-manage-list">
-                <div class="col-span-full text-center py-10 text-gray-500 text-xs">데이터 로딩 중...</div>
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="portfolio-manage-list"></div>
         </div>
 
-        <!-- 4. 견적 문의 내역 -->
+        <!-- 5. 견적 문의 내역 -->
         <div id="section-quotes" class="content-section hidden">
             <h2 class="section-title"><i class="fas fa-file-invoice-dollar"></i> 견적 문의 내역</h2>
             <div class="glass-panel rounded-2xl overflow-hidden">
-                <!-- Desktop Table View -->
                 <div class="overflow-x-auto hidden md:block">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr>
-                                <th class="table-head p-4">접수일</th>
-                                <th class="table-head p-4">분류</th>
-                                <th class="table-head p-4">고객명</th>
-                                <th class="table-head p-4">연락처</th>
-                                <th class="table-head p-4">문의 내용</th>
-                                <th class="table-head p-4 w-24 text-right">관리</th>
-                            </tr>
-                        </thead>
+                    <table class="w-full text-left">
+                        <thead><tr><th class="table-head p-4">접수일</th><th class="table-head p-4">분류</th><th class="table-head p-4">고객명</th><th class="table-head p-4">연락처</th><th class="table-head p-4">내용</th><th class="table-head p-4 w-24 text-right">관리</th></tr></thead>
                         <tbody id="quote-table-body" class="text-sm text-gray-300"></tbody>
                     </table>
                 </div>
-                 <!-- Mobile Card List View -->
-                 <div id="quote-mobile-list" class="grid grid-cols-1 gap-4 p-4 md:hidden"></div>
+                <div id="quote-mobile-list" class="grid grid-cols-1 gap-3 p-4 md:hidden"></div>
             </div>
         </div>
 
-        <!-- 5. 결제/입금 현황 -->
+        <!-- 6. 결제 현황 -->
         <div id="section-deposits" class="content-section hidden">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="section-title !mb-0"><i class="fas fa-won-sign"></i> 결제 및 입금 현황</h2>
-                <button onclick="openDepositModal('add')" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                    <i class="fas fa-plus"></i> 수기 등록
-                </button>
+                <h2 class="section-title !mb-0"><i class="fas fa-won-sign"></i> 결제/입금 현황</h2>
+                <button onclick="openDepositModal('add')" class="bg-white/10 text-white px-4 py-2 rounded-xl text-xs font-bold border border-white/20 transition-all"><i class="fas fa-plus"></i> 수기 등록</button>
             </div>
-            
-            <!-- Desktop Table View -->
             <div class="glass-panel rounded-2xl overflow-hidden hidden md:block">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr>
-                                <th class="table-head p-4">신청일 (거래일)</th>
-                                <th class="table-head p-4">상품 유형</th>
-                                <th class="table-head p-4">입금자명</th>
-                                <th class="table-head p-4">연락처</th>
-                                <th class="table-head p-4">상태</th>
-                                <th class="table-head p-4 w-24 text-right">관리</th>
-                            </tr>
-                        </thead>
+                    <table class="w-full text-left">
+                        <thead><tr><th class="table-head p-4">신청일</th><th class="table-head p-4">상품</th><th class="table-head p-4">입금자</th><th class="table-head p-4">연락처</th><th class="table-head p-4">상태</th><th class="table-head p-4 w-24 text-right">관리</th></tr></thead>
                         <tbody id="deposit-table-body" class="text-sm text-gray-300"></tbody>
                     </table>
                 </div>
             </div>
-            <!-- Mobile Card View -->
-            <div id="deposit-mobile-list" class="grid grid-cols-1 gap-4 md:hidden mobile-card-wrapper"></div>
+            <div id="deposit-mobile-list" class="grid grid-cols-1 gap-3 md:hidden mobile-card-wrapper"></div>
         </div>
 
-        <!-- 6. 사이트 설정 섹션 -->
+        <!-- 7. 사이트 설정 -->
         <div id="section-site-config" class="content-section hidden">
             <h2 class="section-title"><i class="fas fa-sliders-h"></i> 사이트 설정 (CMS)</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- 상단 팝업 설정 -->
                 <div class="glass-panel p-6 rounded-2xl">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">상단 네온 알림바</h3>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="conf-top-show" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                        </label>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-widest">상단 네온 알림바</h3>
+                        <input type="checkbox" id="conf-top-show" class="w-5 h-5 accent-purple-600">
                     </div>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">알림 텍스트</label>
-                            <input type="text" id="conf-top-text" class="custom-input" placeholder="예: 제작 비용 60% 자체 할인 이벤트 중">
-                        </div>
-                    </div>
+                    <input type="text" id="conf-top-text" class="custom-input" placeholder="알림바 텍스트 입력">
                 </div>
-
-                <!-- 하단 팝업 설정 -->
                 <div class="glass-panel p-6 rounded-2xl">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">하단 플로팅 배너</h3>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="conf-bottom-show" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                        </label>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-widest">하단 플로팅 배너</h3>
+                        <input type="checkbox" id="conf-bottom-show" class="w-5 h-5 accent-purple-600">
                     </div>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">메인 타이틀</label>
-                            <input type="text" id="conf-bottom-title" class="custom-input" placeholder="예: 제작 비용 60% 자체 할인 진행 중">
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">서브 텍스트 (작은 글씨)</label>
-                            <input type="text" id="conf-bottom-sub" class="custom-input" placeholder="예: Limited Offer">
-                        </div>
-                    </div>
+                    <input type="text" id="conf-bottom-title" class="custom-input mb-3" placeholder="메인 타이틀">
+                    <input type="text" id="conf-bottom-sub" class="custom-input" placeholder="서브 텍스트">
                 </div>
-
-                <!-- 공지사항 설정 -->
                 <div class="glass-panel p-6 rounded-2xl lg:col-span-2">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">하단 공지사항 (Notice Ticker)</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">공지 텍스트</label>
-                            <input type="text" id="conf-notice-text" class="custom-input" placeholder="예: 환영합니다! 한로로 공식 웹사이트입니다.">
-                        </div>
-                    </div>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-4">공지사항 (Notice Ticker)</h3>
+                    <input type="text" id="conf-notice-text" class="custom-input" placeholder="공지사항 텍스트 입력">
                 </div>
             </div>
-            
-            <button id="save-config-btn" class="w-full mt-6 bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-xl transition-colors text-xs uppercase tracking-widest shadow-lg shadow-purple-600/20">
-                <i class="fas fa-save mr-2"></i> 설정 전체 저장하기
-            </button>
+            <button id="save-config-btn" class="w-full mt-6 bg-purple-600 text-white font-bold py-4 rounded-xl text-xs uppercase tracking-widest shadow-lg">전체 설정 저장</button>
         </div>
 
-        <!-- NEW Footer (Matches Logo Style) -->
-        <footer class="mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-4 text-center pb-8">
-            <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
-                <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
-                <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-3 text-center pb-10">
+            <div class="flex items-center gap-2 opacity-50">
+                <i class="fas fa-magic text-sm text-purple-400"></i>
+                <div class="text-lg font-black tracking-tighter gradient-text uppercase">HANRORO</div>
             </div>
-            <p class="text-[10px] text-gray-600 uppercase tracking-widest">© 2015 HANRORO ADMIN SYSTEM. ALL RIGHTS RESERVED.</p>
+            <p class="text-[9px] text-gray-600 uppercase tracking-widest">© 2015 HANRORO ADMIN SYSTEM. ALL RIGHTS RESERVED.</p>
         </footer>
     </main>
 
-    <!-- ADMIN MODALS (포트폴리오, 견적, 입금) -->
-    <!-- 1. 포트폴리오 관리 Modal -->
+    <!-- ADMIN MODALS -->
+    <!-- 포트폴리오 모달 -->
     <div id="modal-portfolio" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-portfolio')">
-        <div class="admin-modal-content !max-w-[700px]">
-            <h3 class="text-lg font-bold mb-4 flex justify-between">
-                <span id="pf-modal-title">포트폴리오 추가</span>
+        <div class="admin-modal-content !max-w-[800px]">
+            <h3 class="text-lg font-bold mb-6 flex justify-between items-center">
+                <span id="pf-modal-title"><i class="fas fa-briefcase text-purple-500 mr-2"></i>포트폴리오 설정</span>
                 <button onclick="closeAdminModal('modal-portfolio')"><i class="fas fa-times text-gray-400"></i></button>
             </h3>
-            <form id="portfolio-modal-form" class="space-y-4">
+            <form id="portfolio-modal-form" class="space-y-5">
                 <input type="hidden" id="pf-id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">프로젝트 제목</label><input type="text" id="pf-title-input" class="custom-input" required></div>
+                    <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">카테고리</label><input type="text" id="pf-category-input" class="custom-input" required></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">클라이언트</label><input type="text" id="pf-client-input" class="custom-input" required></div>
+                    <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">제작 연도</label><input type="text" id="pf-year-input" class="custom-input" required></div>
                     <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">프로젝트 제목</label>
-                        <input type="text" id="pf-title-input" class="custom-input" placeholder="예: 라이트하우스 블로그" required>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">배경 테마</label>
+                        <select id="pf-color-input" class="custom-input bg-[#1a1625]">
+                            <option value="from-blue-900/40 to-black">Blue</option>
+                            <option value="from-purple-900/40 to-black">Purple</option>
+                            <option value="from-indigo-900/40 to-black">Indigo</option>
+                            <option value="from-pink-900/40 to-black">Pink</option>
+                            <option value="from-green-900/40 to-black">Green</option>
+                        </select>
                     </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">카테고리</label>
-                        <input type="text" id="pf-category-input" class="custom-input" placeholder="예: Basic Web / Blog Type" required>
-                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">이미지 업로드 (500KB)</label>
+                    <input type="file" id="pf-image-file" class="custom-input text-gray-400 file:bg-purple-600 file:text-white file:border-0 file:rounded-full file:px-3 file:py-1 file:text-[10px] file:mr-2" accept="image/*">
+                    <input type="hidden" id="pf-image-base64">
+                    <div id="pf-image-preview" class="mt-2 w-full h-32 bg-white/5 rounded-xl border border-dashed border-white/10 flex items-center justify-center overflow-hidden"><span class="text-gray-500 text-xs">Preview</span></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">클라이언트</label>
-                        <input type="text" id="pf-client-input" class="custom-input" placeholder="예: Lighthouse Inc." required>
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">제작 연도</label>
-                        <input type="text" id="pf-year-input" class="custom-input" placeholder="예: 2024" required>
-                    </div>
+                    <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">짧은 요약 (카드용)</label><textarea id="pf-desc-input" class="custom-input h-20 resize-none" required></textarea></div>
+                    <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상세 설명 (본문용)</label><textarea id="pf-long-desc-input" class="custom-input h-20 resize-none" required></textarea></div>
                 </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">이미지 업로드 (최대 500KB)</label>
-                    <input type="file" id="pf-image-file" class="custom-input text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer" accept="image/*">
-                    <input type="hidden" id="pf-image-base64">
-                    <div id="pf-image-preview" class="mt-3 w-full h-32 bg-white/5 rounded-lg border border-dashed border-white/10 flex items-center justify-center overflow-hidden">
-                        <span class="text-gray-500 text-xs">이미지 미리보기</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상세 설명</label>
-                    <textarea id="pf-desc-input" class="custom-input h-24 resize-none" placeholder="프로젝트에 대한 설명을 입력하세요."></textarea>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">외부 링크 (선택)</label>
-                    <input type="url" id="pf-link-input" class="custom-input" placeholder="https://...">
-                </div>
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest">저장하기</button>
+                <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">주요 특징 (콤마 구분)</label><input type="text" id="pf-features-input" class="custom-input" placeholder="특징 1, 특징 2"></div>
+                <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">태그 (콤마 구분)</label><input type="text" id="pf-tags-input" class="custom-input" placeholder="Tag1, Tag2"></div>
+                <div><label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">외부 링크 (URL)</label><input type="url" id="pf-link-input" class="custom-input"></div>
+                <button type="submit" class="w-full bg-purple-600 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-widest">저장하기</button>
             </form>
         </div>
     </div>
 
-    <!-- 2. 견적 문의 Modal -->
+    <!-- 견적 모달 -->
     <div id="modal-quote" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-quote')">
         <div class="admin-modal-content !p-0 overflow-hidden">
-             <!-- Header -->
-             <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest mb-3">
-                            <i class="fas fa-edit"></i> Edit Mode
-                        </div>
-                        <h3 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter" id="mq-title">견적 상세 및 수정</h3>
-                    </div>
-                    <button onclick="closeAdminModal('modal-quote')" class="w-9 h-9 sm:w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">
-                        <i class="fas fa-times text-sm"></i>
-                    </button>
-                </div>
+            <div class="p-6 bg-purple-900/40 border-b border-white/5 flex justify-between">
+                <h3 class="text-xl font-black text-white" id="mq-title">견적 상세</h3>
+                <button onclick="closeAdminModal('modal-quote')"><i class="fas fa-times"></i></button>
             </div>
-            <!-- Body -->
-            <div class="p-6 sm:p-8">
-                <form id="quote-modal-form" class="space-y-5 sm:space-y-6">
+            <div class="p-6">
+                <form id="quote-modal-form" class="space-y-4">
                     <input type="hidden" id="mq-id">
-                     <!-- Category Selection (Cards) -->
-                     <div class="space-y-3">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Category</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="block relative">
-                                <input type="radio" name="mq-category" value="일반" class="hidden option-radio" checked>
-                                <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
-                                        <i class="fas fa-user text-xs sm:text-sm"></i>
-                                    </div>
-                                    <h4 class="text-[11px] sm:text-xs font-bold text-white uppercase tracking-tight">일반</h4>
-                                </div>
-                            </label>
-                            <label class="block relative">
-                                <input type="radio" name="mq-category" value="기업" class="hidden option-radio">
-                                <div class="option-card p-3 sm:p-4 rounded-xl flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
-                                        <i class="fas fa-building text-xs sm:text-sm"></i>
-                                    </div>
-                                    <h4 class="text-[11px] sm:text-xs font-bold text-white uppercase tracking-tight">기업</h4>
-                                </div>
-                            </label>
-                        </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="p-3 bg-white/5 border border-white/10 rounded-xl cursor-pointer flex items-center gap-2"><input type="radio" name="mq-category" value="일반" checked> <span class="text-xs">일반</span></label>
+                        <label class="p-3 bg-white/5 border border-white/10 rounded-xl cursor-pointer flex items-center gap-2"><input type="radio" name="mq-category" value="기업"> <span class="text-xs">기업</span></label>
                     </div>
-                    <!-- Inputs -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Name / Company</label>
-                            <input type="text" id="mq-name" class="custom-input !mt-0 !py-3 bg-white/5 border-white/10" placeholder="성함 또는 업체명" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Contact Number</label>
-                            <input type="text" id="mq-contact" class="custom-input !mt-0 !py-3 bg-white/5 border-white/10" placeholder="010-0000-0000" required>
-                        </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="mq-name" class="custom-input" placeholder="고객명" required>
+                        <input type="text" id="mq-contact" class="custom-input" placeholder="연락처" required>
                     </div>
-                    <!-- Textarea -->
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Project Message</label>
-                        <textarea id="mq-content" class="custom-input h-64 sm:h-80 resize-y !mt-0 !py-3 bg-white/5 border-white/10 leading-relaxed" placeholder="내용을 입력해 주세요."></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-purple-600 text-white py-4 sm:py-5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-[0.2em] hover:bg-purple-700 transition-all shadow-lg shadow-purple-600/30">
-                        저장하기
-                    </button>
+                    <textarea id="mq-content" class="custom-input h-48 resize-none" placeholder="문의 내용"></textarea>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-3.5 rounded-xl text-xs font-bold uppercase">상담 내역 저장</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- 3. 입금(매출) 내역 Modal -->
+    <!-- 입금/매출 모달 -->
     <div id="modal-deposit" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-deposit')">
         <div class="admin-modal-content">
-            <h3 class="text-lg font-bold mb-4 flex justify-between">
-                <span id="md-title">입금/매출 내역 등록</span>
+            <h3 class="text-lg font-bold mb-6 flex justify-between">
+                <span id="md-title">매출 데이터 등록</span>
                 <button onclick="closeAdminModal('modal-deposit')"><i class="fas fa-times text-gray-400"></i></button>
             </h3>
             <form id="deposit-modal-form" class="space-y-4">
                 <input type="hidden" id="md-id">
-                <!-- 날짜 입력 필드 추가 -->
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">거래 일자 (신청일)</label>
-                    <input type="date" id="md-date" class="custom-input" required>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상품 유형</label>
-                    <input type="text" id="md-type" class="custom-input" placeholder="예: 구글 호스팅" required>
-                </div>
-                <!-- 금액 수정 필드 추가 -->
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">매출 금액 (원)</label>
-                    <input type="number" id="md-price" class="custom-input" placeholder="자동 계산됨 (직접 입력 가능)">
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">입금자명</label>
-                    <input type="text" id="md-name" class="custom-input" required>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">연락처</label>
-                    <input type="text" id="md-phone" class="custom-input" required>
-                </div>
+                <div><label class="text-[10px] text-gray-500 font-bold block mb-1">날짜</label><input type="date" id="md-date" class="custom-input" required></div>
+                <div><label class="text-[10px] text-gray-500 font-bold block mb-1">상품</label><input type="text" id="md-type" class="custom-input" required></div>
+                <div><label class="text-[10px] text-gray-500 font-bold block mb-1">금액</label><input type="number" id="md-price" class="custom-input" placeholder="숫자만 입력"></div>
+                <div><label class="text-[10px] text-gray-500 font-bold block mb-1">성함</label><input type="text" id="md-name" class="custom-input" required></div>
+                <div><label class="text-[10px] text-gray-500 font-bold block mb-1">연락처</label><input type="text" id="md-phone" class="custom-input" required></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">입금 상태</label>
-                        <select id="md-status" class="custom-input bg-[#1a1625]">
-                            <option value="pending">입금대기 (Pending)</option>
-                            <option value="complete">입금완료 (Complete)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">세금계산서</label>
-                        <select id="md-tax-invoice" class="custom-input bg-[#1a1625]">
-                            <option value="pending">발행전 (Pending)</option>
-                            <option value="complete">발행완료 (Issued)</option>
-                        </select>
-                    </div>
+                    <select id="md-status" class="custom-input bg-[#1a1625]"><option value="pending">입금대기</option><option value="complete">입금완료</option></select>
+                    <select id="md-tax-invoice" class="custom-input bg-[#1a1625]"><option value="pending">발행전</option><option value="complete">발행완료</option></select>
                 </div>
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest">저장하기</button>
+                <button type="submit" class="w-full bg-purple-600 text-white py-3.5 rounded-xl text-xs font-bold uppercase">기록 저장</button>
             </form>
         </div>
     </div>
 
-
-    <!-- Magic Rain Canvas Script -->
-    <script>
-        (function() {
-            const canvas = document.getElementById('magic-rain');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let width, height;
-            let particles = [];
-
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * -height; 
-                    this.speed = Math.random() * 2 + 1.5; 
-                    this.width = Math.random() * 2 + 1; 
-                    this.color = `hsla(${Math.random() * 60 + 250}, 80%, 65%, 0.8)`;
-                }
-                update() {
-                    this.y += this.speed;
-                    if (this.y > height) {
-                        this.y = Math.random() * -100;
-                        this.x = Math.random() * width;
-                    }
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.width, 10);
-                    ctx.closePath();
-                }
-            }
-
-            function initParticles() {
-                particles = [];
-                const particleCount = Math.floor(width / 15);
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle());
-                }
-            }
-            initParticles();
-
-            function animate() {
-                ctx.fillStyle = 'rgba(5, 2, 10, 0.15)'; 
-                ctx.fillRect(0, 0, width, height);
-                // Safari Fix: Remove lighter globalCompositeOperation
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
-        })();
-    </script>
-
-    <!-- Firebase Logic -->
+    <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, setDoc, orderBy, query, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         
         const firebaseConfig = { 
-            apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", 
-            authDomain: "hanroro-web.firebaseapp.app", 
-            projectId: "hanroro-web", 
-            appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
+            apiKey: "AIzaSyBkWgHnnHTKaOfHmgt7P-OwptraKcwEXvI", authDomain: "hanroro-web.firebaseapp.app", projectId: "hanroro-web", appId: "1:461514865624:web:4ab6ad23c2e771b426d0ad" 
         };
-        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
         const currentAppId = "hanroro-official-service";
 
-        // Login Logic
-        const CORRECT_PASSCODE = "gksfhfh00@@";
-        const loginOverlay = document.getElementById('login-overlay');
-        const loginForm = document.getElementById('login-form');
-        const passInput = document.getElementById('passcode-input');
-        const loginError = document.getElementById('login-error');
-
-        if(sessionStorage.getItem('admin_authenticated') === 'true') {
-            loginOverlay.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        }
-
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if(passInput.value === CORRECT_PASSCODE) {
-                sessionStorage.setItem('admin_authenticated', 'true');
-                loginOverlay.classList.add('hidden');
+        // Login UI Controller
+        const checkAuthOverlay = () => {
+            const isAuth = sessionStorage.getItem('admin_authenticated') === 'true';
+            const overlay = document.getElementById('login-overlay');
+            if(isAuth && overlay) {
+                overlay.classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
+            }
+        };
+
+        // Initialize App
+        const init = async () => {
+            // Rule 3: Auth first
+            try {
+                await signInAnonymously(auth);
+                checkAuthOverlay();
+            } catch (err) {
+                console.error("Auth initialization failed", err);
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    initDashboard();
+                }
+            });
+        };
+
+        // Form Submission
+        document.getElementById('login-form').onsubmit = (e) => {
+            e.preventDefault();
+            const CORRECT_PASSCODE = "gksfhfh00@@";
+            const val = document.getElementById('passcode-input').value;
+            if(val === CORRECT_PASSCODE) {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                checkAuthOverlay(); // 새로고침 없이 즉시 실행
             } else {
-                loginError.classList.remove('hidden');
-                loginOverlay.querySelector('.glass-panel').classList.add('shake');
-                setTimeout(() => loginOverlay.querySelector('.glass-panel').classList.remove('shake'), 500);
+                document.getElementById('login-error').classList.remove('hidden');
+                document.querySelector('.glass-panel').classList.add('shake');
+                setTimeout(() => document.querySelector('.glass-panel').classList.remove('shake'), 500);
             }
-        });
+        };
 
-        window.logout = () => {
-            if(confirm('관리자 모드에서 로그아웃 하시겠습니까?')) {
-                sessionStorage.removeItem('admin_authenticated');
-                location.reload();
+        window.logout = () => { 
+            if(confirm('로그아웃 하시겠습니까?')) { 
+                sessionStorage.removeItem('admin_authenticated'); 
+                location.reload(); 
             }
-        }
-
-
-        let editingProjectId = null;
-        let editingQuoteId = null;
-        let editingDepositId = null;
-        let editingPortfolioId = null;
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log("Admin Logged In");
-                initDashboard();
-            } else {
-                signInAnonymously(auth).catch(console.error);
-            }
-        });
+        };
 
         function initDashboard() {
-            // Set Today's Date for Sales Header
             const today = new Date();
             const dateStr = today.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-            const salesDateEl = document.getElementById('sales-today-date');
-            if(salesDateEl) salesDateEl.innerText = dateStr;
+            if(document.getElementById('sales-today-date')) document.getElementById('sales-today-date').innerText = dateStr;
 
-            // 1. Projects
-            const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
-            const qProjects = query(projectCol, orderBy('createdAt', 'desc'));
-            onSnapshot(projectCol, (snap) => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            // Projects
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), (snap) => {
                 const listEl = document.getElementById('project-manage-list');
-                const projects = [];
                 let html = '';
                 snap.forEach(d => {
                     const p = d.data();
-                    projects.push(p);
                     const safeData = JSON.stringify({id: d.id, ...p}).replace(/"/g, '&quot;');
                     html += `
-                    <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="flex-1 w-full">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/20 uppercase">${p.phase}</span>
-                                <h4 class="font-bold text-white text-sm">${p.name}</h4>
-                            </div>
-                            <div class="w-full bg-gray-700 h-1.5 rounded-full mt-2 overflow-hidden">
-                                <div class="bg-purple-500 h-full rounded-full" style="width: ${p.progress}%"></div>
-                            </div>
-                            <p class="text-[10px] text-gray-400 mt-1 text-right">${p.progress}% 완료됨</p>
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1"><span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/10 uppercase">${p.phase}</span><h4 class="font-bold text-white text-xs truncate">${p.name}</h4></div>
+                            <div class="w-full bg-gray-700 h-1 rounded-full mt-1.5 overflow-hidden"><div class="bg-purple-500 h-full" style="width: ${p.progress}%"></div></div>
                         </div>
-                        <div class="flex gap-2 self-end sm:self-center">
-                            <button class="bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 px-3 py-2 rounded text-xs transition-colors" onclick="window.editProject(${safeData})"><i class="fas fa-edit"></i></button>
-                            <button class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded text-xs transition-colors" onclick="window.deleteProject('${d.id}')"><i class="fas fa-trash-alt"></i></button>
+                        <div class="flex gap-1.5">
+                            <button class="bg-white/5 text-gray-400 p-2 rounded-lg text-[10px]" onclick="window.editProject(${safeData})"><i class="fas fa-edit"></i></button>
+                            <button class="bg-red-500/10 text-red-400 p-2 rounded-lg text-[10px]" onclick="window.deleteProject('${d.id}')"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>`;
                 });
-                if(!html) html = '<div class="text-center text-gray-500 py-4 text-xs">등록된 프로젝트가 없습니다.</div>';
-                listEl.innerHTML = html;
-                document.getElementById('stat-active-projects').innerText = projects.length;
-            });
+                if(listEl) listEl.innerHTML = html || '<div class="text-center text-gray-500 py-4 text-xs">내역 없음</div>';
+                if(document.getElementById('stat-active-projects')) document.getElementById('stat-active-projects').innerText = snap.size;
+            }, (err) => console.error(err));
 
-            // 2. Portfolios
-            const portfolioCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios');
-            const qPortfolios = query(portfolioCol, orderBy('createdAt', 'desc'));
-            onSnapshot(portfolioCol, (snap) => {
+            // Portfolios
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios'), (snap) => {
                 const listEl = document.getElementById('portfolio-manage-list');
                 let html = '';
                 snap.forEach(d => {
                     const pf = d.data();
                     const safeData = JSON.stringify({id: d.id, ...pf}).replace(/"/g, '&quot;');
-                    const imgStyle = pf.imageUrl ? `background-image: url('${pf.imageUrl}')` : 'background-color: #2d2d2d';
                     html += `
-                    <div class="glass-panel p-4 rounded-xl flex flex-col gap-4 group">
-                        <div class="w-full aspect-video rounded-lg bg-cover bg-center border border-white/10 relative overflow-hidden" style="${imgStyle}">
-                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                <button onclick="window.openPortfolioModal('edit', null, ${safeData})" class="bg-white text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><i class="fas fa-edit text-xs"></i></button>
-                                <button onclick="window.deletePortfolio('${d.id}')" class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition-transform"><i class="fas fa-trash text-xs"></i></button>
+                    <div class="glass-panel p-3 rounded-xl flex flex-col gap-3 group">
+                        <div class="w-full aspect-video rounded-lg bg-cover bg-center border border-white/10 relative overflow-hidden" style="background-image: url('${pf.imageUrl}')">
+                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                <button onclick="window.openPortfolioModal('edit', null, ${safeData})" class="bg-white text-black w-7 h-7 rounded-full flex items-center justify-center"><i class="fas fa-edit text-[10px]"></i></button>
+                                <button onclick="window.deletePortfolio('${d.id}')" class="bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center"><i class="fas fa-trash text-[10px]"></i></button>
                             </div>
                         </div>
-                        <div>
-                            <div class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1 truncate">${pf.category}</div>
-                            <h4 class="font-bold text-white text-sm truncate">${pf.title}</h4>
-                            <p class="text-[10px] text-gray-500 mt-1 truncate">${pf.client} | ${pf.year}</p>
+                        <div class="min-w-0">
+                            <div class="text-[9px] text-purple-400 font-bold uppercase mb-1">${pf.category}</div>
+                            <h4 class="font-bold text-white text-xs truncate">${pf.title}</h4>
+                            <p class="text-[9px] text-gray-500 truncate">${pf.client} | ${pf.year}</p>
                         </div>
                     </div>`;
                 });
-                if(!html) html = '<div class="col-span-full text-center py-10 text-gray-500 text-xs">등록된 포트폴리오가 없습니다.</div>';
-                listEl.innerHTML = html;
-            });
+                if(listEl) listEl.innerHTML = html || '<div class="col-span-full text-center text-gray-500 py-10 text-xs">내역 없음</div>';
+            }, (err) => console.error(err));
 
-            // 3. Quotes
-            const quoteCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes');
-            onSnapshot(quoteCol, (snap) => {
-                const count = snap.size;
+            // Quotes
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), (snap) => {
                 const tbody = document.getElementById('quote-table-body');
                 const mobileList = document.getElementById('quote-mobile-list');
-
-                let html = '';
-                let mobileHtml = '';
-                let newCount = 0;
+                let html = ''; let mobileHtml = '';
                 snap.forEach(d => {
-                    newCount++;
                     const q = d.data();
                     const safeData = JSON.stringify({id: d.id, ...q}).replace(/"/g, '&quot;');
                     const date = q.createdAt ? new Date(q.createdAt.seconds * 1000).toLocaleDateString() : '-';
-                    
-                    // Desktop HTML
-                    html += `
-                    <tr class="table-row">
-                        <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
-                        <td class="p-4"><span class="px-2 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold">${q.category || '일반'}</span></td>
-                        <td class="p-4 font-bold text-white">${q.name}</td>
-                        <td class="p-4 text-gray-400">${q.contact}</td>
-                        <td class="p-4 text-gray-400 truncate max-w-xs cursor-pointer hover:text-white" title="클릭하여 상세 보기" onclick="window.openQuoteModal('edit', null, ${safeData})">${q.content}</td>
-                        <td class="p-4 text-right">
-                             <div class="flex justify-end gap-2">
-                                <button class="text-gray-400 hover:text-white px-2" onclick="window.openQuoteModal('edit', null, ${safeData})" title="수정"><i class="fas fa-edit"></i></button>
-                                <button class="text-gray-400 hover:text-red-400 px-2" onclick="window.deleteQuote('${d.id}')" title="삭제"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>`;
-
-                    // Mobile HTML
-                    mobileHtml += `
-                    <div class="unified-card relative">
-                         <div class="flex justify-between items-center mb-3">
-                            <span class="px-2 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400">${q.category || '일반'}</span>
-                            <span class="text-[10px] font-mono text-gray-500">${date}</span>
-                        </div>
-                        <h4 class="font-bold text-white text-sm mb-1">${q.name}</h4>
-                        <div class="text-xs text-gray-400 mb-3">${q.contact}</div>
-                        <div class="p-3 bg-white/5 rounded-lg text-xs text-gray-300 mb-4 line-clamp-2">${q.content}</div>
-                        <div class="flex gap-2">
-                            <button onclick="window.openQuoteModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] font-bold text-gray-300 hover:bg-white/10"><i class="fas fa-edit mr-1"></i> 확인/수정</button>
-                            <button onclick="window.deleteQuote('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] font-bold text-red-400 hover:bg-red-500/20"><i class="fas fa-trash mr-1"></i> 삭제</button>
-                        </div>
-                    </div>`;
+                    html += `<tr class="table-row"><td class="p-4 text-gray-500 font-mono text-[10px]">${date}</td><td class="p-4"><span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-bold">${q.category || '일반'}</span></td><td class="p-4 font-bold text-white text-xs">${q.name}</td><td class="p-4 text-gray-400 text-xs">${q.contact}</td><td class="p-4 text-gray-500 truncate max-w-[150px] text-xs cursor-pointer" onclick="window.openQuoteModal('edit', null, ${safeData})">${q.content}</td><td class="p-4 text-right"><div class="flex justify-end gap-2"><button class="text-gray-500 hover:text-white" onclick="window.openQuoteModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button><button class="text-gray-500 hover:text-red-400" onclick="window.deleteQuote('${d.id}')"><i class="fas fa-trash"></i></button></div></td></tr>`;
+                    mobileHtml += `<div class="unified-card"><div class="flex justify-between items-center mb-3"><span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-bold text-gray-400">${q.category || '일반'}</span><span class="text-[9px] font-mono text-gray-600">${date}</span></div><h4 class="font-bold text-white text-sm mb-1">${q.name}</h4><div class="text-[10px] text-gray-500 mb-2">${q.contact}</div><div class="p-3 bg-white/5 rounded-lg text-[10px] text-gray-400 mb-4 line-clamp-2">${q.content}</div><div class="flex gap-2"><button onclick="window.openQuoteModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] text-gray-300 font-bold">상세</button><button onclick="window.deleteQuote('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] text-red-400 font-bold">삭제</button></div></div>`;
                 });
-                
-                tbody.innerHTML = html || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">문의 내역이 없습니다.</td></tr>';
-                mobileList.innerHTML = mobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">문의 내역이 없습니다.</div>';
-                document.getElementById('stat-new-quotes').innerText = newCount;
-            });
+                if(tbody) tbody.innerHTML = html; 
+                if(mobileList) mobileList.innerHTML = mobileHtml || '<div class="text-center text-gray-600 py-10 text-xs">내역 없음</div>';
+                if(document.getElementById('stat-new-quotes')) document.getElementById('stat-new-quotes').innerText = snap.size;
+            }, (err) => console.error(err));
 
-
-            // 4. Deposits & Sales Revenue Calculation (Refactored for Privacy Toggle)
+            // Deposits & Sales
             let latestDepositSnap = null;
-            let isPrivacyMode = false; // Default: Visible
-
-            window.togglePrivacy = () => {
-                isPrivacyMode = !isPrivacyMode;
-                const icon = document.getElementById('privacy-icon');
-                if (isPrivacyMode) {
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                    icon.parentElement.classList.add('text-purple-400', 'border-purple-500/30');
-                } else {
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                    icon.parentElement.classList.remove('text-purple-400', 'border-purple-500/30');
-                }
-                renderDepositData(); // Re-render with new state
-            };
+            let isPrivacyMode = false;
+            window.togglePrivacy = () => { isPrivacyMode = !isPrivacyMode; const icon = document.getElementById('privacy-icon'); if (isPrivacyMode) { icon.classList.replace('fa-eye', 'fa-eye-slash'); icon.parentElement.classList.add('text-purple-400'); } else { icon.classList.replace('fa-eye-slash', 'fa-eye'); icon.parentElement.classList.remove('text-purple-400'); } renderDepositData(); };
 
             const renderDepositData = () => {
                 if (!latestDepositSnap) return;
-
                 const tbody = document.getElementById('deposit-table-body');
                 const mobileList = document.getElementById('deposit-mobile-list');
                 const salesBody = document.getElementById('sales-table-body');
                 const salesMobileList = document.getElementById('sales-mobile-list');
-                
-                let tableHtml = '';
-                let mobileHtml = '';
-                let salesHtml = '';
-                let salesMobileHtml = '';
-                
-                let pendingCount = 0;
-                let totalRevenue = 0;
-                let totalVat = 0;
-                let googleRevenue = 0;
-                let normalRevenue = 0;
-
-                // Stats Objects
-                const monthlyStats = {};
-                const yearlyStats = {};
+                let tableHtml = ''; let mobileHtml = ''; let salesHtml = ''; let salesMobileHtml = '';
+                let pendingCount = 0; let totalRevenue = 0; let totalVat = 0; let googleRevenue = 0; let normalRevenue = 0;
+                const monthlyStats = {}; const yearlyStats = {};
 
                 latestDepositSnap.forEach(d => {
                     const dep = d.data();
                     const isComplete = dep.status === 'complete' || dep.status === '입금완료';
-                    const taxStatus = dep.taxInvoice === 'complete' ? '발행완료' : '발행전';
+                    const taxStatus = dep.taxInvoice === 'complete' ? '완료' : '대기';
                     const taxClass = dep.taxInvoice === 'complete' ? 'tax-complete' : 'tax-pending';
-                    
-                    // --- Date Logic Update: Prioritize manual date ---
-                    let displayDateStr;
-                    let statYear, statMonth;
-
-                    if (dep.date) {
-                        // 수동 날짜가 있으면 우선 사용 (YYYY-MM-DD)
-                        displayDateStr = dep.date;
-                        const [y, m, d] = dep.date.split('-');
-                        statYear = parseInt(y);
-                        statMonth = m; // '01', '02'...
-                    } else {
-                        // 없으면 createdAt 사용
-                        const dateObj = dep.createdAt ? new Date(dep.createdAt.seconds * 1000) : new Date();
-                        const year = dateObj.getFullYear();
-                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                        const day = String(dateObj.getDate()).padStart(2, '0');
-                        displayDateStr = `${year}-${month}-${day}`;
-                        statYear = year;
-                        statMonth = month;
-                    }
-                    
+                    let displayDateStr; let statYear, statMonth;
+                    if (dep.date) { displayDateStr = dep.date; const [y, m] = dep.date.split('-'); statYear = parseInt(y); statMonth = m; }
+                    else { const dateObj = dep.createdAt ? new Date(dep.createdAt.seconds * 1000) : new Date(); displayDateStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`; statYear = dateObj.getFullYear(); statMonth = String(dateObj.getMonth()+1).padStart(2,'0'); }
                     const safeData = JSON.stringify({id: d.id, ...dep}).replace(/"/g, '&quot;');
-                    
                     if(!isComplete) pendingCount++;
 
-                    // --- Revenue Calculation Logic (UPDATED) ---
                     if (isComplete) {
-                        let price = 0;
-                        if (dep.price) {
-                            price = Number(dep.price);
-                        } else {
-                            // Default Logic Fallback
-                            if (dep.type && dep.type.includes('구글')) price = 1430000;
-                            else if (dep.type && dep.type.includes('일반')) price = 1530000;
-                        }
+                        let price = dep.price ? Number(dep.price) : (dep.type.includes('구글') ? 1430000 : (dep.type.includes('일반') ? 1530000 : 0));
+                        if (dep.type.includes('구글')) googleRevenue += price; else if (dep.type.includes('일반')) normalRevenue += price;
+                        totalRevenue += price; totalVat += Math.round(price - (price / 1.1));
+                        const yearKey = `${statYear}년`; const monthKey = `${statYear}-${statMonth}`;
+                        if (!yearlyStats[yearKey]) yearlyStats[yearKey] = 0; yearlyStats[yearKey] += price;
+                        if (!monthlyStats[monthKey]) monthlyStats[monthKey] = { label: `${statYear}년 ${statMonth}월`, amount: 0 }; monthlyStats[monthKey].amount += price;
+                        let displayName = isPrivacyMode ? (dep.name.charAt(0) + '***') : dep.name;
+                        let displayPhone = isPrivacyMode ? (dep.phone.charAt(0) + '***') : dep.phone;
 
-                        if (dep.type && dep.type.includes('구글')) googleRevenue += price;
-                        else if (dep.type && dep.type.includes('일반')) normalRevenue += price;
-                        
-                        totalRevenue += price;
-                        
-                        // VAT Calculation (Total / 1.1 = Supply Price, then Total - Supply = VAT)
-                        totalVat += Math.round(price - (price / 1.1));
-
-                        // Calculate Month/Year Stats with Manual Date
-                        const yearKey = `${statYear}년`;
-                        const monthKey = `${statYear}-${statMonth}`;
-                        const monthDisplay = `${statYear}년 ${statMonth}월`;
-
-                        if (!yearlyStats[yearKey]) yearlyStats[yearKey] = 0;
-                        yearlyStats[yearKey] += price;
-
-                        if (!monthlyStats[monthKey]) monthlyStats[monthKey] = { label: monthDisplay, amount: 0 };
-                        monthlyStats[monthKey].amount += price;
-
-                        // Privacy Masking Logic (Only for Sales Table)
-                        let displayName = dep.name;
-                        let displayPhone = dep.phone;
-                        
-                        if (isPrivacyMode) {
-                            displayName = (dep.name && dep.name.length > 0) ? dep.name.charAt(0) + '***' : '***';
-                            displayPhone = (dep.phone && dep.phone.length > 0) ? dep.phone.charAt(0) + '***' : '***';
-                        }
-
-                        // Add row to Sales Table
-                        salesHtml += `
-                        <tr class="table-row">
-                            <td class="p-4 text-gray-400 font-mono text-xs">${displayDateStr}</td>
-                            <td class="p-4"><span class="px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10 text-[10px] font-bold">${dep.type}</span></td>
-                            <td class="p-4 font-bold text-white">${displayName}</td>
-                            <td class="p-4 text-gray-400">${displayPhone}</td>
-                            <td class="p-4 text-right font-mono font-bold text-white">${price.toLocaleString()}원</td>
-                            <td class="p-4 text-center">
-                                <span class="status-badge ${taxClass}">${taxStatus}</span>
-                            </td>
-                            <td class="p-4 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button class="text-gray-400 hover:text-white px-2" onclick="window.openDepositModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button>
-                                    <button class="text-gray-400 hover:text-red-400 px-2" onclick="window.deleteDeposit('${d.id}')"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>`;
-
-                        // Add card to Mobile Sales List
-                        salesMobileHtml += `
-                        <div class="unified-card relative">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10 text-[10px] font-bold">${dep.type}</span>
-                                <span class="status-badge ${taxClass}">${taxStatus}</span>
-                            </div>
-                            <div class="flex justify-between items-center mb-2">
-                                <h4 class="font-bold text-white text-sm">${displayName}</h4>
-                                <span class="font-bold text-white font-mono">${price.toLocaleString()}원</span>
-                            </div>
-                            <div class="text-xs text-gray-400 mb-3 flex justify-between">
-                                <span>${displayPhone}</span>
-                                <span class="font-mono">${displayDateStr}</span>
-                            </div>
-                             <div class="flex gap-2 border-t border-white/5 pt-3">
-                                <button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] font-bold text-gray-300 hover:bg-white/10"><i class="fas fa-edit mr-1"></i> 수정</button>
-                                <button onclick="window.deleteDeposit('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] font-bold text-red-400 hover:bg-red-500/20"><i class="fas fa-trash mr-1"></i> 삭제</button>
-                            </div>
-                        </div>`;
+                        salesHtml += `<tr class="table-row"><td class="p-4 text-gray-500 font-mono text-[10px]">${displayDateStr}</td><td class="p-4"><span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10 text-[9px] font-bold">${dep.type}</span></td><td class="p-4 font-bold text-white text-xs">${displayName}</td><td class="p-4 text-gray-400 text-[10px] font-mono">${displayPhone}</td><td class="p-4 text-right font-mono font-bold text-white text-xs">${price.toLocaleString()}원</td><td class="p-4 text-center"><span class="status-badge ${taxClass}">${taxStatus}</span></td><td class="p-4 text-right"><div class="flex justify-end gap-2"><button class="text-gray-500 hover:text-white" onclick="window.openDepositModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button><button class="text-gray-500 hover:text-red-400" onclick="window.deleteDeposit('${d.id}')"><i class="fas fa-trash"></i></button></div></td></tr>`;
+                        salesMobileHtml += `<div class="unified-card"><div class="flex justify-between items-center mb-3"><span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 text-[9px] font-bold">${dep.type}</span><span class="status-badge ${taxClass}">VAT ${taxStatus}</span></div><div class="flex justify-between items-end mb-2"><h4 class="font-bold text-white text-sm">${displayName}</h4><span class="font-bold text-white font-mono text-xs">${price.toLocaleString()}원</span></div><div class="text-[9px] text-gray-500 flex justify-between"><span>${displayPhone}</span><span class="font-mono">${displayDateStr}</span></div></div>`;
                     }
-                    
-                    // --- Deposit Table Logic ---
-                    tableHtml += `
-                    <tr class="table-row">
-                        <td class="p-4 text-gray-400 font-mono text-xs">${displayDateStr}</td>
-                        <td class="p-4 text-xs text-purple-300 font-bold">${dep.type}</td>
-                        <td class="p-4 font-bold text-white">${dep.name}</td>
-                        <td class="p-4 text-gray-400">${dep.phone}</td>
-                        <td class="p-4"><span class="status-badge ${isComplete ? 'status-complete' : 'status-pending'}">${isComplete ? '입금완료' : '입금대기'}</span></td>
-                        <td class="p-4 text-right">
-                            <div class="flex justify-end gap-2">
-                                ${!isComplete ? `<button class="text-green-400 hover:text-green-300 px-2" onclick="window.markAsComplete('${d.id}')" title="입금 확인 처리 (매출 반영)"><i class="fas fa-check-circle"></i></button>` : ''}
-                                <button class="text-gray-400 hover:text-white px-2" onclick="window.openDepositModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button>
-                                <button class="text-gray-400 hover:text-red-400 px-2" onclick="window.deleteDeposit('${d.id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>`;
-
-                    // --- Mobile List Logic (Deposits) ---
-                    const statusText = isComplete ? '입금완료' : '입금대기';
-                    const statusClass = isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40';
-                    let displayType = dep.type || '서비스';
-                    let planIcon = 'fa-rocket';
-                    if (displayType.includes('구글')) planIcon = 'fa-cloud';
-                    else if (displayType.includes('일반')) planIcon = 'fa-server';
-
-                    mobileHtml += `
-                    <div class="unified-card group transition-all relative">
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/10"><i class="fas ${planIcon} text-purple-400 text-[10px]"></i><span class="text-[9px] font-black text-purple-300 uppercase tracking-tighter">${displayType}</span></div>
-                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${statusClass} uppercase tracking-tighter">${statusText}</span>
-                        </div>
-                        <div class="space-y-1 mb-3">
-                            <div class="flex justify-between items-end">
-                                <div><span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">클라이언트</span><h4 class="font-bold text-white text-xs">${dep.name}</h4></div>
-                                <div class="text-[10px] text-gray-400 font-mono">${displayDateStr}</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 pt-3 border-t border-white/5">
-                            ${!isComplete ? `<button onclick="window.markAsComplete('${d.id}')" class="flex-1 bg-green-500/10 py-2 rounded text-[10px] text-green-400 font-bold hover:bg-green-500/20 transition-colors"><i class="fas fa-check mr-1"></i> 입금확인</button>` : ''}
-                            <button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] text-gray-300 font-bold hover:bg-white/10 transition-colors"><i class="fas fa-edit mr-1"></i> 수정</button>
-                            <button onclick="window.deleteDeposit('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] text-red-400 font-bold hover:bg-red-500/20 transition-colors"><i class="fas fa-trash mr-1"></i> 삭제</button>
-                        </div>
-                    </div>`;
+                    tableHtml += `<tr class="table-row"><td class="p-4 text-gray-500 font-mono text-[10px]">${displayDateStr}</td><td class="p-4 text-[10px] text-purple-300 font-bold">${dep.type}</td><td class="p-4 font-bold text-white text-xs">${dep.name}</td><td class="p-4 text-gray-400 text-xs">${dep.phone}</td><td class="p-4"><span class="status-badge ${isComplete ? 'status-complete' : 'status-pending'}">${isComplete ? '완료' : '대기'}</span></td><td class="p-4 text-right"><div class="flex justify-end gap-2">${!isComplete ? `<button class="text-green-400" onclick="window.markAsComplete('${d.id}')"><i class="fas fa-check-circle"></i></button>` : ''}<button class="text-gray-500" onclick="window.openDepositModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button></div></td></tr>`;
+                    mobileHtml += `<div class="unified-card"><div class="flex justify-between mb-4"><span class="text-[9px] font-black text-purple-300">${dep.type}</span><span class="text-[8px] font-black px-1.5 py-0.5 rounded border ${isComplete ? 'text-purple-400 border-purple-400/30' : 'text-yellow-500 border-yellow-500/30'}">${isComplete ? '완료' : '대기'}</span></div><div class="flex justify-between items-end mb-3"><div><h4 class="font-bold text-white text-xs">${dep.name}</h4><p class="text-[9px] text-gray-500">${dep.phone}</p></div><div class="text-[9px] text-gray-600 font-mono">${displayDateStr}</div></div><div class="flex gap-2 pt-3 border-t border-white/5">${!isComplete ? `<button onclick="window.markAsComplete('${d.id}')" class="flex-1 bg-green-500/10 py-2 rounded text-[10px] text-green-400 font-bold">입금확인</button>` : ''}<button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] text-gray-300 font-bold">수정</button><button onclick="window.deleteDeposit('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] text-red-400 font-bold">삭제</button></div></div>`;
                 });
 
-                // Update Views
-                tbody.innerHTML = tableHtml || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">입금 내역이 없습니다.</td></tr>';
-                mobileList.innerHTML = mobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">내역이 없습니다.</div>';
-                document.getElementById('stat-pending-deposits').innerText = pendingCount;
-                
-                // Update Sales Views
-                document.getElementById('sales-total-revenue').innerText = totalRevenue.toLocaleString() + '원';
-                document.getElementById('sales-vat-revenue').innerText = totalVat.toLocaleString() + '원';
-                
-                // 순수 매출 (Net Revenue) 업데이트
-                const totalNet = totalRevenue - totalVat;
-                document.getElementById('sales-net-revenue').innerText = totalNet.toLocaleString() + '원';
+                if(tbody) tbody.innerHTML = tableHtml; 
+                if(mobileList) mobileList.innerHTML = mobileHtml;
+                if(document.getElementById('stat-pending-deposits')) document.getElementById('stat-pending-deposits').innerText = pendingCount;
+                if(document.getElementById('sales-total-revenue')) document.getElementById('sales-total-revenue').innerText = totalRevenue.toLocaleString() + '원';
+                if(document.getElementById('sales-vat-revenue')) document.getElementById('sales-vat-revenue').innerText = totalVat.toLocaleString() + '원';
+                if(document.getElementById('sales-net-revenue')) document.getElementById('sales-net-revenue').innerText = (totalRevenue - totalVat).toLocaleString() + '원';
+                if(document.getElementById('sales-google-revenue')) document.getElementById('sales-google-revenue').innerText = googleRevenue.toLocaleString() + '원';
+                if(document.getElementById('sales-normal-revenue')) document.getElementById('sales-normal-revenue').innerText = normalRevenue.toLocaleString() + '원';
+                if(salesBody) salesBody.innerHTML = salesHtml; 
+                if(salesMobileList) salesMobileList.innerHTML = salesMobileHtml;
 
-                document.getElementById('sales-google-revenue').innerText = googleRevenue.toLocaleString() + '원';
-                document.getElementById('sales-normal-revenue').innerText = normalRevenue.toLocaleString() + '원';
-                salesBody.innerHTML = salesHtml || '<tr><td colspan="7" class="p-6 text-center text-gray-500 text-xs">매출(입금 완료) 내역이 없습니다.</td></tr>';
-                salesMobileList.innerHTML = salesMobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">매출(입금 완료) 내역이 없습니다.</div>';
-
-                // --- Render Monthly/Yearly Stats ---
                 const monthlyKeys = Object.keys(monthlyStats).sort().reverse();
-                let monthlyHtml = '';
-                monthlyKeys.forEach(key => {
-                    const item = monthlyStats[key];
-                    monthlyHtml += `
-                    <div class="flex justify-between items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
-                        <span class="text-xs font-bold text-gray-300 font-mono">${item.label}</span>
-                        <span class="text-sm font-black text-white">${item.amount.toLocaleString()}원</span>
-                    </div>`;
-                });
-                document.getElementById('sales-monthly-list').innerHTML = monthlyHtml || '<div class="text-center text-gray-500 py-4 text-xs">데이터 없음</div>';
+                let monthlyHtml = ''; monthlyKeys.forEach(k => { monthlyHtml += `<div class="flex justify-between p-2 rounded bg-white/5 mb-1"><span class="text-[10px] text-gray-400">${monthlyStats[k].label}</span><span class="text-[10px] font-bold text-white">${monthlyStats[k].amount.toLocaleString()}원</span></div>`; });
+                if(document.getElementById('sales-monthly-list')) document.getElementById('sales-monthly-list').innerHTML = monthlyHtml;
 
                 const yearlyKeys = Object.keys(yearlyStats).sort().reverse();
-                let yearlyHtml = '';
-                yearlyKeys.forEach(key => {
-                    const amount = yearlyStats[key];
-                    yearlyHtml += `
-                    <div class="flex justify-between items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
-                        <span class="text-xs font-bold text-gray-300 font-mono">${key}</span>
-                        <span class="text-sm font-black text-purple-400">${amount.toLocaleString()}원</span>
-                    </div>`;
-                });
-                document.getElementById('sales-yearly-list').innerHTML = yearlyHtml || '<div class="text-center text-gray-500 py-4 text-xs">데이터 없음</div>';
+                let yearlyHtml = ''; yearlyKeys.forEach(k => { yearlyHtml += `<div class="flex justify-between p-2 rounded bg-white/5 mb-1"><span class="text-[10px] text-gray-400">${k}</span><span class="text-[10px] font-bold text-purple-400">${yearlyStats[k].toLocaleString()}원</span></div>`; });
+                if(document.getElementById('sales-yearly-list')) document.getElementById('sales-yearly-list').innerHTML = yearlyHtml;
             };
 
-            const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
-            onSnapshot(depositCol, (snap) => {
-                latestDepositSnap = snap;
-                renderDepositData();
-            });
+            onSnapshot(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), (snap) => { latestDepositSnap = snap; renderDepositData(); }, (err) => console.error(err));
 
-            // 5. Config
-            const configDocRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings');
-            getDoc(configDocRef).then((snap) => {
-                if(snap.exists()) {
-                    const data = snap.data();
-                    document.getElementById('conf-notice-text').value = data.noticeTitle || '';
-                    document.getElementById('conf-top-show').checked = data.showTopBar !== false;
-                    document.getElementById('conf-top-text').value = data.topBarText || '';
-                    document.getElementById('conf-bottom-show').checked = data.showBottomBar !== false;
-                    document.getElementById('conf-bottom-title').value = data.bottomBarTitle || '';
-                    document.getElementById('conf-bottom-sub').value = data.bottomBarSub || '';
+            // Config
+            getDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings')).then((s) => {
+                if(s.exists()) {
+                    const d = s.data(); 
+                    if(document.getElementById('conf-notice-text')) document.getElementById('conf-notice-text').value = d.noticeTitle || '';
+                    if(document.getElementById('conf-top-show')) document.getElementById('conf-top-show').checked = d.showTopBar !== false; 
+                    if(document.getElementById('conf-top-text')) document.getElementById('conf-top-text').value = d.topBarText || '';
+                    if(document.getElementById('conf-bottom-show')) document.getElementById('conf-bottom-show').checked = d.showBottomBar !== false; 
+                    if(document.getElementById('conf-bottom-title')) document.getElementById('conf-bottom-title').value = d.bottomBarTitle || ''; 
+                    if(document.getElementById('conf-bottom-sub')) document.getElementById('conf-bottom-sub').value = d.bottomBarSub || '';
                 }
             });
 
-            document.getElementById('save-config-btn').addEventListener('click', async () => {
-                const noticeTitle = document.getElementById('conf-notice-text').value;
-                const showTopBar = document.getElementById('conf-top-show').checked;
-                const topBarText = document.getElementById('conf-top-text').value;
-                const showBottomBar = document.getElementById('conf-bottom-show').checked;
-                const bottomBarTitle = document.getElementById('conf-bottom-title').value;
-                const bottomBarSub = document.getElementById('conf-bottom-sub').value;
-
+            document.getElementById('save-config-btn').onclick = async () => {
                 try {
-                    await setDoc(configDocRef, { noticeTitle, showTopBar, topBarText, showBottomBar, bottomBarTitle, bottomBarSub, updatedAt: serverTimestamp() }, { merge: true });
-                    alert('사이트 설정이 저장되었습니다.');
-                } catch(e) { alert('저장 실패: ' + e.message); }
-            });
+                    await setDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'configs', 'mainSettings'), { noticeTitle: document.getElementById('conf-notice-text').value, showTopBar: document.getElementById('conf-top-show').checked, topBarText: document.getElementById('conf-top-text').value, showBottomBar: document.getElementById('conf-bottom-show').checked, bottomBarTitle: document.getElementById('conf-bottom-title').value, bottomBarSub: document.getElementById('conf-bottom-sub').value, updatedAt: serverTimestamp() }, { merge: true });
+                    alert('저장 완료');
+                } catch(e) { alert('실패'); }
+            };
         }
 
-        // Functions (Project, Portfolio, Quote, Deposit)
-        document.getElementById('project-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('p-name').value;
-            const phase = document.getElementById('p-phase').value;
-            const progress = parseInt(document.getElementById('p-progress').value);
+        // Methods
+        window.editProject = (d) => {
+            document.getElementById('p-id').value = d.id; document.getElementById('p-name').value = d.name; document.getElementById('p-phase').value = d.phase; document.getElementById('p-progress').value = d.progress; document.getElementById('p-prog-val').innerText = d.progress + "%";
+            document.getElementById('p-form-title').innerText = "프로젝트 수정"; document.getElementById('p-submit-btn').innerText = "변경사항 저장"; document.getElementById('p-form-reset').classList.remove('hidden');
+        };
+        window.resetProjectForm = () => { document.getElementById('project-form').reset(); document.getElementById('p-id').value = ""; document.getElementById('p-form-title').innerText = "새 프로젝트 등록"; document.getElementById('p-form-reset').classList.add('hidden'); };
+        document.getElementById('project-form').onsubmit = async (e) => {
+            e.preventDefault(); const d = { name: document.getElementById('p-name').value, phase: document.getElementById('p-phase').value, progress: parseInt(document.getElementById('p-progress').value) };
             const id = document.getElementById('p-id').value;
-            try {
-                if(id) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id), { name, phase, progress });
-                else await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), { name, phase, progress, createdAt: serverTimestamp() });
-                alert('저장되었습니다.');
-                resetProjectForm();
-            } catch(err) { alert('실패: ' + err.message); }
-        });
-
-        window.editProject = (data) => {
-            document.getElementById('p-id').value = data.id;
-            document.getElementById('p-name').value = data.name;
-            document.getElementById('p-phase').value = data.phase;
-            document.getElementById('p-progress').value = data.progress;
-            document.getElementById('p-prog-val').innerText = data.progress + "%";
-            document.getElementById('p-form-title').innerText = "프로젝트 수정";
-            document.getElementById('p-submit-btn').innerText = "변경사항 저장";
-            document.getElementById('p-form-reset').classList.remove('hidden');
-            document.getElementById('project-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            try { if(id) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id), d); else { d.createdAt = serverTimestamp(); await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects'), d); } resetProjectForm(); } catch(e) { alert('오류'); }
         };
+        window.deleteProject = async (id) => { if(confirm('삭제?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id)); };
 
-        window.resetProjectForm = () => {
-            document.getElementById('project-form').reset();
-            document.getElementById('p-id').value = "";
-            document.getElementById('p-progress').value = 0;
-            document.getElementById('p-prog-val').innerText = "0%";
-            document.getElementById('p-form-title').innerText = "새 프로젝트 등록";
-            document.getElementById('p-submit-btn').innerText = "프로젝트 추가";
-            document.getElementById('p-form-reset').classList.add('hidden');
-        };
-
-        window.deleteProject = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'projects', id)); };
-
-        // Portfolio
         let currentPfBase64 = "";
-
+        let editingPortfolioId = null;
         window.openPortfolioModal = (mode, _, data = null) => {
-            const modal = document.getElementById('modal-portfolio');
-            const title = document.getElementById('pf-modal-title');
             const previewEl = document.getElementById('pf-image-preview');
-            const fileInput = document.getElementById('pf-image-file');
-
-            if(mode === 'edit' && data) {
-                editingPortfolioId = data.id;
-                title.innerText = "포트폴리오 수정";
-                document.getElementById('pf-id').value = data.id;
-                document.getElementById('pf-title-input').value = data.title;
-                document.getElementById('pf-category-input').value = data.category;
-                document.getElementById('pf-client-input').value = data.client;
-                document.getElementById('pf-year-input').value = data.year;
-                document.getElementById('pf-desc-input').value = data.description || '';
-                document.getElementById('pf-link-input').value = data.linkUrl || '';
-                
-                // Image handling
-                currentPfBase64 = data.imageUrl || "";
-                fileInput.value = ""; // Clear file input
-                if(currentPfBase64) {
-                    previewEl.innerHTML = `<img src="${currentPfBase64}" class="w-full h-full object-cover">`;
-                } else {
-                    previewEl.innerHTML = `<span class="text-gray-500 text-xs">이미지 없음</span>`;
-                }
-            } else {
-                editingPortfolioId = null;
-                title.innerText = "포트폴리오 추가";
-                document.getElementById('portfolio-modal-form').reset();
-                document.getElementById('pf-id').value = "";
-                currentPfBase64 = "";
-                previewEl.innerHTML = `<span class="text-gray-500 text-xs">이미지 미리보기</span>`;
-            }
-            modal.classList.add('active');
+            if(mode==='edit'&&data) {
+                editingPortfolioId=data.id; document.getElementById('pf-id').value=data.id; document.getElementById('pf-title-input').value=data.title;
+                document.getElementById('pf-category-input').value=data.category; document.getElementById('pf-client-input').value=data.client; document.getElementById('pf-year-input').value=data.year;
+                document.getElementById('pf-color-input').value=data.imageColor||"from-blue-900/40 to-black"; document.getElementById('pf-desc-input').value=data.desc||'';
+                document.getElementById('pf-long-desc-input').value=data.longDesc||''; document.getElementById('pf-features-input').value=data.features?data.features.join(', '):'';
+                document.getElementById('pf-tags-input').value=data.tags?data.tags.join(', '):''; document.getElementById('pf-link-input').value=data.linkUrl||'';
+                currentPfBase64=data.imageUrl||""; previewEl.innerHTML=currentPfBase64?`<img src="${currentPfBase64}" class="w-full h-full object-cover">`:'';
+            } else { editingPortfolioId=null; document.getElementById('portfolio-modal-form').reset(); document.getElementById('pf-id').value=""; currentPfBase64=""; previewEl.innerHTML=""; }
+            document.getElementById('modal-portfolio').classList.add('active');
         };
-
-        // File Input Handler
-        document.getElementById('pf-image-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            if (file.size > 500 * 1024) { // 500KB limit
-                alert('이미지 크기는 500KB를 초과할 수 없습니다.');
-                this.value = ''; // Reset input
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentPfBase64 = e.target.result;
-                document.getElementById('pf-image-preview').innerHTML = `<img src="${currentPfBase64}" class="w-full h-full object-cover">`;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        document.getElementById('portfolio-modal-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!currentPfBase64) {
-                alert('이미지를 등록해주세요.');
-                return;
-            }
-
-            const pfData = {
-                title: document.getElementById('pf-title-input').value,
-                category: document.getElementById('pf-category-input').value,
-                client: document.getElementById('pf-client-input').value,
-                year: document.getElementById('pf-year-input').value,
-                imageUrl: currentPfBase64, // Use base64 string
-                description: document.getElementById('pf-desc-input').value,
-                linkUrl: document.getElementById('pf-link-input').value
-            };
-            try {
-                if(editingPortfolioId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios', editingPortfolioId), pfData);
-                else { pfData.createdAt = serverTimestamp(); await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios'), pfData); }
-                closeAdminModal('modal-portfolio');
-            } catch(e) { alert('실패'); }
-        });
-        window.deletePortfolio = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios', id)); };
-
-        // Quote
-        window.openQuoteModal = (mode, _, data = null) => {
-            const modal = document.getElementById('modal-quote');
-            const title = document.getElementById('mq-title');
-            if(mode === 'edit' && data) {
-                editingQuoteId = data.id;
-                title.innerText = "견적 상세 및 수정";
-                document.getElementById('mq-id').value = data.id;
-                const category = data.category || '일반';
-                const radio = document.querySelector(`input[name="mq-category"][value="${category}"]`);
-                if(radio) radio.checked = true;
-                document.getElementById('mq-name').value = data.name;
-                document.getElementById('mq-contact').value = data.contact;
-                document.getElementById('mq-content').value = data.content;
-            } else {
-                editingQuoteId = null;
-                title.innerText = "새 견적 문의 등록";
-                document.getElementById('quote-modal-form').reset();
-                document.getElementById('mq-id').value = "";
-                const radio = document.querySelector(`input[name="mq-category"][value="일반"]`);
-                if(radio) radio.checked = true;
-            }
-            modal.classList.add('active');
+        document.getElementById('pf-image-file').onchange = (e) => {
+            const f = e.target.files[0]; if(!f) return; if(f.size>512000) { alert('500KB 초과'); e.target.value=''; return; }
+            const r = new FileReader(); r.onload=(ev)=>{ currentPfBase64=ev.target.result; document.getElementById('pf-image-preview').innerHTML=`<img src="${currentPfBase64}" class="w-full h-full object-cover">`; }; r.readAsDataURL(f);
         };
+        document.getElementById('portfolio-modal-form').onsubmit = async (e) => {
+            e.preventDefault(); if(!currentPfBase64) { alert('이미지 필요'); return; }
+            const d = { title:document.getElementById('pf-title-input').value, category:document.getElementById('pf-category-input').value, client:document.getElementById('pf-client-input').value, year:document.getElementById('pf-year-input').value, imageColor:document.getElementById('pf-color-input').value, imageUrl:currentPfBase64, desc:document.getElementById('pf-desc-input').value, longDesc:document.getElementById('pf-long-desc-input').value, features:document.getElementById('pf-features-input').value.split(',').map(s=>s.trim()).filter(s=>s), tags:document.getElementById('pf-tags-input').value.split(',').map(s=>s.trim()).filter(s=>s), linkUrl:document.getElementById('pf-link-input').value };
+            try { if(editingPortfolioId) await updateDoc(doc(db,'artifacts',currentAppId,'public','data','portfolios',editingPortfolioId),d); else { d.createdAt=serverTimestamp(); await addDoc(collection(db,'artifacts',currentAppId,'public','data','portfolios'),d); } closeAdminModal('modal-portfolio'); } catch(e) { alert('실패'); }
+        };
+        window.deletePortfolio = async (id) => { if(confirm('삭제?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'portfolios', id)); };
 
-        document.getElementById('quote-modal-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const categoryEl = document.querySelector('input[name="mq-category"]:checked');
-            const category = categoryEl ? categoryEl.value : '일반';
-            const name = document.getElementById('mq-name').value;
-            const contact = document.getElementById('mq-contact').value;
-            const content = document.getElementById('mq-content').value;
-            try {
-                if(editingQuoteId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', editingQuoteId), { category, name, contact, content });
-                else await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), { category, name, contact, content, createdAt: serverTimestamp() });
-                closeAdminModal('modal-quote');
-            } catch(e) { alert('실패'); }
-        });
-        window.deleteQuote = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', id)); };
+        let editingQuoteId = null;
+        window.openQuoteModal = (m, _, d=null) => {
+            if(m==='edit'&&d) { editingQuoteId=d.id; document.getElementById('mq-id').value=d.id; document.getElementById('mq-name').value=d.name; document.getElementById('mq-contact').value=d.contact; document.getElementById('mq-content').value=d.content; }
+            else { editingQuoteId=null; document.getElementById('quote-modal-form').reset(); }
+            document.getElementById('modal-quote').classList.add('active');
+        };
+        document.getElementById('quote-modal-form').onsubmit = async (e) => {
+            e.preventDefault(); const cat = document.querySelector('input[name="mq-category"]:checked').value;
+            try { if(editingQuoteId) await updateDoc(doc(db,'artifacts',currentAppId,'public','data','quotes',editingQuoteId),{category:cat,name:document.getElementById('mq-name').value,contact:document.getElementById('mq-contact').value,content:document.getElementById('mq-content').value}); closeAdminModal('modal-quote'); } catch(e) { alert('실패'); }
+        };
+        window.deleteQuote = async (id) => { if(confirm('삭제?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', id)); };
 
-        // Deposit (Updated for Sales & Tax)
-        window.openDepositModal = (mode, source = null, data = null) => {
-            const modal = document.getElementById('modal-deposit');
-            const title = document.getElementById('md-title');
-            
-            // Set Today for Date Input
+        let editingDepositId = null;
+        window.openDepositModal = (m, s=null, d=null) => {
             const today = new Date().toISOString().split('T')[0];
-
-            if(mode === 'edit' && data) {
-                editingDepositId = data.id;
-                title.innerText = "내역 수정";
-                document.getElementById('md-id').value = data.id;
-                document.getElementById('md-type').value = data.type;
-                document.getElementById('md-name').value = data.name;
-                document.getElementById('md-phone').value = data.phone;
-                document.getElementById('md-price').value = data.price || ""; 
-                document.getElementById('md-status').value = data.status === 'complete' || data.status === '입금완료' ? 'complete' : 'pending';
-                document.getElementById('md-tax-invoice').value = data.taxInvoice === 'complete' ? 'complete' : 'pending';
-                
-                // Date handling: use stored date or fallback to createdAt or today
-                if (data.date) {
-                    document.getElementById('md-date').value = data.date;
-                } else if (data.createdAt) {
-                    const d = new Date(data.createdAt.seconds * 1000);
-                    const y = d.getFullYear();
-                    const m = String(d.getMonth() + 1).padStart(2, '0');
-                    const day = String(d.getDate()).padStart(2, '0');
-                    document.getElementById('md-date').value = `${y}-${m}-${day}`;
-                } else {
-                    document.getElementById('md-date').value = today;
-                }
-
-            } else {
-                editingDepositId = null;
-                title.innerText = source === 'sales' ? "새 매출(입금) 등록" : "새 입금 내역 등록";
-                document.getElementById('deposit-modal-form').reset();
-                document.getElementById('md-id').value = "";
-                document.getElementById('md-date').value = today; // Default to today
-                
-                if(source === 'sales') {
-                    document.getElementById('md-status').value = 'complete';
-                }
-            }
-            modal.classList.add('active');
+            if(m==='edit'&&d) { editingDepositId=d.id; document.getElementById('md-id').value=d.id; document.getElementById('md-type').value=d.type; document.getElementById('md-name').value=d.name; document.getElementById('md-phone').value=d.phone; document.getElementById('md-price').value=d.price||""; document.getElementById('md-status').value=d.status==='complete'?'complete':'pending'; document.getElementById('md-date').value=d.date||today; }
+            else { editingDepositId=null; document.getElementById('deposit-modal-form').reset(); document.getElementById('md-date').value=today; if(s==='sales') document.getElementById('md-status').value='complete'; }
+            document.getElementById('modal-deposit').classList.add('active');
         };
-
-        // NEW: Mark as Complete Function
-        window.markAsComplete = async (id) => {
-            if(confirm('해당 건을 입금완료 처리하시겠습니까?\n매출 현황에 즉시 반영됩니다.')) {
-                try {
-                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id), {
-                        status: 'complete'
-                    });
-                } catch(e) {
-                    alert('처리 중 오류가 발생했습니다: ' + e.message);
-                }
-            }
+        window.markAsComplete = async (id) => { if(confirm('완료처리?')) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id), { status: 'complete' }); };
+        document.getElementById('deposit-modal-form').onsubmit = async (e) => {
+            e.preventDefault(); const d = { type:document.getElementById('md-type').value, name:document.getElementById('md-name').value, phone:document.getElementById('md-phone').value, status:document.getElementById('md-status').value, taxInvoice:document.getElementById('md-tax-invoice').value, date:document.getElementById('md-date').value };
+            if(document.getElementById('md-price').value) d.price=Number(document.getElementById('md-price').value);
+            try { if(editingDepositId) await updateDoc(doc(db,'artifacts',currentAppId,'public','data','deposits',editingDepositId),d); else { d.createdAt=serverTimestamp(); await addDoc(collection(db,'artifacts',currentAppId,'public','data','deposits'),d); } closeAdminModal('modal-deposit'); } catch(e) { alert('실패'); }
         };
-
-        document.getElementById('deposit-modal-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const type = document.getElementById('md-type').value;
-            const name = document.getElementById('md-name').value;
-            const phone = document.getElementById('md-phone').value;
-            const status = document.getElementById('md-status').value;
-            const taxInvoice = document.getElementById('md-tax-invoice').value;
-            const price = document.getElementById('md-price').value; 
-            const date = document.getElementById('md-date').value; // Get Date
-
-            try {
-                const data = { type, name, phone, status, taxInvoice, date }; // Save Date
-                if (price) data.price = Number(price);
-
-                if(editingDepositId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), data);
-                else { data.createdAt = serverTimestamp(); await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), data); }
-                closeAdminModal('modal-deposit');
-            } catch(e) { alert('실패'); }
-        });
-        window.deleteDeposit = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id)); };
+        window.deleteDeposit = async (id) => { if(confirm('삭제?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id)); };
 
         // Utils
-        window.closeAdminModal = (id) => { document.getElementById(id).classList.remove('active'); }
-        window.toggleMobileMenu = (show) => {
-            const drawer = document.getElementById('mobile-drawer');
-            const overlay = document.getElementById('mobile-overlay');
-            if(show) { drawer.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-            else { drawer.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+        window.closeAdminModal = (id) => { document.getElementById(id).classList.remove('active'); };
+        window.toggleMobileMenu = (show) => { document.getElementById('mobile-drawer').classList.toggle('active', show); document.getElementById('mobile-overlay').classList.toggle('active', show); };
+        window.showSection = (id, el) => {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden')); 
+            const target = document.getElementById('section-'+id);
+            if(target) target.classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+            const dNav = document.querySelector(`#desktop-menu .nav-item[onclick*="'${id}'"]`); 
+            if(dNav) dNav.classList.add('active');
+            toggleMobileMenu(false); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Start App
+        init();
+
+        // Particle Class (Background)
+        class Particle {
+            constructor(w, h) { this.x = Math.random() * w; this.y = Math.random() * -h; this.speed = Math.random() * 2 + 1.5; this.width = Math.random() * 2 + 1; this.color = `hsla(${Math.random() * 60 + 250}, 80%, 65%, 0.8)`; }
+            update(h) { this.y += this.speed; if (this.y > h) { this.y = Math.random() * -100; } }
+            draw(ctx) { ctx.beginPath(); ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.width, 10); ctx.closePath(); }
         }
-        window.showSection = (id, element) => {
-            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById('section-' + id).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const desktopNav = document.querySelector(`#desktop-menu .nav-item[onclick*="'${id}'"]`);
-            if(desktopNav) desktopNav.classList.add('active');
-            document.querySelectorAll('.drawer-item').forEach(el => el.classList.remove('active'));
-            if(element && element.classList.contains('drawer-item')) element.classList.add('active');
-            toggleMobileMenu(false);
-            const heroHeight = document.querySelector('section').offsetHeight;
-            window.scrollTo({ top: heroHeight - 80, behavior: 'smooth' });
+
+        const canvas = document.getElementById('magic-rain');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+            let ps = Array.from({length: Math.floor(w/15)}, () => new Particle(w, h));
+            const animate = () => {
+                ctx.fillStyle = 'rgba(5, 2, 10, 0.15)'; ctx.fillRect(0, 0, w, h);
+                ps.forEach(p => { p.update(h); p.draw(ctx); });
+                requestAnimationFrame(animate);
+            };
+            animate();
+            window.onresize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; ps = Array.from({length: Math.floor(w/15)}, () => new Particle(w, h)); };
         }
     </script>
 </body>
