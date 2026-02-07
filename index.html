@@ -434,6 +434,11 @@
         #portfolio-overlay.active { display: block; }
 
         @media (max-width: 768px) {
+            /* 모바일 환경 해상도 조정 (90% 축소) */
+            body {
+                zoom: 0.9;
+            }
+
             .hero-wand-container { 
                 right: -30%; 
                 opacity: 0.6; 
