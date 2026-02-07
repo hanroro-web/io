@@ -6,16 +6,12 @@
     <title>HANRORO 관리자 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Spline Viewer 제거 (메모리 최적화) -->
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap');
         :root { --vibe-deep: #05020a; --vibe-primary: #8a4fff; }
         
-        /* HTML/Body 스크롤 최적화 */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body { 
             font-family: 'Pretendard', sans-serif; 
@@ -25,6 +21,16 @@
             overflow-x: hidden;
             margin: 0;
             padding: 0;
+        }
+
+        /* --- 모바일 환경 95% 축소 --- */
+        @media (max-width: 768px) {
+            body {
+                zoom: 0.95; /* 모바일 브라우저 줌 축소 */
+            }
+            .mobile-card-wrapper {
+                padding-bottom: 20px;
+            }
         }
 
         /* 스크롤바 커스텀 */
@@ -67,17 +73,14 @@
             box-shadow: 0 0 10px #8a4fff;
         }
 
-        /* 텍스트 그라데이션 및 스타일 */
         .gradient-text { background: linear-gradient(90deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* 로고 애니메이션 */
         .magic-wand-float { animation: wandFloat 3s ease-in-out infinite; display: inline-block; }
         @keyframes wandFloat {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-12px) rotate(12deg); }
         }
 
-        /* Hero 3D Wand & Rain Effect (사파리 메모리 최적화 적용) */
         .magic-rain-canvas {
             position: absolute;
             top: 0;
@@ -87,7 +90,6 @@
             z-index: 0;
             opacity: 0.8;
             pointer-events: none;
-            /* mix-blend-mode: screen; -> 제거하여 성능 향상 가능 */
         }
 
         .hero-wand-container {
@@ -107,27 +109,15 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            
-            /* [최적화 핵심] filter 대신 text-shadow 사용 (사파리 튕김 방지) */
-            text-shadow: 
-                0 0 20px rgba(168, 85, 247, 0.5),
-                0 0 40px rgba(168, 85, 247, 0.3);
-            
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3);
             animation: heroWandFloat 6s ease-in-out infinite;
             transform-style: preserve-3d;
             transform: rotateZ(-15deg) rotateY(15deg);
-            /* will-change 제거하여 메모리 절약 */
         }
 
         @keyframes heroWandFloat {
-            0%, 100% { 
-                transform: translateY(0) rotateZ(-15deg) rotateY(15deg) scale(1); 
-                text-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3);
-            }
-            50% { 
-                transform: translateY(-30px) rotateZ(-12deg) rotateY(5deg) scale(1.02); 
-                text-shadow: 0 0 30px rgba(192, 132, 252, 0.7), 0 0 60px rgba(168, 85, 247, 0.5);
-            }
+            0%, 100% { transform: translateY(0) rotateZ(-15deg) rotateY(15deg) scale(1); text-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3); }
+            50% { transform: translateY(-30px) rotateZ(-12deg) rotateY(5deg) scale(1.02); text-shadow: 0 0 30px rgba(192, 132, 252, 0.7), 0 0 60px rgba(168, 85, 247, 0.5); }
         }
 
         .glass-panel {
@@ -140,32 +130,38 @@
             border-color: rgba(138, 79, 255, 0.3);
         }
 
-        /* --- 기존 대시보드 스타일 유지 --- */
         .custom-input { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 14px; color: white; outline: none; transition: border-color 0.2s; font-size: 0.85rem; }
         .custom-input:focus { border-color: #8a4fff; }
         .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
         .status-pending { background: rgba(234, 179, 8, 0.1); color: #fbbf24; border: 1px solid rgba(234, 179, 8, 0.2); }
         .status-complete { background: rgba(138, 79, 255, 0.15); color: #c084fc; border: 1px solid rgba(138, 79, 255, 0.3); }
+        .tax-pending { background: rgba(255, 255, 255, 0.1); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .tax-complete { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+
         .table-row { border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s; }
         .table-row:hover { background: rgba(255, 255, 255, 0.02); }
         .table-head { font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.05em; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .section-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
         .section-title i { color: #8a4fff; font-size: 1rem; }
-        .toggle-checkbox:checked { right: 0; border-color: #8a4fff; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #8a4fff; }
+        
+        /* Unified Card Style for Mobile */
+        .unified-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
 
-        /* Modal Styles */
         .admin-modal { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
         .admin-modal.active { display: flex; }
         .admin-modal-content { background: #0f0a1f; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; max-width: 600px; border-radius: 20px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); max-height: 90vh; overflow-y: auto; }
 
-        /* Login Overlay */
         #login-overlay { position: fixed; inset: 0; background-color: #05020a; z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
         #login-overlay.hidden { opacity: 0; pointer-events: none; }
         .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
-        /* Mobile Drawer */
         .mobile-drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 60; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .mobile-drawer-overlay.active { opacity: 1; pointer-events: auto; }
         .mobile-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; background: #0f0a1f; border-left: 1px solid rgba(255,255,255,0.1); z-index: 70; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; padding: 24px; }
@@ -202,26 +198,22 @@
         <div class="absolute bottom-10 text-gray-600 text-[10px] font-mono">SECURED BY HANRORO SYSTEM</div>
     </div>
 
-    <!-- 상단 네비게이션 (Top Bar) -->
+    <!-- 상단 네비게이션 -->
     <nav class="fixed w-full z-50 glass-nav h-16 sm:h-20 flex items-center justify-between px-6">
-        <!-- 로고 영역 -->
         <div class="flex items-center gap-2 cursor-pointer" onclick="location.reload()">
             <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
             <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
         </div>
-
-        <!-- 데스크탑 메뉴 -->
         <div class="hidden lg:flex items-center gap-2" id="desktop-menu">
             <div class="nav-item active" onclick="showSection('dashboard', this)">대시보드</div>
             <div class="nav-item" onclick="showSection('projects', this)">프로젝트 관리</div>
+            <div class="nav-item" onclick="showSection('sales', this)">매출 현황</div>
             <div class="nav-item" onclick="showSection('portfolios', this)">포트폴리오</div>
             <div class="nav-item" onclick="showSection('quotes', this)">견적 문의</div>
             <div class="nav-item" onclick="showSection('deposits', this)">결제 현황</div>
             <div class="nav-item" onclick="showSection('site-config', this)">사이트 설정</div>
         </div>
-
         <div class="flex items-center gap-4">
-            <!-- 데스크탑 관리자 프로필 -->
             <div class="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 group relative">
                 <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center font-bold text-[10px]">A</div>
                 <span class="text-xs font-bold text-gray-300">관리자</span>
@@ -229,14 +221,13 @@
                     <i class="fas fa-sign-out-alt text-xs"></i>
                 </button>
             </div>
-            <!-- 모바일 햄버거 버튼 -->
             <button class="lg:hidden w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-full transition-colors" onclick="toggleMobileMenu(true)">
                 <i class="fas fa-bars text-xl"></i>
             </button>
         </div>
     </nav>
 
-    <!-- 모바일 메뉴 드로어 (Slide-out Menu) -->
+    <!-- 모바일 메뉴 드로어 -->
     <div id="mobile-overlay" class="mobile-drawer-overlay" onclick="toggleMobileMenu(false)"></div>
     <div id="mobile-drawer" class="mobile-drawer">
         <div class="flex items-center justify-between mb-8">
@@ -259,6 +250,9 @@
             <div class="drawer-item" onclick="showSection('projects', this)">
                 <i class="fas fa-tasks w-5"></i> 프로젝트 관리
             </div>
+             <div class="drawer-item" onclick="showSection('sales', this)">
+                <i class="fas fa-chart-line w-5"></i> 매출 현황
+            </div>
             <div class="drawer-item" onclick="showSection('portfolios', this)">
                 <i class="fas fa-briefcase w-5"></i> 포트폴리오
             </div>
@@ -274,7 +268,6 @@
             
             <div class="my-4 border-t border-white/5"></div>
             
-            <!-- 모바일 로그아웃 버튼 -->
             <div class="drawer-item text-red-400 hover:text-red-300 hover:bg-red-500/10" onclick="logout()">
                 <i class="fas fa-sign-out-alt w-5"></i> 로그아웃
             </div>
@@ -285,17 +278,12 @@
         </div>
     </div>
 
-    <!-- 히어로 섹션 (Index.html과 동일한 디자인 & 메모리 최적화 적용) -->
+    <!-- 히어로 섹션 -->
     <section class="min-h-screen flex items-center pt-24 pb-20 relative overflow-hidden bg-[#05020a]">
-        <!-- Magic Neon Rain Canvas (Optimized) -->
         <canvas id="magic-rain" class="magic-rain-canvas"></canvas>
-        
-        <!-- Large Sharp 3D Wand (No Filter Drop-Shadow) -->
         <div class="hero-wand-container">
             <i class="fas fa-magic hero-wand-3d"></i>
         </div>
-        
-        <!-- Bottom Fade -->
         <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5] pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none">
@@ -310,10 +298,10 @@
                 실시간 프로젝트 모니터링, 견적 문의 확인, 그리고 사이트 설정을 위한 통합 대시보드입니다. 모든 변경사항은 즉시 반영됩니다.
             </p>
             <div class="flex flex-wrap items-center gap-4 pointer-events-auto">
-                <button onclick="showSection('projects', document.querySelectorAll('.nav-item')[1])" class="bg-white text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">
-                    프로젝트 관리
+                <button onclick="showSection('sales', document.querySelectorAll('.nav-item')[2])" class="bg-white text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-chart-line mr-2"></i> 매출 현황 확인
                 </button>
-                <button onclick="showSection('deposits', document.querySelectorAll('.nav-item')[4])" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
+                <button onclick="showSection('deposits', document.querySelectorAll('.nav-item')[5])" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2">
                     <i class="fas fa-credit-card text-purple-400"></i> 결제 현황 확인
                 </button>
 
@@ -329,8 +317,6 @@
 
     <!-- 메인 콘텐츠 영역 -->
     <main class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 -mt-10 pb-20">
-        <!-- (기존 콘텐츠 섹션들 유지) -->
-        
         <!-- 1. 대시보드 개요 섹션 -->
         <div id="section-dashboard" class="content-section space-y-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -352,17 +338,15 @@
                     <h3 class="text-4xl font-black text-yellow-500" id="stat-pending-deposits">-</h3>
                     <div class="mt-4 text-[10px] text-gray-500 font-bold">입금 확인 대기</div>
                 </div>
-                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center gap-3 border-dashed border-2 border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors" onclick="showSection('site-config', document.querySelectorAll('.nav-item')[5])">
-                    <i class="fas fa-sliders-h text-2xl text-purple-500"></i>
-                    <span class="text-xs font-bold uppercase tracking-wider">사이트 설정 바로가기</span>
+                <div class="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center gap-3 border-dashed border-2 border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors" onclick="showSection('sales', document.querySelectorAll('.nav-item')[2])">
+                    <i class="fas fa-chart-line text-2xl text-purple-500"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">매출 현황 보기</span>
                 </div>
             </div>
         </div>
 
-        <!-- 나머지 섹션들은 기존 코드 유지 (생략 없이 포함되어야 함) -->
         <!-- 2. 프로젝트 관리 -->
         <div id="section-projects" class="content-section hidden">
-            <!-- (기존 프로젝트 관리 코드) -->
              <h2 class="section-title"><i class="fas fa-tasks"></i> 프로젝트 관리</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- 프로젝트 폼 -->
@@ -411,6 +395,99 @@
             </div>
         </div>
 
+        <!-- NEW: 매출 현황 섹션 (Sales Status) -->
+        <div id="section-sales" class="content-section hidden">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> 매출 현황 (Revenue)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Revenue Card -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden bg-gradient-to-br from-white/5 to-transparent">
+                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-won-sign text-6xl"></i></div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Total Revenue</p>
+                    <h3 class="text-3xl font-black text-white" id="sales-total-revenue">0원</h3>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">누적 총 매출액</div>
+                </div>
+                <!-- Google Hosting Sales -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-cloud text-6xl"></i></div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Google Hosting</p>
+                    <h3 class="text-3xl font-black text-purple-400" id="sales-google-revenue">0원</h3>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">구글 호스팅 매출 (건당 142만원)</div>
+                </div>
+                <!-- Normal Hosting Sales -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-server text-6xl"></i></div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">General Hosting</p>
+                    <h3 class="text-3xl font-black text-blue-400" id="sales-normal-revenue">0원</h3>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">일반 호스팅 매출 (건당 152만원)</div>
+                </div>
+            </div>
+
+            <!-- Year/Month Sales Stats -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Monthly Sales -->
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-4 flex justify-between items-center">
+                        <span><i class="fas fa-calendar-alt mr-2 text-purple-400"></i>월별 매출 현황</span>
+                        <span class="text-[10px] text-gray-500 font-normal">최근 12개월 기준</span>
+                    </h3>
+                    <div class="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar" id="sales-monthly-list">
+                        <!-- JS Populated -->
+                    </div>
+                </div>
+                <!-- Yearly Sales -->
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-white/5 pb-4 flex justify-between items-center">
+                        <span><i class="fas fa-calendar mr-2 text-blue-400"></i>년별 매출 현황</span>
+                        <span class="text-[10px] text-gray-500 font-normal">연도별 합계</span>
+                    </h3>
+                    <div class="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar" id="sales-yearly-list">
+                         <!-- JS Populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Table / Mobile List -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+                <div class="flex justify-between items-center p-6 border-b border-white/5">
+                    <div>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">상세 매출 내역 (입금 완료)</h3>
+                        <div class="text-[10px] text-gray-500 mt-1">※ 구글호스팅: 1,420,000원 / 일반호스팅: 1,520,000원</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="togglePrivacy()" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-2 rounded-xl text-xs font-bold transition-all border border-white/10" title="고객 정보 숨기기/보기">
+                            <i class="fas fa-eye" id="privacy-icon"></i>
+                        </button>
+                        <button onclick="openDepositModal('add', 'sales')" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-purple-600/20">
+                            <i class="fas fa-plus"></i><span class="hidden sm:inline"> 매출 등록</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Desktop Table View -->
+                <div class="overflow-x-auto hidden md:block">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="table-head p-4">거래일 (입금확인)</th>
+                                <th class="table-head p-4">상품명</th>
+                                <th class="table-head p-4">고객명</th>
+                                <th class="table-head p-4">연락처</th>
+                                <th class="table-head p-4 text-right">매출 금액</th>
+                                <th class="table-head p-4 text-center">세금계산서</th>
+                                <th class="table-head p-4 text-right">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table-body" class="text-sm text-gray-300">
+                            <!-- JS로 데이터 로드됨 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card List View -->
+                <div id="sales-mobile-list" class="grid grid-cols-1 gap-4 p-4 md:hidden"></div>
+            </div>
+        </div>
+
         <!-- 3. 포트폴리오 관리 -->
         <div id="section-portfolios" class="content-section hidden">
             <div class="flex items-center justify-between mb-6">
@@ -428,7 +505,8 @@
         <div id="section-quotes" class="content-section hidden">
             <h2 class="section-title"><i class="fas fa-file-invoice-dollar"></i> 견적 문의 내역</h2>
             <div class="glass-panel rounded-2xl overflow-hidden">
-                <div class="overflow-x-auto">
+                <!-- Desktop Table View -->
+                <div class="overflow-x-auto hidden md:block">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr>
@@ -443,6 +521,8 @@
                         <tbody id="quote-table-body" class="text-sm text-gray-300"></tbody>
                     </table>
                 </div>
+                 <!-- Mobile Card List View -->
+                 <div id="quote-mobile-list" class="grid grid-cols-1 gap-4 p-4 md:hidden"></div>
             </div>
         </div>
 
@@ -474,7 +554,7 @@
                 </div>
             </div>
             <!-- Mobile Card View -->
-            <div id="deposit-mobile-list" class="grid grid-cols-1 gap-4 md:hidden"></div>
+            <div id="deposit-mobile-list" class="grid grid-cols-1 gap-4 md:hidden mobile-card-wrapper"></div>
         </div>
 
         <!-- 6. 사이트 설정 섹션 -->
@@ -654,11 +734,11 @@
         </div>
     </div>
 
-    <!-- 3. 입금 내역 Modal -->
+    <!-- 3. 입금(매출) 내역 Modal -->
     <div id="modal-deposit" class="admin-modal" onclick="if(event.target === this) closeAdminModal('modal-deposit')">
         <div class="admin-modal-content">
             <h3 class="text-lg font-bold mb-4 flex justify-between">
-                <span id="md-title">입금 내역 등록</span>
+                <span id="md-title">입금/매출 내역 등록</span>
                 <button onclick="closeAdminModal('modal-deposit')"><i class="fas fa-times text-gray-400"></i></button>
             </h3>
             <form id="deposit-modal-form" class="space-y-4">
@@ -675,12 +755,21 @@
                     <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">연락처</label>
                     <input type="text" id="md-phone" class="custom-input" required>
                 </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상태</label>
-                    <select id="md-status" class="custom-input bg-[#1a1625]">
-                        <option value="pending">입금대기 (Pending)</option>
-                        <option value="complete">입금완료 (Complete)</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">입금 상태</label>
+                        <select id="md-status" class="custom-input bg-[#1a1625]">
+                            <option value="pending">입금대기 (Pending)</option>
+                            <option value="complete">입금완료 (Complete)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">세금계산서</label>
+                        <select id="md-tax-invoice" class="custom-input bg-[#1a1625]">
+                            <option value="pending">발행전 (Pending)</option>
+                            <option value="complete">발행완료 (Issued)</option>
+                        </select>
+                    </div>
                 </div>
                 <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-colors text-xs uppercase tracking-widest">저장하기</button>
             </form>
@@ -688,7 +777,7 @@
     </div>
 
 
-    <!-- Magic Rain Canvas Script (사파리 최적화) -->
+    <!-- Magic Rain Canvas Script -->
     <script>
         (function() {
             const canvas = document.getElementById('magic-rain');
@@ -882,18 +971,20 @@
             // 3. Quotes
             const quoteCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes');
             onSnapshot(quoteCol, (snap) => {
-                // Update Badges for Desktop & Mobile
                 const count = snap.size;
-                // Add badge spans in HTML first (added in nav)
-                // ...
                 const tbody = document.getElementById('quote-table-body');
+                const mobileList = document.getElementById('quote-mobile-list');
+
                 let html = '';
+                let mobileHtml = '';
                 let newCount = 0;
                 snap.forEach(d => {
                     newCount++;
                     const q = d.data();
                     const safeData = JSON.stringify({id: d.id, ...q}).replace(/"/g, '&quot;');
                     const date = q.createdAt ? new Date(q.createdAt.seconds * 1000).toLocaleDateString() : '-';
+                    
+                    // Desktop HTML
                     html += `
                     <tr class="table-row">
                         <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
@@ -908,27 +999,159 @@
                             </div>
                         </td>
                     </tr>`;
+
+                    // Mobile HTML
+                    mobileHtml += `
+                    <div class="unified-card relative">
+                         <div class="flex justify-between items-center mb-3">
+                            <span class="px-2 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400">${q.category || '일반'}</span>
+                            <span class="text-[10px] font-mono text-gray-500">${date}</span>
+                        </div>
+                        <h4 class="font-bold text-white text-sm mb-1">${q.name}</h4>
+                        <div class="text-xs text-gray-400 mb-3">${q.contact}</div>
+                        <div class="p-3 bg-white/5 rounded-lg text-xs text-gray-300 mb-4 line-clamp-2">${q.content}</div>
+                        <div class="flex gap-2">
+                            <button onclick="window.openQuoteModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] font-bold text-gray-300 hover:bg-white/10"><i class="fas fa-edit mr-1"></i> 확인/수정</button>
+                            <button onclick="window.deleteQuote('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] font-bold text-red-400 hover:bg-red-500/20"><i class="fas fa-trash mr-1"></i> 삭제</button>
+                        </div>
+                    </div>`;
                 });
+                
                 tbody.innerHTML = html || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">문의 내역이 없습니다.</td></tr>';
+                mobileList.innerHTML = mobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">문의 내역이 없습니다.</div>';
                 document.getElementById('stat-new-quotes').innerText = newCount;
             });
 
-            // 4. Deposits
-            const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
-            onSnapshot(depositCol, (snap) => {
+
+            // 4. Deposits & Sales Revenue Calculation (Refactored for Privacy Toggle)
+            let latestDepositSnap = null;
+            let isPrivacyMode = false; // Default: Visible
+
+            window.togglePrivacy = () => {
+                isPrivacyMode = !isPrivacyMode;
+                const icon = document.getElementById('privacy-icon');
+                if (isPrivacyMode) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    icon.parentElement.classList.add('text-purple-400', 'border-purple-500/30');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    icon.parentElement.classList.remove('text-purple-400', 'border-purple-500/30');
+                }
+                renderDepositData(); // Re-render with new state
+            };
+
+            const renderDepositData = () => {
+                if (!latestDepositSnap) return;
+
                 const tbody = document.getElementById('deposit-table-body');
                 const mobileList = document.getElementById('deposit-mobile-list');
+                const salesBody = document.getElementById('sales-table-body');
+                const salesMobileList = document.getElementById('sales-mobile-list'); // NEW: Mobile Sales List
+                
                 let tableHtml = '';
                 let mobileHtml = '';
+                let salesHtml = '';
+                let salesMobileHtml = ''; // NEW
+                
                 let pendingCount = 0;
-                snap.forEach(d => {
+                let totalRevenue = 0;
+                let googleRevenue = 0;
+                let normalRevenue = 0;
+
+                // Stats Objects
+                const monthlyStats = {};
+                const yearlyStats = {};
+
+                latestDepositSnap.forEach(d => {
                     const dep = d.data();
                     const isComplete = dep.status === 'complete' || dep.status === '입금완료';
-                    if(!isComplete) pendingCount++;
-                    const date = dep.createdAt ? new Date(dep.createdAt.seconds * 1000).toLocaleDateString() : '-';
+                    const taxStatus = dep.taxInvoice === 'complete' ? '발행완료' : '발행전';
+                    const taxClass = dep.taxInvoice === 'complete' ? 'tax-complete' : 'tax-pending';
+                    
+                    const dateObj = dep.createdAt ? new Date(dep.createdAt.seconds * 1000) : new Date();
+                    const date = dateObj.toLocaleDateString();
                     const safeData = JSON.stringify({id: d.id, ...dep}).replace(/"/g, '&quot;');
                     
-                    // Table
+                    if(!isComplete) pendingCount++;
+
+                    // --- Revenue Calculation Logic ---
+                    if (isComplete) {
+                        let price = 0;
+                        if (dep.type && dep.type.includes('구글')) {
+                            price = 1420000;
+                            googleRevenue += price;
+                        } else if (dep.type && dep.type.includes('일반')) {
+                            price = 1520000;
+                            normalRevenue += price;
+                        }
+                        totalRevenue += price;
+
+                        // Calculate Month/Year Stats
+                        const year = dateObj.getFullYear();
+                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                        const yearKey = `${year}년`;
+                        const monthKey = `${year}-${month}`;
+                        const monthDisplay = `${year}년 ${month}월`;
+
+                        if (!yearlyStats[yearKey]) yearlyStats[yearKey] = 0;
+                        yearlyStats[yearKey] += price;
+
+                        if (!monthlyStats[monthKey]) monthlyStats[monthKey] = { label: monthDisplay, amount: 0 };
+                        monthlyStats[monthKey].amount += price;
+
+                        // Privacy Masking Logic (Only for Sales Table)
+                        let displayName = dep.name;
+                        let displayPhone = dep.phone;
+                        
+                        if (isPrivacyMode) {
+                            displayName = (dep.name && dep.name.length > 0) ? dep.name.charAt(0) + '***' : '***';
+                            displayPhone = (dep.phone && dep.phone.length > 0) ? dep.phone.charAt(0) + '***' : '***';
+                        }
+
+                        // Add row to Sales Table
+                        salesHtml += `
+                        <tr class="table-row">
+                            <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
+                            <td class="p-4"><span class="px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10 text-[10px] font-bold">${dep.type}</span></td>
+                            <td class="p-4 font-bold text-white">${displayName}</td>
+                            <td class="p-4 text-gray-400">${displayPhone}</td>
+                            <td class="p-4 text-right font-mono font-bold text-white">${price.toLocaleString()}원</td>
+                            <td class="p-4 text-center">
+                                <span class="status-badge ${taxClass}">${taxStatus}</span>
+                            </td>
+                            <td class="p-4 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button class="text-gray-400 hover:text-white px-2" onclick="window.openDepositModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button>
+                                    <button class="text-gray-400 hover:text-red-400 px-2" onclick="window.deleteDeposit('${d.id}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+
+                        // Add card to Mobile Sales List
+                        salesMobileHtml += `
+                        <div class="unified-card relative">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2 py-1 rounded bg-purple-500/10 text-purple-300 border border-purple-500/10 text-[10px] font-bold">${dep.type}</span>
+                                <span class="status-badge ${taxClass}">${taxStatus}</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-white text-sm">${displayName}</h4>
+                                <span class="font-bold text-white font-mono">${price.toLocaleString()}원</span>
+                            </div>
+                            <div class="text-xs text-gray-400 mb-3 flex justify-between">
+                                <span>${displayPhone}</span>
+                                <span class="font-mono">${date}</span>
+                            </div>
+                             <div class="flex gap-2 border-t border-white/5 pt-3">
+                                <button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] font-bold text-gray-300 hover:bg-white/10"><i class="fas fa-edit mr-1"></i> 수정</button>
+                                <button onclick="window.deleteDeposit('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] font-bold text-red-400 hover:bg-red-500/20"><i class="fas fa-trash mr-1"></i> 삭제</button>
+                            </div>
+                        </div>`;
+                    }
+                    
+                    // --- Deposit Table Logic ---
                     tableHtml += `
                     <tr class="table-row">
                         <td class="p-4 text-gray-400 font-mono text-xs">${date}</td>
@@ -944,7 +1167,7 @@
                         </td>
                     </tr>`;
 
-                    // Mobile
+                    // --- Mobile List Logic (Deposits) ---
                     const statusText = isComplete ? '입금완료' : '입금대기';
                     const statusClass = isComplete ? 'text-purple-400 border-purple-500/40' : 'text-yellow-500 border-yellow-500/40';
                     let displayType = dep.type || '서비스';
@@ -970,9 +1193,49 @@
                         </div>
                     </div>`;
                 });
+
+                // Update Views
                 tbody.innerHTML = tableHtml || '<tr><td colspan="6" class="p-6 text-center text-gray-500 text-xs">입금 내역이 없습니다.</td></tr>';
                 mobileList.innerHTML = mobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">내역이 없습니다.</div>';
                 document.getElementById('stat-pending-deposits').innerText = pendingCount;
+                
+                // Update Sales Views
+                document.getElementById('sales-total-revenue').innerText = totalRevenue.toLocaleString() + '원';
+                document.getElementById('sales-google-revenue').innerText = googleRevenue.toLocaleString() + '원';
+                document.getElementById('sales-normal-revenue').innerText = normalRevenue.toLocaleString() + '원';
+                salesBody.innerHTML = salesHtml || '<tr><td colspan="7" class="p-6 text-center text-gray-500 text-xs">매출(입금 완료) 내역이 없습니다.</td></tr>';
+                salesMobileList.innerHTML = salesMobileHtml || '<div class="text-center text-gray-500 py-10 text-xs">매출(입금 완료) 내역이 없습니다.</div>';
+
+                // --- Render Monthly/Yearly Stats ---
+                const monthlyKeys = Object.keys(monthlyStats).sort().reverse();
+                let monthlyHtml = '';
+                monthlyKeys.forEach(key => {
+                    const item = monthlyStats[key];
+                    monthlyHtml += `
+                    <div class="flex justify-between items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
+                        <span class="text-xs font-bold text-gray-300 font-mono">${item.label}</span>
+                        <span class="text-sm font-black text-white">${item.amount.toLocaleString()}원</span>
+                    </div>`;
+                });
+                document.getElementById('sales-monthly-list').innerHTML = monthlyHtml || '<div class="text-center text-gray-500 py-4 text-xs">데이터 없음</div>';
+
+                const yearlyKeys = Object.keys(yearlyStats).sort().reverse();
+                let yearlyHtml = '';
+                yearlyKeys.forEach(key => {
+                    const amount = yearlyStats[key];
+                    yearlyHtml += `
+                    <div class="flex justify-between items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
+                        <span class="text-xs font-bold text-gray-300 font-mono">${key}</span>
+                        <span class="text-sm font-black text-purple-400">${amount.toLocaleString()}원</span>
+                    </div>`;
+                });
+                document.getElementById('sales-yearly-list').innerHTML = yearlyHtml || '<div class="text-center text-gray-500 py-4 text-xs">데이터 없음</div>';
+            };
+
+            const depositCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits');
+            onSnapshot(depositCol, (snap) => {
+                latestDepositSnap = snap;
+                renderDepositData();
             });
 
             // 5. Config
@@ -1126,23 +1389,29 @@
         });
         window.deleteQuote = async (id) => { if(confirm('삭제하시겠습니까?')) await deleteDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'quotes', id)); };
 
-        // Deposit
-        window.openDepositModal = (mode, _, data = null) => {
+        // Deposit (Updated for Sales & Tax)
+        window.openDepositModal = (mode, source = null, data = null) => {
             const modal = document.getElementById('modal-deposit');
             const title = document.getElementById('md-title');
+            
             if(mode === 'edit' && data) {
                 editingDepositId = data.id;
-                title.innerText = "입금 내역 수정";
+                title.innerText = "내역 수정";
                 document.getElementById('md-id').value = data.id;
                 document.getElementById('md-type').value = data.type;
                 document.getElementById('md-name').value = data.name;
                 document.getElementById('md-phone').value = data.phone;
                 document.getElementById('md-status').value = data.status === 'complete' || data.status === '입금완료' ? 'complete' : 'pending';
+                document.getElementById('md-tax-invoice').value = data.taxInvoice === 'complete' ? 'complete' : 'pending';
             } else {
                 editingDepositId = null;
-                title.innerText = "새 입금 내역 등록";
+                title.innerText = source === 'sales' ? "새 매출(입금) 등록" : "새 입금 내역 등록";
                 document.getElementById('deposit-modal-form').reset();
                 document.getElementById('md-id').value = "";
+                // If adding from sales, default status to complete
+                if(source === 'sales') {
+                    document.getElementById('md-status').value = 'complete';
+                }
             }
             modal.classList.add('active');
         };
@@ -1153,9 +1422,11 @@
             const name = document.getElementById('md-name').value;
             const phone = document.getElementById('md-phone').value;
             const status = document.getElementById('md-status').value;
+            const taxInvoice = document.getElementById('md-tax-invoice').value; // New Field
+
             try {
-                if(editingDepositId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), { type, name, phone, status });
-                else await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), { type, name, phone, status, createdAt: serverTimestamp() });
+                if(editingDepositId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), { type, name, phone, status, taxInvoice });
+                else await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), { type, name, phone, status, taxInvoice, createdAt: serverTimestamp() });
                 closeAdminModal('modal-deposit');
             } catch(e) { alert('실패'); }
         });
