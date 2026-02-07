@@ -23,10 +23,10 @@
             padding: 0;
         }
 
-        /* --- 모바일 환경 95% 축소 --- */
+        /* --- 모바일 환경 90% 축소 (Updated) --- */
         @media (max-width: 768px) {
             body {
-                zoom: 0.95; /* 모바일 브라우저 줌 축소 */
+                zoom: 0.9; /* 0.95 -> 0.9 변경 */
             }
             .mobile-card-wrapper {
                 padding-bottom: 20px;
@@ -181,21 +181,31 @@
 
     <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
-        <div class="glass-panel p-8 rounded-2xl w-full max-w-sm text-center border-t border-purple-500/20">
-            <div class="mb-6">
-                <i class="fas fa-shield-alt text-4xl text-purple-500 mb-4"></i>
-                <h2 class="text-2xl font-black tracking-tight text-white uppercase">Admin Access</h2>
-                <p class="text-xs text-gray-500 mt-2">관리자 패스코드를 입력하세요.</p>
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-sm text-center border-t border-purple-500/20 shadow-2xl shadow-purple-900/20">
+            <div class="mb-8 flex flex-col items-center">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-magic text-3xl text-purple-400 magic-wand-float"></i>
+                    <span class="text-3xl font-black tracking-tighter gradient-text uppercase">HANRORO</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-500 px-3 py-1 rounded-full bg-white/5 border border-white/5">
+                    <i class="fas fa-shield-alt text-[10px]"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Admin Access Only</span>
+                </div>
             </div>
+            
             <form id="login-form" class="space-y-4">
-                <input type="password" id="passcode-input" class="custom-input text-center tracking-widest text-lg py-3" placeholder="PASSCODE" autofocus required>
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 uppercase tracking-widest text-xs">
-                    접속하기
+                <input type="password" id="passcode-input" class="custom-input text-center tracking-widest text-lg py-3 bg-black/20 focus:bg-black/40 border-white/10 focus:border-purple-500/50" placeholder="PASSCODE" autofocus required>
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 uppercase tracking-widest text-xs flex items-center justify-center gap-2 group">
+                    <span>시스템 접속하기</span>
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </button>
             </form>
-            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold hidden"><i class="fas fa-exclamation-circle mr-1"></i> 패스코드가 올바르지 않습니다.</p>
+            <p id="login-error" class="text-red-400 text-xs mt-4 font-bold hidden bg-red-500/10 py-2 rounded-lg border border-red-500/20"><i class="fas fa-exclamation-triangle mr-1"></i> 패스코드가 올바르지 않습니다.</p>
         </div>
-        <div class="absolute bottom-10 text-gray-600 text-[10px] font-mono">SECURED BY HANRORO SYSTEM</div>
+        <div class="absolute bottom-10 text-gray-600 text-[10px] font-mono flex flex-col items-center gap-1 opacity-50">
+            <i class="fas fa-lock"></i>
+            <span>SECURED BY HANRORO SYSTEM</span>
+        </div>
     </div>
 
     <!-- 상단 네비게이션 -->
@@ -397,7 +407,13 @@
 
         <!-- NEW: 매출 현황 섹션 (Sales Status) -->
         <div id="section-sales" class="content-section hidden">
-            <h2 class="section-title"><i class="fas fa-chart-line"></i> 매출 현황 (Revenue)</h2>
+            <h2 class="section-title !mb-1"><i class="fas fa-chart-line"></i> 매출 현황 (Revenue)</h2>
+            <p class="text-xs sm:text-sm text-gray-500 mb-8 font-bold flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">상호명: 한로로(55디자이너스)</span>
+                <span class="hidden sm:inline text-gray-600">|</span>
+                <span id="sales-today-date" class="text-purple-400"></span> 기준
+            </p>
+
             <!-- 그리드 변경: 5개 항목을 위해 반응형 그리드 조정 (lg:3열, xl:5열) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
                 <!-- Total Revenue Card -->
@@ -934,6 +950,12 @@
         });
 
         function initDashboard() {
+            // Set Today's Date for Sales Header
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+            const salesDateEl = document.getElementById('sales-today-date');
+            if(salesDateEl) salesDateEl.innerText = dateStr;
+
             // 1. Projects
             const projectCol = collection(db, 'artifacts', currentAppId, 'public', 'data', 'projects');
             const qProjects = query(projectCol, orderBy('createdAt', 'desc'));
