@@ -511,12 +511,14 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center pt-24 pb-10 relative overflow-hidden bg-[#05020a]">
+    <!-- 수정됨: pb-10 -> pb-40 (하단 여백을 늘려 콘텐츠를 위로 밀어올림), pt-24 -> pt-20 (상단 여백 소폭 감소) -->
+    <section class="min-h-screen flex items-center pt-20 pb-40 relative overflow-hidden bg-[#05020a]">
         <canvas id="magic-rain" class="magic-rain-canvas"></canvas>
         
         <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5] pointer-events-none"></div>
 
-        <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none">
+        <!-- 수정됨: -mt-10 추가 (전체 컨테이너를 위로 40px 정도 이동) -->
+        <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none -mt-10">
             <!-- Main Content Container: Left Text & Right Visual -->
             <div class="flex flex-col lg:flex-row items-center lg:justify-between w-full h-full">
                 
