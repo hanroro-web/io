@@ -7,8 +7,8 @@
     <!-- Primary Meta Tags -->
     <title>한로로(Hanroro) | 프리미엄 웹 에이전시</title>
     <meta name="title" content="한로로(Hanroro) | 프리미엄 웹 에이전시">
-    <meta name="description" content="한로로, hanroro, 웹에이전시, 홈페이지제작, 디자인스튜디오, 프리미엄웹사이트, 반응형웹, UIUX디자인, 기업홈페이지">
-    <meta name="keywords" content="단순한 코딩을 넘어 브랜드의 가치를 디자인합니다. 지금 한로로와 함께 프로젝트를 시작하세요.">
+    <meta name="description" content="단순한 코딩을 넘어 브랜드의 가치를 디자인합니다. 지금 한로로와 함께 프로젝트를 시작하세요.">
+    <meta name="keywords" content="한로로, hanroro, 웹에이전시, 홈페이지제작, 디자인스튜디오, 프리미엄웹사이트, 반응형웹, UIUX디자인, 기업홈페이지">
     <meta name="author" content="Hanroro">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://hanroro-web.web.app/">
@@ -108,23 +108,26 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.8;
-            pointer-events: none;
         }
 
+        /* Restored Large 3D Icon Container */
         .hero-wand-container {
-            perspective: 1000px;
             position: absolute;
-            right: -5%;
+            right: -5%; /* Desktop position */
             top: 50%;
             transform: translateY(-50%);
-            z-index: 1;
-            opacity: 1;
+            z-index: 20;
+            perspective: 1000px;
+            display: none; /* Hidden on mobile by default */
             pointer-events: none;
         }
-        
+        @media (min-width: 1024px) {
+            .hero-wand-container { display: block; }
+        }
+
+        /* The 3D Icon Style */
         .hero-wand-3d {
-            font-size: clamp(15rem, 40vw, 35rem);
+            font-size: clamp(15rem, 30vw, 30rem); /* Responsive Large Size */
             background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 20%, #a855f7 50%, #7e22ce 100%);
             -webkit-background-clip: text;
             background-clip: text;
@@ -133,6 +136,37 @@
             animation: heroWandFloat 6s ease-in-out infinite;
             transform-style: preserve-3d;
             transform: rotateZ(-15deg) rotateY(15deg);
+            display: inline-block;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        @keyframes heroWandFloat {
+            0%, 100% { transform: translateY(0) rotateZ(-15deg) rotateY(15deg); }
+            50% { transform: translateY(-30px) rotateZ(-10deg) rotateY(10deg); }
+        }
+
+        /* Text Transition Animation */
+        .fade-text {
+            animation: fadeInText 0.6s ease-out forwards;
+        }
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Icon Transition Classes */
+        .icon-fade-out { opacity: 0; transform: scale(0.9) rotateZ(-20deg) rotateY(0deg); }
+        .icon-fade-in { opacity: 1; transform: scale(1) rotateZ(-15deg) rotateY(15deg); }
+
+        /* Gauge Bar Animation (Updated: 85% Pause & Visual Break) */
+        @keyframes fillGauge {
+            0% { width: 0%; }
+            45% { width: 85%; } /* 1.8초 동안 85% 도달 */
+            85% { width: 85%; } /* 약 1.6초 동안 멈춤 */
+            100% { width: 100%; } /* 나머지 0.6초 동안 100% 도달 */
+        }
+        .animate-gauge {
+            animation: fillGauge 4s linear infinite;
         }
 
         /* Slide In Animation */
@@ -150,6 +184,16 @@
         .animate-move-horizontal {
             animation: moveHorizontal 1.2s ease-in-out infinite;
         }
+
+        /* 왼쪽으로 움직이는 애니메이션 추가 (목록으로 돌아가기용) */
+        @keyframes moveLeft {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-4px); }
+        }
+
+        .animate-move-left {
+            animation: moveLeft 1.2s ease-in-out infinite;
+        }
         
         .slide-in-left {
             opacity: 0; /* Start hidden */
@@ -160,17 +204,6 @@
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
         .delay-500 { animation-delay: 0.5s; }
-
-        @keyframes heroWandFloat {
-            0%, 100% { 
-                transform: translateY(0) rotateZ(-15deg) rotateY(15deg) scale(1); 
-                text-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3);
-            }
-            50% { 
-                transform: translateY(-30px) rotateZ(-12deg) rotateY(5deg) scale(1.02); 
-                text-shadow: 0 0 30px rgba(192, 132, 252, 0.7), 0 0 60px rgba(168, 85, 247, 0.5);
-            }
-        }
 
         /* Portfolio Styles */
         .portfolio-outer-wrapper {
@@ -289,7 +322,7 @@
         .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .toss-icon { width: 20px; height: 20px; margin-right: 6px; vertical-align: middle; fill: #3182f6; }
 
-        /* 페이지네이션 버튼 스타일 (새로 추가됨) */
+        /* 페이지네이션 버튼 스타일 */
         .pagination-btn {
             width: 32px;
             height: 32px;
@@ -320,13 +353,19 @@
         }
 
         .pagination-btn:disabled {
-            opacity: 0.6; /* 기존 0.3에서 0.6으로 올려 가시성 확보 */
+            opacity: 0.6; 
             cursor: not-allowed;
             pointer-events: none;
             box-shadow: none;
-            background: rgba(255, 255, 255, 0.05); /* 옅은 배경 추가 */
-            border-color: rgba(255, 255, 255, 0.2); /* 테두리 밝게 */
-            color: rgba(255, 255, 255, 0.3); /* 아이콘 밝게 */
+            background: rgba(255, 255, 255, 0.05); 
+            border-color: rgba(255, 255, 255, 0.2); 
+            color: rgba(255, 255, 255, 0.3); 
+        }
+
+        /* Diagonal Cut for Overlay Hero */
+        .diagonal-hero {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            padding-bottom: 6rem; /* Extra spacing for the cut */
         }
 
         /* Full Screen Portfolio Overlay Style */
@@ -338,7 +377,9 @@
 
         @media (max-width: 768px) {
             .hero-wand-container { right: -15%; opacity: 0.7; }
-            .hero-wand-3d { font-size: 24rem; }
+            .hero-wand-3d { font-size: 20rem; } /* Mobile Fallback */
+            .hero-cards-container { display: none; } 
+            
             .portfolio-outer-wrapper { height: 400vh; }
             .portfolio-title-group { top: 80px !important; left: 24px !important; position: absolute !important; }
             .portfolio-sticky-box { align-items: flex-end; padding-bottom: 20px; }
@@ -410,44 +451,69 @@
     <!-- Hero Section -->
     <section class="min-h-screen flex items-center pt-24 pb-10 relative overflow-hidden bg-[#05020a]">
         <canvas id="magic-rain" class="magic-rain-canvas"></canvas>
-        <div class="hero-wand-container">
-            <i class="fas fa-magic hero-wand-3d"></i>
-        </div>
+        
         <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5] pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none">
-            <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto slide-in-left">
-                <i class="fas fa-sparkles mr-2"></i> <span id="hero-badge-text">고품격 프리미엄 웹에이전시</span>
-            </div>
-            <h1 class="text-2xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto slide-in-left delay-100">
-                <span id="hero-title-1">홈페이지 가치는</span> <br>
-                <span class="gradient-text italic" id="hero-title-2">브랜드의 얼굴</span><span id="hero-title-3">입니다</span>
-            </h1>
-            <p class="text-white mb-10 sm:mb-12 text-sm sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto slide-in-left delay-200" id="hero-subtitle">
-                우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
-            </p>
-            <div class="flex flex-wrap items-center gap-6 pointer-events-auto slide-in-left delay-300">
-                <!-- 프로젝트 시작 버튼 수정됨: 배경 제거, 원형 아이콘 강조 스타일 -->
-                <button onclick="toggleModal('quote-modal', true)" class="group flex items-center gap-4 bg-transparent focus:outline-none">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-purple-600 flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-all duration-300">
-                        <i class="fas fa-arrow-right animate-move-horizontal text-lg"></i>
-                    </div>
-                    <span class="text-white font-black text-base sm:text-lg uppercase tracking-tight group-hover:text-purple-300 transition-colors">프로젝트 시작</span>
-                </button>
+            <!-- Main Content Container: Left Text & Right Visual -->
+            <div class="flex flex-col lg:flex-row items-center lg:justify-between w-full h-full">
                 
-                <button onclick="toggleModal('hosting-modal', true)" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2 h-14">
-                    <i class="fas fa-credit-card text-purple-400"></i> 결제하기
-                </button>
-
-                <div class="flex items-center gap-4 px-5 py-3.5 sm:px-6 sm:py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md h-14 hidden sm:flex">
-                    <div class="flex -space-x-2">
-                        <div class="w-6 h-6 rounded-full border-2 border-black bg-gray-600"></div>
-                        <div class="w-6 h-6 rounded-full border-2 border-black bg-purple-600"></div>
-                        <div class="w-6 h-6 rounded-full border-2 border-black bg-indigo-600"></div>
+                <!-- Left: Text Content (Dynamic) -->
+                <div class="flex flex-col items-center lg:items-start lg:w-1/2" id="hero-text-container">
+                    <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto slide-in-left">
+                        <i class="fas fa-sparkles mr-2"></i> <span id="hero-badge-text">고품격 프리미엄 웹에이전시</span>
                     </div>
-                    <span class="text-[11px] font-bold text-gray-300">124+ 프로젝트 완료</span>
+                    <h1 class="text-2xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto slide-in-left delay-100 text-center lg:text-left min-h-[140px] flex flex-col justify-center">
+                        <span class="fade-text" id="hero-title-main">홈페이지 가치는 <br> <span class="gradient-text italic">브랜드의 얼굴</span>입니다</span>
+                    </h1>
+                    <p class="text-white mb-10 sm:mb-12 text-sm sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto slide-in-left delay-200 text-center lg:text-left min-h-[50px] fade-text" id="hero-subtitle">
+                        우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 pointer-events-auto slide-in-left delay-300">
+                        <button onclick="toggleModal('quote-modal', true)" class="group flex items-center gap-4 bg-transparent focus:outline-none">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-purple-600 flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-all duration-300">
+                                <i class="fas fa-arrow-right animate-move-horizontal text-lg"></i>
+                            </div>
+                            <span class="text-white font-black text-base sm:text-lg uppercase tracking-tight group-hover:text-purple-300 transition-colors">프로젝트 시작</span>
+                        </button>
+                        
+                        <button onclick="toggleModal('hosting-modal', true)" class="px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-black text-sm uppercase tracking-tight border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all flex items-center gap-2 h-14">
+                            <i class="fas fa-credit-card text-purple-400"></i> 결제하기
+                        </button>
+
+                        <div class="flex items-center gap-4 px-5 py-3.5 sm:px-6 sm:py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md h-14 flex">
+                            <div class="flex -space-x-2">
+                                <div class="w-6 h-6 rounded-full border-2 border-black bg-gray-600"></div>
+                                <div class="w-6 h-6 rounded-full border-2 border-black bg-purple-600"></div>
+                                <div class="w-6 h-6 rounded-full border-2 border-black bg-indigo-600"></div>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-300">124+ 프로젝트 완료</span>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Right: Large 3D Icon (Restored Wand Style) -->
+                <div class="hero-wand-container">
+                    <i id="hero-dynamic-icon" class="fas fa-magic hero-wand-3d"></i>
+                </div>
+
+                <!-- Right: Portfolio Cards Grid (Restored with Manual Selection) -->
+                <div class="hero-cards-container" id="hero-cards-grid">
+                    <!-- Injected by JS -->
+                </div>
+
             </div>
+        </div>
+
+        <!-- Center Bottom Gauge Bar (Updated with Break) -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 w-64 h-0.5 rounded-full z-20 pointer-events-none">
+            <!-- Track Background -->
+            <div class="absolute inset-0 bg-white/10 rounded-full overflow-hidden">
+                 <!-- Fill Bar -->
+                 <div class="h-full bg-purple-500 w-0 animate-gauge shadow-[0_0_10px_rgba(168,85,247,0.8)]" id="hero-gauge-bar"></div>
+            </div>
+            <!-- The Visual Gap (Break at 85%) -->
+            <div class="absolute top-0 bottom-0 left-[85%] w-1 bg-[#05020a] z-30 -ml-0.5 transform scale-y-150"></div>
         </div>
     </section>
 
@@ -529,7 +595,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Deposit Status Board (Moved Up) -->
     <section class="pt-0 pb-16 sm:pb-24 bg-black/40 border-t-0 relative z-20"> 
         <div class="max-w-7xl mx-auto px-6">
@@ -576,6 +642,7 @@
         </div>
     </div>
 
+    <!-- ... existing Footer & Modals ... -->
     <footer class="py-20 sm:py-24 bg-[#030107] border-t border-white/5 relative z-20">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16 sm:mb-20">
@@ -629,7 +696,7 @@
         </div>
     </footer>
 
-    <!-- Status Modal -->
+    <!-- Status Modal (Restored) -->
     <div id="status-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('status-modal', false)">
         <div class="modal-content !max-w-[650px] !p-0 overflow-hidden">
             <div class="p-6 sm:p-8 bg-gradient-to-br from-purple-900/40 to-transparent border-b border-white/5 relative">
@@ -651,7 +718,7 @@
         </div>
     </div>
 
-    <!-- Quote Modal -->
+    <!-- Quote Modal (Restored) -->
     <div id="quote-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-modal', false)">
         <div class="modal-content !max-w-[550px] !p-0 overflow-hidden border border-purple-500/30 shadow-[0_0_50px_rgba(139,92,246,0.15)]">
             <div class="p-8 bg-gradient-to-b from-purple-900/60 to-[#0f0a1f] border-b border-white/5 relative overflow-hidden">
@@ -748,7 +815,7 @@
         </div>
     </div>
 
-    <!-- Quote Success Modal -->
+    <!-- Quote Success Modal (Restored) -->
     <div id="quote-success-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('quote-success-modal', false)">
         <div class="modal-content !max-w-[400px] text-center !p-8 border border-purple-500/20 bg-[#0f0a1f]/95">
             <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
@@ -760,7 +827,7 @@
         </div>
     </div>
 
-    <!-- Hosting Modal -->
+    <!-- Hosting Modal (Restored) -->
     <div id="hosting-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('hosting-modal', false)">
         <div class="modal-content !p-6 sm:!p-8">
             <div class="flex justify-between items-center mb-6">
@@ -819,7 +886,7 @@
         </div>
     </div>
 
-    <!-- Hosting Success Modal -->
+    <!-- Hosting Success Modal (Restored) -->
     <div id="hosting-success-modal" class="custom-modal" onclick="if(event.target === this) toggleModal('hosting-success-modal', false)">
         <div class="modal-content !max-w-[400px] text-center !p-8 border border-purple-500/20 bg-[#0f0a1f]/95">
             <div class="w-16 h-16 rounded-full bg-purple-600/20 flex items-center justify-center mx-auto mb-6 border border-purple-500/30 shadow-[0_0_20px_rgba(138,79,255,0.2)]">
@@ -833,38 +900,81 @@
 
     <!-- Full Screen Portfolio Detail Overlay -->
     <div id="portfolio-overlay" class="fixed inset-0 z-50 bg-[#05020a] overflow-y-auto hidden">
-        <!-- Close/Nav Bar -->
-        <nav class="fixed w-full z-50 top-0 left-0">
+        <!-- Close/Nav Bar (Updated to match Main Nav) -->
+        <nav class="fixed w-full z-50 top-0 left-0 glass-nav">
             <div class="max-w-7xl mx-auto px-5 h-20 flex items-center justify-between">
+                <!-- Logo -->
                 <div class="flex items-center space-x-2 cursor-pointer" onclick="closePortfolioOverlay()">
                     <i class="fas fa-magic text-lg text-purple-400"></i>
                     <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
                 </div>
-                <button onclick="closePortfolioOverlay()" class="text-gray-400 hover:text-white text-xs font-bold transition-colors flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10">
-                    <i class="fas fa-times"></i> 닫기
-                </button>
+                
+                <!-- Center Notification (Top Floating Window) -->
+                <div class="hidden lg:flex neon-notification-bar">
+                    <i class="fas fa-stars text-purple-400 text-xs animate-pulse"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] font-bold text-gray-200 uppercase tracking-tight">제작 비용 60% 자체 할인 이벤트 중</span>
+                        <i class="fas fa-fire-flame-curved text-orange-500 text-[10px]"></i>
+                    </div>
+                </div>
+
+                <!-- Right Buttons (2 Menu Buttons ONLY - Close Button Removed) -->
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleModal('status-modal', true)" class="flex items-center gap-2 text-purple-400 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors hidden sm:flex">
+                        <i class="fas fa-chart-line text-[10px]"></i>
+                        진행현황
+                    </button>
+                    <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-6 py-2.5 rounded-xl font-bold text-[11px] hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/30">
+                        견적 상담
+                    </button>
+                </div>
             </div>
         </nav>
 
-        <!-- Hero Section Replica -->
-        <section class="min-h-screen flex items-center pt-24 pb-10 relative overflow-hidden bg-[#05020a]">
+        <!-- Bottom Floating Bar (Replica for Overlay) -->
+        <div class="bottom-floating-bar" style="position: fixed; z-index: 5050;">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-purple-600/20 flex items-center justify-center border border-purple-500/30">
+                    <i class="fas fa-rocket text-purple-400 text-sm"></i>
+                </div>
+                <div class="shrink">
+                    <h4 class="text-white font-bold text-[11px] sm:text-sm">제작 비용 60% 자체 할인 진행 중</h4>
+                    <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-tighter font-semibold">Limited Offer</p>
+                </div>
+            </div>
+            <button onclick="toggleModal('quote-modal', true)" class="bg-purple-600 text-white px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-black text-[10px] sm:text-[11px] hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-purple-600/20">상담 신청</button>
+        </div>
+
+        <!-- Hero Section Replica (Diagonal Cut Applied) -->
+        <section class="min-h-screen flex items-center pt-24 pb-10 relative overflow-hidden bg-[#05020a] diagonal-hero">
             <canvas id="detail-rain-canvas" class="magic-rain-canvas"></canvas>
             <div class="hero-wand-container">
-                <i class="fas fa-magic hero-wand-3d"></i>
+                <!-- 아이콘 ID 추가 -->
+                <i id="pf-overlay-icon" class="fas fa-magic hero-wand-3d"></i>
             </div>
             <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05020a] via-[#05020a] to-transparent z-[5] pointer-events-none"></div>
 
             <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pointer-events-none">
-                <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto">
+                <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto slide-in-left">
                     <i class="fas fa-briefcase mr-2"></i> <span id="pf-overlay-category">PORTFOLIO ARCHIVE</span>
                 </div>
-                <h1 class="text-2xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
+                <h1 class="text-2xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto slide-in-left delay-100">
                     <span id="pf-overlay-title">Project Title</span><br>
                     <span class="gradient-text italic">Detail View</span>
                 </h1>
-                <p class="text-white mb-10 sm:mb-12 text-sm sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto" id="pf-overlay-desc">
+                <p class="text-white mb-10 sm:mb-12 text-sm sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto slide-in-left delay-200" id="pf-overlay-desc">
                     Project Description goes here...
                 </p>
+
+                <!-- 추가된 닫기 버튼 (왼쪽 화살표 상시 움직임 적용) -->
+                <div class="flex flex-wrap items-center gap-6 pointer-events-auto slide-in-left delay-300">
+                    <button onclick="closePortfolioOverlay()" class="group flex items-center gap-4 bg-transparent focus:outline-none">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-purple-600 flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-all duration-300">
+                            <i class="fas fa-arrow-left text-lg animate-move-left"></i>
+                        </div>
+                        <span class="text-white font-black text-base sm:text-lg uppercase tracking-tight group-hover:text-purple-300 transition-colors">목록으로 돌아가기</span>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -916,13 +1026,61 @@
             </div>
         </section>
 
-        <!-- Footer Replica -->
-        <footer class="py-20 bg-[#030107] border-t border-white/5 relative z-20 text-center">
-            <p class="text-[10px] text-gray-600 uppercase tracking-widest font-black">© 2015 한로로(HANRORO). ALL RIGHTS RESERVED.</p>
+        <!-- Footer for Overlay (Added) -->
+        <footer class="py-20 sm:py-24 bg-[#030107] border-t border-white/5 relative z-20">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16 sm:mb-20">
+                    <div>
+                        <div class="text-2xl font-black gradient-text uppercase mb-6 sm:mb-8 tracking-tighter">HANRORO</div>
+                        <div class="space-y-4">
+                            <p class="text-gray-400 text-sm leading-relaxed max-w-md">한로로(Hanroro)는 고객의 비즈니스 가치를 디자인과 기술로 증명하는 프리미엄 웹 에이전시입니다.</p>
+                            <div class="flex gap-3 pt-2 sm:pt-4">
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-instagram text-sm"></i></div>
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-facebook-f text-sm"></i></div>
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"><i class="fab fa-github text-sm"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+                        <div>
+                            <h5 class="text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-4 sm:mb-6 text-purple-400">Company</h5>
+                            <ul class="space-y-3 sm:space-y-4 text-gray-500 text-[11px] sm:text-xs font-medium">
+                                <li class="hover:text-white cursor-pointer transition-colors">About Us</li>
+                                <li class="hover:text-white cursor-pointer transition-colors">Portfolio</li>
+                                <li class="hover:text-white cursor-pointer transition-colors">Our Service</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-4 sm:mb-6 text-purple-400">Legal</h5>
+                            <ul class="space-y-3 sm:space-y-4 text-gray-500 text-[11px] sm:text-xs font-medium">
+                                <li class="hover:text-white cursor-pointer transition-colors">이용약관</li>
+                                <li class="hover:text-white cursor-pointer transition-colors">개인정보처리방침</li>
+                                <li class="hover:text-white cursor-pointer transition-colors">호스팅 정책</li>
+                            </ul>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <h5 class="text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-4 sm:mb-6 text-purple-400">Contact</h5>
+                            <ul class="space-y-3 sm:space-y-4 text-gray-500 text-[11px] sm:text-xs font-medium">
+                                <li>hanroro.web@gmail.com</li>
+                                <li>0507-1354-9107</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div class="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-3 text-[9px] sm:text-[10px] text-gray-600 font-bold uppercase tracking-tighter text-center md:text-left">
+                        <span>상호명: 한로로(Hanroro) - 55디자이너스</span>
+                        <span>대표자: 김상우</span>
+                        <span>사업자등록번호: 540-40-00028</span>
+                        <span>통신판매업신고: 제 2015-안양만안-00105호</span>
+                    </div>
+                    <p class="text-gray-700 text-[9px] sm:text-[10px] uppercase tracking-widest font-black">© 2015 한로로(HANRORO). ALL RIGHTS RESERVED.</p>
+                </div>
+            </div>
         </footer>
     </div>
 
-    <!-- Security Script -->
     <script>
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85) || (e.ctrlKey && e.keyCode === 83)) {
@@ -1032,6 +1190,101 @@
         // Control Detail Rain
         let detailRainControl = null;
 
+        // --- Hero Slider Logic (Main + Portfolios) ---
+        const heroSlidesData = [
+            // 0: 메인 홈 (복구됨)
+            { 
+                id: 'main', 
+                title: `홈페이지 가치는 <br> <span class="gradient-text italic">브랜드의 얼굴</span>입니다`, 
+                sub: "우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.", 
+                type: "Main", 
+                icon: "fa-magic" 
+            },
+            // 1~4: 포트폴리오
+            { 
+                id: 1, 
+                title: "<span class='text-purple-400'>라이트하우스 개인블로그</span>", 
+                sub: "사용자 중심의 깔끔하고 직관적인 레이아웃을 갖춘 일반형 홈페이지. 누구나 쉽게 정보를 탐색할 수 있는 접근성 중심의 UI를 구현했습니다.", 
+                type: "Basic Web", 
+                icon: "fa-laptop" 
+            },
+            { 
+                id: 2, 
+                title: "<span class='text-purple-400'>글로벌 테크 코퍼레이션</span>", 
+                sub: "신뢰와 전문성을 상징하는 기업형 웹사이트. 복잡한 비즈니스 모델을 효과적으로 시각화하고 멀티 디바이스에 최적화된 반응형 환경을 구축했습니다.", 
+                type: "Corporate", 
+                icon: "fa-city" 
+            },
+            { 
+                id: 3, 
+                title: "<span class='text-purple-400'>아뜰리에 무드 브랜딩</span>", 
+                sub: "브랜드의 철학을 예술적 인터랙션으로 표현한 브랜딩 사이트. 감각적인 색채 조합과 타이포그래피를 통해 독창적인 브랜드 아이덴티티를 확립했습니다.", 
+                type: "Branding", 
+                icon: "fa-palette" 
+            },
+            { 
+                id: 4, 
+                title: "<span class='text-purple-400'>트렌드 픽스 쇼핑몰</span>", 
+                sub: "구매 전환을 유도하는 고성능 커머스 플랫폼. 간결한 결제 프로세스와 강력한 상품 검색 필터를 통해 사용자 편의성을 극대화한 쇼핑 경험을 제공합니다.", 
+                type: "E-Commerce", 
+                icon: "fa-shopping-cart" 
+            }
+        ];
+
+        let currentHeroIndex = 0;
+        let slideInterval;
+
+        function initHeroSlider() {
+            // Cards removed as requested
+            // Start Auto Slide
+            startSlideLoop();
+        }
+
+        function updateHeroSlide(index) {
+            const data = heroSlidesData[index];
+            
+            // 1. Update Left Text (With Fade Effect)
+            const titleEl = document.getElementById('hero-title-main');
+            const subEl = document.getElementById('hero-subtitle');
+            
+            titleEl.classList.remove('fade-text');
+            subEl.classList.remove('fade-text');
+            void titleEl.offsetWidth; 
+            
+            // 제목 업데이트: 메인일 땐 HTML 태그 포함, 포트폴리오일 땐 텍스트만 깔끔하게 표시
+            titleEl.innerHTML = data.title;
+            subEl.innerText = data.sub;
+            
+            titleEl.classList.add('fade-text');
+            subEl.classList.add('fade-text');
+
+            // 2. Update Right Large 3D Icon
+            const iconEl = document.getElementById('hero-dynamic-icon');
+            iconEl.classList.add('icon-fade-out');
+            
+            setTimeout(() => {
+                // 아이콘 변경 (메인일 때는 마법봉, 나머지는 해당 아이콘)
+                iconEl.className = `fas ${data.icon} hero-wand-3d icon-fade-in`;
+            }, 400);
+        }
+
+        function nextSlide() {
+            currentHeroIndex = (currentHeroIndex + 1) % heroSlidesData.length;
+            updateHeroSlide(currentHeroIndex);
+        }
+
+        function startSlideLoop() {
+            updateHeroSlide(0); // Initial State (Main Home)
+            if (slideInterval) clearInterval(slideInterval);
+            
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 4000); // 4 Seconds per slide
+        }
+
+        // Initialize on Load
+        document.addEventListener('DOMContentLoaded', initHeroSlider);
+
     </script>
 
     <script type="module">
@@ -1085,9 +1338,13 @@
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', handleScroll);
 
-        // Modal Toggle Logic
+        // Modal Toggle Logic (Robust Version)
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
+            if (!m) {
+                console.warn(`Modal element with id '${id}' not found.`);
+                return;
+            }
             if(show) { 
                 m.classList.add('active'); 
                 document.body.style.overflow = 'hidden'; 
@@ -1116,6 +1373,7 @@
                 client: "Lighthouse Creator",
                 year: "2023",
                 tags: ["Web Design", "Development", "SEO"],
+                icon: "fa-laptop", // 아이콘 데이터 추가
                 imageColor: "from-blue-900/40 to-black"
             },
             2: {
@@ -1127,6 +1385,7 @@
                 client: "Global Tech Inc.",
                 year: "2024",
                 tags: ["Corporate", "WebGL", "Global"],
+                icon: "fa-city", // 아이콘 데이터 추가
                 imageColor: "from-indigo-900/40 to-black"
             },
             3: {
@@ -1138,6 +1397,7 @@
                 client: "Atelier Mood",
                 year: "2023",
                 tags: ["Branding", "UI/UX", "Animation"],
+                icon: "fa-palette", // 아이콘 데이터 추가
                 imageColor: "from-pink-900/40 to-black"
             },
             4: {
@@ -1149,6 +1409,7 @@
                 client: "Trend Fix",
                 year: "2024",
                 tags: ["E-Commerce", "Payment", "Platform"],
+                icon: "fa-shopping-cart", // 아이콘 데이터 추가
                 imageColor: "from-green-900/40 to-black"
             }
         };
@@ -1165,6 +1426,13 @@
             document.getElementById('pf-overlay-client').innerText = data.client;
             document.getElementById('pf-overlay-year').innerText = data.year;
             
+            // Icon Update
+            const iconEl = document.getElementById('pf-overlay-icon');
+            if(iconEl) {
+                // 기존 클래스 제거 후 새 아이콘 클래스 및 hero-wand-3d 클래스 적용
+                iconEl.className = `fas ${data.icon} hero-wand-3d`; 
+            }
+
             // Features
             const featureList = document.getElementById('pf-overlay-features');
             featureList.innerHTML = '';
@@ -1353,41 +1621,47 @@
                     }
                 });
 
-                // 견적 신청 폼 제출 핸들러 (업데이트됨)
-                document.getElementById('quote-form').onsubmit = async (e) => {
-                    e.preventDefault();
-                    const category = e.target['project-category'].value;
-                    const name = document.getElementById('q-name').value;
-                    const phone = document.getElementById('q-phone').value;
-                    const content = document.getElementById('q-memo').value;
-                    
-                    try {
-                        await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), {
-                            category, name, contact: phone, content, createdAt: serverTimestamp()
-                        });
-                        e.target.reset();
-                        toggleModal('quote-modal', false);
-                        // 성공 모달 표시
-                        toggleModal('quote-success-modal', true);
-                    } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
-                };
+                // 견적 신청 폼 제출 핸들러 (Safely Handled)
+                const quoteFormEl = document.getElementById('quote-form');
+                if (quoteFormEl) {
+                    quoteFormEl.onsubmit = async (e) => {
+                        e.preventDefault();
+                        const category = e.target['project-category'].value;
+                        const name = document.getElementById('q-name').value;
+                        const phone = document.getElementById('q-phone').value;
+                        const content = document.getElementById('q-memo').value;
+                        
+                        try {
+                            await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'quotes'), {
+                                category, name, contact: phone, content, createdAt: serverTimestamp()
+                            });
+                            e.target.reset();
+                            toggleModal('quote-modal', false);
+                            // 성공 모달 표시
+                            toggleModal('quote-success-modal', true);
+                        } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
+                    };
+                }
 
-                // 결제 신청 폼 제출 핸들러 (업데이트됨)
-                document.getElementById('hosting-form').onsubmit = async (e) => {
-                    e.preventDefault();
-                    const planType = e.target['hosting-plan'].value;
-                    const name = document.getElementById('h-name').value;
-                    const phone = document.getElementById('h-phone').value;
-                    try {
-                        await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
-                            name, phone, type: planType, status: 'pending', createdAt: serverTimestamp()
-                        });
-                        e.target.reset();
-                        toggleModal('hosting-modal', false);
-                        // 성공 모달 표시
-                        toggleModal('hosting-success-modal', true);
-                    } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
-                };
+                // 결제 신청 폼 제출 핸들러 (Safely Handled)
+                const hostingFormEl = document.getElementById('hosting-form');
+                if (hostingFormEl) {
+                    hostingFormEl.onsubmit = async (e) => {
+                        e.preventDefault();
+                        const planType = e.target['hosting-plan'].value;
+                        const name = document.getElementById('h-name').value;
+                        const phone = document.getElementById('h-phone').value;
+                        try {
+                            await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), {
+                                name, phone, type: planType, status: 'pending', createdAt: serverTimestamp()
+                            });
+                            e.target.reset();
+                            toggleModal('hosting-modal', false);
+                            // 성공 모달 표시
+                            toggleModal('hosting-success-modal', true);
+                        } catch (err) { alert('제출 중 오류가 발생했습니다.'); }
+                    };
+                }
             } else {
                 try { await signInAnonymously(auth); } catch (err) { console.error(err); }
             }
