@@ -263,6 +263,46 @@
         .notice-bar-container { background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .toss-icon { width: 20px; height: 20px; margin-right: 6px; vertical-align: middle; fill: #3182f6; }
 
+        /* 페이지네이션 버튼 스타일 (새로 추가됨) */
+        .pagination-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(138, 79, 255, 0.1);
+            border: 1px solid rgba(138, 79, 255, 0.3);
+            color: #c084fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            position: relative; /* z-index 적용을 위해 추가 */
+            z-index: 30; /* 다른 요소보다 위에 표시 */
+        }
+
+        .pagination-btn:hover {
+            background: #8a4fff;
+            color: #ffffff;
+            border-color: #8a4fff;
+            box-shadow: 0 0 15px rgba(138, 79, 255, 0.6);
+            transform: scale(1.1);
+        }
+        
+        .pagination-btn:active {
+            transform: scale(0.95);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.6; /* 기존 0.3에서 0.6으로 올려 가시성 확보 */
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.05); /* 옅은 배경 추가 */
+            border-color: rgba(255, 255, 255, 0.2); /* 테두리 밝게 */
+            color: rgba(255, 255, 255, 0.3); /* 아이콘 밝게 */
+        }
+
         /* Full Screen Portfolio Overlay Style */
         #portfolio-overlay {
             position: fixed; inset: 0; z-index: 5000; background: #05020a;
@@ -465,8 +505,8 @@
                     <h3 class="text-lg sm:text-xl font-black uppercase tracking-tighter italic mobile-title-small">실시간 <span class="gradient-text">입금 현황</span></h3>
                 </div>
                 <div class="flex gap-2">
-                    <button id="btn-deposit-prev" class="pagination-btn" onclick="changeDepositPage(-1)"><i class="fas fa-chevron-left text-xs"></i></button>
-                    <button id="btn-deposit-next" class="pagination-btn" onclick="changeDepositPage(1)"><i class="fas fa-chevron-right text-xs"></i></button>
+                    <button id="btn-deposit-prev" class="pagination-btn" onclick="changeDepositPage(-1)"><i class="fas fa-chevron-left text-sm"></i></button>
+                    <button id="btn-deposit-next" class="pagination-btn" onclick="changeDepositPage(1)"><i class="fas fa-chevron-right text-sm"></i></button>
                 </div>
             </div>
             <div id="deposit-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
@@ -482,8 +522,8 @@
                     <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tighter mobile-title-small">진행 중인 <span class="gradient-text">PROJECTS</span></h3>
                 </div>
                 <div class="flex gap-2">
-                    <button id="btn-project-prev" class="pagination-btn" onclick="changeProjectPage(-1)"><i class="fas fa-chevron-left text-xs"></i></button>
-                    <button id="btn-project-next" class="pagination-btn" onclick="changeProjectPage(1)"><i class="fas fa-chevron-right text-xs"></i></button>
+                    <button id="btn-project-prev" class="pagination-btn" onclick="changeProjectPage(-1)"><i class="fas fa-chevron-left text-sm"></i></button>
+                    <button id="btn-project-next" class="pagination-btn" onclick="changeProjectPage(1)"><i class="fas fa-chevron-right text-sm"></i></button>
                 </div>
             </div>
             <div id="project-list" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"></div>
