@@ -290,10 +290,30 @@
             .modal-content { padding: 1.5rem !important; border-radius: 24px !important; }
 
             /* Mobile Zoom Adjustment for Specific Modals */
-            #quote-modal .modal-content,
-            #hosting-modal .modal-content,
-            #portfolio-detail-modal .modal-content {
+            /* 일반 팝업 (90%) */
+            #portfolio-detail-modal .modal-content,
+            #quote-success-modal .modal-content,
+            #hosting-success-modal .modal-content {
                 zoom: 0.9;
+            }
+
+            /* 견적 상담 팝업 (85%) */
+            #quote-modal .modal-content {
+                zoom: 0.85;
+            }
+
+            /* 결제하기 팝업 (80% - 더 작게) */
+            #hosting-modal .modal-content {
+                zoom: 0.8;
+            }
+            
+            /* 결제하기 팝업 폰트 미세 조정 (모바일 전용) */
+            #hosting-modal .option-card h4, 
+            #hosting-modal .option-card span {
+                font-size: 11px !important;
+            }
+            #hosting-modal .option-card p {
+                font-size: 9px !important;
             }
         }
     </style>
@@ -357,12 +377,12 @@
             <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] font-black uppercase tracking-[0.2em] pointer-events-auto">
                 <i class="fas fa-sparkles mr-2"></i> <span id="hero-badge-text">고품격 프리미엄 웹에이전시</span>
             </div>
-            <!-- 타이틀: 폰트 두께 가늘게(font-light), 모바일 크기 축소(text-2xl) -->
-            <h1 class="text-2xl sm:text-5xl font-light leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
+            <!-- 타이틀: 폰트 두께 진하게 변경 (font-light -> font-black) -->
+            <h1 class="text-2xl sm:text-5xl font-black leading-[1.15] mb-8 sm:mb-10 tracking-tighter pointer-events-auto">
                 <span id="hero-title-1">홈페이지 가치는</span> <br>
                 <span class="gradient-text italic" id="hero-title-2">브랜드의 얼굴</span><span id="hero-title-3">입니다</span>
             </h1>
-            <!-- 소문구: 모바일 크기 축소(text-sm), 폰트 두께 가늘게 유지(font-light) -->
+            <!-- 소문구: 폰트 두께 가늘게 유지 -->
             <p class="text-white mb-10 sm:mb-12 text-sm sm:text-lg max-w-xl leading-relaxed font-light pointer-events-auto" id="hero-subtitle">
                 우리는 단순히 코딩하지 않습니다. 감각적인 디자인과 독보적인 기술력을 결합하여, 당신의 비즈니스가 온라인에서 가장 빛나도록 설계합니다.
             </p>
@@ -1010,10 +1030,20 @@
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', handleScroll);
 
+        // Modal Toggle Logic (Improved for Smooth Transition)
         window.toggleModal = (id, show) => {
             const m = document.getElementById(id);
-            if(show) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
-            else { m.classList.remove('active'); document.body.style.overflow = ''; }
+            if(show) { 
+                m.classList.add('active'); 
+                document.body.style.overflow = 'hidden'; 
+            } else { 
+                m.classList.remove('active'); 
+                // 다른 모달이 떠있는지 확인 후 스크롤 잠금 해제 (깜빡임 방지)
+                const activeModals = document.querySelectorAll('.custom-modal.active');
+                if (activeModals.length === 0) {
+                    document.body.style.overflow = ''; 
+                }
+            }
         };
 
         const anonymizeName = (name) => {
