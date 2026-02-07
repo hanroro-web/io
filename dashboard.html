@@ -398,27 +398,42 @@
         <!-- NEW: 매출 현황 섹션 (Sales Status) -->
         <div id="section-sales" class="content-section hidden">
             <h2 class="section-title"><i class="fas fa-chart-line"></i> 매출 현황 (Revenue)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- 그리드 변경: 5개 항목을 위해 반응형 그리드 조정 (lg:3열, xl:5열) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
                 <!-- Total Revenue Card -->
                 <div class="glass-panel p-6 rounded-2xl relative overflow-hidden bg-gradient-to-br from-white/5 to-transparent">
                     <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-won-sign text-6xl"></i></div>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Total Revenue</p>
                     <h3 class="text-3xl font-black text-white" id="sales-total-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">누적 총 매출액</div>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">누적 총 매출액 (VAT 포함)</div>
+                </div>
+                <!-- Net Revenue Card (New) -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-wallet text-6xl"></i></div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Net Revenue</p>
+                    <h3 class="text-3xl font-black text-cyan-400" id="sales-net-revenue">0원</h3>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">순수 매출액 (VAT 제외)</div>
+                </div>
+                <!-- VAT Card -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-file-invoice-dollar text-6xl"></i></div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Estimated VAT</p>
+                    <h3 class="text-3xl font-black text-green-400" id="sales-vat-revenue">0원</h3>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">예상 부가세 (10%)</div>
                 </div>
                 <!-- Google Hosting Sales -->
                 <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
                     <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-cloud text-6xl"></i></div>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Google Hosting</p>
                     <h3 class="text-3xl font-black text-purple-400" id="sales-google-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">구글 호스팅 매출 (건당 142만원)</div>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">구글 호스팅 매출 (건당 143만원)</div>
                 </div>
                 <!-- Normal Hosting Sales -->
                 <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
                     <div class="absolute right-0 top-0 p-4 opacity-10"><i class="fas fa-server text-6xl"></i></div>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">General Hosting</p>
                     <h3 class="text-3xl font-black text-blue-400" id="sales-normal-revenue">0원</h3>
-                    <div class="mt-4 text-[10px] text-gray-500 font-bold">일반 호스팅 매출 (건당 152만원)</div>
+                    <div class="mt-4 text-[10px] text-gray-500 font-bold">일반 호스팅 매출 (건당 153만원)</div>
                 </div>
             </div>
 
@@ -451,7 +466,7 @@
                 <div class="flex justify-between items-center p-6 border-b border-white/5">
                     <div>
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">상세 매출 내역 (입금 완료)</h3>
-                        <div class="text-[10px] text-gray-500 mt-1">※ 구글호스팅: 1,420,000원 / 일반호스팅: 1,520,000원</div>
+                        <div class="text-[10px] text-gray-500 mt-1">※ 구글호스팅: 1,430,000원 / 일반호스팅: 1,530,000원</div>
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="togglePrivacy()" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-2 rounded-xl text-xs font-bold transition-all border border-white/10" title="고객 정보 숨기기/보기">
@@ -615,6 +630,15 @@
                 <i class="fas fa-save mr-2"></i> 설정 전체 저장하기
             </button>
         </div>
+
+        <!-- NEW Footer (Matches Logo Style) -->
+        <footer class="mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-4 text-center pb-8">
+            <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                <i class="fas fa-magic text-lg text-purple-400 magic-wand-float"></i>
+                <div class="text-xl font-black tracking-tighter gradient-text uppercase">HANRORO</div>
+            </div>
+            <p class="text-[10px] text-gray-600 uppercase tracking-widest">© 2015 HANRORO ADMIN SYSTEM. ALL RIGHTS RESERVED.</p>
+        </footer>
     </main>
 
     <!-- ADMIN MODALS (포트폴리오, 견적, 입금) -->
@@ -746,6 +770,11 @@
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">상품 유형</label>
                     <input type="text" id="md-type" class="custom-input" placeholder="예: 구글 호스팅" required>
+                </div>
+                <!-- 금액 수정 필드 추가 -->
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">매출 금액 (원)</label>
+                    <input type="number" id="md-price" class="custom-input" placeholder="자동 계산됨 (직접 입력 가능)">
                 </div>
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase font-bold block mb-1">입금자명</label>
@@ -1048,15 +1077,16 @@
                 const tbody = document.getElementById('deposit-table-body');
                 const mobileList = document.getElementById('deposit-mobile-list');
                 const salesBody = document.getElementById('sales-table-body');
-                const salesMobileList = document.getElementById('sales-mobile-list'); // NEW: Mobile Sales List
+                const salesMobileList = document.getElementById('sales-mobile-list');
                 
                 let tableHtml = '';
                 let mobileHtml = '';
                 let salesHtml = '';
-                let salesMobileHtml = ''; // NEW
+                let salesMobileHtml = '';
                 
                 let pendingCount = 0;
                 let totalRevenue = 0;
+                let totalVat = 0;
                 let googleRevenue = 0;
                 let normalRevenue = 0;
 
@@ -1076,17 +1106,24 @@
                     
                     if(!isComplete) pendingCount++;
 
-                    // --- Revenue Calculation Logic ---
+                    // --- Revenue Calculation Logic (UPDATED) ---
                     if (isComplete) {
                         let price = 0;
-                        if (dep.type && dep.type.includes('구글')) {
-                            price = 1420000;
-                            googleRevenue += price;
-                        } else if (dep.type && dep.type.includes('일반')) {
-                            price = 1520000;
-                            normalRevenue += price;
+                        if (dep.price) {
+                            price = Number(dep.price);
+                        } else {
+                            // Default Logic Fallback
+                            if (dep.type && dep.type.includes('구글')) price = 1430000;
+                            else if (dep.type && dep.type.includes('일반')) price = 1530000;
                         }
+
+                        if (dep.type && dep.type.includes('구글')) googleRevenue += price;
+                        else if (dep.type && dep.type.includes('일반')) normalRevenue += price;
+                        
                         totalRevenue += price;
+                        
+                        // VAT Calculation (Total / 1.1 = Supply Price, then Total - Supply = VAT)
+                        totalVat += Math.round(price - (price / 1.1));
 
                         // Calculate Month/Year Stats
                         const year = dateObj.getFullYear();
@@ -1161,6 +1198,7 @@
                         <td class="p-4"><span class="status-badge ${isComplete ? 'status-complete' : 'status-pending'}">${isComplete ? '입금완료' : '입금대기'}</span></td>
                         <td class="p-4 text-right">
                             <div class="flex justify-end gap-2">
+                                ${!isComplete ? `<button class="text-green-400 hover:text-green-300 px-2" onclick="window.markAsComplete('${d.id}')" title="입금 확인 처리 (매출 반영)"><i class="fas fa-check-circle"></i></button>` : ''}
                                 <button class="text-gray-400 hover:text-white px-2" onclick="window.openDepositModal('edit', null, ${safeData})"><i class="fas fa-edit"></i></button>
                                 <button class="text-gray-400 hover:text-red-400 px-2" onclick="window.deleteDeposit('${d.id}')"><i class="fas fa-trash"></i></button>
                             </div>
@@ -1188,6 +1226,7 @@
                             </div>
                         </div>
                         <div class="flex gap-2 pt-3 border-t border-white/5">
+                            ${!isComplete ? `<button onclick="window.markAsComplete('${d.id}')" class="flex-1 bg-green-500/10 py-2 rounded text-[10px] text-green-400 font-bold hover:bg-green-500/20 transition-colors"><i class="fas fa-check mr-1"></i> 입금확인</button>` : ''}
                             <button onclick="window.openDepositModal('edit', null, ${safeData})" class="flex-1 bg-white/5 py-2 rounded text-[10px] text-gray-300 font-bold hover:bg-white/10 transition-colors"><i class="fas fa-edit mr-1"></i> 수정</button>
                             <button onclick="window.deleteDeposit('${d.id}')" class="flex-1 bg-red-500/10 py-2 rounded text-[10px] text-red-400 font-bold hover:bg-red-500/20 transition-colors"><i class="fas fa-trash mr-1"></i> 삭제</button>
                         </div>
@@ -1201,6 +1240,12 @@
                 
                 // Update Sales Views
                 document.getElementById('sales-total-revenue').innerText = totalRevenue.toLocaleString() + '원';
+                document.getElementById('sales-vat-revenue').innerText = totalVat.toLocaleString() + '원';
+                
+                // 순수 매출 (Net Revenue) 업데이트
+                const totalNet = totalRevenue - totalVat;
+                document.getElementById('sales-net-revenue').innerText = totalNet.toLocaleString() + '원';
+
                 document.getElementById('sales-google-revenue').innerText = googleRevenue.toLocaleString() + '원';
                 document.getElementById('sales-normal-revenue').innerText = normalRevenue.toLocaleString() + '원';
                 salesBody.innerHTML = salesHtml || '<tr><td colspan="7" class="p-6 text-center text-gray-500 text-xs">매출(입금 완료) 내역이 없습니다.</td></tr>';
@@ -1401,6 +1446,7 @@
                 document.getElementById('md-type').value = data.type;
                 document.getElementById('md-name').value = data.name;
                 document.getElementById('md-phone').value = data.phone;
+                document.getElementById('md-price').value = data.price || ""; // Populate Price
                 document.getElementById('md-status').value = data.status === 'complete' || data.status === '입금완료' ? 'complete' : 'pending';
                 document.getElementById('md-tax-invoice').value = data.taxInvoice === 'complete' ? 'complete' : 'pending';
             } else {
@@ -1416,17 +1462,34 @@
             modal.classList.add('active');
         };
 
+        // NEW: Mark as Complete Function
+        window.markAsComplete = async (id) => {
+            if(confirm('해당 건을 입금완료 처리하시겠습니까?\n매출 현황에 즉시 반영됩니다.')) {
+                try {
+                    await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', id), {
+                        status: 'complete'
+                    });
+                } catch(e) {
+                    alert('처리 중 오류가 발생했습니다: ' + e.message);
+                }
+            }
+        };
+
         document.getElementById('deposit-modal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const type = document.getElementById('md-type').value;
             const name = document.getElementById('md-name').value;
             const phone = document.getElementById('md-phone').value;
             const status = document.getElementById('md-status').value;
-            const taxInvoice = document.getElementById('md-tax-invoice').value; // New Field
+            const taxInvoice = document.getElementById('md-tax-invoice').value;
+            const price = document.getElementById('md-price').value; // Get Price
 
             try {
-                if(editingDepositId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), { type, name, phone, status, taxInvoice });
-                else await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), { type, name, phone, status, taxInvoice, createdAt: serverTimestamp() });
+                const data = { type, name, phone, status, taxInvoice };
+                if (price) data.price = Number(price); // Save Price
+
+                if(editingDepositId) await updateDoc(doc(db, 'artifacts', currentAppId, 'public', 'data', 'deposits', editingDepositId), data);
+                else { data.createdAt = serverTimestamp(); await addDoc(collection(db, 'artifacts', currentAppId, 'public', 'data', 'deposits'), data); }
                 closeAdminModal('modal-deposit');
             } catch(e) { alert('실패'); }
         });
