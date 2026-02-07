@@ -173,17 +173,34 @@
 
         /* Mobile */
         @media (max-width: 768px) {
-            body { zoom: 0.9; }
-            .hero-wand-container { right: -30%; opacity: 1; transform: translateY(-50%) scale(0.6); z-index: 0; }
+            /* 모바일 환경 해상도 조정 (85% 축소) */
+            body { zoom: 0.85; }
+
+            .hero-wand-container { 
+                right: -30%; 
+                opacity: 1; 
+                transform: translateY(-50%) scale(0.6); 
+                z-index: 0; 
+            }
             .hero-wand-3d { font-size: 20rem; }
+            .hero-cards-container { display: none; } 
+            
             .portfolio-outer-wrapper { height: 400vh; }
             .portfolio-title-group { top: 80px !important; left: 24px !important; position: absolute !important; }
             .portfolio-sticky-box { align-items: flex-end; padding-bottom: 20px; }
             .horizontal-track { padding: 0 24px; margin-bottom: 0; gap: 20px; }
             .portfolio-card { flex: 0 0 85vw; height: 460px; padding: 1.75rem; margin-right: 0; }
             
-            h1 { font-size: 1.75rem !important; line-height: 1.2 !important; letter-spacing: -0.04em !important; }
-            #hero-subtitle { font-size: 0.8rem !important; max-width: 75% !important; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+            /* Mobile Hero Typography Adjusted for 85% scale */
+            h1 { font-size: 1.65rem !important; line-height: 1.2 !important; letter-spacing: -0.04em !important; }
+            #hero-subtitle { 
+                font-size: 0.75rem !important; 
+                line-height: 1.5 !important; 
+                max-width: 80% !important; 
+                text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+            }
+            #hero-btn-group { margin-top: 2rem !important; }
+            
             .modal-content { padding: 1.5rem !important; border-radius: 24px !important; }
         }
     </style>
